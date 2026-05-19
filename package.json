@@ -1,6 +1,6 @@
 {
   "name": "@mcptoolshop/sovereign",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sovereign — a Hamilton-system economic board game and its solo / digital adaptation. Browser-based, deterministic, self-contained.",
   "type": "module",
   "main": "bin/sovereign.js",

@@ -20,6 +20,16 @@ Files
                                  Usability + accessibility verification for the
                                  printable artifact.
 
+  V0.10-RULES-ALIGNMENT.md       Delta sheet for playing the v0.10 balance at
+                                 a physical table using this v0.2 printable.
+                                 Eight specific rule changes (Industrial Charter
+                                 setup, Capacity dynamics, Capacity >= 8 bonus,
+                                 Capacity >= 10 milestone, Mfg/Strategic set
+                                 bonuses, Cash IP scoring 1/400, NF Credit
+                                 softening, Report on Manufactures capital event).
+                                 Read this if you are reprinting at v0.10 rules.
+                                 Added in v1.0.1.
+
 
 What v0.2 changed (from v0.1)
 -----------------------------
