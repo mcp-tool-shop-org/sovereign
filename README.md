@@ -8,7 +8,7 @@
 
 **The Hamilton System Board Game · solo / digital adaptation**
 
-*Founding Credit · Fund the debt. Build the bank. Industrialize the republic.*
+*Founding Credit · Fund the debt. Build the bank. Industrialize the Republic.*
 
 [![CI](https://github.com/mcp-tool-shop-org/sovereign/actions/workflows/ci.yml/badge.svg)](https://github.com/mcp-tool-shop-org/sovereign/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/@mcptoolshop/sovereign.svg)](https://www.npmjs.com/package/@mcptoolshop/sovereign)
