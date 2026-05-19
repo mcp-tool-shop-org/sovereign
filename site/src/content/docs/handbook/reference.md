@@ -9,7 +9,7 @@ sidebar:
 
 ```bash
 sovereign            # Open the digital board game (default)
-sovereign --print    # Open the printable 34-sheet board game prototype
+sovereign --print    # Open the printable 34-sheet board game
 sovereign --start    # Open the audience-routed landing page
 sovereign --path     # Print the playable HTML file path and exit
 sovereign --quiet    # Silent on success (only errors print)

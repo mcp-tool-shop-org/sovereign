@@ -98,7 +98,7 @@ export const config: SiteConfig = {
         {
           title: 'Printable board game',
           desc:
-            'Same rules as a 34-sheet printable prototype. Cut and play at a real table.',
+            'Same rules as a 34-sheet printable board game. Cut and play at a real table.',
         },
       ],
     },

@@ -8,7 +8,7 @@ WHAT THIS IS
 
 Sovereign is a Hamilton-system board game and its solo / digital adaptation.
 
-The board game is a 40-space Monopoly-grammar prototype about the founding of
+The board game is a 40-space Monopoly-grammar tabletop game about the founding of
 US public credit. Three Hamiltonian profiles - Treasury / Finance, Merchant /
 Infrastructure, and Manufacturer / Industry - compete on an Influence scoring
 track across 7 laps. Acts of Congress pass in their historical order. Public
@@ -28,7 +28,7 @@ WHERE TO START
 That page hyperlinks every artifact in this release and routes you by audience:
 
   - Player        : open the digital simulator and play.
-  - Designer      : read the board-game prototype and the concept document.
+  - Designer      : read the printable board game and the concept document.
   - Balance       : open the v0.10 batch reports and the freeze audit.
   - Auditor       : open the freeze audit and the design-history audits.
 
@@ -41,7 +41,7 @@ BUNDLE LAYOUT
   CHANGELOG.md                     Full v0.2 -> v0.10 evolution.
 
   /board-game/
-    sovereign-prototype.html       The printable 34-sheet board game (v0.2).
+    sovereign-board-game.html      The printable 34-sheet board game (v0.2).
     sovereign-economy-audit.html   FC-EM-002 corrected economy audit.
     sovereign-print-audit.html     Print / digital usability audit.
 

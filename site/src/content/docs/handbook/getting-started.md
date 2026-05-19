@@ -59,7 +59,7 @@ release/
 ├── README.txt                       ← plain-text version
 ├── CHANGELOG.md                     ← v0.2 → v0.10 evolution
 ├── board-game/
-│   ├── sovereign-prototype.html    ← printable 34-sheet board game
+│   ├── sovereign-board-game.html   ← printable 34-sheet board game
 │   ├── sovereign-economy-audit.html
 │   └── sovereign-print-audit.html
 ├── digital-mode/

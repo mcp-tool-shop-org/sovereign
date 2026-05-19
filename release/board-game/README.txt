@@ -7,7 +7,7 @@ design that the solo / digital adaptation is built around.
 
 Files
 -----
-  sovereign-prototype.html       The board game. 34 US Letter sheets.
+  sovereign-board-game.html      The board game. 34 US Letter sheets.
                                  Open in browser, then print to PDF.
                                  Or play in screen-review mode without printing.
 

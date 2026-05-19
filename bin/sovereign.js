@@ -7,7 +7,7 @@
  * release/digital-mode/sovereign-solo.html file.
  *
  * Flags:
- *   --print     Open the printable 34-sheet board game prototype instead.
+ *   --print     Open the printable 34-sheet board game instead.
  *   --start     Open the START-HERE landing page (audience-routed entry).
  *   --path      Print the file path of the playable HTML and exit.
  *   --quiet     Silent on success (only errors print).
@@ -32,7 +32,7 @@ const PKG_ROOT = resolve(HERE, '..');
 
 const TARGETS = {
   game:  resolve(PKG_ROOT, 'release', 'digital-mode',  'sovereign-solo.html'),
-  print: resolve(PKG_ROOT, 'release', 'board-game',    'sovereign-prototype.html'),
+  print: resolve(PKG_ROOT, 'release', 'board-game',    'sovereign-board-game.html'),
   start: resolve(PKG_ROOT, 'release', '00-START-HERE.html'),
 };
 
@@ -70,7 +70,7 @@ function help() {
 
 Usage:
   sovereign            Open the digital board game in your browser.
-  sovereign --print    Open the printable 34-sheet board game prototype.
+  sovereign --print    Open the printable 34-sheet board game.
   sovereign --start    Open the START-HERE landing page.
   sovereign --path     Print the playable HTML file path and exit.
   sovereign --quiet    Silent on success.

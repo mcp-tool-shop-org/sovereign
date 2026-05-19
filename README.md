@@ -23,7 +23,7 @@
 
 Sovereign is a **Hamilton-system Monopoly-grammar board game** about the founding of US public credit, plus a **complete solo / digital adaptation** that runs the same rules locally in a browser against two deterministic scripted opponents.
 
-- **Board game** — printable 34-sheet prototype. 40-space board, 22 properties + 4 routes + 2 institutions, 8 color systems, 7 Acts of Congress in fixed historical order, 4 player roles, 3 shared tracks (Public Credit · Public Resistance · Industrial Capacity), 12+12 event cards. Two viable economic paths beyond Treasury: Merchant and Manufacturer.
+- **Board game** — printable 34-sheet edition. 40-space board, 22 properties + 4 routes + 2 institutions, 8 color systems, 7 Acts of Congress in fixed historical order, 4 player roles, 3 shared tracks (Public Credit · Public Resistance · Industrial Capacity), 12+12 event cards. Two viable economic paths beyond Treasury: Merchant and Manufacturer.
 - **Digital mode** — single self-contained HTML file. Full state machine, deterministic mulberry32 RNG, scripted AI opponents (Treasury / Finance, Merchant / Infrastructure, Manufacturer / Industry), save / load with hash integrity, replay scrubber, batch simulation tool, local balance telemetry.
 - **Balance baseline** — v0.10, frozen after a nine-version arc driven by 1,000+ deterministic simulation games. Treasury 59% · Merchant 25% · Manufacturer 16% (CANONICAL × 100, target band met for all three profiles).
 
@@ -54,7 +54,7 @@ Open the hosted landing page at **<https://mcp-tool-shop-org.github.io/sovereign
 
 ### Print and play
 
-The board-game prototype is a self-contained 34-sheet HTML document. Open `release/board-game/sovereign-prototype.html` from the package (or from a download), then `Cmd/Ctrl-P → Save as PDF → US Letter → 100% scale`. Cut and play.
+The printable board game is a self-contained 34-sheet HTML document. Open `release/board-game/sovereign-board-game.html` from the package (or from a download), then `Cmd/Ctrl-P → Save as PDF → US Letter → 100% scale`. Cut and play.
 
 ### Offline release bundle
 

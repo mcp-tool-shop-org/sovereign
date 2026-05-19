@@ -5,9 +5,26 @@
 
 ---
 
+## v1.0.2 — Branding correction: it's a board game, not a "prototype" — 2026-05-19
+
+The product is shipped, signed, versioned, and on npm. "Prototype" language was design-time scaffolding that should have been retired at v1.0.0. This release removes that language across all user-facing surfaces.
+
+**Changes:**
+
+- Renamed `release/board-game/sovereign-prototype.html` → `release/board-game/sovereign-board-game.html`. Updated `bin/sovereign.js` `--print` resolution and the smoke tests to match.
+- Swept "prototype" out of README.md, CHANGELOG.md, release/README.txt, release/00-START-HERE.html, release/board-game/README.txt, release/board-game/V0.10-RULES-ALIGNMENT.md, site/src/site-config.ts, site/src/content/docs/handbook/getting-started.md, site/src/content/docs/handbook/reference.md, site/src/content/docs/handbook/design-history.md, bin/sovereign.js, and test/smoke.test.mjs.
+- Replacement language: "printable edition" or "printable board game" depending on context. The board game stays at v0.2 balance per the existing freeze; nothing in the rules changes.
+- Historical phase names that contained "prototype" (e.g. "Phase 2 — Static clickable prototype") and audit document titles that contained "Prototype" remain unchanged — those are accurate archival references to the named build phases and the original audit document title. They live in `design-history/` and the print-audit's own title.
+
+No game-logic, balance, or behavior changes. CLI flags unchanged. Existing v1.0.0 / v1.0.1 saves still load.
+
+Translation re-run required (README.md changed). User runs polyglot locally before tag push.
+
+---
+
 ## v1.0.1 — Printable v0.10 Rules Alignment Delta — 2026-05-19
 
-Adds `release/board-game/V0.10-RULES-ALIGNMENT.md`: a delta sheet that lists the eight rule changes a physical table would apply on top of the v0.2 printable prototype to play at v0.10 balance. The board-game prototype HTML itself remains frozen at v0.2 (no human-table playtest has been run); this delta is opt-in for groups reprinting at v0.10 rules.
+Adds `release/board-game/V0.10-RULES-ALIGNMENT.md`: a delta sheet that lists the eight rule changes a physical table would apply on top of the v0.2 printable edition to play at v0.10 balance. The printable board-game HTML itself remains frozen at v0.2 (no human-table playtest has been run); this delta is opt-in for groups reprinting at v0.10 rules.
 
 The eight deltas: Industrial Charter setup grant · Capacity +1 on first industrial purchase · Capacity ≥ 8 payment bonus +25% → +50% · Capacity ≥ 10 industrial milestone (new) · Full Mfg / Strategic set completion bonuses (new) · Cash IP scoring 1 per 200 TN → 1 per 400 TN · NF Credit endgame bonus 5-IP-split → +1/+2 per qualifying owner · Report on Manufactures capital event (now includes 50 TN per Mfg/Strategic owned + Strategic upgrade halving).
 

@@ -62,7 +62,7 @@ check('bin/sovereign.js has shebang', () => {
 const releaseArtifacts = [
   'release/00-START-HERE.html',
   'release/digital-mode/sovereign-solo.html',
-  'release/board-game/sovereign-prototype.html',
+  'release/board-game/sovereign-board-game.html',
   'release/digital-mode/sovereign-v0.10-freeze-audit.html',
   'release/CHANGELOG.md',
 ];
@@ -117,7 +117,7 @@ check('CLI --debug + --quiet flags parse without error', () => {
 });
 check('CLI --print + --path returns the printable HTML path', () => {
   const out = execFileSync('node', [binPath, '--print', '--path'], { encoding: 'utf8' }).trim();
-  if (!out.endsWith('sovereign-prototype.html')) throw new Error(`got: ${out}`);
+  if (!out.endsWith('sovereign-board-game.html')) throw new Error(`got: ${out}`);
 });
 check('CLI --start + --path returns the START-HERE path', () => {
   const out = execFileSync('node', [binPath, '--start', '--path'], { encoding: 'utf8' }).trim();

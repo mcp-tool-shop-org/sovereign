@@ -11,7 +11,7 @@ The balance arc was a nine-version push from "Treasury crushes everything" to "t
 
 Sovereign exists as two artifacts:
 
-1. **The board game (v0.2 baseline)** — a printable 34-sheet prototype with the original Hamilton-system mechanics.
+1. **The board game (v0.2 baseline)** — a printable 34-sheet edition with the original Hamilton-system mechanics.
 2. **The solo / digital adaptation** — a self-contained HTML simulator that runs the same rules locally with deterministic AI opponents.
 
 The board game stays at v0.2 until human-table playtest evidence exists. The digital mode is at v0.10. **The digital mode runs ahead because simulation is cheaper than reprinting.**
