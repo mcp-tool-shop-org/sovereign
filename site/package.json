@@ -11,8 +11,11 @@
   "dependencies": {
     "@mcptoolshop/site-theme": "^1.1.0",
     "@tailwindcss/vite": "^4.2.0",
-    "astro": "^5.17.0",
+    "astro": "^6.3.5",
     "tailwindcss": "^4.2.0",
-    "@astrojs/starlight": "^0.37.6"
+    "@astrojs/starlight": "^0.39.2"
+  },
+  "overrides": {
+    "vite": "^7.3.2"
   }
 }
