@@ -54,7 +54,7 @@ npx @mcptoolshop/sovereign --help     # All flags
 
 ### 印刷してプレイ
 
-ボードゲームのプロトタイプは、自己完結型の34ページのHTMLドキュメントです。パッケージ内の `release/board-game/sovereign-prototype.html` を開くか、ダウンロードしたファイルを開き、`Cmd/Ctrl-P → PDFとして保存 → US Letter → 100%スケール` で保存します。カットしてプレイしてください。
+ボードゲームのプロトタイプは、自己完結型の34ページのHTMLドキュメントです。パッケージ内の `release/board-game/sovereign-board-game.html` を開くか、ダウンロードしたファイルを開き、`Cmd/Ctrl-P → PDFとして保存 → US Letter → 100%スケール` で保存します。カットしてプレイしてください。
 
 ### オフラインリリースバンドル
 

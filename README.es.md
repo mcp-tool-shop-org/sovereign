@@ -21,10 +21,10 @@
 
 ## ¿Qué es?
 
-Sovereign es un **juego de mesa al estilo "Monopoly" basado en el sistema de Hamilton**, que trata sobre la creación del crédito público estadounidense, además de una **adaptación completa para un solo jugador / digital** que ejecuta las mismas reglas localmente en un navegador contra dos oponentes simulados y deterministas.
+Sovereign es un **juego de mesa al estilo "Monopoly" basado en el sistema de Hamilton**, sobre la creación del crédito público estadounidense, además de una **adaptación completa para un solo jugador / digital** que ejecuta las mismas reglas localmente en un navegador contra dos oponentes simulados y deterministas.
 
-- **Juego de mesa** — prototipo imprimible de 34 hojas. Tablero de 40 casillas, 22 propiedades + 4 rutas + 2 instituciones, 8 sistemas de colores, 7 leyes del Congreso en orden histórico fijo, 4 roles de jugador, 3 pistas compartidas (Crédito Público · Resistencia Pública · Capacidad Industrial), 12+12 cartas de evento. Dos vías económicas viables además del Tesoro: Comercio y Manufactura.
-- **Modo digital** — un único archivo HTML autocontenido. Máquina de estados completa, generador de números aleatorios determinista mulberry32, oponentes de IA programados (Tesoro / Finanzas, Comercio / Infraestructura, Manufactura / Industria), guardar / cargar con integridad de hash, herramienta de depuración de repeticiones, herramienta de simulación por lotes, telemetría local de equilibrio.
+- **Juego de mesa** — Edición imprimible de 34 hojas. Tablero de 40 casillas, 22 propiedades + 4 rutas + 2 instituciones, 8 sistemas de colores, 7 leyes del Congreso en orden histórico fijo, 4 roles de jugador, 3 pistas compartidas (Crédito Público · Resistencia Pública · Capacidad Industrial), 12+12 cartas de evento. Dos vías económicas viables además del Tesoro: Comercio y Manufactura.
+- **Modo digital** — Un único archivo HTML autocontenido. Máquina de estados completa, generador de números aleatorios determinista mulberry32, oponentes simulados con IA (Tesoro / Finanzas, Comercio / Infraestructura, Manufactura / Industria), guardar / cargar con integridad de hash, herramienta de depuración de repeticiones, herramienta de simulación por lotes, telemetría local de equilibrio.
 - **Punto de equilibrio** — v0.10, congelado después de un ciclo de nueve versiones impulsado por más de 1000 simulaciones de juegos deterministas. Tesoro 59% · Comercio 25% · Manufactura 16% (CANÓNICO × 100, el rango objetivo se cumplió para los tres perfiles).
 
 ---
@@ -54,7 +54,7 @@ Abre la página de inicio alojada en **<https://mcp-tool-shop-org.github.io/sove
 
 ### Imprime y juega
 
-El prototipo del juego de mesa es un documento HTML autocontenido de 34 hojas. Abre `release/board-game/sovereign-prototype.html` desde el paquete (o desde una descarga), luego `Cmd/Ctrl-P → Guardar como PDF → Formato US Letter → 100% de escala`. Recorta y juega.
+El juego de mesa imprimible es un documento HTML autocontenido de 34 hojas. Abre `release/board-game/sovereign-board-game.html` desde el paquete (o desde una descarga), luego `Cmd/Ctrl-P → Guardar como PDF → Formato US Letter → 100% de escala`. Recorta y juega.
 
 ### Paquete de lanzamiento sin conexión
 
@@ -64,7 +64,7 @@ Cada versión etiquetada adjunta un paquete `sovereign-vX.Y.Z-release.zip` a su 
 
 ## ¿Por qué existe?
 
-La tesis de Sovereign es que **el crédito público y las finanzas federales** fueron el principal instrumento económico de Alexander Hamilton, pero un juego basado en el sistema de Hamilton debe permitir que el **comercio** y la **industria** también sean vías viables para la victoria. El ciclo de equilibrio (v0.2 → v0.10) fue un esfuerzo de nueve versiones, basado en evidencia, para mantener al Tesoro como el perfil más fuerte (de acuerdo con la historia) sin convertir el diseño en un juego de una sola estrategia.
+La tesis de Sovereign es que **el crédito público + las finanzas federales** fueron el principal mecanismo económico de Alexander Hamilton, pero un juego basado en el sistema de Hamilton debe permitir que el **comercio** y la **industria** también sean vías viables para la victoria. El ciclo de equilibrio (v0.2 → v0.10) fue un esfuerzo de nueve versiones, basado en evidencia, para mantener al Tesoro como el perfil más fuerte (de acuerdo con la historia) sin que el diseño se convirtiera en un juego de una sola estrategia.
 
 Consulta [`CHANGELOG.md`](./CHANGELOG.md) para ver la evolución completa de cada versión.
 
@@ -97,15 +97,15 @@ Consulte [`SECURITY.md`](./SECURITY.md) para informar de vulnerabilidades y cons
 
 ## Características
 
-- **Juego de 7 rondas** contra dos oponentes controlados por scripts (por defecto, Tesorería/Finanzas y Comerciante/Infraestructura; el Fabricante/Industria está disponible para partidas por lotes).
-- **Inteligencia artificial determinista:** cada decisión del oponente es una función pura del estado visible, con una justificación registrada. No hay modelos de lenguaje grandes (LLM), ni magia opaca.
+- **Juego para un solo jugador de 7 rondas** contra dos oponentes controlados por la IA (por defecto, Tesorería/Finanzas y Comerciante/Infraestructura; el Fabricante/Industria está disponible para partidas por lotes).
+- **IA determinista:** cada decisión del oponente es una función pura del estado visible, con una justificación registrada. No hay modelos de lenguaje grandes (LLM), ni magia opaca.
 - **8 superficies de juego:** Tablero, Panel de Tesorería, Inspector de Activos, Panel de Eventos, Actos del Congreso, Pistas Compartidas, Registro de Turnos/Registro, Informe de Fin de Juego.
 - **Subastas:** los activos rechazados se subastan a varios jugadores con ofertas programadas basadas en el perfil.
-- **Guardar/cargar:** autoguardado en `localStorage` en cada turno, exportación/importación manual de JSON, verificación de la integridad mediante hash al cargar, con control de versiones.
-- **Revisión:** reproducción completa de cualquier juego completado. Solo lectura. Reconstruye a partir de la semilla y el registro de decisiones, con una "píldora" de integridad verde.
-- **Simulación por lotes:** ejecute 10/50/100 juegos deterministas contra cualquier combinación de perfiles, exporte informes de JSON y HTML para el análisis del equilibrio.
+- **Guardar/cargar:** autoguardado en `localStorage` en cada turno, exportación/importación manual en formato JSON, verificación de la integridad mediante hash al cargar, versión controlada.
+- **Revisión:** reproducción completa de cualquier juego completado. Solo lectura. Reconstruye a partir de la semilla y el registro de decisiones con una "píldora" de integridad verde.
+- **Simulación por lotes:** ejecute 10/50/100 juegos deterministas contra cualquier combinación de perfiles, exporte informes en formato JSON y HTML para el análisis del equilibrio.
 - **Narración histórica:** biblioteca de 25 entradas derivada del registro (descripciones predeterminadas de 40 a 60 palabras, expansiones de 150 a 200 palabras, resumen de la república al final del juego de aproximadamente 300 a 500 palabras). Nunca modifica el estado.
-- **Accesibilidad:** navegación completa con el teclado, indicadores de enfoque, etiquetas significativas para lectores de pantalla, valores de las pistas legibles como texto y no solo como marcadores, tamaño mínimo de fuente de 14px, respeto de la reducción de movimiento.
+- **Accesibilidad:** navegación completa con el teclado, indicadores de enfoque, etiquetas significativas para lectores de pantalla, valores de las pistas legibles como texto y no solo como marcadores, tamaño mínimo de fuente de 14px, respeto de la reducción de la animación.
 
 ---
 
@@ -113,9 +113,9 @@ Consulte [`SECURITY.md`](./SECURITY.md) para informar de vulnerabilidades y cons
 
 | Perfil | Prioridad de activos | Fortaleza | Debilidad |
 |--------------------------------|---------------------------------------------------------------|----------------------|-------------------------------------|
-| **Treasury / Finance**         | NF > Deuda estatal > Deuda de ingresos > Banco > Casa de la moneda | Aumento del crédito público | Sin ingresos por infraestructura |
+| **Treasury / Finance**         | NF > Deuda Estatal > Deuda Fiscal > Banco > Casa de la Moneda | Aumento del crédito público | Sin ingresos por infraestructura |
 | **Merchant / Infrastructure**  | Rutas (las 4) > Comercio > Mejoras > Ingresos | Escalera de rutas | Sin puntuación de capacidad industrial |
-| **Manufacturer / Industry**    | Fabricación > Industria estratégica > Mejoras > Banco | Multiplicadores de capacidad | Inicio lento; obtiene una Carta inicial |
+| **Manufacturer / Industry**    | Fabricación > Industria Estratégica > Mejoras > Banco | Multiplicadores de capacidad | Inicio lento; obtiene una Carta inicial |
 
 El cuarto perfil conceptual (Oportunista/Efectivo) se pospone. El conjunto competitivo bloqueado de la versión 0.10 consta de tres.
 
@@ -123,10 +123,10 @@ El cuarto perfil conceptual (Oportunista/Efectivo) se pospone. El conjunto compe
 
 ## Limitaciones conocidas
 
-- **Los umbrales de capacidad siguen siendo raros en el juego canónico.** La capacidad final promedio es de 3,49; se alcanza ≥ 6 en solo 4 de cada 100 juegos. La puntuación industrial al final del juego existe como un límite, no como una ruta habitual.
+- **Los umbrales de capacidad siguen siendo raros en el juego canónico.** La capacidad final promedio es de 3,49; ≥ 6 se alcanza en solo 4 de cada 100 juegos. La puntuación industrial al final del juego existe como un límite, no como una ruta habitual.
 - **La Tesorería/Finanzas sigue siendo intencionalmente la más fuerte**, dentro del rango objetivo. Esto coincide con la tesis histórica: el crédito público y las finanzas federales fueron el principal instrumento económico de Hamilton.
-- **Los eventos de fallo se activaron 0/400 veces** en la versión de prueba 0.10. Las amenazas predeterminadas de Default/Rebelión/Bancarrota son actualmente decorativas; una versión futura podría revisar la presión de los estados de fallo.
-- **Solo se ha probado en simulación.** El equilibrio se valida contra más de 1000 juegos deterministas en el ciclo de la versión 0.3 a la 0.10. Aún no se ha probado con jugadores humanos; la desviación estratégica puede cambiar estas tasas.
+- **Los eventos de fallo se activaron 0/400 veces** en la prueba de la versión 0.10. Las amenazas predeterminadas de Default/Rebelión/Bancarrota son actualmente decorativas; una versión futura podría revisar la presión de los estados de fallo.
+- **Solo se ha probado mediante simulación.** El equilibrio se valida contra más de 1000 juegos deterministas en el ciclo de la versión 0.3 a la 0.10. Aún no se ha probado con jugadores humanos; la desviación estratégica puede cambiar estas tasas.
 
 ---
 
@@ -141,7 +141,7 @@ npm run verify     # full verify (smoke + pack-dry-run + CLI flag check)
 npm run play       # open the game locally
 ```
 
-Las versiones se publican en npm a través de GitHub Actions (`release.yml`) al realizar un "push" en la etiqueta `v*`, con la certificación de origen de Sigstore. La fuente de verdad es la rama `main`.
+Las versiones se publican en npm a través de GitHub Actions (`release.yml`) al realizar un "push" en la etiqueta `v*`, con la certificación de origen de Sigstore. La fuente de información es la rama `main`.
 
 ---
 
