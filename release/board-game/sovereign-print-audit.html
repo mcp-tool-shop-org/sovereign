@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sovereign · Prototype Print / Digital Audit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root {
+  --revolutionary-debt: #6E1F1E;
+  --state-debt: #4A6B8A;
+  --national-finance: #1F2D52;
+  --commercial-infrastructure: #2E7A6B;
+  --manufactures: #8C8A2E;
+  --parchment: #F0E6CD;
+  --parchment-2: #E6DABC;
+  --ink: #1A1612;
+  --highlight: #C8392E;
+  --rule: rgba(26,22,18,0.55);
+  --rule-soft: rgba(26,22,18,0.22);
+  --display: "Baskerville","Big Caslon","Hoefler Text","Garamond","Times New Roman",serif;
+  --body: "Iowan Old Style","Georgia","Cambria","Times New Roman",serif;
+  --ui: -apple-system,"Segoe UI","Helvetica Neue","Arial",system-ui,sans-serif;
+  --mono: "SF Mono","Menlo","Consolas","Courier New",monospace;
+}
+
+@page { size: 8.5in 11in; margin: 0.6in 0.7in; }
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0; font-family: var(--body); color: var(--ink);
+  background: #2A2622;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.viewport { display: flex; flex-direction: column; align-items: center; gap: 28px; padding: 32px 16px 96px; }
+.page {
+  width: 8.5in; min-height: 11in; background: var(--parchment); position: relative;
+  box-shadow: 0 10px 40px rgba(0,0,0,.55), 0 2px 4px rgba(0,0,0,.4);
+  padding: 0.6in 0.7in 0.55in;
+}
+@media print {
+  body { background: #fff; }
+  .viewport { padding: 0; gap: 0; }
+  .page { box-shadow: none; padding: 0; min-height: auto; width: 100%; page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  .toolbar { display: none !important; }
+}
+
+.toolbar { position: fixed; top: 16px; right: 16px; z-index: 30; display: flex; gap: 8px; }
+.toolbar button {
+  background: var(--parchment); color: var(--ink);
+  border: 1px solid var(--ink); padding: 8px 14px;
+  font-family: var(--ui); font-size: 12px;
+  letter-spacing: .08em; text-transform: uppercase; cursor: pointer;
+}
+.toolbar button:hover { background: var(--parchment-2); }
+
+.doc-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding-bottom: 8px; border-bottom: 1px solid var(--ink);
+  font-family: var(--ui); font-size: 9.5px;
+  letter-spacing: .22em; text-transform: uppercase;
+  margin-bottom: 0.25in;
+}
+.doc-head .sigil {
+  font-family: var(--display); font-style: italic;
+  letter-spacing: 0; text-transform: none; font-size: 12px;
+}
+.doc-foot {
+  position: absolute; left: 0.7in; right: 0.7in; bottom: 0.35in;
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 6px; border-top: 1px solid var(--ink);
+  font-family: var(--ui); font-size: 9px;
+  letter-spacing: .18em; text-transform: uppercase;
+}
+
+h1.title {
+  font-family: var(--display); font-weight: 400; font-size: 48px;
+  line-height: 1; margin: 0 0 6px; letter-spacing: -.01em;
+}
+h1.title .amp { font-style: italic; }
+.lede {
+  font-family: var(--display); font-style: italic;
+  font-size: 15px; line-height: 1.45;
+  max-width: 64ch; margin: 0 0 18px;
+}
+h2 {
+  font-family: var(--display); font-weight: 400;
+  font-size: 26px; line-height: 1.1; margin: 18px 0 10px;
+  letter-spacing: -.005em;
+  border-bottom: 1px solid var(--ink); padding-bottom: 4px;
+}
+h2 .ord {
+  font-family: var(--mono); font-size: 12px;
+  letter-spacing: .12em; opacity: .7;
+  vertical-align: middle; margin-right: 10px;
+}
+h3 {
+  font-family: var(--ui); font-size: 11px;
+  font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  margin: 14px 0 4px;
+}
+p, li { font-family: var(--body); font-size: 11.5px; line-height: 1.55; margin: 0 0 6px; }
+ul, ol { padding-left: 18px; margin: 0 0 8px; }
+strong { font-family: var(--display); font-weight: 700; }
+em { font-style: italic; }
+.mono { font-family: var(--mono); font-size: 10.5px; letter-spacing: .04em; }
+code, pre { font-family: var(--mono); }
+
+.summary {
+  margin: 14px 0 22px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.summary .stat {
+  border: 1px solid var(--ink);
+  background: var(--parchment-2);
+  padding: 10px 12px;
+  position: relative;
+}
+.summary .stat::before {
+  content: ""; position: absolute; inset: 3px;
+  border: 0.5px solid var(--rule-soft);
+  pointer-events: none;
+}
+.summary .stat .n {
+  font-family: var(--display); font-size: 36px; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.summary .stat .lbl {
+  font-family: var(--ui); font-size: 9px;
+  letter-spacing: .22em; text-transform: uppercase;
+  margin-top: 4px;
+}
+.summary .stat.pass .n  { color: var(--commercial-infrastructure); }
+.summary .stat.minor .n { color: var(--revenue-system, #C28A28); }
+.summary .stat.fail .n  { color: var(--highlight); }
+
+table.audit {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0 12px;
+}
+table.audit th, table.audit td {
+  text-align: left;
+  vertical-align: top;
+  padding: 4px 6px;
+  font-size: 10.5px;
+  line-height: 1.4;
+  border-bottom: 0.5px solid var(--rule-soft);
+}
+table.audit th {
+  font-family: var(--ui); font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  font-size: 9px;
+  background: var(--ink); color: var(--parchment);
+  border-bottom: 1px solid var(--ink);
+}
+table.audit td.n {
+  font-family: var(--mono); font-size: 9.5px;
+  width: 28px; text-align: right; padding-right: 8px;
+  color: var(--rule);
+}
+table.audit td.v {
+  font-family: var(--ui); font-size: 9px;
+  font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+  width: 90px;
+}
+table.audit td.v.pass  { color: var(--commercial-infrastructure); }
+table.audit td.v.minor { color: #B07A1F; }
+table.audit td.v.fail  { color: var(--highlight); }
+table.audit td.check { font-family: var(--body); }
+table.audit td.notes { color: rgba(26,22,18,0.78); font-size: 10px; }
+table.audit tr.row-pass  td.v::before  { content: "✓ "; }
+table.audit tr.row-minor td.v::before  { content: "! "; }
+table.audit tr.row-fail  td.v::before  { content: "✕ "; }
+
+.fix {
+  margin: 8px 0;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 14px;
+  align-items: start;
+  padding: 8px 12px;
+  border-left: 2px solid var(--ink);
+  background: rgba(26,22,18,0.025);
+}
+.fix .priority {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: .12em;
+  background: var(--ink); color: var(--parchment);
+  padding: 4px 8px; text-align: center;
+  font-weight: 700;
+}
+.fix.p0 .priority { background: var(--highlight); }
+.fix.p1 .priority { background: var(--national-finance); }
+.fix.p2 .priority { background: var(--state-debt); }
+.fix.p3 .priority { background: var(--rule); }
+.fix .title-row {
+  font-family: var(--display); font-weight: 700; font-size: 13px;
+  margin-bottom: 2px;
+}
+.fix p { margin: 2px 0; font-size: 10.5px; line-height: 1.45; }
+.fix .quote {
+  font-family: var(--display); font-style: italic;
+  background: var(--parchment-2);
+  border-left: 2px solid var(--rule);
+  padding: 4px 8px;
+  margin-top: 4px;
+}
+
+.comp-list {
+  font-family: var(--mono); font-size: 10px;
+  line-height: 1.55;
+  background: var(--parchment-2);
+  border: 1px solid var(--ink);
+  padding: 14px 18px;
+  margin: 10px 0;
+  white-space: pre-wrap;
+}
+
+.verdict {
+  margin: 14px 0;
+  padding: 16px 18px;
+  border: 1.5px solid var(--ink);
+  background: var(--parchment-2);
+  position: relative;
+}
+.verdict::before {
+  content: ""; position: absolute; inset: 5px;
+  border: 0.5px solid var(--rule-soft); pointer-events: none;
+}
+.verdict .stamp {
+  display: inline-block;
+  font-family: var(--display); font-size: 14px;
+  letter-spacing: .12em; text-transform: uppercase;
+  border: 1.5px solid var(--commercial-infrastructure);
+  color: var(--commercial-infrastructure);
+  padding: 4px 10px; margin-bottom: 6px;
+  background: var(--parchment);
+}
+.verdict h3 {
+  font-family: var(--display); font-weight: 400;
+  font-size: 20px; text-transform: none; letter-spacing: 0;
+  margin: 0 0 6px;
+}
+.verdict p { font-size: 11px; line-height: 1.5; margin: 0 0 4px; }
+
+.small-caps {
+  font-family: var(--ui); font-size: 10px;
+  letter-spacing: .22em; text-transform: uppercase;
+}
+
+.signature {
+  margin-top: 18px;
+  padding-top: 10px;
+  border-top: 1px solid var(--ink);
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--ui); font-size: 9px;
+  letter-spacing: .18em; text-transform: uppercase;
+}
+.signature .who { font-family: var(--display); font-style: italic; font-size: 12px; letter-spacing: 0; text-transform: none; }
+</style>
+</head>
+<body>
+
+<div class="toolbar"><button onclick="window.print()">Print / Save PDF</button></div>
+
+<div class="viewport">
+
+<!-- =============================================================
+     PAGE 1 — TITLE + SUMMARY + CHECKLIST (rows 1–14)
+     ============================================================= -->
+<section class="page">
+  <header class="doc-head">
+    <span>Sovereign · Prototype Print / Digital Audit</span>
+    <span class="sigil">v0.2 balance candidate · Master Pack</span>
+    <span>1 / 3</span>
+  </header>
+
+  <h1 class="title">Prototype Print / Digital Audit<span class="amp">.</span></h1>
+  <p class="lede">A systematic review of the thirty-sheet master pack against twenty-five usability criteria. The pack ships with the right components, the right rules, and the right print labels — a small set of clarifications would tighten the second playtest.</p>
+
+  <div class="summary">
+    <div class="stat pass"><div class="n">21</div><div class="lbl">Pass</div></div>
+    <div class="stat minor"><div class="n">3</div><div class="lbl">Minor concern</div></div>
+    <div class="stat fail"><div class="n">1</div><div class="lbl">Minor fail</div></div>
+  </div>
+
+  <h2><span class="ord">§ 01</span>Checklist</h2>
+  <table class="audit">
+    <thead>
+      <tr><th>#</th><th>Check</th><th>Verdict</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr class="row-pass"><td class="n">01</td><td class="check">All 40 board spaces present</td><td class="v pass">Pass</td><td class="notes">4 corners + 36 edge spaces, numbered 0–39 contiguously</td></tr>
+      <tr class="row-pass"><td class="n">02</td><td class="check">Misnumbered spaces</td><td class="v pass">Pass</td><td class="notes">Sequential clockwise from Treasury Opens</td></tr>
+      <tr class="row-pass"><td class="n">03</td><td class="check">Board ↔ card name match</td><td class="v pass">Pass</td><td class="notes">22 properties, 4 routes, 2 institutions match by name &amp; price</td></tr>
+      <tr class="row-minor"><td class="n">04</td><td class="check">Card text too small</td><td class="v minor">Minor</td><td class="notes">Board space names at 11.5 pt are tight at table distance — readable but not generous</td></tr>
+      <tr class="row-pass"><td class="n">05</td><td class="check">Card text too long</td><td class="v pass">Pass</td><td class="notes">Flavor lines ≤ 18 words; longest title fits</td></tr>
+      <tr class="row-fail"><td class="n">06</td><td class="check">Optional card backs</td><td class="v fail">Minor fail</td><td class="notes">Only 9 universal backs on sheet 10; ~64 cards. Cover does not say "reprint sheet 10"</td></tr>
+      <tr class="row-pass"><td class="n">07</td><td class="check">All 7 Acts present</td><td class="v pass">Pass</td><td class="notes">7 Acts + Voting Reference card</td></tr>
+      <tr class="row-pass"><td class="n">08</td><td class="check">All 4 Roles present</td><td class="v pass">Pass</td><td class="notes">Treasury Architect · State Broker · Merchant Financier · Manufacturer</td></tr>
+      <tr class="row-pass"><td class="n">09</td><td class="check">Player count</td><td class="v pass">Pass</td><td class="notes">3 – 4 stated on cover, roles, and rules</td></tr>
+      <tr class="row-pass"><td class="n">10</td><td class="check">Shared-track starting values</td><td class="v pass">Pass</td><td class="notes">Credit 5 · Resistance 2 · Capacity 1 — present on track board, rules, board center</td></tr>
+      <tr class="row-pass"><td class="n">11</td><td class="check">Color-only components</td><td class="v pass">Pass</td><td class="notes">Every categorical mark carries color + pattern + icon + label</td></tr>
+      <tr class="row-minor"><td class="n">12</td><td class="check">Rules contradictions</td><td class="v minor">Minor</td><td class="notes">§ 15 Default removes 1 upgrade; § 17 Bankruptcy removes all — no precedence rule when both fire</td></tr>
+      <tr class="row-pass"><td class="n">13</td><td class="check">Table-stalling mechanics</td><td class="v pass">Pass</td><td class="notes">Cabinet Bargain has 30-second trade timer; auctions resolve at first bid pass</td></tr>
+      <tr class="row-pass"><td class="n">14</td><td class="check">Monopoly trade-dress</td><td class="v pass">Pass</td><td class="notes">Square-loop grammar is allowed; visual identity is original — chrome, type, corners, cards</td></tr>
+      <tr class="row-pass"><td class="n">15</td><td class="check">Historically confusing labels</td><td class="v pass">Pass</td><td class="notes">Names and Act effects map to real 1789 – 1792 legislation</td></tr>
+      <tr class="row-pass"><td class="n">16</td><td class="check">Economic consistency</td><td class="v pass">Pass</td><td class="notes">Prices, mortgage, Act ↔ institution multipliers all cross-validate (4× → 10× → 20×)</td></tr>
+      <tr class="row-pass"><td class="n">17</td><td class="check">Computed payment tables</td><td class="v pass">Pass</td><td class="notes">Base / Full Set / Tier I–III in TN on every property; route + institution ladders</td></tr>
+      <tr class="row-pass"><td class="n">18</td><td class="check">Influence scoring table</td><td class="v pass">Pass</td><td class="notes">Sheet 29 § 12 + § 13 cover all eight scoring sources plus track bonuses</td></tr>
+      <tr class="row-pass"><td class="n">19</td><td class="check">Auction procedure</td><td class="v pass">Pass</td><td class="notes">Sheet 28 § 04</td></tr>
+      <tr class="row-pass"><td class="n">20</td><td class="check">Constitutional Crisis procedure</td><td class="v pass">Pass</td><td class="notes">Sheet 28 § 07; matches corner space</td></tr>
+      <tr class="row-pass"><td class="n">21</td><td class="check">Voting procedure</td><td class="v pass">Pass</td><td class="notes">Sheet 28 § 09 + Voting Reference card</td></tr>
+      <tr class="row-pass"><td class="n">22</td><td class="check">Print labels · crop · page order</td><td class="v pass">Pass</td><td class="notes">Every sheet has "X / 30"; crop marks on tile + card sheets</td></tr>
+      <tr class="row-pass"><td class="n">23</td><td class="check">Contrast</td><td class="v pass">Pass</td><td class="notes">Ink #1A1612 on parchment #F0E6CD ≈ 14 : 1; white on saturated bands also high</td></tr>
+      <tr class="row-pass"><td class="n">24</td><td class="check">Excessive ink</td><td class="v pass">Pass</td><td class="notes">System bands are small; bills are left-half-only; parchment field elsewhere</td></tr>
+      <tr class="row-minor"><td class="n">25</td><td class="check">Single-sided playability</td><td class="v pass">Pass</td><td class="notes">Card backs are explicitly optional; nothing on the board or any card requires duplex</td></tr>
+    </tbody>
+  </table>
+
+  <footer class="doc-foot">
+    <span>Sovereign · Audit Report</span>
+    <span class="mono">FC-AU-001</span>
+    <span>Sheet 1 / 3</span>
+  </footer>
+</section>
+
+<!-- =============================================================
+     PAGE 2 — SPECIFIC FIXES
+     ============================================================= -->
+<section class="page">
+  <header class="doc-head">
+    <span>Specific Fixes · in priority order</span>
+    <span class="sigil">P0 ships before first print · P3 nice-to-have</span>
+    <span>2 / 3</span>
+  </header>
+
+  <h2><span class="ord">§ 02</span>Specific Fixes</h2>
+
+  <h3>P0 · must fix before first print</h3>
+  <div class="fix p0">
+    <div class="priority">P0 · 01</div>
+    <div>
+      <div class="title-row">Card-back coverage note</div>
+      <p>Cover currently says "print sheet 10 on reverse of card sheets" but nine backs covers only one card sheet. Edit the cover line to:</p>
+      <div class="quote">"Print sheet 10 once per card sheet you want backed — about seven copies for full coverage."</div>
+    </div>
+  </div>
+
+  <h3>P1 · fix before second playtest</h3>
+  <div class="fix p1">
+    <div class="priority">P1 · 02</div>
+    <div>
+      <div class="title-row">Acts permanence cue</div>
+      <p>Rules don't tell you what to do with passed Acts (their +50 % effects are permanent). Add to § 09:</p>
+      <div class="quote">"Passed Acts are placed face-up beside the Track Board. Their effects remain in force until game end."</div>
+    </div>
+  </div>
+
+  <div class="fix p1">
+    <div class="priority">P1 · 03</div>
+    <div>
+      <div class="title-row">Route landing rule explicit</div>
+      <p>§ 05 mentions route payments but doesn't say <em>when</em> you pay. Add one sentence:</p>
+      <div class="quote">"Routes pay when an opponent lands on the route; the payment scales with the number of routes the owner currently holds."</div>
+    </div>
+  </div>
+
+  <div class="fix p1">
+    <div class="priority">P1 · 04</div>
+    <div>
+      <div class="title-row">Default vs Bankruptcy precedence</div>
+      <p>Add to § 15:</p>
+      <div class="quote">"If Default fires on a player with no upgrades, the cash penalty applies alone. If a player would be bankrupted by Default, resolve Default first, then bankruptcy."</div>
+    </div>
+  </div>
+
+  <h3>P2 · clarifications</h3>
+  <div class="fix p2">
+    <div class="priority">P2 · 05</div>
+    <div>
+      <div class="title-row">Influence track-bonus split</div>
+      <p>§ 13 says "split 5 Influence among National Finance owners" — ambiguous with 2 – 4 owners. Rephrase to:</p>
+      <div class="quote">"Each player who owns at least one National Finance property gains ⌊ 5 / N ⌋ Influence, where N is the number of such players."</div>
+    </div>
+  </div>
+
+  <div class="fix p2">
+    <div class="priority">P2 · 06</div>
+    <div>
+      <div class="title-row">Tax-space rules</div>
+      <p>§ 07 covers corners but not Federal Excise (space 4) or Speculation Scandal (space 38). Add § 07 a:</p>
+      <div class="quote">"Tax spaces: pay the amount shown to the bank. Speculation Scandal additionally moves Public Resistance +1."</div>
+    </div>
+  </div>
+
+  <h3>P3 · nice-to-have</h3>
+  <div class="fix p3">
+    <div class="priority">P3 · 07</div>
+    <div>
+      <div class="title-row">Per-deck card backs in the master pack</div>
+      <p>The standalone Event-Cards file has distinct "Volatility" (red) and "Broadside" (navy) backs per deck. The master pack carries only the universal Treasury back. Two extra sheets would restore deck-identity-from-back.</p>
+    </div>
+  </div>
+
+  <div class="fix p3">
+    <div class="priority">P3 · 08</div>
+    <div>
+      <div class="title-row">Property card icon repetition</div>
+      <p>All cards within a system share one icon — acceptable per the locked visual system, but the card name is the only discriminator. If players grab the wrong card during play, add tiny corner numerals (1 of 3 / 2 of 3 / 3 of 3) inside each system.</p>
+    </div>
+  </div>
+
+  <footer class="doc-foot">
+    <span>Sovereign · Audit Report</span>
+    <span class="mono">FC-AU-001 · Fixes</span>
+    <span>Sheet 2 / 3</span>
+  </footer>
+</section>
+
+<!-- =============================================================
+     PAGE 3 — REVISED COMPONENT LIST + VERDICT
+     ============================================================= -->
+<section class="page">
+  <header class="doc-head">
+    <span>Revised Component List · Verdict</span>
+    <span class="sigil">No component count changes</span>
+    <span>3 / 3</span>
+  </header>
+
+  <h2><span class="ord">§ 03</span>Revised Component List</h2>
+  <p>No changes to the component count — all thirty sheets stay. The edits are textual fixes to the rules sheets and the cover note, plus optional addition of two deck-specific back sheets.</p>
+
+  <div class="comp-list">Master pack — Sovereign v0.2 balance candidate
+   1   Cover                 + apply P0 · cover note
+ 2–5   Board (4 tiled quadrants)
+ 6–9   Property / Route / Institution cards (28 + 8 reference)
+  10   Universal card back   ← print this 7× for full coverage
+11–13  Event cards · Market Shock + Republic Debate
+14–15  Acts of Congress + Voting Reference
+  16   Roles
+  17   Track Board           ← add "Passed Acts tray" line (P1)
+18–23  Treasury Notes  (126 bills)
+24–26  Upgrade tokens   (75)
+  27   Influence tokens (40)
+28–29  Rules of Play         ← apply rule fixes 02–06
+  30   Historical Primer
+
+Optional add-ons (not in current file)
+   +   Market Shock back  · 9-up sheet     (P3)
+   +   Republic Debate back · 9-up sheet   (P3)</div>
+
+  <h2><span class="ord">§ 04</span>Ready-for-First-Print Verdict</h2>
+  <div class="verdict">
+    <div class="stamp">Ready for first print</div>
+    <h3>A group can print this pack today, cut it out, and play a rough first session.</h3>
+    <p>The P0 fix is a one-sentence cover edit. The P1 fixes are clarifying rules sentences that do not change any number. None of the findings change a price, a track value, a corner rule, or an Act effect. Do the P0 and P1 edits before a second playtest and the document is camera-ready.</p>
+    <p style="margin-top:8px"><strong>Recommended path:</strong> apply fixes 01 – 06, reprint sheets 1 and 28 – 29, run playtest 1 with the current pack, and gather feedback against the audit's open questions (Influence split, Default precedence).</p>
+  </div>
+
+  <div class="signature">
+    <span>Sovereign · The Hamilton System Board Game</span>
+    <span class="who">Audit · v0.2 · 2026</span>
+    <span>FC-AU-001</span>
+  </div>
+
+  <footer class="doc-foot">
+    <span>Sovereign · Audit Report</span>
+    <span class="mono">FC-AU-001 · Verdict</span>
+    <span>Sheet 3 / 3 · End of Document</span>
+  </footer>
+</section>
+
+</div>
+
+</body>
+</html>

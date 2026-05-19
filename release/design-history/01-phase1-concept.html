@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sovereign · Solo / Digital Mode Concept</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root {
+  --revolutionary-debt:#6E1F1E; --state-debt:#4A6B8A; --revenue-system:#C28A28;
+  --commercial-infrastructure:#2E7A6B; --national-finance:#1F2D52;
+  --internal-improvements:#B85A28; --manufactures:#8C8A2E; --strategic-industry:#3A3A3A;
+  --parchment:#F0E6CD; --parchment-2:#E6DABC; --ink:#1A1612; --highlight:#C8392E;
+  --rule:rgba(26,22,18,0.55); --rule-soft:rgba(26,22,18,0.22);
+  --display: "Baskerville","Big Caslon","Hoefler Text","Garamond","Times New Roman",serif;
+  --body: "Iowan Old Style","Georgia","Cambria","Times New Roman",serif;
+  --ui: -apple-system,"Segoe UI","Helvetica Neue","Arial",system-ui,sans-serif;
+  --mono: "SF Mono","Menlo","Consolas","Courier New",monospace;
+}
+@page { size: 8.5in 11in; margin: 0.55in 0.65in; }
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; font-family: var(--body); color: var(--ink); background:#2A2622; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.viewport { display:flex; flex-direction:column; align-items:center; gap:22px; padding:28px 16px 80px; }
+.page { width:8.5in; min-height:11in; background: var(--parchment); position:relative; box-shadow:0 10px 40px rgba(0,0,0,.55), 0 2px 4px rgba(0,0,0,.4); padding: 0.55in 0.65in 0.5in; }
+@media print {
+  html, body { background:#fff !important; }
+  .viewport { padding:0; gap:0; }
+  .page { box-shadow:none; padding:0; min-height:auto; width:100%; page-break-after: always; break-after: page; }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  .toolbar { display:none !important; }
+}
+.toolbar { position: fixed; top:16px; right:16px; z-index:30; }
+.toolbar button { background:var(--parchment); color:var(--ink); border:1px solid var(--ink); padding:8px 14px; font-family:var(--ui); font-size:12px; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; }
+.doc-head { display:flex; justify-content:space-between; align-items:baseline; padding-bottom:6px; border-bottom:1px solid var(--ink); font-family:var(--ui); font-size:9.5px; letter-spacing:.22em; text-transform:uppercase; margin-bottom:16px; }
+.doc-head .brand-mark { font-weight:700; letter-spacing:.32em; }
+.doc-head .sigil { font-family:var(--display); font-style:italic; letter-spacing:0; text-transform:none; font-size:12px; }
+h1.title { font-family:var(--display); font-weight:400; font-size:44px; line-height:1; margin:0 0 4px; letter-spacing:-.01em; }
+.subtitle { font-family:var(--display); font-style:italic; font-size:14px; margin-bottom:12px; }
+.lede { font-family:var(--display); font-style:italic; font-size:13px; line-height:1.45; max-width:64ch; margin:0 0 14px; }
+h2 { font-family:var(--display); font-weight:400; font-size:20px; margin:18px 0 6px; border-bottom:1px solid var(--ink); padding-bottom:3px; }
+h2 .ord { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; opacity:.65; margin-right:8px; }
+h3 { font-family:var(--ui); font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; margin:10px 0 4px; }
+h4 { font-family:var(--display); font-weight:700; font-size:12px; margin:6px 0 3px; }
+p, li { font-family:var(--body); font-size:10.5px; line-height:1.5; margin:0 0 5px; }
+ul, ol { padding-left:16px; margin:0 0 6px; }
+strong { font-family:var(--display); font-weight:700; }
+em { font-style:italic; }
+.mono { font-family:var(--mono); font-size:10px; }
+.formula, pre.code { font-family:var(--mono); font-size:9.5px; background:rgba(26,22,18,0.04); padding:6px 9px; border-left:2px solid var(--ink); margin:4px 0 8px; line-height:1.55; white-space:pre-wrap; overflow-wrap:break-word; }
+table { width:100%; border-collapse:collapse; margin:5px 0 10px; font-size:9.5px; }
+th, td { text-align:left; vertical-align:top; padding:3px 6px; line-height:1.35; border-bottom:0.5px solid var(--rule-soft); }
+th { font-family:var(--ui); font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:8.5px; background:var(--ink); color:var(--parchment); border-bottom:1px solid var(--ink); }
+td.n { font-family:var(--mono); font-size:9.5px; text-align:right; font-variant-numeric:tabular-nums; }
+.callout { border-left:2px solid var(--national-finance); padding:5px 10px; background:rgba(31,45,82,0.04); margin:5px 0; font-size:10px; }
+.callout.warn { border-left-color:var(--highlight); background:rgba(200,57,46,0.04); }
+.callout.warn strong { color:var(--highlight); }
+.callout strong { color:var(--national-finance); }
+.signature { margin-top:14px; padding-top:8px; border-top:1px solid var(--ink); display:flex; justify-content:space-between; font-family:var(--ui); font-size:8.5px; letter-spacing:.16em; text-transform:uppercase; }
+.split-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.split-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.box { border:1px solid var(--rule-soft); padding:8px 10px; background:rgba(26,22,18,0.025); }
+.box h4 { margin:0 0 3px; }
+.box p { margin:0 0 3px; font-size:10px; }
+.diagram { font-family:var(--mono); font-size:10px; line-height:1.55; white-space:pre; padding:8px 10px; border:1px solid var(--rule-soft); background:var(--parchment-2); margin:6px 0; overflow:auto; }
+.surface { display:grid; grid-template-columns:140px 1fr; gap:8px 14px; margin:4px 0 8px; align-items:start; padding:6px 10px; border:1px dashed var(--ink); }
+.surface .name { font-family:var(--display); font-weight:700; font-size:13px; }
+.surface .desc { font-family:var(--body); font-size:10px; line-height:1.4; }
+.tag-mvp { background:rgba(46,122,107,0.18); padding:1px 6px; font-family:var(--ui); font-size:8px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--commercial-infrastructure); }
+.tag-v2 { background:rgba(31,45,82,0.12); padding:1px 6px; font-family:var(--ui); font-size:8px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--national-finance); }
+.tag-out { background:rgba(200,57,46,0.15); padding:1px 6px; font-family:var(--ui); font-size:8px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--highlight); }
+.narration { border:1px solid var(--ink); padding:8px 12px; background:var(--parchment-2); margin:5px 0; }
+.narration h4 { margin:0 0 4px; font-family:var(--display); font-weight:400; font-size:13px; font-style:italic; }
+.narration .snip { font-family:var(--body); font-size:10.5px; line-height:1.45; }
+.narration .expand { font-family:var(--mono); font-size:8.5px; opacity:.7; text-transform:uppercase; letter-spacing:.18em; margin-top:4px; }
+</style>
+</head>
+<body>
+
+<div class="toolbar"><button onclick="window.print()">Print / Save PDF</button></div>
+
+<div class="viewport">
+
+<!-- ============================================================
+     PAGE 1 — TITLE + INTENT + LOOP
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head">
+    <span class="brand-mark">SOVEREIGN</span>
+    <span class="sigil">Solo / Digital Mode Concept · v0.1</span>
+    <span>1 / 8</span>
+  </header>
+
+  <h1 class="title">Solo / Digital Mode</h1>
+  <div class="subtitle">Making the Hamilton System playable alone · concept, not implementation</div>
+
+  <p class="lede">Sovereign is a board game about building economic sovereignty through public credit, federal revenue, institutions, infrastructure, and industry. This document specifies a browser-based companion that makes the system playable solo while preserving the board-game soul: movement, assets, Acts, tracks, cards, economic tension, and historical causality.</p>
+
+  <h2><span class="ord">§ 01</span>Product Intent</h2>
+  <p>The printable board game (v0.2 balance candidate) is the canonical object. The digital mode is its companion, not its replacement. It exists to:</p>
+  <ul>
+    <li>Make the system <strong>accessible</strong> when no table, no print, or no opponents are available.</li>
+    <li>Automate <strong>state memory</strong> — track values, owned assets, lap count, cash, ledger — so a solo player can focus on decisions, not bookkeeping.</li>
+    <li>Provide <strong>scripted opponents</strong> with deterministic, traceable behavior, so a single player faces real economic pressure.</li>
+    <li>Surface <strong>historical causality</strong> inline as short, optional narration — never as a lecture.</li>
+    <li>Enable <strong>replay and simulation</strong> for balance inspection and learning the system.</li>
+  </ul>
+  <p><strong>What it is not.</strong> It is not a generic educational app, a trivia game, a passive simulation, or a spreadsheet front-end. The board game's grammar — square loop, dice, cards, votes, tracks — is preserved in the digital interface.</p>
+
+  <h2><span class="ord">§ 02</span>Core Loop</h2>
+
+  <h3>Plain-language loop</h3>
+  <ol>
+    <li>Choose Role (Treasury Architect · State Broker · Merchant Financier · Manufacturer).</li>
+    <li>Choose solo mode (Guided · Competitive · Replay).</li>
+    <li>Initialize board state. Tracks: Credit 5, Resistance 2, Capacity 1.</li>
+    <li>On each player's turn: roll dice → animate move → resolve space → make decisions → end turn.</li>
+    <li>At the start of each lap: reveal next Act of Congress → all players vote → resolve effect if passed → adjust tracks → place Act face-up in tray.</li>
+    <li>Card spaces: draw → read → resolve → adjust tracks → log.</li>
+    <li>Tax / corner spaces: auto-resolve with player confirmation.</li>
+    <li>End of lap 7: finish the round, compute Influence, present Endgame Report.</li>
+  </ol>
+
+  <h3>State-transition diagram</h3>
+  <div class="diagram">
+SETUP → [LAP_START → ACT_VOTE → ACT_RESOLVE] → TURN_LOOP[N]
+                                       ↓
+   TURN_LOOP  : ROLL → MOVE → RESOLVE_SPACE → DECISIONS → END_TURN
+   RESOLVE    : asset | route | institution | tax | card | corner
+   DECISIONS  : human paused · scripted opponents deterministic
+                                       ↓
+                              (lap ≤ 7) → next LAP_START
+                              (lap = 7) → SCORE → REPORT</div>
+
+  <h3>What the player sees at each step</h3>
+  <table>
+    <thead><tr><th>Step</th><th>Surface in focus</th><th>Player input</th><th>Automated</th></tr></thead>
+    <tbody>
+      <tr><td>Roll</td><td>Board View</td><td>Press Roll (Space)</td><td>2d6 result, animation</td></tr>
+      <tr><td>Move</td><td>Board View</td><td>—</td><td>Token slides along route</td></tr>
+      <tr><td>Resolve space</td><td>Asset Inspector OR Card Drawer</td><td>Buy / Decline / Upgrade / Pay (where applicable)</td><td>Rent calc, tax payment, track delta</td></tr>
+      <tr><td>Act vote</td><td>Acts of Congress Panel</td><td>Yes / No (or pay 100 TN to force)</td><td>Opponent votes traceable to holdings</td></tr>
+      <tr><td>Lap end</td><td>Ledger / Tracks</td><td>—</td><td>Threshold checks, Default / Rebellion firing</td></tr>
+      <tr><td>Score</td><td>Endgame Report</td><td>Review / export</td><td>Influence computation, system summary, narration</td></tr>
+    </tbody>
+  </table>
+
+  <div class="signature"><span>Sovereign · Solo / Digital Concept</span><span>v0.1 · 1 / 8</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 2 — SURFACES
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Surfaces · Screens · Panels</span><span>2 / 8</span></header>
+
+  <h2><span class="ord">§ 03</span>Digital Mode Surfaces</h2>
+
+  <p>Eight surfaces, organised as one persistent center (Board View) and seven sidebars / drawers that the player can open as needed. Surfaces are not modal pages — they coexist in a single viewport, with the Board View always visible.</p>
+
+  <div class="surface">
+    <div class="name">A · Board View</div>
+    <div class="desc">The full 17 × 17 board rendered via the same SVG pipeline as the print tiles. Player tokens, owned assets marked with their owner's color, current lap, an Acts lane showing passed Acts face-up beside the board, and the three shared-track markers along the bottom.</div>
+  </div>
+
+  <div class="surface">
+    <div class="name">B · Player Treasury Panel</div>
+    <div class="desc">Per-player: cash on hand, role, list of owned assets grouped by system, upgrade tokens placed, current Influence estimate (live), liabilities (mortgaged properties, owed rent), and Crisis status if applicable. The human player's panel is anchored bottom-left; opponents are collapsible cards.</div>
+  </div>
+
+  <div class="surface">
+    <div class="name">C · Asset Inspector</div>
+    <div class="desc">Click an asset to open: full card detail, computed payment table (Base / Full Set / Tier I / II / III), upgrade options with cost and incremental income, Act modifiers in force, and a short historical note (40–60 words, expandable).</div>
+  </div>
+
+  <div class="surface">
+    <div class="name">D · Event / Card Drawer</div>
+    <div class="desc">When a Market Shock or Republic Debate card is drawn: card fronted full-size, effect resolution buttons, track-delta preview, optional historical narration. Card stays visible until the player presses "Resolve." Discard pile inspectable.</div>
+  </div>
+
+  <div class="surface">
+    <div class="name">E · Acts of Congress Panel</div>
+    <div class="desc">At lap start: top card revealed face-up. Vote tiles for each player. Human votes by click or keyboard (Y / N). Scripted opponents vote with a visible reason in the ledger ("State Broker votes YES — holds 2 State Debt"). Passed Acts move to the tray with their effects summarized.</div>
+  </div>
+
+  <div class="surface">
+    <div class="name">F · Shared Tracks Panel</div>
+    <div class="desc">Public Credit, Public Resistance, Industrial Capacity — each shown as a 0–12 scale with marker, threshold flags (v0.2: Capacity ≥ 6 / ≥ 8), and a tooltip on each movement: "Capacity +2 · Report on Manufactures passed."</div>
+  </div>
+
+  <div class="surface">
+    <div class="name">G · Turn Log / Ledger</div>
+    <div class="desc">Right-side scrollback of every event: cash movement, track movement, Act resolution, card draw, opponent decision with reason. Searchable, exportable, used for debugging the AI and for player learning. Lines are time-stamped to lap and turn.</div>
+  </div>
+
+  <div class="surface">
+    <div class="name">H · Endgame Report</div>
+    <div class="desc">After lap 7 scoring: final Influence breakdown by source (matching the audit's scoring table), economic system the player built (which Acts they passed, which sets they completed, which tracks they pushed), strongest and weakest holding, and a 300–500 word historical narration scoped to the actual game played.</div>
+  </div>
+
+  <div class="callout"><strong>Visual style.</strong> All surfaces inherit the prototype's Federalist Treasury aesthetic: parchment + ink + system color bands + locked icon set. The same SVG symbols (debt certificate, customs house, harbor, manufactory, etc.) render at every size.</div>
+
+  <div class="signature"><span>Sovereign · Solo / Digital Concept</span><span>v0.1 · 2 / 8</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 3 — MODES + OPPONENTS
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Solo modes · Scripted opponents</span><span>3 / 8</span></header>
+
+  <h2><span class="ord">§ 04</span>Solo Modes</h2>
+
+  <div class="split-3">
+    <div class="box">
+      <h4>A · Guided Treasury Secretary</h4>
+      <p><strong>Goal:</strong> build a stable Hamiltonian economy against scripted political and market pressure.</p>
+      <p><strong>Agency:</strong> human plays a single role and makes all asset and vote decisions. Opponents are minimal — a scripted "Opposition" votes on every Act based on shared-track state.</p>
+      <p><strong>Opponents:</strong> 1 scripted Opposition (votes NO on Acts that raise Resistance).</p>
+      <p><strong>Win:</strong> finish 7 laps with Credit ≥ 8 and Capacity ≥ 6.</p>
+      <p><strong>Loss:</strong> Default fires.</p>
+      <p><strong>Teaches:</strong> what each Act does, how tracks couple, how upgrades pay back.</p>
+    </div>
+
+    <div class="box">
+      <h4>B · Competitive Solo Table</h4>
+      <p><strong>Goal:</strong> beat 2 scripted opponents on Influence at lap 7.</p>
+      <p><strong>Agency:</strong> human plays a role of their choosing.</p>
+      <p><strong>Opponents:</strong> 2 scripted profiles. MVP pairs <em>Treasury / Finance</em> + <em>Merchant / Infrastructure</em>.</p>
+      <p><strong>Win:</strong> highest Influence at game end.</p>
+      <p><strong>Loss:</strong> finish below both opponents.</p>
+      <p><strong>Teaches:</strong> board-game strategy, route ladder pressure, the Bank Charter tipping point.</p>
+    </div>
+
+    <div class="box">
+      <h4>C · Simulation Replay</h4>
+      <p><strong>Goal:</strong> watch or step through an AI-only game.</p>
+      <p><strong>Agency:</strong> none in-game. Player picks the seed, profiles, and speed.</p>
+      <p><strong>Opponents:</strong> 3–4 scripted profiles, all AI.</p>
+      <p><strong>Win:</strong> n/a.</p>
+      <p><strong>Loss:</strong> n/a.</p>
+      <p><strong>Teaches:</strong> economy inspection. Used by the designer for balance work and by the player to study system interactions.</p>
+    </div>
+  </div>
+
+  <h2><span class="ord">§ 05</span>Scripted Opponent Profiles</h2>
+  <p>Four deterministic profiles. No LLM. Behavior is rules-based and shown in the ledger so the human can predict opponent votes from visible holdings.</p>
+
+  <table>
+    <thead><tr><th>Profile</th><th>Asset priorities</th><th>Upgrade behavior</th><th>YES Acts</th><th>NO Acts</th><th>State-gated Acts</th><th>100 TN fee?</th><th>Auctions</th><th>Tracks favored</th><th>Risk · Weakness</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Treasury / Finance</strong></td>
+        <td>Rev Debt → State Debt → Nat'l Finance → Bank → Mint</td>
+        <td>Tier II on cheapest set when owns set + 250 TN spare</td>
+        <td>Funding, Assumption, Bank Charter, Coinage</td>
+        <td>Excise Enforcement (if owns Whiskey)</td>
+        <td>Tariff: YES if owns Revenue, NO otherwise</td>
+        <td>Yes, on Bank Charter only</td>
+        <td>Bids up to 80 % of list cost on Nat'l Finance / Bank / Mint</td>
+        <td>Credit ↑</td>
+        <td>Low risk · weak vs runaway Routes</td>
+      </tr>
+      <tr>
+        <td><strong>Merchant / Infrastructure</strong></td>
+        <td>Routes 1 → 2 → 3 → 4 before any system set</td>
+        <td>Tier I on Revenue or Commerce when owns set</td>
+        <td>Tariff Schedule, Coinage</td>
+        <td>Assumption (raises Resistance)</td>
+        <td>Funding: YES if cash &lt; 800; NO if cash &gt; 1 200</td>
+        <td>Yes, on Tariff Schedule only</td>
+        <td>Bids aggressively on Routes (up to 1.5× cost)</td>
+        <td>Capacity ↓ (less competition)</td>
+        <td>Medium risk · weak if denied a 3rd route</td>
+      </tr>
+      <tr>
+        <td><strong>Manufacturer / Industry</strong></td>
+        <td>Mfg → Strategic → Improvements (partial)</td>
+        <td>Tier I as soon as Mfg or Strategic set; Tier II if Report on Mfg passed</td>
+        <td>Report on Manufactures, Coinage (Capacity +1)</td>
+        <td>Excise Enforcement (Resistance +2)</td>
+        <td>Bank Charter: YES if owns 0 Institutions, NO if owns 1+</td>
+        <td>Yes, on Report on Manufactures only</td>
+        <td>Bids on Mfg / Strategic up to list cost</td>
+        <td>Capacity ↑</td>
+        <td>Medium risk · slow start, late payoff</td>
+      </tr>
+      <tr>
+        <td><strong>Opportunist / Cash</strong></td>
+        <td>Any unowned asset under 200 TN; one cheap full set max</td>
+        <td>Tier I on the one set owned; never beyond</td>
+        <td>None reliably</td>
+        <td>Acts that cost cash (Whiskey Rebellion via Resistance)</td>
+        <td>All Acts: YES if NF or Treasury holds tracks, NO otherwise</td>
+        <td>No</td>
+        <td>Snipes auctions at 30–50 % of list cost</td>
+        <td>None — neutral</td>
+        <td>High risk · cash converts to Influence at worst rate (200:1)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout"><strong>Implementability rule.</strong> Every vote, bid, and upgrade decision must be derivable from the visible state (cash + assets + tracks + role). No hidden information. The ledger shows the rule that fired ("Manufacturer votes NO on Bank Charter — owns 1 Institution"). This makes the AI playtestable and the experience legible.</div>
+
+  <div class="signature"><span>Sovereign · Solo / Digital Concept</span><span>v0.1 · 3 / 8</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 4 — STATE MODEL + AUTOMATION
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">State model · Automation</span><span>4 / 8</span></header>
+
+  <h2><span class="ord">§ 06</span>State Model</h2>
+
+  <p>Conceptual pseudo-schema. Not implementation code. The state model is the contract between game logic, opponent AI, ledger, and save/load.</p>
+
+  <pre class="code">GameState = {
+  rngSeed: integer,                  // deterministic replay
+  lap: 1..7,
+  turn: 1..players.length,
+  phase: 'lap-start' | 'turn' | 'act-vote' | 'scoring' | 'over',
+  players: [
+    {
+      id, name, role: 'treasury-architect' | 'state-broker' |
+                      'merchant-financier' | 'manufacturer',
+      profile: 'human' | 'treasury' | 'merchant' | 'manufacturer' | 'opportunist',
+      position: 0..39,
+      cash: integer,
+      assets: [ { kind: 'property'|'route'|'institution', id, tier: 0..3,
+                  mortgaged: boolean } ],
+      influencePoints: integer,        // accumulated game-end-only at score
+      crisis: { active: boolean, turnsRemaining: integer },
+      bankruptLaps: integer,
+      keptCards: [ cardId ]            // "You Are Hamilton"
+    }
+  ],
+  decks: {
+    marketShock: { draw: [cardId], discard: [cardId] },
+    republicDebate: { draw: [cardId], discard: [cardId] }
+  },
+  acts: {
+    sequence: [ act1..act7 ],            // current pending order
+    pending: actId | null,
+    passed: [ { actId, lap, effectsInForce: [...] } ],
+    failed: [ { actId, lap } ]           // moved to bottom of sequence
+  },
+  tracks: {
+    credit:    { value: 0..12, lastDelta: { source, delta, lap } },
+    resistance:{ value: 0..12, lastDelta: { ... } },
+    capacity:  { value: 0..12, lastDelta: { ... } }
+  },
+  ledger: [
+    { lap, turn, actor, event, detail, cashDelta?, trackDelta? }
+  ]
+}</pre>
+
+  <h2><span class="ord">§ 07</span>Automation Rules</h2>
+
+  <div class="split-2">
+    <div class="box">
+      <h4>Automated (no human input)</h4>
+      <ul>
+        <li>Dice roll · 2d6, RNG-seeded for replay.</li>
+        <li>Movement · token slides along board path.</li>
+        <li>Rent calculation · base × tier × act multipliers.</li>
+        <li>Tax space payments (Federal Excise, Speculation Scandal).</li>
+        <li>Route ladder lookup (v0.2: 25 / 50 / 100 / 150).</li>
+        <li>Institution dice payments (Bank pre/post-charter, Mint state machine).</li>
+        <li>Card effect resolution where unambiguous.</li>
+        <li>Act timing · revealed at lap start.</li>
+        <li>Scripted opponent votes, bids, upgrades.</li>
+        <li>Track threshold firings (Default, Rebellion, Capacity bonuses).</li>
+        <li>Bankruptcy bookkeeping.</li>
+        <li>Influence scoring at game end.</li>
+        <li>Ledger writes for every state transition.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>Player choice (no automation)</h4>
+      <ul>
+        <li>Role selection at game start.</li>
+        <li>Solo mode selection.</li>
+        <li>Buy / decline an unowned asset on landing.</li>
+        <li>Bid in auctions (snap-bid UI: pass · +10 · +50 · +100 · custom).</li>
+        <li>Upgrade decisions: which property, which tier, when.</li>
+        <li>Mortgage decisions.</li>
+        <li>Vote on Acts of Congress (Yes / No / Pay 100 TN to force).</li>
+        <li>Card-driven choices ("Strict Construction Objection" → Crisis OR pay 50).</li>
+        <li>Crisis exit choice (pay 50 · roll doubles · skip turn).</li>
+        <li>End of turn confirmation.</li>
+        <li><em>v2:</em> trades with opponents.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout warn"><strong>Anti-drift rule.</strong> Automation must never make a decision the board game would force a player to make. If the rule book gives the player a choice, the digital mode pauses for it — even if the "obviously correct" answer exists. Automation is for bookkeeping, not strategy.</div>
+
+  <div class="signature"><span>Sovereign · Solo / Digital Concept</span><span>v0.1 · 4 / 8</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 5 — NARRATION LAYER
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Historical narration layer</span><span>5 / 8</span></header>
+
+  <h2><span class="ord">§ 08</span>Historical Narration Layer</h2>
+
+  <p>Narration teaches Hamilton's system without becoming a lecture. <strong>Default snippet: 40 – 60 words.</strong> One paragraph, renders inline. An <em>Expand</em> button reveals 150 – 200 words of deeper context. Endgame report is a single 300 – 500 word section scoped to the player's actual game.</p>
+
+  <h3>Triggers</h3>
+  <ul>
+    <li>First purchase of each system (one-shot per game, per player).</li>
+    <li>Each Act of Congress when it passes.</li>
+    <li>Each shared-track threshold first reached.</li>
+    <li>Default · Rebellion · Bank Charter · Coinage Act · Report on Manufactures (special-cased).</li>
+    <li>Endgame report (always).</li>
+  </ul>
+
+  <h3>Sample Snippets</h3>
+
+  <div class="narration">
+    <h4>Revolutionary Debt · first purchase</h4>
+    <div class="snip">In 1789 Continental Certificates and Soldier Pay Notes traded at five to twenty cents on the dollar. Hamilton's First Report proposed honoring them all at par. Speculators ran ahead of post riders; veterans cried betrayal; the federal Treasury bought its first political ally.</div>
+    <div class="expand">▸ Expand (160 words)</div>
+  </div>
+
+  <div class="narration">
+    <h4>Assumption Act passes</h4>
+    <div class="snip">The federal government has assumed the war debts of every state. Massachusetts and South Carolina creditors are now federal creditors. The compromise that passed it moved the capital to the Potomac — Virginia's price for the deal.</div>
+    <div class="expand">▸ Expand (185 words)</div>
+  </div>
+
+  <div class="narration">
+    <h4>Bank Charter passes</h4>
+    <div class="snip">The Bank of the United States is open. Federally chartered, partly federally owned, operated as a commercial bank. It will hold Treasury deposits, discount merchant bills, and issue banknotes that circulate at par. Jefferson called it unconstitutional. Washington signed it anyway.</div>
+    <div class="expand">▸ Expand (200 words on implied powers)</div>
+  </div>
+
+  <div class="narration">
+    <h4>Tariff Schedule passes</h4>
+    <div class="snip">A duty on every imported barrel, yard of British cloth, and cask of West India rum. The federal Treasury now has a dependable revenue stream. Merchants pass the cost to consumers; importers grumble; the Treasury's books begin to balance.</div>
+    <div class="expand">▸ Expand (170 words)</div>
+  </div>
+
+  <div class="narration">
+    <h4>Report on Manufactures passes</h4>
+    <div class="snip">Hamilton's Report on Manufactures argues that strategic industry — armories, foundries, shipyards, textile works — is a national-security project, not a private affair. Congress shelved most of it. The framework outlived the politics.</div>
+    <div class="expand">▸ Expand (190 words on infant-industry protection)</div>
+  </div>
+
+  <div class="narration">
+    <h4>Whiskey Rebellion / Resistance ≥ 8</h4>
+    <div class="snip">The Whiskey Excise of 1791 has provoked the frontier. Western Pennsylvania farmers refuse to pay; tax collectors are tarred; federal authority is tested for the first time. Hamilton will ride west with the militia.</div>
+    <div class="expand">▸ Expand (175 words)</div>
+  </div>
+
+  <div class="narration">
+    <h4>Industrial Capacity threshold ≥ 6</h4>
+    <div class="snip">The young republic's textile mills, iron foundries, and glassworks have reached a productive threshold. Carded cotton replaces British imports; ironmongers cast plows and cannon; the country's manufactures clear a quarter of the federal market.</div>
+    <div class="expand">▸ Expand (160 words)</div>
+  </div>
+
+  <h3>Tone &amp; Length Discipline</h3>
+  <ul>
+    <li>Active voice. Specific dates and names where they ground the moment.</li>
+    <li>No "the player" framing. The narration speaks to the republic, not to the user.</li>
+    <li>No multi-paragraph snippets in the default state.</li>
+    <li>Expand is one click; never auto-opens.</li>
+    <li>Endgame report can be longer but is single-section, scoped to the game just finished.</li>
+  </ul>
+
+  <div class="signature"><span>Sovereign · Solo / Digital Concept</span><span>v0.1 · 5 / 8</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 6 — SAVE / LOAD + OUT-OF-SCOPE + MVP
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Save · Out of scope · MVP</span><span>6 / 8</span></header>
+
+  <h2><span class="ord">§ 09</span>Save / Load · Replay</h2>
+
+  <ul>
+    <li><strong>Local browser save</strong> — autosave to <span class="mono">localStorage</span> after every turn. One slot per browser by default; named slots in v2.</li>
+    <li><strong>Export JSON</strong> — full GameState including <span class="mono">rngSeed</span> and <span class="mono">ledger</span>. Downloadable as <span class="mono">sovereign-game-{seed}.json</span>.</li>
+    <li><strong>Import JSON</strong> — drag &amp; drop or file picker. Resumes from any saved state.</li>
+    <li><strong>Replay ledger</strong> — re-runs the game deterministically from <span class="mono">rngSeed</span> + decision log. Lets the designer step through any past play to inspect AI behavior.</li>
+    <li><strong>Rewind one turn</strong> — v2 only. Reverts the last <span class="mono">ledger</span> block. Used for misclicks, not for cheating.</li>
+    <li><strong>Deterministic seed</strong> — for the simulation mode and for shared scenario challenges later.</li>
+  </ul>
+
+  <h2><span class="ord">§ 10</span>What NOT to Build Yet</h2>
+  <table>
+    <thead><tr><th>Out of scope</th><th>Why excluded · drift risk</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag-out">Online multiplayer</span></td><td>Adds backend, accounts, sync, anti-cheat. Solo mode must work first.</td></tr>
+      <tr><td><span class="tag-out">User accounts</span></td><td>No auth. Local state is sufficient until proven otherwise.</td></tr>
+      <tr><td><span class="tag-out">Monetization</span></td><td>The artifact is free. Solo digital should match.</td></tr>
+      <tr><td><span class="tag-out">Custom backend</span></td><td>Everything runs client-side. Static hosting only.</td></tr>
+      <tr><td><span class="tag-out">LLM opponents</span></td><td>Opacity destroys the legibility goal. Scripted profiles only.</td></tr>
+      <tr><td><span class="tag-out">3D animated board</span></td><td>Spectacle vs. clarity. The 2D SVG board is canonical.</td></tr>
+      <tr><td><span class="tag-out">Marketplace · collectibles</span></td><td>Wrong category of product.</td></tr>
+      <tr><td><span class="tag-out">Card expansion</span></td><td>Mechanic change. Out of scope until v0.2 plays clean.</td></tr>
+      <tr><td><span class="tag-out">Rewriting the board game rules</span></td><td>The artifact is canon. Digital mode follows.</td></tr>
+      <tr><td><span class="tag-out">Spreadsheet UI</span></td><td>The board IS the interface. Tables are reference, not gameplay.</td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="ord">§ 11</span>MVP — Smallest Version That Preserves the Soul</h2>
+  <p><strong>Player configuration:</strong> 1 human + 2 scripted opponents = 3-player game (matches the prototype's lower player bound). MVP opponent pairing: <em>Treasury / Finance</em> + <em>Merchant / Infrastructure</em> — the two strongest profiles from FC-EM-002. v2 expands to 4 players with all four profiles selectable.</p>
+
+  <h3>MVP must include</h3>
+  <ul>
+    <li>Automated board movement, dice, and rent calculation.</li>
+    <li>Automated Acts of Congress (reveal, vote, resolve, place in tray).</li>
+    <li>Automated shared tracks (Credit · Resistance · Capacity), including v0.2 thresholds.</li>
+    <li>Card draw and effect resolution for both decks.</li>
+    <li>Asset purchase, decline, auction, and upgrade decisions exposed as human choices.</li>
+    <li>The two scripted opponent profiles with deterministic, traceable behavior.</li>
+    <li>Endgame Influence report.</li>
+    <li>Turn log / ledger surface visible at all times.</li>
+    <li>The accessibility floor described in § 15.</li>
+  </ul>
+
+  <h3>MVP must prove</h3>
+  <ul>
+    <li>Solo play is possible — a player can complete a 7-lap game with no physical components.</li>
+    <li>Hamilton's economic system is legible — the player can answer "what did each Act do?" by playing.</li>
+    <li>Shared tracks influence decisions — the player can see why they shift and respond to thresholds.</li>
+    <li>Scripted opponents create pressure — the route-runaway and the Treasury-stack profiles both feel real.</li>
+  </ul>
+
+  <div class="signature"><span>Sovereign · Solo / Digital Concept</span><span>v0.1 · 6 / 8</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 7 — v2 + RISKS + SEQUENCING
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">v2 · Risks · Sequencing</span><span>7 / 8</span></header>
+
+  <h2><span class="ord">§ 12</span>Ideal v2</h2>
+  <ul>
+    <li>All four scripted profiles available; player picks the table composition.</li>
+    <li>Scenario modes (e.g. "Bank Charter Fails," "Whiskey Frontier," "Tariff Repealed at Lap 4").</li>
+    <li>Simulation Replay mode (AI vs. AI, configurable seed and profiles).</li>
+    <li>Historical narration library — full library of 30+ snippets, expand-on-demand.</li>
+    <li>Balance telemetry — opt-in anonymous outcome export for design iteration.</li>
+    <li>Save / load with named slots and JSON export.</li>
+    <li>Turn log export (CSV / Markdown).</li>
+    <li>Printable artifact viewer — embed the v0.2 prototype HTML inside the app so a player can flip to a card or sheet without leaving.</li>
+    <li>Guided tutorial — 5-minute first run that walks a new player through a single turn.</li>
+    <li>Optional <em>Why this happened?</em> explainer on any ledger line.</li>
+  </ul>
+
+  <h2><span class="ord">§ 13</span>Risks &amp; Mitigations</h2>
+  <table>
+    <thead><tr><th>Risk</th><th>Mitigation</th></tr></thead>
+    <tbody>
+      <tr><td>Becoming a spreadsheet</td><td>Board View is the persistent surface. All decisions originate from a board interaction. Tables are reference, not the interface.</td></tr>
+      <tr><td>Over-automating player agency</td><td>Anti-drift rule (§ 07): if the board game asks for a choice, the digital mode pauses for it. No "auto-buy" toggle in MVP.</td></tr>
+      <tr><td>Lecture-mode narration</td><td>40 – 60 word default. Expand is a click. No multi-paragraph snippets in default state. Endgame report scoped to the actual game played.</td></tr>
+      <tr><td>Opaque AI</td><td>Every opponent decision writes its reason to the ledger ("State Broker votes YES — owns Massachusetts Debt, South Carolina Debt"). Decisions are derivable from visible state.</td></tr>
+      <tr><td>Routes dominate again</td><td>v0.2 ladder is canon (25 / 50 / 100 / 150). MVP includes Merchant / Infrastructure opponent specifically to keep the route line legible to the human.</td></tr>
+      <tr><td>Losing the Hamilton thesis</td><td>Endgame report names the actual moves the player made (Funding passed? Bank chartered? Capacity ≥ 6?) and ties them to the historical record. The thesis is the report, not a side panel.</td></tr>
+      <tr><td>App complexity before loop is proven</td><td>Phase 2 is a static clickable prototype with no state, only screens. The loop is validated before any state machine is built.</td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="ord">§ 14</span>Build Sequencing</h2>
+  <table>
+    <thead><tr><th>Phase</th><th>Deliverable</th><th>Power gained</th></tr></thead>
+    <tbody>
+      <tr><td><strong>1 · Solo loop spec</strong></td><td>This document.</td><td>Shared vocabulary, scope.</td></tr>
+      <tr><td><strong>2 · Static clickable prototype</strong></td><td>Eight surfaces wired up as click-through pages with fake state.</td><td>Validate the screen flow without committing to logic.</td></tr>
+      <tr><td><strong>3 · Local state machine</strong></td><td>GameState + reducer-style transitions for human-only play (no opponents).</td><td>A working solo loop, even if the table is empty.</td></tr>
+      <tr><td><strong>4 · Scripted opponents</strong></td><td>Treasury / Finance + Merchant / Infrastructure profiles implemented with traceable rules.</td><td>The MVP. Solo competitive play possible.</td></tr>
+      <tr><td><strong>5 · Narration and replay</strong></td><td>Narration library, expand affordance, deterministic replay from seed + ledger.</td><td>The Hamilton thesis becomes visible in the experience.</td></tr>
+      <tr><td><strong>6 · Balance telemetry</strong></td><td>Opt-in JSON export of game outcomes. Designer-side dashboard.</td><td>Data-driven balance for v0.3 and beyond.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout"><strong>Phase rule.</strong> Each phase must add playable power, not polish. Phase 2 is not a UI library; it is a click-through validation of the loop. Phase 4 is not an "AI engine"; it is two opponents, fully traceable.</div>
+
+  <div class="signature"><span>Sovereign · Solo / Digital Concept</span><span>v0.1 · 7 / 8</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 8 — ACCESSIBILITY + ACCEPTANCE
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Accessibility · Acceptance</span><span>8 / 8</span></header>
+
+  <h2><span class="ord">§ 15</span>Accessibility</h2>
+  <p>The digital mode inherits the prototype's color-blind and grayscale fallbacks (every system carries a unique pattern + icon + label, not color alone). Additional requirements <em>at MVP</em>, not v2:</p>
+  <ul>
+    <li><strong>Keyboard navigation</strong> for the core loop: Roll (Space) · Buy / Decline (Y / N) · Vote (Y / N) · Pay-to-force (F) · End Turn (Enter) · Open inspector (I) · Open ledger (L). Tab cycles through interactive elements in DOM order.</li>
+    <li><strong>Focus indicators</strong> on every interactive element. 2 px outline, ink color, no opacity tricks.</li>
+    <li><strong>Screen-reader meaningful labels</strong> on board spaces ("Space 14 · Whiskey Excise · Revenue System · cost 160 TN · base rent 12"), cards (full effect text), tracks (current value as text, threshold proximity), and opponent decisions (full ledger line read aloud on focus).</li>
+    <li><strong>Track values readable as text</strong>, not only as marker position. "Public Credit: 7 of 12. Threshold ≥ 8 not yet reached."</li>
+    <li><strong>Minimum 14 px body type</strong> at default zoom. Numbers and labels remain readable at 200 % browser zoom without horizontal scroll.</li>
+    <li><strong>No flashing or rapid animation</strong> on track or event transitions. Movement uses 200 – 400 ms ease-out.</li>
+    <li><strong>Reduce Motion toggle</strong> in the toolbar. Honors <span class="mono">prefers-reduced-motion</span> media query by default.</li>
+    <li><strong>Color contrast</strong> meets WCAG AA at all surfaces. Ink #1A1612 on parchment #F0E6CD measures ~ 14:1; white text on saturated band colors also high-contrast.</li>
+  </ul>
+
+  <h2><span class="ord">§ 16</span>Acceptance Criteria</h2>
+  <p>The concept is successful if a future builder can answer each of the following from this document alone:</p>
+  <ol>
+    <li><strong>What state exists?</strong> § 06 GameState pseudo-schema.</li>
+    <li><strong>What happens on a turn?</strong> § 02 Plain-language loop + state-transition diagram.</li>
+    <li><strong>What does the player choose?</strong> § 07 right-hand column.</li>
+    <li><strong>What is automated?</strong> § 07 left-hand column.</li>
+    <li><strong>How do opponents act?</strong> § 05 profile table.</li>
+    <li><strong>How do opponents vote?</strong> § 05 "YES Acts," "NO Acts," "State-gated Acts," "100 TN fee?" columns.</li>
+    <li><strong>How do Acts and tracks resolve?</strong> § 02 LAP_START sequence + § 06 GameState.tracks + § 08 narration triggers.</li>
+    <li><strong>How does the game end?</strong> § 02 step 8 + § 03 Endgame Report.</li>
+    <li><strong>How does the digital version teach Hamilton's system?</strong> § 08 narration triggers + Endgame Report scoped to the actual game.</li>
+    <li><strong>What accessibility affordances are required at MVP?</strong> § 15 bullet list.</li>
+    <li><strong>What is explicitly out of scope?</strong> § 10 out-of-scope table.</li>
+  </ol>
+
+  <h2><span class="ord">§ 17</span>Sign-off</h2>
+  <p>This concept is the working contract between design and implementation for Sovereign's solo / digital mode. It assumes Sovereign v0.2 balance candidate as the source of truth. Any future change to the board-game artifact must update this document before code begins; any future change to the digital mode that contradicts this document must update the document or be reviewed against the anti-drift rule (§ 07).</p>
+  <p>Next deliverable: <strong>Phase 2 · static clickable prototype</strong> — eight surfaces wired up as click-through pages with placeholder state, validating the screen flow before any state machine is built.</p>
+
+  <div class="signature"><span>Sovereign · Solo / Digital Concept · v0.1</span><span>End of Document · 8 / 8</span></div>
+</section>
+
+</div>
+</body>
+</html>

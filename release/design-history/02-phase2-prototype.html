@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sovereign · Solo / Digital · Phase 2 Clickable Prototype</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root {
+  --revolutionary-debt:#6E1F1E; --state-debt:#4A6B8A; --revenue-system:#C28A28;
+  --commercial-infrastructure:#2E7A6B; --national-finance:#1F2D52;
+  --internal-improvements:#B85A28; --manufactures:#8C8A2E; --strategic-industry:#3A3A3A;
+  --parchment:#F0E6CD; --parchment-2:#E6DABC; --ink:#1A1612; --highlight:#C8392E;
+  --rule:rgba(26,22,18,0.55); --rule-soft:rgba(26,22,18,0.22);
+  --display: "Baskerville","Big Caslon","Hoefler Text","Garamond","Times New Roman",serif;
+  --body: "Iowan Old Style","Georgia","Cambria","Times New Roman",serif;
+  --ui: -apple-system,"Segoe UI","Helvetica Neue","Arial",system-ui,sans-serif;
+  --mono: "SF Mono","Menlo","Consolas","Courier New",monospace;
+
+  --p1: var(--state-debt);
+  --p2: var(--revolutionary-debt);
+  --p3: var(--commercial-infrastructure);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin:0; padding:0; font-family: var(--body); color: var(--ink); background:#2A2622; min-height:100vh; }
+button { font-family: var(--ui); font-size:11px; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; padding:6px 12px; background:var(--parchment); color:var(--ink); border:1px solid var(--ink); }
+button:hover { background:var(--ink); color:var(--parchment); }
+button:focus { outline:2px solid var(--ink); outline-offset:2px; }
+button.primary { background:var(--ink); color:var(--parchment); }
+button.primary:hover { background:var(--national-finance); }
+button[disabled] { opacity:.4; cursor:not-allowed; }
+
+.app { display:grid; grid-template-rows:auto 1fr; min-height:100vh; max-width:1600px; margin:0 auto; background:var(--parchment); border-left:1px solid var(--ink); border-right:1px solid var(--ink); }
+
+/* ===== TOP BAR ============================================== */
+.topbar { background:var(--parchment); border-bottom:1px solid var(--ink); padding:14px 22px; display:grid; grid-template-columns:1fr auto; gap:18px; align-items:center; }
+.brand { display:flex; flex-direction:column; }
+.brand .eyebrow { font-family:var(--ui); font-size:9px; letter-spacing:.32em; text-transform:uppercase; color:var(--national-finance); margin-bottom:2px; }
+.brand .title { font-family:var(--display); font-size:24px; line-height:1; letter-spacing:-.01em; }
+.brand .sub { font-family:var(--display); font-style:italic; font-size:11px; margin-top:2px; }
+.brand .placeholder { display:inline-block; margin-left:8px; padding:1px 6px; font-family:var(--ui); font-size:8.5px; letter-spacing:.18em; text-transform:uppercase; background:var(--parchment-2); border:1px dashed var(--ink); color:var(--ink); vertical-align:middle; font-weight:700; }
+.topbar .controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+.topbar .step-indicator { font-family:var(--mono); font-size:10px; letter-spacing:.08em; padding:6px 10px; background:var(--ink); color:var(--parchment); }
+
+/* ===== LAYOUT GRID ========================================== */
+.grid { display:grid; grid-template-columns: minmax(0, 1fr) 420px; grid-template-rows: minmax(0, 1fr) 200px; gap:12px; padding:14px 18px; min-height: 0; }
+.grid > * { min-width:0; min-height:0; }
+.board-pane { grid-column:1; grid-row:1; display:flex; flex-direction:column; gap:10px; }
+.panel-pane { grid-column:2; grid-row:1 / span 2; display:flex; flex-direction:column; gap:10px; overflow-y:auto; max-height: calc(100vh - 110px); }
+.ledger-pane { grid-column:1; grid-row:2; }
+
+/* ===== SHARED PANEL CHROME ================================== */
+.panel { background:var(--parchment); border:1.5px solid var(--ink); position:relative; padding:12px 14px; }
+.panel::before { content:""; position:absolute; inset:5px; border:0.5px solid var(--rule-soft); pointer-events:none; }
+.panel .panel-head { display:flex; justify-content:space-between; align-items:baseline; padding-bottom:6px; border-bottom:1px solid var(--ink); margin-bottom:8px; }
+.panel .panel-head .name { font-family:var(--ui); font-size:9.5px; font-weight:700; letter-spacing:.26em; text-transform:uppercase; }
+.panel .panel-head .surface-id { font-family:var(--mono); font-size:9px; letter-spacing:.08em; opacity:.7; }
+.panel h3 { font-family:var(--display); font-weight:400; font-size:16px; margin:0 0 4px; letter-spacing:-.005em; }
+.panel p, .panel li { font-family:var(--body); font-size:11px; line-height:1.45; margin:0 0 4px; }
+.panel ul { padding-left:16px; margin:0 0 6px; }
+.panel strong { font-family:var(--display); font-weight:700; }
+
+/* ===== BOARD VIEW =========================================== */
+.board-view { position:relative; aspect-ratio: 1; max-width:680px; margin:0 auto; width:100%; background:var(--parchment); border:2px solid var(--ink); }
+.board-view::before { content:""; position:absolute; inset:6px; border:1px solid var(--ink); pointer-events:none; }
+.board-grid { position:absolute; inset:14px; display:grid; grid-template-columns: 1fr repeat(9, 1fr) 1fr; grid-template-rows: 1fr repeat(9, 1fr) 1fr; gap:1px; background:var(--ink); }
+.board-cell { background:var(--parchment); position:relative; padding:3px 4px; display:flex; flex-direction:column; justify-content:space-between; font-family:var(--ui); font-size:7.5px; letter-spacing:.04em; min-width:0; overflow:hidden; cursor:pointer; }
+.board-cell:hover { background:var(--parchment-2); }
+.board-cell .num { font-family:var(--mono); font-size:7.5px; opacity:.55; }
+.board-cell .nm { font-family:var(--display); font-size:8.5px; line-height:1.05; text-wrap:balance; }
+.board-cell .band { position:absolute; top:0; left:0; right:0; height:5px; }
+.board-cell.empty { background: transparent; }
+.board-cell.corner { background: var(--parchment-2); }
+.board-cell.corner .nm { font-family: var(--display); font-size: 9px; font-weight:700; }
+.board-cell.tax .band { background: var(--highlight); }
+.board-cell.card-debate .band { background: var(--ink); }
+.board-cell.card-shock .band { background: var(--ink); background-image: linear-gradient(90deg, var(--highlight), var(--highlight) 50%, var(--ink) 50%); }
+.board-cell.route .band { background: var(--ink); background-image: repeating-linear-gradient(90deg, transparent 0 4px, rgba(255,255,255,.5) 4px 5px); }
+.board-cell.institution .band { background: var(--ink); background-image: radial-gradient(rgba(255,255,255,.7) 0.8px, transparent 1.2px); background-size:3px 3px; }
+.board-cell.sys-revolutionary-debt .band { background: var(--revolutionary-debt); }
+.board-cell.sys-state-debt .band { background: var(--state-debt); }
+.board-cell.sys-revenue-system .band { background: var(--revenue-system); }
+.board-cell.sys-commercial-infrastructure .band { background: var(--commercial-infrastructure); }
+.board-cell.sys-national-finance .band { background: var(--national-finance); }
+.board-cell.sys-internal-improvements .band { background: var(--internal-improvements); }
+.board-cell.sys-manufactures .band { background: var(--manufactures); }
+.board-cell.sys-strategic-industry .band { background: var(--strategic-industry); }
+.board-cell .owner-dot { position:absolute; bottom:2px; right:2px; width:9px; height:9px; border-radius:50%; border:1px solid var(--ink); }
+.board-cell.owner-p1 .owner-dot { background: var(--p1); }
+.board-cell.owner-p2 .owner-dot { background: var(--p2); }
+.board-cell.owner-p3 .owner-dot { background: var(--p3); }
+.board-cell .tier { position:absolute; top:6px; right:2px; font-family:var(--mono); font-size:6.5px; font-weight:700; color:var(--ink); background:var(--parchment); padding:0 2px; border:0.5px solid var(--ink); }
+
+/* Token markers — small colored circles stacked on a cell */
+.board-cell .tokens { position:absolute; top:6px; left:2px; display:flex; gap:1px; }
+.board-cell .tokens .tok { width:10px; height:10px; border-radius:50%; border:1.5px solid var(--ink); }
+.board-cell .tokens .tok.p1 { background: var(--p1); }
+.board-cell .tokens .tok.p2 { background: var(--p2); }
+.board-cell .tokens .tok.p3 { background: var(--p3); }
+
+.board-cell.active-space { outline: 3px solid var(--highlight); outline-offset:-3px; }
+
+/* board center */
+.board-center { grid-column: 2 / span 9; grid-row: 2 / span 9; background: var(--parchment); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px; text-align:center; gap:6px; position:relative; }
+.board-center::before, .board-center::after { content:""; position:absolute; left:10px; right:10px; height:1px; background:var(--ink); opacity:.4; }
+.board-center::before { top:10px; }
+.board-center::after { bottom:10px; }
+.board-center .bc-eyebrow { font-family:var(--ui); font-size:8px; letter-spacing:.32em; text-transform:uppercase; color:var(--national-finance); }
+.board-center .bc-title { font-family:var(--display); font-size:24px; line-height:1; }
+.board-center .bc-sub { font-family:var(--display); font-style:italic; font-size:10px; }
+.board-center .bc-lap { font-family:var(--mono); font-size:10px; letter-spacing:.14em; background:var(--ink); color:var(--parchment); padding:3px 10px; margin-top:3px; }
+.board-center .bc-tracks { display:flex; gap:8px; margin-top:6px; font-family:var(--ui); font-size:8.5px; }
+.board-center .bc-tracks .t { padding:2px 7px; border:1px solid var(--ink); background:var(--parchment-2); }
+.board-center .bc-tracks .t .v { font-family:var(--mono); font-size:10px; margin-left:3px; font-weight:700; }
+.board-center .bc-tracks .t.credit { color: var(--national-finance); }
+.board-center .bc-tracks .t.resist { color: var(--highlight); }
+.board-center .bc-tracks .t.indust { color: var(--manufactures); }
+.board-center .bc-acts { font-family:var(--ui); font-size:8px; letter-spacing:.18em; text-transform:uppercase; margin-top:4px; opacity:.75; }
+
+/* ===== BOARD LEGEND ========================================= */
+.board-legend { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; font-family:var(--ui); font-size:9px; letter-spacing:.1em; }
+.board-legend .p { display:flex; align-items:center; gap:5px; }
+.board-legend .dot { width:11px; height:11px; border-radius:50%; border:1.5px solid var(--ink); }
+.board-legend .dot.p1 { background: var(--p1); }
+.board-legend .dot.p2 { background: var(--p2); }
+.board-legend .dot.p3 { background: var(--p3); }
+
+/* ===== LEDGER =============================================== */
+.ledger { background: var(--parchment); border:1.5px solid var(--ink); padding:8px 12px; height:100%; overflow-y:auto; position:relative; font-family:var(--mono); font-size:10px; line-height:1.45; }
+.ledger::before { content:""; position:absolute; inset:4px; border:0.5px solid var(--rule-soft); pointer-events:none; }
+.ledger .head { display:flex; justify-content:space-between; font-family:var(--ui); font-size:9px; letter-spacing:.22em; text-transform:uppercase; border-bottom:1px solid var(--ink); padding-bottom:4px; margin-bottom:6px; font-weight:700; }
+.ledger .row { display:grid; grid-template-columns: 64px 110px 1fr; gap:8px; padding:1px 0; border-bottom:0.5px dashed var(--rule-soft); }
+.ledger .row .stamp { color:var(--ink); opacity:.7; }
+.ledger .row .actor { font-family:var(--ui); font-weight:700; font-size:9px; letter-spacing:.08em; text-transform:uppercase; }
+.ledger .row.cash .actor { color: var(--national-finance); }
+.ledger .row.track .actor { color: var(--manufactures); }
+.ledger .row.vote .actor { color: var(--state-debt); }
+.ledger .row.card .actor { color: var(--highlight); }
+.ledger .row.move .actor { color: var(--commercial-infrastructure); }
+
+/* ===== TREASURY / PROFILE PANELS ============================ */
+.treasury .holdings { display:flex; flex-direction:column; gap:3px; margin-top:6px; }
+.treasury .h-row { display:grid; grid-template-columns: auto 1fr auto; gap:6px; align-items:center; font-size:10px; padding:2px 4px; border-bottom:0.5px dashed var(--rule-soft); }
+.treasury .h-row .ic { width:14px; height:14px; }
+.treasury .h-row .sw { width:9px; height:9px; border:1px solid var(--ink); margin-right:3px; display:inline-block; vertical-align:middle; }
+.treasury .h-row .tier-badge { font-family:var(--mono); font-size:8px; padding:1px 4px; background:var(--ink); color:var(--parchment); }
+.treasury .cash-row { display:flex; justify-content:space-between; align-items:baseline; padding:4px 0; border-bottom:1px solid var(--ink); margin-bottom:4px; }
+.treasury .cash-row .cash { font-family:var(--display); font-size:22px; line-height:1; }
+.treasury .cash-row .lbl { font-family:var(--ui); font-size:9px; letter-spacing:.18em; text-transform:uppercase; }
+.treasury .role-tag { display:inline-block; padding:1px 6px; background:var(--ink); color:var(--parchment); font-family:var(--ui); font-size:8.5px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; }
+.treasury .inf { font-family:var(--mono); font-size:9px; text-align:right; opacity:.8; margin-top:4px; }
+
+.opponents { display:flex; flex-direction:column; gap:8px; }
+.opponent-card { padding:8px 10px; background:var(--parchment-2); border:1px solid var(--ink); }
+.opponent-card .head { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+.opponent-card .head .nm { font-family:var(--display); font-size:13px; }
+.opponent-card .head .pdot { width:12px; height:12px; border-radius:50%; border:1.5px solid var(--ink); }
+.opponent-card.p2 .head .pdot { background: var(--p2); }
+.opponent-card.p3 .head .pdot { background: var(--p3); }
+.opponent-card .pl { font-family:var(--ui); font-size:8.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--national-finance); font-weight:700; }
+.opponent-card .holdings { font-family:var(--body); font-size:10px; line-height:1.4; margin-top:4px; }
+.opponent-card .strategy { font-family:var(--display); font-style:italic; font-size:10px; margin-top:4px; padding-top:4px; border-top:0.5px dashed var(--rule-soft); }
+
+/* ===== TRACKS PANEL ========================================= */
+.tracks-panel .t-row { display:grid; grid-template-columns: 1fr auto; gap:8px; padding:6px 0; border-bottom:0.5px solid var(--rule-soft); }
+.tracks-panel .t-row .lbl { font-family:var(--ui); font-size:9.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+.tracks-panel .t-row .val { font-family:var(--display); font-size:18px; line-height:1; font-variant-numeric:tabular-nums; }
+.tracks-panel .t-row .scale { grid-column:1 / span 2; display:grid; grid-template-columns:repeat(13, 1fr); height:18px; border:1px solid var(--ink); margin-top:4px; }
+.tracks-panel .t-row .tk { font-family:var(--mono); font-size:8.5px; display:flex; align-items:center; justify-content:center; border-right:0.5px solid var(--rule-soft); position:relative; }
+.tracks-panel .t-row .tk:last-child { border-right:0; }
+.tracks-panel .t-row .tk.major { background: rgba(26,22,18,0.05); }
+.tracks-panel .t-row .tk.marker::after { content:""; position:absolute; inset:2px; border-radius:50%; border:2px solid var(--ink); }
+.tracks-panel .t-row.credit .tk.marker::after { background: var(--national-finance); }
+.tracks-panel .t-row.resist .tk.marker::after { background: var(--highlight); }
+.tracks-panel .t-row.indust .tk.marker::after { background: var(--manufactures); }
+.tracks-panel .t-row .threshold { grid-column:1 / span 2; font-family:var(--ui); font-size:8.5px; letter-spacing:.14em; text-transform:uppercase; margin-top:6px; padding:3px 6px; background:var(--parchment-2); border:0.5px solid var(--rule-soft); }
+.tracks-panel .t-row.credit .threshold { color: var(--national-finance); }
+.tracks-panel .t-row.resist .threshold { color: var(--highlight); }
+.tracks-panel .t-row.indust .threshold { color: var(--manufactures); }
+.tracks-panel .t-row .text-readout { font-family:var(--mono); font-size:9px; opacity:.75; margin-top:2px; }
+
+/* ===== ACTS PANEL =========================================== */
+.acts-panel .current-act { padding:8px 10px; background:var(--ink); color:var(--parchment); }
+.acts-panel .current-act .pretitle { font-family:var(--ui); font-size:8px; letter-spacing:.26em; text-transform:uppercase; }
+.acts-panel .current-act .nm { font-family:var(--display); font-size:18px; line-height:1; margin-top:2px; }
+.acts-panel .current-act .effect { font-family:var(--body); font-size:10px; line-height:1.4; margin-top:6px; }
+.acts-panel .votes { display:flex; flex-direction:column; gap:4px; margin-top:8px; }
+.acts-panel .vote-row { display:grid; grid-template-columns: 14px 1fr auto; gap:8px; align-items:center; padding:5px 8px; background:var(--parchment-2); border:1px solid var(--ink); font-size:10px; }
+.acts-panel .vote-row.pending { background: var(--parchment); border-style:dashed; }
+.acts-panel .vote-row .pdot { width:12px; height:12px; border-radius:50%; border:1.5px solid var(--ink); }
+.acts-panel .vote-row.p1 .pdot { background:var(--p1); }
+.acts-panel .vote-row.p2 .pdot { background:var(--p2); }
+.acts-panel .vote-row.p3 .pdot { background:var(--p3); }
+.acts-panel .vote-row .who { font-family:var(--ui); font-size:9px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; }
+.acts-panel .vote-row .reason { font-family:var(--body); font-size:10px; line-height:1.35; opacity:.85; display:block; }
+.acts-panel .vote-row .ballot { font-family:var(--display); font-size:13px; font-weight:700; padding:2px 8px; border:1.5px solid var(--ink); min-width:40px; text-align:center; }
+.acts-panel .vote-row .ballot.yes { background: var(--commercial-infrastructure); color: var(--parchment); }
+.acts-panel .vote-row .ballot.no { background: var(--highlight); color: var(--parchment); }
+.acts-panel .vote-row .ballot.pending { background: var(--parchment); }
+.acts-panel .you-vote { display:flex; gap:6px; margin-top:6px; }
+.acts-panel .tally { font-family:var(--mono); font-size:10px; letter-spacing:.1em; padding:4px 8px; background:var(--parchment-2); border:1px solid var(--ink); margin-top:8px; text-align:center; }
+.acts-panel .tally.passed { background: var(--commercial-infrastructure); color: var(--parchment); }
+.acts-panel .tally.failed { background: var(--highlight); color: var(--parchment); }
+.acts-panel .passed-tray { margin-top:8px; padding-top:6px; border-top:1px dashed var(--rule-soft); }
+.acts-panel .passed-tray .lbl { font-family:var(--ui); font-size:8.5px; letter-spacing:.22em; text-transform:uppercase; font-weight:700; margin-bottom:4px; }
+.acts-panel .passed-tray .tray-row { display:flex; gap:5px; flex-wrap:wrap; }
+.acts-panel .passed-tray .slot { padding:3px 7px; background:var(--parchment); border:1px solid var(--ink); font-family:var(--display); font-size:10px; }
+.acts-panel .passed-tray .slot .roman { font-weight:700; margin-right:3px; }
+
+/* ===== INSPECTOR + CARD DRAWER ============================== */
+.inspector .card-art { padding:8px 10px; background:var(--parchment-2); border:1px solid var(--ink); margin-bottom:8px; }
+.inspector .card-art .band { padding:3px 6px; color:#fff; font-family:var(--ui); font-size:9px; letter-spacing:.18em; text-transform:uppercase; font-weight:700; display:flex; justify-content:space-between; }
+.inspector .card-art .nm { font-family:var(--display); font-size:16px; margin-top:5px; line-height:1.1; }
+.inspector .card-art .subkind { font-family:var(--ui); font-size:8.5px; letter-spacing:.18em; text-transform:uppercase; opacity:.75; margin-top:2px; }
+.inspector .card-art .flavor { font-family:var(--display); font-style:italic; font-size:10px; line-height:1.4; margin-top:6px; }
+.inspector .pay-table { width:100%; border-collapse:collapse; margin-top:6px; }
+.inspector .pay-table th, .inspector .pay-table td { font-family:var(--ui); font-size:9px; padding:3px 6px; border-bottom:0.5px solid var(--rule-soft); }
+.inspector .pay-table th { background:var(--ink); color:var(--parchment); text-align:left; letter-spacing:.14em; text-transform:uppercase; }
+.inspector .pay-table td.val { font-family:var(--display); font-size:11px; text-align:right; font-weight:700; font-variant-numeric:tabular-nums; }
+.inspector .actions { display:flex; gap:6px; margin-top:8px; }
+.inspector .historical { margin-top:8px; padding-top:6px; border-top:1px dashed var(--rule-soft); }
+.inspector .historical .lbl { font-family:var(--ui); font-size:8.5px; letter-spacing:.22em; text-transform:uppercase; font-weight:700; color:var(--national-finance); margin-bottom:3px; }
+.inspector .historical .snip { font-family:var(--display); font-style:italic; font-size:10px; line-height:1.45; }
+.inspector .historical .expand { font-family:var(--mono); font-size:8.5px; letter-spacing:.18em; opacity:.7; margin-top:3px; cursor:pointer; }
+
+.card-drawer .drawer-card { padding:10px 12px; background:var(--parchment-2); border:1.5px solid var(--national-finance); position:relative; }
+.card-drawer .drawer-card .band { background: var(--national-finance); color:#fff; padding:4px 8px; font-family:var(--ui); font-size:9px; letter-spacing:.22em; text-transform:uppercase; font-weight:700; margin:-10px -12px 8px; display:flex; justify-content:space-between; }
+.card-drawer .alert { font-family:var(--display); font-style:italic; font-size:10px; text-align:center; padding:2px 0 6px; color:var(--national-finance); }
+.card-drawer .nm { font-family:var(--display); font-size:16px; line-height:1.1; text-align:center; }
+.card-drawer .effect { font-family:var(--body); font-size:11px; line-height:1.45; text-align:center; margin:8px 0; }
+.card-drawer .effect strong { color:var(--national-finance); }
+.card-drawer .outcomes { display:flex; gap:5px; justify-content:center; margin:6px 0; }
+.card-drawer .chip { font-family:var(--ui); font-size:8.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; padding:2px 6px; border:1px solid var(--ink); }
+.card-drawer .chip.credit { background:var(--national-finance); color:#fff; }
+.card-drawer .chip.resist { background:var(--highlight); color:#fff; }
+.card-drawer .historical { margin-top:8px; padding-top:6px; border-top:1px dashed var(--rule-soft); }
+.card-drawer .historical .lbl { font-family:var(--ui); font-size:8.5px; letter-spacing:.22em; text-transform:uppercase; font-weight:700; color:var(--national-finance); margin-bottom:3px; }
+.card-drawer .historical .snip { font-family:var(--display); font-style:italic; font-size:10px; line-height:1.45; }
+.card-drawer .actions { display:flex; gap:6px; margin-top:8px; justify-content:center; }
+
+/* ===== ENDGAME ============================================== */
+.endgame { padding:18px 24px; }
+.endgame h2 { font-family:var(--display); font-size:32px; line-height:1; margin:0 0 4px; }
+.endgame .sub { font-family:var(--display); font-style:italic; font-size:13px; margin-bottom:12px; }
+.endgame .score-block { display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
+.endgame .winner { padding:12px 16px; background:var(--commercial-infrastructure); color:var(--parchment); border:1.5px solid var(--ink); }
+.endgame .winner .lbl { font-family:var(--ui); font-size:9px; letter-spacing:.26em; text-transform:uppercase; }
+.endgame .winner .nm { font-family:var(--display); font-size:24px; line-height:1; margin-top:2px; }
+.endgame .winner .score { font-family:var(--mono); font-size:14px; margin-top:4px; }
+.endgame .runner-up { padding:10px 14px; background:var(--parchment-2); border:1px solid var(--ink); }
+.endgame .runner-up .lbl { font-family:var(--ui); font-size:8.5px; letter-spacing:.22em; text-transform:uppercase; }
+.endgame .runner-up .nm { font-family:var(--display); font-size:14px; line-height:1; margin-top:2px; }
+.endgame table { width:100%; border-collapse:collapse; margin-top:12px; }
+.endgame table th, .endgame table td { font-size:10.5px; padding:3px 6px; border-bottom:0.5px solid var(--rule-soft); text-align:left; }
+.endgame table th { background:var(--ink); color:var(--parchment); font-family:var(--ui); font-size:9px; letter-spacing:.14em; text-transform:uppercase; }
+.endgame table td.n { font-family:var(--mono); font-size:10px; text-align:right; }
+.endgame .narration { margin-top:14px; padding:10px 14px; border-left:2px solid var(--ink); background:var(--parchment-2); }
+.endgame .narration h4 { font-family:var(--display); font-weight:400; font-style:italic; font-size:14px; margin:0 0 4px; }
+.endgame .narration p { font-family:var(--body); font-size:11px; line-height:1.55; }
+.endgame .systems { margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.endgame .systems .box { border:1px solid var(--rule-soft); padding:8px 10px; background:rgba(26,22,18,0.025); }
+.endgame .systems .box h4 { font-family:var(--display); font-size:13px; margin:0 0 4px; }
+.endgame .systems .box p { font-family:var(--body); font-size:10px; line-height:1.4; }
+
+/* ===== UTILITY ============================================== */
+.placeholder { display:inline-block; padding:1px 6px; font-family:var(--ui); font-size:8px; letter-spacing:.18em; text-transform:uppercase; background:var(--parchment-2); border:1px dashed var(--ink); color:var(--ink); font-weight:700; }
+.placeholder.inline { vertical-align:middle; }
+.hidden { display:none !important; }
+.muted { opacity:.65; }
+
+@media print { body { background:#fff; } }
+</style>
+</head>
+<body>
+
+<!-- ===================================================================
+     APP SHELL
+     =================================================================== -->
+<div class="app">
+
+  <!-- ============= TOP BAR ============= -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="eyebrow">Sovereign · Solo / Digital · Phase 2</div>
+      <div class="title">Static Clickable Prototype <span class="placeholder">demo state · Lap 3</span></div>
+      <div class="sub">Click-through screen flow. No state machine. No game logic.</div>
+    </div>
+    <div class="controls">
+      <span class="step-indicator" id="stepIndicator">Step 1 / 11</span>
+      <button id="btnReset">Reset Demo</button>
+      <button id="btnEndgame">Jump to Endgame</button>
+      <button id="btnPrev">◀ Prev</button>
+      <button id="btnNext" class="primary">Next ▶</button>
+    </div>
+  </header>
+
+  <!-- ============= MAIN GRID ============= -->
+  <main class="grid" id="mainGrid">
+
+    <!-- ===== BOARD VIEW ===== -->
+    <section class="board-pane">
+      <div class="panel" style="padding:8px 12px; border-bottom-width:0">
+        <div class="panel-head" style="margin-bottom:0; padding-bottom:0; border-bottom:0"><span class="name">Board View</span><span class="surface-id">A</span></div>
+      </div>
+      <div class="board-view" id="boardView">
+        <div class="board-grid" id="boardGrid">
+          <!-- 11x11 grid; rendered by JS -->
+        </div>
+      </div>
+      <div class="board-legend">
+        <span class="p"><span class="dot p1"></span><strong>You</strong> (Treasury Architect)</span>
+        <span class="p"><span class="dot p2"></span>Treasury / Finance</span>
+        <span class="p"><span class="dot p3"></span>Merchant / Infrastructure</span>
+        <span class="placeholder">3-player · fixed demo</span>
+      </div>
+    </section>
+
+    <!-- ===== PANEL STACK ===== -->
+    <aside class="panel-pane" id="panelPane">
+
+      <!-- Treasury panel (always visible) -->
+      <div class="panel treasury" id="panelTreasury">
+        <div class="panel-head"><span class="name">Your Treasury</span><span class="surface-id">B</span></div>
+        <div class="cash-row">
+          <div>
+            <div class="lbl">Cash on hand <span class="placeholder">demo</span></div>
+            <div class="cash" id="treasuryCash">$1,170</div>
+          </div>
+          <div style="text-align:right">
+            <span class="role-tag">Treasury Architect</span>
+            <div class="inf" id="treasuryInf">Influence est. 12</div>
+          </div>
+        </div>
+        <div class="holdings" id="treasuryHoldings"></div>
+      </div>
+
+      <!-- Acts panel -->
+      <div class="panel acts-panel" id="panelActs">
+        <div class="panel-head"><span class="name">Acts of Congress</span><span class="surface-id">E</span></div>
+        <div class="current-act">
+          <div class="pretitle">Lap 3 · Federal Act</div>
+          <div class="nm">Bank Charter</div>
+          <div class="effect"><strong>Bank of the United States</strong> activates lending and <strong>enhanced institution payments</strong>. <em>Bank now pays 10 × dice instead of 4 × dice.</em></div>
+        </div>
+        <div class="votes" id="actVotes"></div>
+        <div class="you-vote" id="actYouVote"></div>
+        <div class="tally hidden" id="actTally"></div>
+        <div class="passed-tray">
+          <div class="lbl">Passed Acts — face-up tray</div>
+          <div class="tray-row">
+            <div class="slot"><span class="roman">I</span>Funding Act</div>
+            <div class="slot"><span class="roman">II</span>Assumption Act</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tracks panel -->
+      <div class="panel tracks-panel" id="panelTracks">
+        <div class="panel-head"><span class="name">Shared Tracks</span><span class="surface-id">F</span></div>
+        <div class="t-row credit">
+          <div class="lbl">Public Credit</div>
+          <div class="val" id="creditVal">9</div>
+          <div class="scale" data-track="credit"></div>
+          <div class="text-readout">Value 9 of 12 · threshold ≥ 8 already reached</div>
+          <div class="threshold">≥ 8 — National Finance owners split +5 Influence at game end</div>
+        </div>
+        <div class="t-row resist">
+          <div class="lbl">Public Resistance</div>
+          <div class="val" id="resistVal">3</div>
+          <div class="scale" data-track="resist"></div>
+          <div class="text-readout">Value 3 of 12 · threshold ≥ 8 not yet reached</div>
+          <div class="threshold">≥ 8 — Whiskey Rebellion card becomes live</div>
+        </div>
+        <div class="t-row indust">
+          <div class="lbl">Industrial Capacity</div>
+          <div class="val" id="industVal">1</div>
+          <div class="scale" data-track="indust"></div>
+          <div class="text-readout">Value 1 of 12 · threshold ≥ 6 not yet reached</div>
+          <div class="threshold">≥ 6 (v0.2) — Mfg / Strategic +25 % payments</div>
+        </div>
+      </div>
+
+      <!-- Opponents -->
+      <div class="panel" id="panelOpponents">
+        <div class="panel-head"><span class="name">Scripted Opponents</span><span class="surface-id">B′</span></div>
+        <div class="opponents">
+          <div class="opponent-card p2">
+            <div class="head"><span class="nm">Hamilton</span><span class="pdot"></span></div>
+            <div class="pl">Treasury / Finance profile</div>
+            <div class="holdings"><strong>Holds:</strong> Virginia Debt · Treasury Securities · Bank of the United States · <span class="placeholder">demo</span></div>
+            <div class="strategy">Strategy: stack federal credit. Will vote YES on Bank Charter — owns the Bank.</div>
+          </div>
+          <div class="opponent-card p3">
+            <div class="head"><span class="nm">Morris</span><span class="pdot"></span></div>
+            <div class="pl">Merchant / Infrastructure profile</div>
+            <div class="holdings"><strong>Holds:</strong> Western Turnpike · Potomac Canal · New York Harbor · Philadelphia Exchange · <span class="placeholder">demo</span></div>
+            <div class="strategy">Strategy: corner the route ladder. Will vote NO on Bank Charter — no financial assets.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Asset Inspector (contextual) -->
+      <div class="panel inspector hidden" id="panelInspector">
+        <div class="panel-head"><span class="name">Asset Inspector</span><span class="surface-id">C</span></div>
+        <div id="inspectorBody"></div>
+      </div>
+
+      <!-- Card Drawer (contextual) -->
+      <div class="panel card-drawer hidden" id="panelCardDrawer">
+        <div class="panel-head"><span class="name">Event Drawer</span><span class="surface-id">D</span></div>
+        <div id="cardDrawerBody"></div>
+      </div>
+
+    </aside>
+
+    <!-- ===== LEDGER ===== -->
+    <section class="ledger-pane">
+      <div class="ledger" id="ledger">
+        <div class="head"><span>Turn Log / Ledger <span class="surface-id" style="font-family:var(--mono);font-size:9px;letter-spacing:.08em;opacity:.7;margin-left:6px;text-transform:none;letter-spacing:.18em">G</span></span><span id="ledgerCount">— entries</span></div>
+        <div id="ledgerRows"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============= ENDGAME OVERLAY ============= -->
+  <section class="endgame hidden" id="endgameView">
+    <h2>Endgame Report <span class="surface-id" style="font-family:var(--mono);font-size:11px;letter-spacing:.18em;background:var(--ink);color:var(--parchment);padding:2px 8px;vertical-align:middle;margin-left:6px">Surface H</span> <span class="placeholder">demo · placeholder values</span></h2>
+    <div class="sub">After lap 7. Sample Influence breakdown for the human player — Treasury Architect.</div>
+
+    <div class="score-block">
+      <div class="winner">
+        <div class="lbl">Winner</div>
+        <div class="nm">You · Treasury Architect</div>
+        <div class="score">Influence 34 · cash $620 · 3 systems complete</div>
+      </div>
+      <div>
+        <div class="runner-up" style="margin-bottom:6px">
+          <div class="lbl">2nd · Hamilton (Treasury / Finance)</div>
+          <div class="nm">Influence 31</div>
+        </div>
+        <div class="runner-up">
+          <div class="lbl">3rd · Morris (Merchant / Infrastructure)</div>
+          <div class="nm">Influence 28</div>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <thead><tr><th>Influence source</th><th>Detail</th><th>Points</th></tr></thead>
+      <tbody>
+        <tr><td>Cash held</td><td>$620 ÷ 200 (round down)</td><td class="n">+ 3</td></tr>
+        <tr><td>Properties owned</td><td>8 properties</td><td class="n">+ 8</td></tr>
+        <tr><td>Upgraded properties</td><td>5 upgraded</td><td class="n">+ 10</td></tr>
+        <tr><td>Complete sets</td><td>Rev Debt, State Debt, Improvements</td><td class="n">+ 9</td></tr>
+        <tr><td>Routes</td><td>1 route</td><td class="n">+ 1</td></tr>
+        <tr><td>Institutions</td><td>0</td><td class="n">+ 0</td></tr>
+        <tr><td>Credit ≥ 8 end-game</td><td>1 of 2 National Finance owners · split ⌊5/2⌋</td><td class="n">+ 2</td></tr>
+        <tr><td>Capacity ≥ 8 bonus</td><td>not reached</td><td class="n">+ 0</td></tr>
+        <tr><td>"You Are Hamilton" kept</td><td>yes</td><td class="n">+ 1</td></tr>
+        <tr><td>Bankrupt laps</td><td>0 laps spent bankrupt</td><td class="n">+ 0</td></tr>
+        <tr><td colspan="2"><strong>Total Influence</strong></td><td class="n"><strong>34</strong></td></tr>
+      </tbody>
+    </table>
+
+    <div class="systems">
+      <div class="box">
+        <h4>Economic system you built</h4>
+        <p>You backed three Acts of Congress (Funding, Assumption, Bank Charter), assembled the State Debt and Revolutionary Debt sets early, and added a route corridor. Public Credit closed at 9; Industrial Capacity never moved past 2.</p>
+      </div>
+      <div class="box">
+        <h4>Strongest holding · weakest system</h4>
+        <p><strong>Strongest:</strong> Massachusetts Debt (Tier I + Assumption permanent ×2) returned ~ 84 TN over 6 laps. <strong>Weakest:</strong> Industrial Capacity — never funded, no end-game bonus.</p>
+      </div>
+    </div>
+
+    <div class="narration">
+      <h4>Your Republic, after lap 7</h4>
+      <p>By the close of lap 7 you have funded the war debts, charted the Bank, and laid one rider relay between Boston and Philadelphia. The Treasury's balance sheet is solvent; Public Credit reads 9 of 12. You did not build the manufactories Hamilton wanted — Glassworks and Textile Works went to no one this game — and Industrial Capacity stayed cold. The republic you built is a creditor's republic: foreign lenders extend credit at par, merchants quote on the Philadelphia Exchange, and the Bank discounts merchant bills. What you did not build was the industrial base. Whether that constitutes a Hamiltonian victory or a Jeffersonian one is the historical question — and the score says you split the difference.</p>
+    </div>
+
+    <div style="margin-top:14px; display:flex; gap:8px;">
+      <button id="btnReturnFromEndgame" class="primary">◀ Return to demo</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- ===================================================================
+     DATA + DEMO STATE
+     =================================================================== -->
+<script>
+/* Board spaces: subset of data needed for layout + ownership marking. */
+const SPACES = [
+  { num:0, name:'Treasury Opens', kind:'corner' },
+  { num:1, name:'Continental Certificates', kind:'sys-revolutionary-debt' },
+  { num:2, name:'Republic Debate', kind:'card-debate' },
+  { num:3, name:'Soldier Pay Notes', kind:'sys-revolutionary-debt' },
+  { num:4, name:'Federal Excise', kind:'tax' },
+  { num:5, name:'Northern Post Road', kind:'route' },
+  { num:6, name:'Massachusetts Debt', kind:'sys-state-debt' },
+  { num:7, name:'Market Shock', kind:'card-shock' },
+  { num:8, name:'South Carolina Debt', kind:'sys-state-debt' },
+  { num:9, name:'Virginia Debt', kind:'sys-state-debt' },
+  { num:10, name:'Crisis', kind:'corner' },
+  { num:11, name:'Customs House', kind:'sys-revenue-system' },
+  { num:12, name:'Bank of U.S.', kind:'institution' },
+  { num:13, name:'Import Duties', kind:'sys-revenue-system' },
+  { num:14, name:'Whiskey Excise', kind:'sys-revenue-system' },
+  { num:15, name:'Western Turnpike', kind:'route' },
+  { num:16, name:'New York Harbor', kind:'sys-commercial-infrastructure' },
+  { num:17, name:'Republic Debate', kind:'card-debate' },
+  { num:18, name:'Philadelphia Exchange', kind:'sys-commercial-infrastructure' },
+  { num:19, name:'Coastal Shipping', kind:'sys-commercial-infrastructure' },
+  { num:20, name:'Nat\'l Dividend', kind:'corner' },
+  { num:21, name:'Treasury Securities', kind:'sys-national-finance' },
+  { num:22, name:'Market Shock', kind:'card-shock' },
+  { num:23, name:'Bank Subscription', kind:'sys-national-finance' },
+  { num:24, name:'Federal Deposits', kind:'sys-national-finance' },
+  { num:25, name:'Potomac Canal', kind:'route' },
+  { num:26, name:'Turnpike Charter', kind:'sys-internal-improvements' },
+  { num:27, name:'Canal Company', kind:'sys-internal-improvements' },
+  { num:28, name:'US Mint', kind:'institution' },
+  { num:29, name:'Postal Road Network', kind:'sys-internal-improvements' },
+  { num:30, name:'Go to Crisis', kind:'corner' },
+  { num:31, name:'Textile Works', kind:'sys-manufactures' },
+  { num:32, name:'Iron Foundry', kind:'sys-manufactures' },
+  { num:33, name:'Republic Debate', kind:'card-debate' },
+  { num:34, name:'Glassworks', kind:'sys-manufactures' },
+  { num:35, name:'Atlantic Port Chain', kind:'route' },
+  { num:36, name:'Market Shock', kind:'card-shock' },
+  { num:37, name:'Armory Works', kind:'sys-strategic-industry' },
+  { num:38, name:'Speculation Scandal', kind:'tax' },
+  { num:39, name:'Shipbuilding Yard', kind:'sys-strategic-industry' },
+];
+
+/* Demo state — fixed placeholders. */
+const DEMO = {
+  ownership: {
+    1: 'p1',   // Continental Certificates
+    3: 'p1',   // Soldier Pay Notes
+    6: 'p1',   // Massachusetts Debt (Tier I)
+    5: 'p1',   // Northern Post Road
+    9: 'p2',   // Virginia Debt
+    12: 'p2',  // Bank of US
+    21: 'p2',  // Treasury Securities
+    15: 'p3',  // Western Turnpike
+    25: 'p3',  // Potomac Canal
+    16: 'p3',  // NY Harbor
+    18: 'p3',  // Philly Exchange
+  },
+  tiers: { 6: 1 }, // Mass Debt at Tier I
+};
+
+/* Position grid: maps each space number to (row, col) on an 11x11 board. */
+function spaceCoord(num) {
+  // Bottom-right corner (0) = (10, 10); bottom row right→left for 1..9; bottom-left corner (10) = (10, 0);
+  // left col bottom→top for 11..19; top-left (20) = (0, 0); top row left→right for 21..29; top-right (30) = (0, 10);
+  // right col top→bottom for 31..39.
+  if (num === 0)  return [10, 10];
+  if (num >= 1 && num <= 9)   return [10, 10 - num];
+  if (num === 10) return [10, 0];
+  if (num >= 11 && num <= 19) return [10 - (num - 10), 0];
+  if (num === 20) return [0, 0];
+  if (num >= 21 && num <= 29) return [0, num - 20];
+  if (num === 30) return [0, 10];
+  if (num >= 31 && num <= 39) return [num - 30, 10];
+}
+
+/* Demo turn step definitions. Each step describes a panel state and adds ledger lines. */
+
+/* Eleven-step walkthrough that fits the brief. */
+const TURN_STEPS = [
+  {
+    n: 1, label: 'Start turn — Treasury Panel shows current cash + assets',
+    state: { cash: 1170, tokens: {p1:5, p2:12, p3:18}, panel:'treasury', active:null },
+    ledger: [],
+  },
+  {
+    n: 2, label: 'Roll dice — result 6',
+    state: { cash: 1170, tokens: {p1:5, p2:12, p3:18}, panel:'treasury', active:5 },
+    ledger: [ { actor:'You', event:'ROLL', detail:'2d6 = 6 (2 + 4) · deterministic seed for demo', cls:'move' } ],
+  },
+  {
+    n: 3, label: 'Move token — advance 6 spaces to Customs House',
+    state: { cash: 1170, tokens: {p1:11, p2:12, p3:18}, panel:'treasury', active:11 },
+    ledger: [ { actor:'You', event:'MOVE', detail:'Advance 6 → space 11 · Customs House (Revenue System, unowned)', cls:'move' } ],
+  },
+  {
+    n: 4, label: 'Land on unowned asset — Asset Inspector opens',
+    state: { cash: 1170, tokens: {p1:11, p2:12, p3:18}, panel:'inspector', active:11 },
+    ledger: [],
+  },
+  {
+    n: 5, label: 'Click Buy — Treasury debits 140 TN, asset marker appears',
+    state: { cash: 1030, tokens: {p1:11, p2:12, p3:18}, panel:'inspector', active:11, owned:{11:'p1'} },
+    ledger: [
+      { actor:'You', event:'BUY', detail:'Purchase Customs House for $140 · Revenue System set 1/3 · ledger logs purchase reason', cls:'cash' },
+      { actor:'Bank', event:'CASH', detail:'You: -$140 → cash $1,030', cls:'cash' },
+    ],
+  },
+  {
+    n: 6, label: 'Draw a Republic Debate card — Event Drawer opens',
+    state: { cash: 1030, tokens: {p1:11, p2:12, p3:18}, panel:'cardDrawer', active:11, owned:{11:'p1'} },
+    ledger: [
+      { actor:'You', event:'DRAW', detail:'Drew Republic Debate · "Credit Restored" · resolution pending', cls:'card' },
+    ],
+  },
+  {
+    n: 7, label: 'Resolve card — Public Credit +1, bond owners collect 150 TN',
+    state: { cash: 1180, tokens: {p1:11, p2:12, p3:18}, panel:'cardDrawer', active:11, owned:{11:'p1'}, credit: 10 },
+    ledger: [
+      { actor:'Bank', event:'CASH', detail:'You hold 3 qualifying bonds (Continental Certs, Soldier Pay, Mass Debt): collect 3 × $50 → +$150 · cash $1,030 → $1,180', cls:'cash' },
+      { actor:'Track', event:'CREDIT', detail:'Credit 9 → 10 · reason: "Credit Restored" card +1', cls:'track' },
+    ],
+  },
+  {
+    n: 8, label: 'Bank Charter vote opens — opponent ballots visible with reasons',
+    state: { cash: 1180, tokens: {p1:11, p2:12, p3:18}, panel:'acts', active:null, owned:{11:'p1'}, credit:10, voting:true },
+    ledger: [
+      { actor:'Acts', event:'VOTE', detail:'Bank Charter put to vote · Treasury/Finance ballot: YES (owns Bank) · Merchant/Infrastructure ballot: NO (no financial assets)', cls:'vote' },
+    ],
+  },
+  {
+    n: 9, label: 'You click YES — Bank Charter passes 2-1, tray updates',
+    state: { cash: 1180, tokens: {p1:11, p2:12, p3:18}, panel:'acts', active:null, owned:{11:'p1'}, credit:10, voting:'passed' },
+    ledger: [
+      { actor:'You', event:'VOTE', detail:'You vote YES · reason: Treasury Architect role rewards Public Credit', cls:'vote' },
+      { actor:'Acts', event:'PASS', detail:'Bank Charter PASSES 2-1 · Bank now pays 10×dice (was 4×dice) · Mint state enables 20×dice when paired', cls:'vote' },
+    ],
+  },
+  {
+    n: 10, label: 'End turn — Treasury, Tracks, Acts, Ledger reflect final state',
+    state: { cash: 1180, tokens: {p1:11, p2:12, p3:18}, panel:'treasury', active:null, owned:{11:'p1'}, credit:10, voting:'passed' },
+    ledger: [
+      { actor:'Turn', event:'END', detail:'Your turn ends · lap 3, turn 1 → turn 2', cls:'move' },
+    ],
+  },
+  {
+    n: 11, label: 'Next: Treasury / Finance (Hamilton) takes its turn',
+    state: { cash: 1180, tokens: {p1:11, p2:12, p3:18}, panel:'treasury', active:null, owned:{11:'p1'}, credit:10, voting:'passed' },
+    ledger: [
+      { actor:'Hamilton', event:'TURN', detail:'Scripted opponent 1 turn begins · profile: Treasury / Finance · expect priority buys on National Finance', cls:'move' },
+    ],
+  },
+];
+
+/* ===========================================================
+   RENDER
+   =========================================================== */
+function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
+
+const state = {
+  stepIndex: 0,
+  cash: 1170,
+  tokens: { p1: 5, p2: 12, p3: 18 },
+  panel: 'treasury',
+  active: null,
+  owned: {},
+  credit: 9,
+  voting: false,
+  ledger: [],
+};
+
+function renderBoard() {
+  const grid = document.getElementById('boardGrid');
+  grid.innerHTML = '';
+  // 11x11 grid (rows 0-10, cols 0-10). Cells on the border are spaces; center is the meta center.
+  for (let r = 0; r < 11; r++) {
+    for (let c = 0; c < 11; c++) {
+      if (r === 0 || r === 10 || c === 0 || c === 10) {
+        const space = findSpaceByCoord(r, c);
+        if (!space) {
+          const empty = el('div', 'board-cell empty');
+          empty.style.gridColumn = (c + 1) + ' / span 1';
+          empty.style.gridRow = (r + 1) + ' / span 1';
+          grid.appendChild(empty);
+          continue;
+        }
+        const cell = el('div', `board-cell ${space.kind}` + (space.kind === 'corner' ? ' corner' : ''));
+        cell.dataset.num = space.num;
+        cell.style.gridColumn = (c + 1) + ' / span 1';
+        cell.style.gridRow = (r + 1) + ' / span 1';
+        cell.innerHTML = `
+          <div class="band"></div>
+          <div class="num">${String(space.num).padStart(2,'0')}</div>
+          <div class="nm">${space.name}</div>
+          <div class="tokens"></div>
+        `;
+        cell.addEventListener('click', () => focusSpace(space.num));
+        grid.appendChild(cell);
+      }
+    }
+  }
+  // Center
+  const center = el('div', 'board-center');
+  center.style.gridColumn = '2 / span 9';
+  center.style.gridRow = '2 / span 9';
+  center.innerHTML = `
+    <div class="bc-eyebrow">Sovereign · Hamilton System</div>
+    <div class="bc-title">Founding Credit</div>
+    <div class="bc-sub">Fund the debt. Build the bank. Industrialize the republic.</div>
+    <div class="bc-lap" id="bcLap">Lap 3 / 7</div>
+    <div class="bc-tracks">
+      <span class="t credit">Credit<span class="v" id="bcCredit">9</span></span>
+      <span class="t resist">Resist<span class="v" id="bcResist">3</span></span>
+      <span class="t indust">Indust<span class="v" id="bcIndust">1</span></span>
+    </div>
+    <div class="bc-acts">Acts passed: I · Funding · II · Assumption</div>
+  `;
+  grid.appendChild(center);
+  applyOwnership();
+  placeTokens();
+}
+
+function findSpaceByCoord(r, c) {
+  return SPACES.find(s => {
+    const [sr, sc] = spaceCoord(s.num);
+    return sr === r && sc === c;
+  });
+}
+
+function applyOwnership() {
+  document.querySelectorAll('.board-cell').forEach(cell => {
+    cell.classList.remove('owner-p1', 'owner-p2', 'owner-p3', 'active-space');
+    cell.querySelectorAll('.owner-dot, .tier').forEach(e => e.remove());
+  });
+  const ownership = { ...DEMO.ownership, ...(state.owned || {}) };
+  Object.entries(ownership).forEach(([numStr, owner]) => {
+    const num = parseInt(numStr);
+    const cell = document.querySelector(`.board-cell[data-num="${num}"]`);
+    if (!cell) return;
+    cell.classList.add('owner-' + owner);
+    const dot = el('div', 'owner-dot');
+    cell.appendChild(dot);
+    if (DEMO.tiers[num]) {
+      const tier = el('div', 'tier', 'I'.repeat(DEMO.tiers[num]));
+      cell.appendChild(tier);
+    }
+  });
+  if (state.active != null) {
+    const cell = document.querySelector(`.board-cell[data-num="${state.active}"]`);
+    if (cell) cell.classList.add('active-space');
+  }
+}
+
+function placeTokens() {
+  document.querySelectorAll('.board-cell .tokens').forEach(t => t.innerHTML = '');
+  Object.entries(state.tokens).forEach(([player, num]) => {
+    const cell = document.querySelector(`.board-cell[data-num="${num}"] .tokens`);
+    if (!cell) return;
+    const tok = el('div', `tok ${player}`);
+    tok.title = `Token: ${player}`;
+    cell.appendChild(tok);
+  });
+}
+
+/* ===== Treasury holdings render ===== */
+function renderTreasuryHoldings() {
+  const root = document.getElementById('treasuryHoldings');
+  root.innerHTML = '';
+  const yours = [
+    { num:1, name:'Continental Certificates', sys:'revolutionary-debt', tier:0 },
+    { num:3, name:'Soldier Pay Notes',        sys:'revolutionary-debt', tier:0 },
+    { num:6, name:'Massachusetts Debt',       sys:'state-debt',         tier:1 },
+    { num:5, name:'Northern Post Road',       sys:'route',              tier:0 },
+  ];
+  if (state.owned && state.owned[11]) {
+    yours.push({ num:11, name:'Customs House', sys:'revenue-system', tier:0 });
+  }
+  yours.forEach(p => {
+    const row = el('div', 'h-row');
+    const tier = p.tier > 0 ? `<span class="tier-badge">T${'I'.repeat(p.tier)}</span>` : '<span class="tier-badge muted">—</span>';
+    const sw = p.sys === 'route' ? '<span class="sw" style="background:var(--ink)"></span>'
+             : `<span class="sw" style="background:var(--${p.sys})"></span>`;
+    row.innerHTML = `${sw}<span>${p.name}</span>${tier}`;
+    root.appendChild(row);
+  });
+}
+
+/* ===== Tracks scale render ===== */
+function renderTrackScales() {
+  ['credit', 'resist', 'indust'].forEach(key => {
+    const scale = document.querySelector(`[data-track="${key}"]`);
+    if (!scale) return;
+    scale.innerHTML = '';
+    const startVals = { credit:9, resist:3, indust:1 };
+    let current = startVals[key];
+    if (key === 'credit' && state.credit) current = state.credit;
+    for (let i = 0; i <= 12; i++) {
+      const tk = el('div', 'tk' + (i%3 === 0 ? ' major' : '') + (i === current ? ' marker' : ''));
+      tk.textContent = i;
+      scale.appendChild(tk);
+    }
+  });
+  document.getElementById('creditVal').textContent = state.credit || 9;
+  document.getElementById('resistVal').textContent = 3;
+  document.getElementById('industVal').textContent = 1;
+  document.getElementById('bcCredit').textContent = state.credit || 9;
+  document.getElementById('bcResist').textContent = 3;
+  document.getElementById('bcIndust').textContent = 1;
+}
+
+/* ===== Inspector body ===== */
+function renderInspector() {
+  document.getElementById('inspectorBody').innerHTML = `
+    <div class="card-art">
+      <div class="band" style="background:var(--revenue-system)">
+        <span>Revenue System</span>
+        <span style="font-family:var(--mono);font-size:9px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.55);padding:1px 4px">06</span>
+      </div>
+      <div class="nm">Customs House</div>
+      <div class="subkind">Federal Tariff · Customs</div>
+      <div class="flavor">Tidewater offices where federal revenue first enters the Treasury, one bonded crate at a time.</div>
+    </div>
+    <table class="pay-table">
+      <thead><tr><th>Tier</th><th>Multiplier</th><th>Payment</th></tr></thead>
+      <tbody>
+        <tr><td>Base</td><td>—</td><td class="val">$10</td></tr>
+        <tr><td>Full Set</td><td>× 2</td><td class="val">$20</td></tr>
+        <tr><td>Tier I</td><td>× 5</td><td class="val">$50</td></tr>
+        <tr><td>Tier II</td><td>× 15</td><td class="val">$150</td></tr>
+        <tr><td>Tier III</td><td>× 30</td><td class="val">$300</td></tr>
+      </tbody>
+    </table>
+    <p style="font-family:var(--mono);font-size:9px;margin-top:4px;opacity:.75">Cost: $140 · Upgrade: $75 · Mortgage: $70 · <span class="placeholder">demo</span></p>
+    <div class="actions">
+      <button class="primary" onclick="buyCustomsHouse()">Buy $140</button>
+      <button onclick="declineAndAuction()">Decline → Auction</button>
+    </div>
+    <div class="historical">
+      <div class="lbl">Historical · Revenue System</div>
+      <div class="snip">Tidewater customs houses funded the federal government's first dependable revenue stream. Duties on imports — wine, cloth, sugar, manufactured goods — passed through 75 collectors at the principal ports, generating roughly $4 million a year by 1795.</div>
+      <div class="expand" onclick="alert('Expand → 160 words on Hamilton\\'s Tariff of 1789 · placeholder for Phase 3')">▸ Expand (160 words) — placeholder</div>
+    </div>
+  `;
+}
+
+/* ===== Card drawer body ===== */
+function renderCardDrawer(resolved) {
+  document.getElementById('cardDrawerBody').innerHTML = `
+    <div class="drawer-card">
+      <div class="band"><span>Republic Debate</span><span>№ 03</span></div>
+      <div class="alert">✦ Broadside · Political Debate ✦</div>
+      <div class="nm">Credit Restored</div>
+      <div class="effect">Bond owners — <strong>Revolutionary Debt</strong>, <strong>State Debt</strong>, or <strong>National Finance</strong> — each collect <strong>$50 TN</strong>.</div>
+      <div class="outcomes"><span class="chip credit">Credit +1</span></div>
+      ${resolved ? `<div style="text-align:center;font-family:var(--ui);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--commercial-infrastructure);font-weight:700;margin-top:4px">✓ Resolved — Public Credit moved 9 → 10</div>` : ''}
+      <div class="historical">
+        <div class="lbl">Historical · Credit Restored</div>
+        <div class="snip">The Funding and Assumption Acts of 1790 converted continental and state debt paper from near-worthless promises into federally guaranteed bonds. Foreign creditors in Amsterdam and London began quoting U.S. securities at par. Credit, the lifeblood of a modern state, had returned.</div>
+      </div>
+      ${!resolved ? `<div class="actions"><button class="primary" onclick="resolveCard()">Resolve effect</button></div>` : ''}
+    </div>
+  `;
+}
+
+/* ===== Acts panel votes ===== */
+function renderActVotes() {
+  const root = document.getElementById('actVotes');
+  root.innerHTML = '';
+  const status = state.voting;
+
+  const votes = [
+    { who:'Hamilton', cls:'p2', reason:'Treasury / Finance · YES — owns Bank Subscription, Treasury Securities. Profile votes YES on all Acts that strengthen the Bank.', ballot: status ? 'yes' : 'pending' },
+    { who:'Morris', cls:'p3', reason:'Merchant / Infrastructure · NO — holds no financial assets. Profile votes NO on Acts that benefit a competitor exclusively.', ballot: status ? 'no' : 'pending' },
+    { who:'You', cls:'p1', reason: status === 'passed' ? 'YES — Treasury Architect role rewards Public Credit movement.' : 'choose: YES or NO below', ballot: status === 'passed' ? 'yes' : 'pending' },
+  ];
+
+  votes.forEach(v => {
+    const row = el('div', `vote-row ${v.cls} ${v.ballot === 'pending' ? 'pending' : ''}`);
+    row.innerHTML = `
+      <span class="pdot"></span>
+      <div><span class="who">${v.who}</span><span class="reason">${v.reason}</span></div>
+      <span class="ballot ${v.ballot}">${v.ballot === 'yes' ? 'YES' : v.ballot === 'no' ? 'NO' : '?'}</span>
+    `;
+    root.appendChild(row);
+  });
+
+  const youVote = document.getElementById('actYouVote');
+  youVote.innerHTML = '';
+  if (status === true) {
+    const yes = el('button', 'primary');
+    yes.textContent = '✓ Vote YES';
+    yes.onclick = () => { state.voting = 'passed'; addLedger([
+      { actor:'You', event:'VOTE', detail:'You vote YES · reason: Treasury Architect role rewards Public Credit', cls:'vote' },
+      { actor:'Acts', event:'PASS', detail:'Bank Charter PASSES 2-1 · Bank now pays 10×dice · Mint state enables 20×dice when paired', cls:'vote' },
+    ]); state.stepIndex = Math.max(state.stepIndex, 8); render(); };
+    const no = el('button');
+    no.textContent = '✕ Vote NO';
+    no.onclick = () => { state.voting = 'failed'; addLedger([
+      { actor:'You', event:'VOTE', detail:'You vote NO · result: 1-2 → demo continues as if YES', cls:'vote' },
+    ]); render(); };
+    youVote.appendChild(yes);
+    youVote.appendChild(no);
+  }
+
+  const tally = document.getElementById('actTally');
+  if (status === 'passed') {
+    tally.className = 'tally passed';
+    tally.textContent = 'BANK CHARTER PASSED · 2 YES / 1 NO · MAJORITY';
+    tally.classList.remove('hidden');
+  } else {
+    tally.classList.add('hidden');
+  }
+}
+
+/* ===== Ledger ===== */
+function addLedger(rows) {
+  rows.forEach(r => state.ledger.push({ ...r, lap:3, turn:1 }));
+}
+function renderLedger() {
+  const root = document.getElementById('ledgerRows');
+  root.innerHTML = '';
+  if (state.ledger.length === 0) {
+    root.innerHTML = `<div style="font-family:var(--display);font-style:italic;font-size:11px;opacity:.6;padding:10px 4px">No entries yet. Each step adds entries with a human-readable reason line.</div>`;
+  } else {
+    state.ledger.slice().reverse().forEach((row, i) => {
+      const r = el('div', 'row ' + (row.cls || ''));
+      const stamp = `L${row.lap}·T${row.turn}·${state.ledger.length - i}`;
+      r.innerHTML = `<span class="stamp">${stamp}</span><span class="actor">${row.actor} · ${row.event}</span><span class="detail">${row.detail}</span>`;
+      root.appendChild(r);
+    });
+  }
+  document.getElementById('ledgerCount').textContent = state.ledger.length + ' entries';
+}
+
+/* ===== Panel switching ===== */
+function showPanel(name) {
+  document.getElementById('panelInspector').classList.add('hidden');
+  document.getElementById('panelCardDrawer').classList.add('hidden');
+  if (name === 'inspector') document.getElementById('panelInspector').classList.remove('hidden');
+  if (name === 'cardDrawer') document.getElementById('panelCardDrawer').classList.remove('hidden');
+}
+
+function focusSpace(num) {
+  state.active = num;
+  applyOwnership();
+}
+
+/* ===== Step engine ===== */
+function applyStep(i) {
+  const step = TURN_STEPS[i];
+  state.stepIndex = i;
+  state.cash = step.state.cash;
+  state.tokens = step.state.tokens;
+  state.active = step.state.active;
+  state.panel = step.state.panel;
+  state.owned = step.state.owned || {};
+  state.credit = step.state.credit || 9;
+  state.voting = step.state.voting || false;
+  step.ledger.forEach(r => state.ledger.push({ ...r, lap:3, turn:1 }));
+  render();
+}
+
+function nextStep() {
+  if (state.stepIndex >= TURN_STEPS.length - 1) return;
+  applyStep(state.stepIndex + 1);
+}
+function prevStep() {
+  if (state.stepIndex <= 0) return;
+  // hard reset and replay to step n-1 since ledger is cumulative
+  resetDemo();
+  for (let i = 1; i <= state.stepIndex; i++) applyStep(i);
+}
+
+function resetDemo() {
+  state.stepIndex = 0;
+  state.cash = 1170; state.tokens = { p1:5, p2:12, p3:18 }; state.panel = 'treasury'; state.active = null;
+  state.owned = {}; state.credit = 9; state.voting = false; state.ledger = [];
+  render();
+}
+
+function render() {
+  document.getElementById('treasuryCash').textContent = '$' + state.cash.toLocaleString('en-US');
+  document.getElementById('stepIndicator').textContent = `Step ${state.stepIndex + 1} / ${TURN_STEPS.length} — ${TURN_STEPS[state.stepIndex].label}`;
+  renderTreasuryHoldings();
+  renderTrackScales();
+  renderActVotes();
+  renderLedger();
+  showPanel(state.panel);
+  if (state.panel === 'inspector') renderInspector();
+  if (state.panel === 'cardDrawer') renderCardDrawer(state.credit > 9);
+  applyOwnership();
+  placeTokens();
+}
+
+/* ===== Inspector actions ===== */
+function buyCustomsHouse() {
+  // jump to step 5 if not there
+  if (state.stepIndex < 4) applyStep(4);
+}
+function declineAndAuction() {
+  alert('Decline → opens auction with 10 TN open bid. Placeholder for Phase 3.');
+}
+function resolveCard() {
+  if (state.stepIndex < 6) applyStep(6);
+}
+
+/* ===== Endgame ===== */
+function showEndgame() {
+  document.getElementById('mainGrid').classList.add('hidden');
+  document.getElementById('endgameView').classList.remove('hidden');
+}
+function hideEndgame() {
+  document.getElementById('endgameView').classList.add('hidden');
+  document.getElementById('mainGrid').classList.remove('hidden');
+}
+
+/* ===== Init ===== */
+renderBoard();
+render();
+
+document.getElementById('btnNext').addEventListener('click', nextStep);
+document.getElementById('btnPrev').addEventListener('click', prevStep);
+document.getElementById('btnReset').addEventListener('click', resetDemo);
+document.getElementById('btnEndgame').addEventListener('click', showEndgame);
+document.getElementById('btnReturnFromEndgame').addEventListener('click', hideEndgame);
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextStep(); }
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); prevStep(); }
+  if (e.key === 'r' || e.key === 'R') resetDemo();
+});
+</script>
+
+</body>
+</html>

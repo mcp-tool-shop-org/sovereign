@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sovereign · Economy Math Audit (Corrected)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root {
+  --revolutionary-debt:#6E1F1E; --state-debt:#4A6B8A; --revenue-system:#C28A28;
+  --commercial-infrastructure:#2E7A6B; --national-finance:#1F2D52;
+  --internal-improvements:#B85A28; --manufactures:#8C8A2E; --strategic-industry:#3A3A3A;
+  --parchment:#F0E6CD; --parchment-2:#E6DABC; --ink:#1A1612; --highlight:#C8392E;
+  --rule:rgba(26,22,18,0.55); --rule-soft:rgba(26,22,18,0.22);
+  --display: "Baskerville","Big Caslon","Hoefler Text","Garamond","Times New Roman",serif;
+  --body: "Iowan Old Style","Georgia","Cambria","Times New Roman",serif;
+  --ui: -apple-system,"Segoe UI","Helvetica Neue","Arial",system-ui,sans-serif;
+  --mono: "SF Mono","Menlo","Consolas","Courier New",monospace;
+}
+@page { size: 8.5in 11in; margin: 0.55in 0.65in; }
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; font-family: var(--body); color: var(--ink); background:#2A2622; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.viewport { display:flex; flex-direction:column; align-items:center; gap:24px; padding:28px 16px 80px; }
+.page { width:8.5in; min-height:11in; background: var(--parchment); position:relative; box-shadow:0 10px 40px rgba(0,0,0,.55), 0 2px 4px rgba(0,0,0,.4); padding: 0.55in 0.65in 0.5in; }
+@media print {
+  html, body { background:#fff !important; margin:0 !important; }
+  .viewport { padding:0 !important; gap:0 !important; }
+  .page { box-shadow:none !important; padding: 0 !important; min-height:auto; width:100% !important; page-break-after: always; break-after: page; }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  .toolbar { display:none !important; }
+}
+.toolbar { position: fixed; top: 16px; right: 16px; z-index: 30; }
+.toolbar button { background: var(--parchment); color: var(--ink); border: 1px solid var(--ink); padding: 8px 14px; font-family: var(--ui); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+.doc-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 6px; border-bottom: 1px solid var(--ink); font-family: var(--ui); font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase; margin-bottom: 16px; }
+.doc-head .sigil { font-family: var(--display); font-style: italic; letter-spacing: 0; text-transform: none; font-size: 12px; }
+h1.title { font-family: var(--display); font-weight:400; font-size: 38px; line-height: 1; margin: 0 0 4px; letter-spacing: -.01em; }
+.subtitle { font-family: var(--display); font-style: italic; font-size: 13px; margin-bottom: 12px; }
+.lede { font-family: var(--display); font-style: italic; font-size: 13px; line-height: 1.45; max-width: 64ch; margin: 0 0 14px; }
+h2 { font-family: var(--display); font-weight:400; font-size: 18px; margin: 14px 0 6px; border-bottom: 1px solid var(--ink); padding-bottom: 3px; }
+h2 .ord { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; opacity: .65; margin-right: 8px; }
+h3 { font-family: var(--ui); font-size: 9.5px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; margin: 10px 0 4px; }
+p, li { font-family: var(--body); font-size: 10.5px; line-height: 1.45; margin: 0 0 4px; }
+ul, ol { padding-left: 16px; margin: 0 0 6px; }
+strong { font-family: var(--display); font-weight: 700; }
+em { font-style: italic; }
+.mono { font-family: var(--mono); font-size: 10px; }
+.formula { font-family: var(--mono); font-size: 9.5px; background: rgba(26,22,18,0.04); padding: 5px 8px; border-left: 2px solid var(--ink); margin: 4px 0 8px; line-height: 1.5; white-space: pre-wrap; }
+table { width: 100%; border-collapse: collapse; margin: 4px 0 10px; font-size: 9.5px; }
+th, td { text-align: left; vertical-align: top; padding: 2.5px 5px; line-height: 1.3; border-bottom: 0.5px solid var(--rule-soft); }
+th { font-family: var(--ui); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: 8px; background: var(--ink); color: var(--parchment); border-bottom: 1px solid var(--ink); }
+td.n { font-family: var(--mono); font-size: 9.5px; text-align: right; font-variant-numeric: tabular-nums; }
+td.v { font-family: var(--ui); font-size: 8.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+td.v.pass { color: var(--commercial-infrastructure); }
+td.v.warn { color: #B07A1F; }
+td.v.fail { color: var(--highlight); }
+.verdict { padding: 12px 14px; border: 1.5px solid var(--ink); background: var(--parchment-2); margin: 10px 0; position: relative; }
+.verdict::before { content: ""; position: absolute; inset: 5px; border: 0.5px solid var(--rule-soft); pointer-events: none; }
+.verdict .stamp { display: inline-block; font-family: var(--display); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; border: 1.5px solid var(--highlight); color: var(--highlight); padding: 3px 9px; margin-bottom: 4px; background: var(--parchment); }
+.verdict h3 { font-family: var(--display); font-weight:400; font-size: 16px; text-transform: none; letter-spacing: 0; margin: 0 0 4px; }
+.callout { border-left: 2px solid var(--highlight); padding: 4px 9px; background: rgba(200,57,46,0.04); margin: 6px 0; font-size: 10px; }
+.callout strong { color: var(--highlight); }
+.callout.ok { border-left-color: var(--commercial-infrastructure); background: rgba(46,122,107,0.05); }
+.callout.ok strong { color: var(--commercial-infrastructure); }
+.signature { margin-top: 14px; padding-top: 8px; border-top: 1px solid var(--ink); display: flex; justify-content: space-between; font-family: var(--ui); font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; }
+.swatch { display: inline-block; width: 10px; height: 10px; border: 1px solid var(--ink); vertical-align: middle; margin-right: 4px; }
+.tag-pass { background: rgba(46,122,107,0.15); padding: 1px 5px; font-family: var(--ui); font-size: 8px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--commercial-infrastructure); }
+.tag-warn { background: rgba(176,122,31,0.15); padding: 1px 5px; font-family: var(--ui); font-size: 8px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: #B07A1F; }
+.tag-fail { background: rgba(200,57,46,0.15); padding: 1px 5px; font-family: var(--ui); font-size: 8px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--highlight); }
+.tag-low { font-family: var(--mono); font-size: 8.5px; opacity: .7; }
+.split-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.split-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.box { border: 1px solid var(--rule-soft); padding: 8px 10px; background: rgba(26,22,18,0.02); }
+.box h4 { font-family: var(--display); font-weight: 700; font-size: 12px; margin: 0 0 3px; }
+.box p { margin: 0 0 3px; font-size: 10px; }
+</style>
+</head>
+<body>
+
+<div class="toolbar"><button onclick="window.print()">Print / Save PDF</button></div>
+
+<div class="viewport">
+
+<!-- ============================================================
+     PAGE 1 — VERDICT + ASSUMPTIONS
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head">
+    <span>Sovereign · Economy Math Audit · Corrected</span>
+    <span class="sigil">FC-EM-002 · supersedes FC-EM-001</span>
+    <span>1 / 6</span>
+  </header>
+
+  <h1 class="title">Economy Math Audit · Corrected</h1>
+  <div class="subtitle">Corrected expected-value model · replaces FC-EM-001 in full</div>
+
+  <p class="lede">The prior audit (FC-EM-001) contained four math errors that flipped most of its quantitative findings. This document recomputes the economy from first principles, shows every formula with numbers plugged in, and lists which prior conclusions survived and which did not.</p>
+
+  <h2><span class="ord">§ 01</span>Verdict</h2>
+  <div class="verdict">
+    <div class="stamp">Tight · upgrade-gated</div>
+    <h3>No system in Sovereign pays back its purchase from rent alone, even with its Act applied. The economy works only when players upgrade — and Tier I is the hardest payback gate to clear, not the safest.</h3>
+    <p>The single corrected number that drives most other findings: <strong>per-property landings over the entire 7-lap game are 2.0 in 3-player and 3.0 in 4-player</strong>. Multiplied by base rents that top out at 50 TN per landing, no set-only return exceeds its purchase cost. The previous audit's table reporting ROI > 1.0 for seven of eight systems was wrong: it applied Act multipliers across all 7 laps and treated per-lap landings inconsistently with per-game landings.</p>
+    <p><strong>Routes are the surprise.</strong> Owning all 4 routes returns ~ 1 600 TN in 3-player and ~ 2 400 TN in 4-player against 800 TN cost — the only asset class that pays back as a set without upgrades. <strong>Strategic Industry's Tier I is the fastest tier payback in the game</strong>, not a late-game trap. <strong>Treasury / Finance is not dominant in 3-player; Merchant / Infrastructure with all four routes wins.</strong></p>
+  </div>
+
+  <h2><span class="ord">§ 02</span>Corrected Assumptions</h2>
+  <table>
+    <thead><tr><th>Quantity</th><th>3-player</th><th>4-player</th><th>Derivation</th></tr></thead>
+    <tbody>
+      <tr><td>Avg dice roll</td><td class="n">7</td><td class="n">7</td><td>2d6 expected value</td></tr>
+      <tr><td>Rolls per lap per player</td><td class="n">5.714</td><td class="n">5.714</td><td>40 spaces / 7 per roll</td></tr>
+      <tr><td>Opponent count</td><td class="n">2</td><td class="n">3</td><td>N − 1</td></tr>
+      <tr><td><strong>Landings per lap per owned property</strong></td><td class="n"><strong>0.286</strong></td><td class="n"><strong>0.429</strong></td><td><span class="mono">(N − 1) × 5.714 / 40</span></td></tr>
+      <tr><td><strong>Landings per game per owned property (7 laps)</strong></td><td class="n"><strong>2.000</strong></td><td class="n"><strong>3.000</strong></td><td>landings_per_lap × 7</td></tr>
+      <tr><td>Treasury Opens income per lap</td><td class="n">~ 229 TN</td><td class="n">~ 229 TN</td><td>200 + 0.143 × 200 (Land bonus)</td></tr>
+      <tr><td>Tax drag per player per lap</td><td class="n">~ 50 TN</td><td class="n">~ 65 TN</td><td>Excise + Speculation Scandal expected hits</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Acts pass in fixed order</h3>
+  <table>
+    <thead><tr><th>Lap</th><th>Act</th><th>Laps before</th><th>Laps after (incl.)</th></tr></thead>
+    <tbody>
+      <tr><td class="n">1</td><td>Funding Act · Rev Debt ×1.5</td><td class="n">0</td><td class="n">7</td></tr>
+      <tr><td class="n">2</td><td>Assumption Act · State Debt ×2</td><td class="n">1</td><td class="n">6</td></tr>
+      <tr><td class="n">3</td><td>Bank Charter · Bank 4×→10×, Mint enables 20×</td><td class="n">2</td><td class="n">5</td></tr>
+      <tr><td class="n">4</td><td>Tariff Schedule · Revenue ×1.5</td><td class="n">3</td><td class="n">4</td></tr>
+      <tr><td class="n">5</td><td>Coinage Act · Mint owner +25 TN per player</td><td class="n">4</td><td class="n">3</td></tr>
+      <tr><td class="n">6</td><td>Report on Manufactures · halved Mfg upgrades 1 lap</td><td class="n">5</td><td class="n">2</td></tr>
+      <tr><td class="n">7</td><td>Excise Enforcement · Whiskey ×2 for 1 round</td><td class="n">6</td><td class="n">1</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Rent formula reference</h3>
+  <div class="formula">
+rent_per_landing  = base × tier_multiplier × act_multiplier
+tier_multiplier   = 2 (full set, no tier) · 5 (Tier I) · 15 (Tier II) · 30 (Tier III)
+act_multiplier    = 1.0 (no Act) · 1.5 (Funding · Tariff) · 2.0 (Assumption)
+
+7-lap rent (single property, full set, with Act starting lap k):
+  = base × 2 × landings/lap × (k − 1)
+  + base × 2 × act_mult × landings/lap × (8 − k)
+
+For Tier I/II/III, replace the "2" with 5 / 15 / 30 and recompute both halves.</div>
+
+  <div class="signature"><span>Sovereign · Economy Math Audit · corrected</span><span>FC-EM-002 · 1 / 6</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 2 — SYSTEM ROI (corrected, no upgrades)
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span>System ROI · corrected</span><span class="sigil">no upgrades · Act split visible</span><span>2 / 6</span></header>
+
+  <h2><span class="ord">§ 03</span>System ROI · No Upgrades</h2>
+  <p>Total 7-lap rent assuming the full system set is acquired by start of lap 1. Acts apply only from the lap they pass. Formula split into pre-Act laps and post-Act laps. <strong>ROI = total rent / set cost.</strong></p>
+
+  <h3>Rev Debt · Funding Act passes lap 1 (×1.5 from lap 1, i.e. all 7 laps)</h3>
+  <div class="formula">
+set rent (7 laps) = sum_base × 2 × act_mult × landings/lap × N_laps
+                  = 6 × 2 × 1.5 × landings/lap × 7
+
+3-player: 6 × 2 × 1.5 × 0.286 × 7 = 36.04 TN
+4-player: 6 × 2 × 1.5 × 0.429 × 7 = 54.05 TN
+cost = 60 + 60 = 120 TN
+ROI 3p = 0.300 · ROI 4p = 0.450</div>
+
+  <h3>State Debt · Assumption passes lap 2 (×2 from lap 2 = 6 laps)</h3>
+  <div class="formula">
+pre  = 20 × 2 × landings/lap × 1   (no Act, 1 lap)
+post = 20 × 2 × 2 × landings/lap × 6   (×2 Act, 6 laps)
+
+3p: pre 11.44 + post 137.28 = 148.72 TN
+4p: pre 17.16 + post 205.92 = 223.08 TN
+cost = 320 TN
+ROI 3p = 0.465 · ROI 4p = 0.697</div>
+
+  <h3>Revenue System · Tariff passes lap 4 (×1.5 from lap 4 = 4 laps)</h3>
+  <div class="formula">
+pre  = 32 × 2 × landings/lap × 3
+post = 32 × 2 × 1.5 × landings/lap × 4
+
+3p: pre 54.91 + post 109.82 = 164.73 TN
+4p: pre 82.37 + post 164.74 = 247.11 TN
+cost = 440 TN
+ROI 3p = 0.374 · ROI 4p = 0.562</div>
+
+  <h3>Systems with no triggering Act · set ×2 only, all 7 laps</h3>
+  <table>
+    <thead><tr><th>System</th><th>sum_base</th><th>cost</th><th>7-lap rent 3p</th><th>7-lap rent 4p</th><th>ROI 3p</th><th>ROI 4p</th></tr></thead>
+    <tbody>
+      <tr><td>Commerce</td><td class="n">44</td><td class="n">560</td><td class="n">176.18</td><td class="n">264.46</td><td class="n">0.315</td><td class="n">0.472</td></tr>
+      <tr><td>National Finance</td><td class="n">56</td><td class="n">680</td><td class="n">224.22</td><td class="n">336.43</td><td class="n">0.330</td><td class="n">0.495</td></tr>
+      <tr><td>Improvements</td><td class="n">68</td><td class="n">800</td><td class="n">272.27</td><td class="n">408.39</td><td class="n">0.340</td><td class="n">0.510</td></tr>
+      <tr><td>Manufactures</td><td class="n">80</td><td class="n">920</td><td class="n">320.32</td><td class="n">480.36</td><td class="n">0.348</td><td class="n">0.522</td></tr>
+      <tr><td>Strategic Industry</td><td class="n">85</td><td class="n">750</td><td class="n">340.34</td><td class="n">510.38</td><td class="n">0.454</td><td class="n">0.680</td></tr>
+    </tbody>
+  </table>
+
+  <p>Formula for unactified systems: <span class="mono">sum_base × 2 × landings/lap × 7</span>.</p>
+
+  <h3>Summary · System ROI without upgrades</h3>
+  <table>
+    <thead><tr><th>System</th><th>cost</th><th>7-lap rent 3p</th><th>7-lap rent 4p</th><th>ROI 3p</th><th>ROI 4p</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td>Rev Debt + Funding</td><td class="n">120</td><td class="n">36.04</td><td class="n">54.05</td><td class="n">0.30</td><td class="n">0.45</td><td><span class="tag-fail">Below 1</span></td></tr>
+      <tr><td>State Debt + Assumption</td><td class="n">320</td><td class="n">148.72</td><td class="n">223.08</td><td class="n">0.46</td><td class="n">0.70</td><td><span class="tag-fail">Below 1</span></td></tr>
+      <tr><td>Revenue + Tariff</td><td class="n">440</td><td class="n">164.73</td><td class="n">247.11</td><td class="n">0.37</td><td class="n">0.56</td><td><span class="tag-fail">Below 1</span></td></tr>
+      <tr><td>Commerce</td><td class="n">560</td><td class="n">176.18</td><td class="n">264.46</td><td class="n">0.31</td><td class="n">0.47</td><td><span class="tag-fail">Below 1</span></td></tr>
+      <tr><td>Nat'l Finance</td><td class="n">680</td><td class="n">224.22</td><td class="n">336.43</td><td class="n">0.33</td><td class="n">0.50</td><td><span class="tag-fail">Below 1</span></td></tr>
+      <tr><td>Improvements</td><td class="n">800</td><td class="n">272.27</td><td class="n">408.39</td><td class="n">0.34</td><td class="n">0.51</td><td><span class="tag-fail">Below 1</span></td></tr>
+      <tr><td>Manufactures</td><td class="n">920</td><td class="n">320.32</td><td class="n">480.36</td><td class="n">0.35</td><td class="n">0.52</td><td><span class="tag-fail">Below 1</span></td></tr>
+      <tr><td>Strategic Industry</td><td class="n">750</td><td class="n">340.34</td><td class="n">510.38</td><td class="n">0.45</td><td class="n">0.68</td><td><span class="tag-fail">Below 1</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout"><strong>Headline:</strong> no system pays back from set rent alone, in either player count, with or without its triggering Act. Tiers are mandatory.</div>
+
+  <div class="signature"><span>Sovereign · Economy Math Audit · corrected</span><span>FC-EM-002 · 2 / 6</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 3 — UPGRADE PAYBACK (incremental, corrected)
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span>Upgrade Payback · corrected, incremental</span><span class="sigil">cost ÷ incremental income</span><span>3 / 6</span></header>
+
+  <h2><span class="ord">§ 04</span>Upgrade Payback · Incremental</h2>
+  <p>Each tier's payback is computed against the <em>incremental</em> rent over the previous state, not against total tier rent. Increments per landing per property:</p>
+
+  <div class="formula">
+Set → Tier I  : base × (5 − 2)  = base × 3
+Tier I → II   : base × (15 − 5) = base × 10
+Tier II → III : base × (30 − 15) = base × 15
+
+Income per lap (set-wide) = increment × landings/lap × N_properties
+Payback laps              = tier_cost / income_per_lap
+
+Where tier_cost = "Upgrade" value × N_properties (full-set upgrade).</div>
+
+  <h3>3-player · payback in laps (lower is better; 7-lap ceiling)</h3>
+  <table>
+    <thead><tr><th>System</th><th>sum_base</th><th>N_props</th><th>Set→I cost</th><th>Set→I income/lap</th><th>Set→I payback</th><th>Tier II payback</th><th>Tier III payback</th></tr></thead>
+    <tbody>
+      <tr><td>Rev Debt</td><td class="n">6</td><td class="n">2</td><td class="n">60</td><td class="n">5.14</td><td class="n"><strong>11.67</strong> <span class="tag-fail">over</span></td><td class="n">3.50</td><td class="n">2.33</td></tr>
+      <tr><td>State Debt</td><td class="n">20</td><td class="n">3</td><td class="n">150</td><td class="n">17.14</td><td class="n"><strong>8.75</strong> <span class="tag-fail">over</span></td><td class="n">2.63</td><td class="n">1.75</td></tr>
+      <tr><td>Revenue</td><td class="n">32</td><td class="n">3</td><td class="n">225</td><td class="n">27.43</td><td class="n"><strong>8.20</strong> <span class="tag-fail">over</span></td><td class="n">2.46</td><td class="n">1.64</td></tr>
+      <tr><td>Commerce</td><td class="n">44</td><td class="n">3</td><td class="n">300</td><td class="n">37.71</td><td class="n"><strong>7.95</strong> <span class="tag-fail">over</span></td><td class="n">2.39</td><td class="n">1.59</td></tr>
+      <tr><td>Nat'l Finance</td><td class="n">56</td><td class="n">3</td><td class="n">375</td><td class="n">48.00</td><td class="n"><strong>7.81</strong> <span class="tag-fail">over</span></td><td class="n">2.34</td><td class="n">1.56</td></tr>
+      <tr><td>Improvements</td><td class="n">68</td><td class="n">3</td><td class="n">450</td><td class="n">58.29</td><td class="n"><strong>7.72</strong> <span class="tag-fail">over</span></td><td class="n">2.32</td><td class="n">1.54</td></tr>
+      <tr><td>Manufactures</td><td class="n">80</td><td class="n">3</td><td class="n">600</td><td class="n">68.57</td><td class="n"><strong>8.75</strong> <span class="tag-fail">over</span></td><td class="n">2.63</td><td class="n">1.75</td></tr>
+      <tr><td>Strategic Industry</td><td class="n">85</td><td class="n">2</td><td class="n">400</td><td class="n">72.86</td><td class="n"><strong>5.49</strong> <span class="tag-pass">OK</span></td><td class="n">1.65</td><td class="n">1.10</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4-player · payback in laps</h3>
+  <table>
+    <thead><tr><th>System</th><th>Set→I cost</th><th>income/lap</th><th>Set→I payback</th><th>Tier II payback</th><th>Tier III payback</th></tr></thead>
+    <tbody>
+      <tr><td>Rev Debt</td><td class="n">60</td><td class="n">7.72</td><td class="n"><strong>7.77</strong> <span class="tag-fail">over</span></td><td class="n">2.33</td><td class="n">1.56</td></tr>
+      <tr><td>State Debt</td><td class="n">150</td><td class="n">25.71</td><td class="n">5.83</td><td class="n">1.75</td><td class="n">1.17</td></tr>
+      <tr><td>Revenue</td><td class="n">225</td><td class="n">41.14</td><td class="n">5.47</td><td class="n">1.64</td><td class="n">1.09</td></tr>
+      <tr><td>Commerce</td><td class="n">300</td><td class="n">56.57</td><td class="n">5.30</td><td class="n">1.59</td><td class="n">1.06</td></tr>
+      <tr><td>Nat'l Finance</td><td class="n">375</td><td class="n">72.00</td><td class="n">5.21</td><td class="n">1.56</td><td class="n">1.04</td></tr>
+      <tr><td>Improvements</td><td class="n">450</td><td class="n">87.43</td><td class="n">5.15</td><td class="n">1.54</td><td class="n">1.03</td></tr>
+      <tr><td>Manufactures</td><td class="n">600</td><td class="n">102.86</td><td class="n">5.83</td><td class="n">1.75</td><td class="n">1.17</td></tr>
+      <tr><td>Strategic Industry</td><td class="n">400</td><td class="n">109.29</td><td class="n">3.66</td><td class="n">1.10</td><td class="n">0.73</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout"><strong>Reversal of prior finding:</strong> Tier I is the <em>hardest</em> tier to pay back, not the safest. In 3-player, seven of eight systems' Tier I exceeds the 7-lap ceiling. In 4-player, only Rev Debt exceeds the ceiling. Tier II and Tier III are the obvious upgrades once Tier I is in place — Tier III pays back in 1–2 laps across all systems.</div>
+
+  <p style="font-size:10px"><em>Worked example — Rev Debt Set → Tier I, 3-player:</em></p>
+  <div class="formula">
+sum_base × 3 = 6 × 3 = 18 TN per landing-set
+income/lap   = 18 × 0.286 = 5.14 TN/lap
+payback      = 60 / 5.14 = 11.67 laps   (exceeds 7-lap game)</div>
+
+  <p>Sensitivity: in 3-player, if a Tier I upgrade is bought at lap 1, total return over the remaining 7 laps is below cost for every system except Strategic Industry. <strong>The break-even purchase lap for Tier I in 3-player is the start of the game.</strong> In 4-player, Tier I purchased by lap 2 still breaks even for all systems except Rev Debt.</p>
+
+  <div class="signature"><span>Sovereign · Economy Math Audit · corrected</span><span>FC-EM-002 · 3 / 6</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 4 — INSTITUTIONS, ROUTES, ACTS IMPACT
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span>Bank · Mint · Routes · Acts impact</span><span class="sigil">with explicit splits</span><span>4 / 6</span></header>
+
+  <h2><span class="ord">§ 05</span>Bank &amp; Mint · Corrected</h2>
+
+  <h3>Bank of the United States · pre-charter (laps 1–2) and post-charter (laps 3–7)</h3>
+  <div class="formula">
+pre  = 4 × dice × landings/lap × 2  = 28 × landings/lap × 2
+post = 10 × dice × landings/lap × 5 = 70 × landings/lap × 5
+
+3p: pre = 28 × 0.286 × 2 = 16.00;  post = 70 × 0.286 × 5 = 100.10;  total = 116.10 TN
+4p: pre = 28 × 0.429 × 2 = 24.02;  post = 70 × 0.429 × 5 = 150.15;  total = 174.17 TN
+cost = 150 TN
+ROI 3p = 0.774 (below break-even) · ROI 4p = 1.161 (just above)</div>
+
+  <h3>Mint · three states</h3>
+  <p>Assume player owns Bank lap 1 and Mint lap 2. State at each lap depends on Bank Charter (lap 3) and dual-Institution ownership.</p>
+  <div class="formula">
+State 1 (Mint alone, no Bank)        : 0 TN/land     · lap 1 only (Mint not yet bought) — n/a
+State 2 (Both, no Charter)           : 10 × 7 = 70 TN/land  · lap 2 only (Charter is lap 3)
+State 3 (Both + Charter)             : 20 × 7 = 140 TN/land · laps 3–7 (5 laps)
+
+3p: state 2 = 70 × 0.286 × 1 = 20.02;  state 3 = 140 × 0.286 × 5 = 200.20;  total = 220.22 TN
+4p: state 2 = 70 × 0.429 × 1 = 30.03;  state 3 = 140 × 0.429 × 5 = 300.30;  total = 330.33 TN
+cost = 150 TN
+ROI 3p = 1.468 · ROI 4p = 2.202</div>
+
+  <div class="callout"><strong>Bank is borderline in 3-player</strong> (does not pay back its purchase from rent alone). Mint clears it easily — but only because the Bank is already paid for. <strong>The Bank + Mint stack as a single decision pays back fully (~ 340 TN rent vs 300 TN cost in 3p).</strong> Buying Mint without Bank is dead capital.</div>
+
+  <h2><span class="ord">§ 06</span>Routes · The Strongest Asset Class</h2>
+  <div class="formula">
+Payment ladder: 25 / 50 / 100 / 200 TN by routes owned.
+
+All 4 routes owned (every landing pays 200 TN):
+  7-lap rent = 200 × landings/lap × 4 spaces × 7 laps
+
+3p: 200 × 0.286 × 4 × 7 = 1601.6 TN
+4p: 200 × 0.429 × 4 × 7 = 2402.4 TN
+cost = 4 × 200 = 800 TN
+ROI 3p = 2.002 · ROI 4p = 3.003</div>
+
+  <table>
+    <thead><tr><th>Routes owned</th><th>Pay/land</th><th>cost</th><th>7-lap rent 3p</th><th>7-lap rent 4p</th><th>ROI 3p</th><th>ROI 4p</th></tr></thead>
+    <tbody>
+      <tr><td class="n">1</td><td class="n">25</td><td class="n">200</td><td class="n">50.05</td><td class="n">75.08</td><td class="n">0.250</td><td class="n">0.375</td></tr>
+      <tr><td class="n">2</td><td class="n">50</td><td class="n">400</td><td class="n">200.20</td><td class="n">300.30</td><td class="n">0.501</td><td class="n">0.751</td></tr>
+      <tr><td class="n">3</td><td class="n">100</td><td class="n">600</td><td class="n">600.60</td><td class="n">900.90</td><td class="n">1.001</td><td class="n">1.502</td></tr>
+      <tr><td class="n">4</td><td class="n">200</td><td class="n">800</td><td class="n">1601.6</td><td class="n">2402.4</td><td class="n">2.002</td><td class="n">3.003</td></tr>
+    </tbody>
+  </table>
+
+  <p>Routes are <strong>the only asset class that pays back its cost from rent alone</strong>, and only when 3+ are owned. The 4-route grand slam delivers 2-3× cost. The step function from 50 → 100 TN at three routes is the strategic inflection — any Route player must commit to at least three.</p>
+
+  <h2><span class="ord">§ 07</span>Acts of Congress · Corrected Swing</h2>
+  <p>Income swing = (rent with Act) − (rent if the Act never passed). Applied only from the lap of passage onward. Best-positioned target profile per Act.</p>
+  <table>
+    <thead><tr><th>Lap</th><th>Act</th><th>Swing 3p</th><th>Swing 4p</th><th>Class</th></tr></thead>
+    <tbody>
+      <tr><td class="n">1</td><td>Funding · Rev Debt ×1.5 (7 laps)</td><td class="n">+ 12.02</td><td class="n">+ 18.02</td><td><span class="tag-fail">Cosmetic</span></td></tr>
+      <tr><td class="n">2</td><td>Assumption · State Debt ×2 (6 laps)</td><td class="n">+ 68.64</td><td class="n">+ 102.96</td><td><span class="tag-warn">Modest</span></td></tr>
+      <tr><td class="n">3</td><td>Bank Charter · 4×→10× (Bank) + 10×→20× (Mint)</td><td class="n">+ 160.16</td><td class="n">+ 240.24</td><td><span class="tag-pass">Major</span></td></tr>
+      <tr><td class="n">4</td><td>Tariff · Revenue ×1.5 (4 laps)</td><td class="n">+ 36.60</td><td class="n">+ 54.92</td><td><span class="tag-warn">Modest</span></td></tr>
+      <tr><td class="n">5</td><td>Coinage · Mint +25 TN × (N−1)</td><td class="n">+ 50</td><td class="n">+ 75</td><td><span class="tag-fail">Cosmetic</span></td></tr>
+      <tr><td class="n">6</td><td>Report on Mfg · 1 lap of halved upgrades (~300 saved)</td><td class="n">+ 300</td><td class="n">+ 300</td><td><span class="tag-pass">Major</span></td></tr>
+      <tr><td class="n">7</td><td>Excise · Whiskey ×2 for 1 round + Resist +2</td><td class="n">+ 10.30 / − Rebellion risk</td><td class="n">+ 15.44 / − Rebellion risk</td><td><span class="tag-fail">Net negative</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout"><strong>Reversal:</strong> Funding Act swings only 12 – 18 TN — it is <em>cosmetic</em>, not the "powerful Act" the prior audit claimed. Assumption swings 70 – 100 TN, not 640. Bank Charter is the largest single Act (160 – 240 TN) because it activates both Bank and Mint multipliers simultaneously.</div>
+
+  <div class="signature"><span>Sovereign · Economy Math Audit · corrected</span><span>FC-EM-002 · 4 / 6</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 5 — TRACKS, STRATEGY COMPARISON
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span>Tracks · Strategy comparison</span><span class="sigil">corrected ranking</span><span>5 / 6</span></header>
+
+  <h2><span class="ord">§ 08</span>Shared Tracks · Corrected</h2>
+  <p>Expected lap each threshold is first reached, assuming Acts pass on schedule and an average distribution of track-modifying card draws.</p>
+  <table>
+    <thead><tr><th>Track</th><th>Start</th><th>Act contributions</th><th>Card net</th><th>Expected end</th><th>First threshold lap</th><th>Class</th></tr></thead>
+    <tbody>
+      <tr><td>Public Credit</td><td class="n">5</td><td>+2 (lap 1) · +2 (lap 2) · +1 (lap 5) = +5</td><td>+2 to +4</td><td class="n">12 (cap)</td><td>≥ 8 reached lap 2</td><td><span class="tag-pass">Live</span></td></tr>
+      <tr><td>Public Resistance</td><td class="n">2</td><td>+1 (lap 2) · +1 (lap 4) · +2 (lap 7) = +4</td><td>+1 to +3</td><td class="n">7 – 9</td><td>≥ 8 reached lap 6–7</td><td><span class="tag-warn">Marginal</span></td></tr>
+      <tr><td>Industrial Capacity</td><td class="n">1</td><td>+2 (lap 6) = +2</td><td>+0 to +2</td><td class="n">3 – 5</td><td>≥ 8 not reached</td><td><span class="tag-fail">Cold</span></td></tr>
+    </tbody>
+  </table>
+  <p><strong>Capacity is the only dead track.</strong> Its ≥ 8 threshold (Mfg / Strategic +25 % payments) requires +7 movement from start, but only Report on Manufactures (+2) plus a small handful of cards push it. Expected end-game value 3–5; threshold reached in ~ 15 – 20 % of plays.</p>
+
+  <h2><span class="ord">§ 09</span>Strategy Comparison · Corrected</h2>
+  <p>Income estimates assume the player acquires the full set by lap 2, Tier I by lap 3, Tier II on the cheapest set by lap 5. Acts pass on schedule. The numbers below are "rent income only" — they do not include Treasury Opens (+1 600 TN baseline) or starting cash.</p>
+
+  <h3>3-player</h3>
+  <table>
+    <thead><tr><th>Profile</th><th>Core assets</th><th>Set rent</th><th>Tier I rent (3 sets, ~5 laps)</th><th>Routes / Insts</th><th>Acts swing</th><th>Total rent est.</th><th>Rank</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Merchant / Infrastructure</strong></td><td>Routes ×4 + Revenue set + Commerce set</td><td class="n">~ 165 + 176 = 341</td><td class="n">+ 270 (Revenue, Commerce Tier I)</td><td class="n">+ 1 602 (routes)</td><td class="n">+ 37 (Tariff)</td><td class="n"><strong>~ 2 250</strong></td><td><span class="tag-pass">Top</span></td></tr>
+      <tr><td><strong>Treasury / Finance</strong></td><td>Rev Debt + State Debt + Nat'l Finance + Bank + Mint</td><td class="n">~ 36 + 149 + 224 = 409</td><td class="n">+ 300 (State Debt Tier I, Nat'l Finance partial)</td><td class="n">+ 340 (Bank + Mint)</td><td class="n">+ 240 (Charter combo)</td><td class="n"><strong>~ 1 290</strong></td><td><span class="tag-pass">Mid</span></td></tr>
+      <tr><td><strong>Manufacturer / Industry</strong></td><td>Mfg set + Strategic set + Improvements partial</td><td class="n">~ 320 + 340 = 660</td><td class="n">+ 250 (Strategic Tier I from lap 4)</td><td class="n">—</td><td class="n">+ 300 (Report bonus)</td><td class="n"><strong>~ 1 210</strong></td><td><span class="tag-warn">Bottom</span></td></tr>
+    </tbody>
+  </table>
+  <p>Spread: 2 250 vs 1 210 = <strong>86 % gap</strong>. Above the 80 % "runaway" threshold. <strong>Merchant / Infrastructure is the clear winner in 3-player</strong>, driven almost entirely by all-four routes.</p>
+
+  <h3>4-player</h3>
+  <table>
+    <thead><tr><th>Profile</th><th>Core assets</th><th>Total rent est.</th><th>Rank</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Merchant / Infrastructure</strong></td><td>Routes ×4 + Revenue + Commerce</td><td class="n"><strong>~ 3 380</strong></td><td><span class="tag-pass">Top</span></td></tr>
+      <tr><td><strong>Treasury / Finance</strong></td><td>Rev Debt + State Debt + Nat'l Finance + Bank + Mint</td><td class="n">~ 1 935</td><td><span class="tag-pass">Mid</span></td></tr>
+      <tr><td><strong>Manufacturer / Industry</strong></td><td>Mfg + Strategic + Improvements partial</td><td class="n">~ 1 820</td><td><span class="tag-warn">Mid</span></td></tr>
+      <tr><td><strong>Opportunist / Cash</strong></td><td>2 cheap sets + Tier I, hold cash</td><td class="n">~ 750</td><td><span class="tag-fail">Bottom</span></td></tr>
+    </tbody>
+  </table>
+  <p>4-player spread: 3 380 vs 750 = <strong>351 % gap</strong>. Extreme. The Opportunist strategy is dominated by every other profile because Influence-from-cash converts at the worst rate (200 TN → 1 Influence).</p>
+
+  <div class="callout"><strong>The route ladder is the single biggest balance lever in the game.</strong> The 4-route grand slam returns 2-3× its cost and no other asset class clears even 1.0 ROI without Tier I+ upgrades.</div>
+
+  <div class="signature"><span>Sovereign · Economy Math Audit · corrected</span><span>FC-EM-002 · 5 / 6</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 6 — PRIOR AUDIT CORRECTIONS + RECOMMENDATIONS
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span>Prior corrections · Recommendations</span><span class="sigil">old vs new with reasons</span><span>6 / 6</span></header>
+
+  <h2><span class="ord">§ 10</span>Prior Audit Corrections</h2>
+  <table>
+    <thead><tr><th>Topic</th><th>Old value (FC-EM-001)</th><th>New value</th><th>Why it changed</th></tr></thead>
+    <tbody>
+      <tr><td>State Debt 7-lap rent (set only, with Assumption)</td><td class="n">720 TN</td><td class="n">149 (3p) · 223 (4p)</td><td>Old applied ×2 to all 7 laps; correct is 1 lap pre-Assumption + 6 laps post.</td></tr>
+      <tr><td>Bank post-charter total return</td><td class="n">735 TN</td><td class="n">100 (3p) · 150 (4p)</td><td>Old double-counted: treated per-game landings as per-lap, then multiplied by 5 remaining laps a second time.</td></tr>
+      <tr><td>Mint 7-lap return</td><td class="n">~ 1 180 TN</td><td class="n">220 (3p) · 330 (4p)</td><td>Same double-counting error as Bank.</td></tr>
+      <tr><td>System ROI table headline</td><td>"7 of 8 systems clear 1.0 ROI without upgrades"</td><td>"0 of 8 systems clear 1.0 ROI without upgrades"</td><td>Direct consequence of Act-scope correction; corrected ROI 0.30 – 0.70 across all systems.</td></tr>
+      <tr><td>Tier I payback (Rev Debt, 3p)</td><td class="n">1.3 laps</td><td class="n">11.67 laps</td><td>Old used total tier rent, not incremental rent. Corrected formula: increment × landings/lap × N_props.</td></tr>
+      <tr><td>Tier III payback (Manufactures)</td><td class="n">3.4 laps (warned)</td><td class="n">1.17 – 1.75 laps</td><td>Tier III is the <em>fastest</em> tier payback, not the dead upgrade.</td></tr>
+      <tr><td>Strategic Industry</td><td>"Late-game trap"</td><td>"Best Tier I payback in the game"</td><td>5.49 / 3.66 lap Tier I payback (3p/4p) is fastest among all systems.</td></tr>
+      <tr><td>Dominant strategy</td><td>Treasury / Finance ~ 23 % over mid</td><td>Merchant / Infrastructure (Routes) ~ 86 % over bottom (3p) · 351 % (4p)</td><td>Routes were not credited at correct rent rate; with all 4 owned, ROI 2.0 – 3.0.</td></tr>
+      <tr><td>Funding Act swing</td><td class="n">+ 250 TN</td><td class="n">+ 12 (3p) / + 18 (4p)</td><td>Same scope errors; Rev Debt base × 1.5 × 2 props × 7 laps × landings = small number.</td></tr>
+      <tr><td>Assumption Act swing</td><td class="n">+ 640 TN</td><td class="n">+ 69 (3p) / + 103 (4p)</td><td>Same scope errors; correct calc uses 6 post-Act laps.</td></tr>
+      <tr><td>Bank Charter swing</td><td class="n">+ 480 TN</td><td class="n">+ 160 (3p) / + 240 (4p)</td><td>Old used cost-of-Bank rather than payment-uplift × landings × remaining laps.</td></tr>
+      <tr><td>Bank ROI 3-player</td><td>Strong post-charter</td><td>0.77 (below break-even)</td><td>Old over-counted post-charter income. Bank in 3p actually loses rent vs cost — works only because Mint piggybacks on the Charter.</td></tr>
+      <tr><td>Capacity track end-game</td><td>"5 – 6"</td><td>"3 – 5"</td><td>More conservative estimate; only one Act adds to it.</td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="ord">§ 11</span>Recommendations</h2>
+
+  <h3>R-01 · Coinage Act buff <span class="tag-low">survives</span></h3>
+  <div class="box">
+    <p><strong>Current:</strong> Mint owner collects 25 TN per other player. Public Credit +1.</p>
+    <p><strong>Proposed:</strong> Mint owner collects 50 TN per other player. Public Credit +1. <em>Industrial Capacity +1.</em></p>
+    <p><strong>Formula:</strong> Coinage at 25 × (N−1) yields 50 – 75 TN of one-time cash; Assumption yields ~ 100 TN of permanent rent and Bank Charter yields ~ 240 TN. Doubling Coinage brings it to 100 – 150 TN and adds Capacity momentum.</p>
+    <p><strong>Confidence: high.</strong> Survives corrected math.</p>
+  </div>
+
+  <h3>R-02 · Industrial Capacity threshold lower <span class="tag-low">survives</span></h3>
+  <div class="box">
+    <p><strong>Current:</strong> ≥ 8 = +25 % Mfg/Strategic payments. ≥ 10 = +2 Influence to those owners at game end.</p>
+    <p><strong>Proposed:</strong> ≥ 6 = +25 %. ≥ 8 = +2 Inf bonus.</p>
+    <p><strong>Formula:</strong> Capacity reaches 3–5 in expected play; threshold 8 reached in ~ 15–20 % of games; threshold 10 unreachable without targeted card draws. Lowering both thresholds by 2 aligns with the track's actual movement range.</p>
+    <p><strong>Confidence: high.</strong></p>
+  </div>
+
+  <h3>R-03 · Strategic Industry pricing <span class="tag-low">does NOT survive</span></h3>
+  <div class="box">
+    <p>The prior audit proposed reducing Armory 350 → 300 and Shipbuilding 400 → 350 on the theory that Strategic Industry is a late-game trap. <strong>Corrected math shows Strategic Industry has the best Tier I payback in the game</strong> (5.49 laps in 3p, 3.66 in 4p — the only Tier I that clears the 7-lap ceiling in 3-player). It is not a trap; it is one of the most efficient upgrade paths. <em>Recommendation withdrawn.</em></p>
+  </div>
+
+  <h3>R-04 · Mint pricing increase <span class="tag-low">survives, weakened</span></h3>
+  <div class="box">
+    <p><strong>Current:</strong> Mint 150 TN. Returns 220 (3p) / 330 (4p) over the game.</p>
+    <p><strong>Proposed:</strong> Mint 200 TN.</p>
+    <p><strong>Formula:</strong> Mint ROI 1.47 (3p) / 2.20 (4p) at 150 TN. At 200 TN, ROI becomes 1.10 / 1.65 — still positive but no longer the strongest standalone purchase. The Mint also depends on the Bank, which adds risk that should price in.</p>
+    <p><strong>Confidence: medium.</strong> Old recommendation said "Mint returns 1 180 TN" which was wrong by 5×; the underlying intuition (Mint is a discount-priced combo asset) still holds, but the urgency is lower.</p>
+  </div>
+
+  <h3>R-05 · Rev Debt base rents +1 <span class="tag-low">survives, strengthened</span></h3>
+  <div class="box">
+    <p><strong>Current:</strong> Continental Certificates base 2, Soldier Pay base 4. Set ROI 0.30 (3p) / 0.45 (4p). Tier I payback 11.67 laps (3p) / 7.77 (4p) — both fail the 7-lap test.</p>
+    <p><strong>Proposed:</strong> Continental Certificates base 4, Soldier Pay base 6. Set ROI 0.60 (3p) / 0.90 (4p). Tier I payback 7.0 (3p) / 4.67 (4p).</p>
+    <p><strong>Formula:</strong> Rev Debt is the only system where even Tier I (the most efficient upgrade tier numerically) exceeds the 7-lap ceiling in 4-player. A +1 base lift across both properties brings Tier I payback under the ceiling in both player counts.</p>
+    <p><strong>Confidence: high.</strong> The corrected math shows this is more urgent than the prior audit estimated.</p>
+  </div>
+
+  <h3>R-06 · Tier III cost relief <span class="tag-low">does NOT survive</span></h3>
+  <div class="box">
+    <p>The prior audit proposed reducing Tier III upgrade cost to 75 % of its listed value. <strong>Corrected math shows Tier III pays back in 0.7 – 2.3 laps across all systems</strong> — the fastest tier in the game. Reducing its cost would tip Tier III into "automatic upgrade" territory and erode the cost ladder. <em>Recommendation withdrawn.</em></p>
+  </div>
+
+  <h3>R-07 · Route ladder rebalance <span class="tag-low">new</span></h3>
+  <div class="box">
+    <p><strong>Current:</strong> 25 / 50 / 100 / 200 TN per landing for 1 / 2 / 3 / 4 routes. Cost 200 TN each, total 800.</p>
+    <p><strong>Proposed:</strong> 25 / 50 / 100 / 150 TN. Drops the grand-slam payment by 25 %.</p>
+    <p><strong>Formula:</strong> 4-route grand slam currently returns 1 600 TN (3p) / 2 400 TN (4p) — 2.0× / 3.0× cost. No other asset class clears 0.7 ROI without upgrades. Cutting the top step to 150 TN brings ROI to 1.5 / 2.25 — still the best in class but no longer the only path to a winning rent income. This also lowers the 4-player spread from 351 % toward the 80 % ceiling.</p>
+    <p><strong>Confidence: high.</strong> The route ladder is the largest single imbalance the corrected math surfaced.</p>
+  </div>
+
+  <h3>R-08 · Tier I cost relief <span class="tag-low">new</span></h3>
+  <div class="box">
+    <p><strong>Current:</strong> Tier I cost = listed upgrade value × N_props. Tier I payback exceeds 7 laps for 7 of 8 systems in 3-player.</p>
+    <p><strong>Proposed:</strong> Tier I cost reduced to 75 % of listed value (round to 5). Tier II and III costs unchanged.</p>
+    <p><strong>Formula:</strong> Reduces Set→I payback by 25 %; Rev Debt 3p goes 11.67 → 8.75 (still over), State Debt 8.75 → 6.56 (passes), six other systems land between 5.8 and 6.0 laps.</p>
+    <p><strong>Confidence: medium.</strong> The economy is currently <em>upgrade-gated</em> in a way that may be intentional design — forcing players to commit to one or two sets they can fully tier up rather than spreading wide. Lowering Tier I cost reduces that pressure. Playtest before applying.</p>
+  </div>
+
+  <p style="margin-top:8px"><strong>Path to v0.2:</strong> apply R-01, R-02, R-05, and R-07 — these have high confidence and direct math support. Hold R-04 and R-08 for playtest evidence. Withdraw R-03 and R-06. </p>
+
+  <div class="signature"><span>Sovereign · Economy Math Audit · corrected</span><span>FC-EM-002 · 6 / 6 · End</span></div>
+</section>
+
+</div>
+</body>
+</html>

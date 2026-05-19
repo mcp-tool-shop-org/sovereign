@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sovereign · v0.10 · Start Here</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --parchment:        #F0E6CD;
+    --parchment-2:      #E6DABC;
+    --ink:              #1A1612;
+    --navy:             #1F2D52;
+    --gold:             #C28A28;
+    --crimson:          #C8392E;
+    --rule:             rgba(26,22,18,0.55);
+    --rule-soft:        rgba(26,22,18,0.22);
+    --display: "Baskerville","Big Caslon","Hoefler Text","Garamond","Times New Roman",serif;
+    --body:    "Iowan Old Style","Georgia","Cambria","Times New Roman",serif;
+    --ui:      -apple-system,"Segoe UI","Helvetica Neue","Arial",system-ui,sans-serif;
+    --mono:    "SF Mono","Menlo","Consolas","Courier New",monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: var(--body);
+    color: var(--ink);
+    background: #2A2622;
+    line-height: 1.55;
+  }
+  .page {
+    max-width: 920px;
+    margin: 32px auto;
+    background: var(--parchment);
+    padding: 56px 64px 80px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.5), 0 2px 4px rgba(0,0,0,.4);
+    position: relative;
+  }
+  .page::before {
+    content: ""; position: absolute; inset: 14px;
+    border: 1px solid var(--rule-soft); pointer-events: none;
+  }
+
+  /* HERO */
+  .hero { text-align: center; padding: 24px 0 32px; border-bottom: 1px solid var(--rule); margin-bottom: 36px; }
+  .hero .eyebrow {
+    font-family: var(--ui); font-size: 10px; letter-spacing: .38em; text-transform: uppercase;
+    color: var(--navy); margin-bottom: 18px;
+  }
+  .hero .sigil { margin: 0 auto 18px; display: block; }
+  .hero h1 {
+    font-family: var(--display); font-size: 64px; line-height: 1; margin: 0 0 6px;
+    letter-spacing: .02em; color: var(--ink);
+  }
+  .hero .lockup {
+    font-family: var(--display); font-style: italic; font-size: 20px; letter-spacing: 0;
+    color: var(--navy); margin-bottom: 14px;
+  }
+  .hero .tagline {
+    font-family: var(--display); font-style: italic; font-size: 14px; color: var(--ink);
+    opacity: .85; max-width: 540px; margin: 0 auto 22px;
+  }
+  .hero .freeze {
+    display: inline-block;
+    background: var(--navy); color: var(--parchment);
+    font-family: var(--ui); font-size: 10px; letter-spacing: .26em; text-transform: uppercase;
+    padding: 7px 14px; border-radius: 2px;
+  }
+
+  h2 {
+    font-family: var(--display); font-size: 22px; letter-spacing: 0;
+    margin: 36px 0 14px; padding-bottom: 6px; border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+  }
+  h3 {
+    font-family: var(--ui); font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--navy); margin: 22px 0 10px;
+  }
+  p { margin: 0 0 12px; }
+  p.lead { font-size: 16px; line-height: 1.6; }
+
+  /* AUDIENCE GRID */
+  .audiences {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 18px 0;
+  }
+  .audience {
+    border: 1px solid var(--rule-soft);
+    padding: 18px 20px;
+    background: rgba(255,255,255,.18);
+    transition: background .12s, border-color .12s;
+  }
+  .audience:hover { background: rgba(255,255,255,.32); border-color: var(--rule); }
+  .audience .tag {
+    font-family: var(--ui); font-size: 9px; letter-spacing: .26em; text-transform: uppercase;
+    color: var(--crimson); display: block; margin-bottom: 6px;
+  }
+  .audience .name {
+    font-family: var(--display); font-size: 19px; margin-bottom: 4px; color: var(--ink);
+  }
+  .audience .desc { font-size: 13px; color: var(--ink); opacity: .85; margin-bottom: 10px; }
+  .audience a {
+    font-family: var(--ui); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--navy); text-decoration: none; border-bottom: 1px solid var(--navy);
+  }
+  .audience a:hover { color: var(--crimson); border-color: var(--crimson); }
+
+  /* TABLES */
+  table {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--body); font-size: 13px;
+    margin: 8px 0 18px;
+  }
+  th {
+    text-align: left; padding: 8px 10px 6px; border-bottom: 1px solid var(--rule);
+    font-family: var(--ui); font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--navy); font-weight: 700;
+  }
+  td {
+    padding: 7px 10px; border-bottom: 1px solid var(--rule-soft); vertical-align: top;
+  }
+  td.n { font-family: var(--mono); text-align: right; font-size: 12px; }
+  td.v { font-family: var(--ui); font-size: 10.5px; letter-spacing: .04em; }
+  .pass { color: #2C6E2C; font-weight: 700; }
+
+  /* FILE LIST */
+  .files {
+    display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px;
+    font-family: var(--mono); font-size: 12px; margin: 8px 0 18px;
+  }
+  .files a {
+    color: var(--navy); text-decoration: none; border-bottom: 1px dotted var(--rule-soft);
+  }
+  .files a:hover { color: var(--crimson); border-color: var(--crimson); }
+  .files .dir { color: var(--ink); opacity: .6; font-style: italic; }
+  .files .desc { font-family: var(--body); font-size: 12.5px; color: var(--ink); opacity: .82; }
+
+  /* VERSION TRACE */
+  .vtrace {
+    font-family: var(--mono); font-size: 12px; line-height: 1.6;
+    background: rgba(255,255,255,.18); padding: 14px 18px; border-left: 3px solid var(--navy);
+    margin: 8px 0 18px;
+  }
+  .vtrace .v { color: var(--navy); font-weight: 700; display: inline-block; min-width: 60px; }
+  .vtrace .frozen { color: var(--crimson); font-weight: 700; }
+
+  /* CAVEATS */
+  .caveats { font-size: 13px; }
+  .caveats li { margin: 6px 0; }
+
+  /* FOOTER */
+  footer {
+    margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--rule);
+    font-family: var(--ui); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink); opacity: .7; display: flex; justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <section class="hero">
+    <div class="eyebrow">A Hamiltonian economic strategy game</div>
+
+    <svg class="sigil" width="84" height="84" viewBox="0 0 84 84" aria-hidden="true">
+      <circle cx="42" cy="42" r="40" fill="none" stroke="#1F2D52" stroke-width="1.5"/>
+      <circle cx="42" cy="42" r="34" fill="none" stroke="#C28A28" stroke-width="0.8"/>
+      <path d="M42 12 L42 72 M12 42 L72 42" stroke="#1F2D52" stroke-width="0.6" opacity="0.4"/>
+      <text x="42" y="48" text-anchor="middle" font-family="Baskerville, Georgia, serif" font-size="22" fill="#1F2D52" font-style="italic">S</text>
+      <circle cx="42" cy="42" r="2" fill="#C28A28"/>
+    </svg>
+
+    <h1>SOVEREIGN</h1>
+    <div class="lockup">The Hamilton System Board Game</div>
+    <div class="tagline">Founding Credit · Fund the debt. Build the bank. Industrialize the republic.</div>
+    <span class="freeze">v0.10 Balance Baseline · Frozen 2026-05-19</span>
+  </section>
+
+
+  <p class="lead">
+    Sovereign is two artifacts and one design thesis. A printable 34-sheet
+    <strong>board game</strong> about the founding of US public credit, and a
+    self-contained <strong>solo / digital adaptation</strong> that plays the same game
+    locally in a browser against two deterministic scripted opponents. Both
+    are frozen at the v0.10 balance baseline, after a nine-version balance arc
+    driven by simulation evidence rather than guesswork.
+  </p>
+
+
+  <h2>Pick your path</h2>
+
+  <div class="audiences">
+
+    <div class="audience">
+      <span class="tag">Player</span>
+      <div class="name">Play the game</div>
+      <div class="desc">Open the digital simulator and play a 7-lap solo game against Hamilton (Treasury) and Morris (Merchant). No installer, no internet, no account.</div>
+      <a href="digital-mode/sovereign-solo.html">Open the game →</a>
+    </div>
+
+    <div class="audience">
+      <span class="tag">Designer</span>
+      <div class="name">Read the design</div>
+      <div class="desc">Start with the printable board game, then the solo / digital concept document that defined the digital adaptation before any code was written.</div>
+      <a href="board-game/sovereign-prototype.html">Board game →</a>
+      &nbsp; · &nbsp;
+      <a href="design-history/01-phase1-concept.html">Concept →</a>
+    </div>
+
+    <div class="audience">
+      <span class="tag">Balance Analyst</span>
+      <div class="name">Read the evidence</div>
+      <div class="desc">Five batch reports (CANONICAL × 100, CANONICAL × 400 reinforcement, three mirror matchups, and a slot-swap diagnostic) plus a cross-config summary.</div>
+      <a href="balance-evidence/sovereign-batch-v0.10-summary.html">Cross-config summary →</a>
+      &nbsp; · &nbsp;
+      <a href="balance-evidence/sovereign-batch-v0.10-canonical.html">CANONICAL →</a>
+    </div>
+
+    <div class="audience">
+      <span class="tag">Auditor</span>
+      <div class="name">Verify the freeze</div>
+      <div class="desc">38-check freeze audit plus historical Phase 3–5 audits showing the layered build was clean at every gate.</div>
+      <a href="digital-mode/sovereign-v0.10-freeze-audit.html">Freeze audit →</a>
+      &nbsp; · &nbsp;
+      <a href="board-game/sovereign-economy-audit.html">Economy audit →</a>
+    </div>
+
+  </div>
+
+
+  <h2>Headline numbers</h2>
+
+  <p>CANONICAL configuration (1 human + 2 scripted opponents), 100 deterministic games, seeds 2026–2125. Reinforced by a CANONICAL × 400 pass.</p>
+
+  <table>
+    <thead>
+      <tr><th>Metric</th><th>Target</th><th>v0.10</th><th>Verdict</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Treasury / Finance wins</td><td class="v">45–65%</td><td class="n">59 / 100</td><td><span class="pass">PASS</span></td></tr>
+      <tr><td>Merchant / Infrastructure wins</td><td class="v">15–35%</td><td class="n">25 / 100</td><td><span class="pass">PASS</span></td></tr>
+      <tr><td>Manufacturer / Industry wins</td><td class="v">10–25%</td><td class="n">16 / 100</td><td><span class="pass">PASS</span></td></tr>
+      <tr><td>Median winning margin</td><td class="v">≥ 2 IP</td><td class="n">3 IP</td><td><span class="pass">PASS</span></td></tr>
+      <tr><td>Route 4+ frequency</td><td class="v">low</td><td class="n">8 / 100</td><td><span class="pass">PASS</span></td></tr>
+      <tr><td>Determinism (byte-identical re-run)</td><td class="v">PASS</td><td class="n">PASS</td><td><span class="pass">PASS</span></td></tr>
+      <tr><td>CANONICAL × 400 reinforcement</td><td class="v">—</td><td class="n">Treasury 244 / 400 = 61.0%</td><td><span class="pass">in band</span></td></tr>
+    </tbody>
+  </table>
+
+
+  <h2>Version trace</h2>
+
+  <div class="vtrace">
+    <div><span class="v">v0.2</span>Board-game balance baseline (Hamilton thesis intact)</div>
+    <div><span class="v">v0.3</span>NF Credit nerf · Manufactures capital event · Capacity boost</div>
+    <div><span class="v">v0.4</span>Capacity ≥ 10 milestone · industrial set bonuses</div>
+    <div><span class="v">v0.5</span>Capacity +1 on industrial purchase</div>
+    <div><span class="v">v0.6</span>Manufacturer set-completion gate relaxed</div>
+    <div><span class="v">v0.7</span>Acquisition funnel telemetry (diagnostic, no game change)</div>
+    <div><span class="v">v0.8</span>Manufacturer starting Industrial Charter</div>
+    <div><span class="v">v0.9</span>Scoring decomposition telemetry (diagnostic, no game change)</div>
+    <div><span class="v">v0.10</span>Cash scoring 1 IP per 200 TN → 1 IP per 400 TN &nbsp; <span class="frozen">← FROZEN</span></div>
+  </div>
+
+  <p>See <a href="CHANGELOG.md" style="color:var(--navy);">CHANGELOG.md</a> for the full narrative — what each balance change attempted, what the evidence showed, and why the next lever was chosen.</p>
+
+
+  <h2>Bundle layout</h2>
+
+  <h3>Top level</h3>
+  <div class="files">
+    <a href="00-START-HERE.html">00-START-HERE.html</a><span class="desc">This file. Hyperlinked entry point.</span>
+    <a href="README.txt">README.txt</a><span class="desc">Plain-text version for terminal / grep users.</span>
+    <a href="CHANGELOG.md">CHANGELOG.md</a><span class="desc">Full v0.2 → v0.10 balance evolution.</span>
+  </div>
+
+  <h3>Board game</h3>
+  <div class="files">
+    <a href="board-game/sovereign-prototype.html">sovereign-prototype.html</a><span class="desc">The printable 34-sheet board game. Open in browser, then print to PDF.</span>
+    <a href="board-game/sovereign-economy-audit.html">sovereign-economy-audit.html</a><span class="desc">FC-EM-002 corrected expected-value economy audit.</span>
+    <a href="board-game/sovereign-print-audit.html">sovereign-print-audit.html</a><span class="desc">Print / digital usability audit.</span>
+  </div>
+
+  <h3>Digital mode</h3>
+  <div class="files">
+    <a href="digital-mode/sovereign-solo.html">sovereign-solo.html</a><span class="desc">The v0.10 frozen solo simulator. The game.</span>
+    <a href="digital-mode/sovereign-v0.10-freeze-audit.html">sovereign-v0.10-freeze-audit.html</a><span class="desc">38-check freeze audit report.</span>
+  </div>
+
+  <h3>Balance evidence</h3>
+  <div class="files">
+    <a href="balance-evidence/sovereign-batch-v0.10-summary.html">summary.html</a><span class="desc">Cross-config aggregate.</span>
+    <a href="balance-evidence/sovereign-batch-v0.10-canonical.html">canonical.html</a><span class="desc">T × Mc × Mfg, 100 games.</span>
+    <a href="balance-evidence/sovereign-batch-v0.10-canonical-400.html">canonical-400.html</a><span class="desc">T × Mc × Mfg, 400-game reinforcement.</span>
+    <a href="balance-evidence/sovereign-batch-v0.10-tf-mirror.html">tf-mirror.html</a><span class="desc">3 × Treasury / Finance mirror.</span>
+    <a href="balance-evidence/sovereign-batch-v0.10-mc-mirror.html">mc-mirror.html</a><span class="desc">3 × Merchant / Infrastructure mirror.</span>
+    <a href="balance-evidence/sovereign-batch-v0.10-mfg-mirror.html">mfg-mirror.html</a><span class="desc">3 × Manufacturer / Industry mirror.</span>
+    <a href="balance-evidence/sovereign-batch-v0.10-canonical-slot-swap.html">slot-swap.html</a><span class="desc">Charter-vs-slot diagnostic control.</span>
+    <span class="dir">raw-data/</span><span class="desc">Per-game JSON exports for every batch.</span>
+  </div>
+
+  <h3>Design history</h3>
+  <div class="files">
+    <a href="design-history/01-phase1-concept.html">01-phase1-concept.html</a><span class="desc">Solo / Digital Mode concept document.</span>
+    <a href="design-history/02-phase2-prototype.html">02-phase2-prototype.html</a><span class="desc">Static clickable prototype (8 surfaces, 11-step walkthrough).</span>
+    <a href="design-history/03-phase3-audit.html">03-phase3-audit.html</a><span class="desc">Local state machine freeze audit.</span>
+    <a href="design-history/04-phase4-audit.html">04-phase4-audit.html</a><span class="desc">Scripted opponents freeze audit.</span>
+    <a href="design-history/05-phase5-audit.html">05-phase5-audit.html</a><span class="desc">Narration / replay / save freeze audit.</span>
+  </div>
+
+
+  <h2>Operating model</h2>
+  <p>Local-only. No network calls. No accounts. No cloud sync. No LLM opponents. Single RNG: <span style="font-family:var(--mono);font-size:12.5px;">mulberry32(state.rngSeed)</span>. Telemetry is reporting-side and never mutates game state. The full game, all profiles, all telemetry, and all batch infrastructure live in one self-contained HTML file.</p>
+
+
+  <h2>Known caveats</h2>
+  <ul class="caveats">
+    <li><strong>Capacity thresholds remain rare in canonical play.</strong> Avg final Capacity is 3.49; ≥ 6 reached in only 4 / 100 games. The endgame industrial scoring exists as a ceiling, not a regular path.</li>
+    <li><strong>Treasury / Finance remains intentionally strongest</strong>, within the target band. This matches the historical thesis: public credit and federal finance were Hamilton's dominant economic lever.</li>
+    <li><strong>Failure events fired 0 / 400 times</strong> in the v0.10 evidence pass. Default / Rebellion / Bankruptcy threats are currently decorative; a future version may revisit fail-state pressure.</li>
+    <li><strong>Simulation-tested only.</strong> Over 1,000 deterministic games across the v0.3 → v0.10 arc. Not yet human-playtested; strategic deviation may shift these rates.</li>
+    <li><strong>Three-profile competitive set.</strong> The Opportunist / Cash profile from the concept document is deferred. The locked v0.10 lineup is Treasury / Merchant / Manufacturer.</li>
+  </ul>
+
+
+  <footer>
+    <span>Sovereign · v0.10 Balance Baseline</span>
+    <span>FROZEN · 2026-05-19</span>
+  </footer>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sovereign · Solo / Digital · Phase 4 Audit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root {
+  --revolutionary-debt:#6E1F1E; --state-debt:#4A6B8A; --revenue-system:#C28A28;
+  --commercial-infrastructure:#2E7A6B; --national-finance:#1F2D52;
+  --manufactures:#8C8A2E; --strategic-industry:#3A3A3A;
+  --parchment:#F0E6CD; --parchment-2:#E6DABC; --ink:#1A1612; --highlight:#C8392E;
+  --rule:rgba(26,22,18,0.55); --rule-soft:rgba(26,22,18,0.22);
+  --display:"Baskerville","Big Caslon","Hoefler Text","Garamond","Times New Roman",serif;
+  --body:"Iowan Old Style","Georgia","Cambria","Times New Roman",serif;
+  --ui:-apple-system,"Segoe UI","Helvetica Neue","Arial",system-ui,sans-serif;
+  --mono:"SF Mono","Menlo","Consolas","Courier New",monospace;
+}
+@page { size:8.5in 11in; margin:.55in .65in; }
+*,*::before,*::after { box-sizing:border-box; }
+html,body { margin:0; padding:0; font-family:var(--body); color:var(--ink); background:#2A2622; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.viewport { display:flex; flex-direction:column; align-items:center; gap:22px; padding:28px 16px 80px; }
+.page { width:8.5in; min-height:11in; background:var(--parchment); position:relative; box-shadow:0 10px 40px rgba(0,0,0,.55),0 2px 4px rgba(0,0,0,.4); padding:.55in .65in .5in; }
+@media print {
+  html,body { background:#fff !important; }
+  .viewport { padding:0; gap:0; }
+  .page { box-shadow:none; padding:0; min-height:auto; width:100%; page-break-after:always; break-after:page; }
+  .page:last-child { page-break-after:auto; break-after:auto; }
+  .toolbar { display:none !important; }
+}
+.toolbar { position:fixed; top:16px; right:16px; z-index:30; }
+.toolbar button { background:var(--parchment); color:var(--ink); border:1px solid var(--ink); padding:8px 14px; font-family:var(--ui); font-size:12px; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; }
+.doc-head { display:flex; justify-content:space-between; align-items:baseline; padding-bottom:6px; border-bottom:1px solid var(--ink); font-family:var(--ui); font-size:9.5px; letter-spacing:.22em; text-transform:uppercase; margin-bottom:16px; }
+.doc-head .brand-mark { font-weight:700; letter-spacing:.32em; }
+.doc-head .sigil { font-family:var(--display); font-style:italic; letter-spacing:0; text-transform:none; font-size:12px; }
+h1.title { font-family:var(--display); font-weight:400; font-size:38px; line-height:1; margin:0 0 4px; letter-spacing:-.01em; }
+.subtitle { font-family:var(--display); font-style:italic; font-size:14px; margin-bottom:12px; }
+.lede { font-family:var(--display); font-style:italic; font-size:13px; line-height:1.45; max-width:64ch; margin:0 0 14px; }
+h2 { font-family:var(--display); font-weight:400; font-size:20px; margin:16px 0 6px; border-bottom:1px solid var(--ink); padding-bottom:3px; }
+h2 .ord { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; opacity:.65; margin-right:8px; }
+h3 { font-family:var(--ui); font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; margin:10px 0 4px; }
+p,li { font-family:var(--body); font-size:11px; line-height:1.5; margin:0 0 5px; }
+ul,ol { padding-left:18px; margin:0 0 6px; }
+strong { font-family:var(--display); font-weight:700; }
+em { font-style:italic; }
+.mono,code { font-family:var(--mono); font-size:10px; }
+table { width:100%; border-collapse:collapse; margin:6px 0 10px; font-size:9.5px; }
+th,td { text-align:left; vertical-align:top; padding:3px 6px; line-height:1.35; border-bottom:.5px solid var(--rule-soft); }
+th { font-family:var(--ui); font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:8.5px; background:var(--ink); color:var(--parchment); border-bottom:1px solid var(--ink); }
+td.n { font-family:var(--mono); font-size:10px; text-align:right; }
+td.v { font-family:var(--ui); font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+td.v.pass { color:var(--commercial-infrastructure); }
+td.v.warn { color:#B07A1F; }
+td.v.fail { color:var(--highlight); }
+.tag-pass { background:rgba(46,122,107,0.15); padding:1px 6px; font-family:var(--ui); font-size:8.5px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--commercial-infrastructure); }
+.tag-warn { background:rgba(176,122,31,0.15); padding:1px 6px; font-family:var(--ui); font-size:8.5px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:#B07A1F; }
+.tag-fail { background:rgba(200,57,46,0.15); padding:1px 6px; font-family:var(--ui); font-size:8.5px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--highlight); }
+.verdict { padding:12px 14px; border:1.5px solid var(--ink); background:var(--parchment-2); margin:10px 0; position:relative; }
+.verdict::before { content:""; position:absolute; inset:5px; border:.5px solid var(--rule-soft); pointer-events:none; }
+.verdict .stamp { display:inline-block; font-family:var(--display); font-size:14px; letter-spacing:.12em; text-transform:uppercase; border:1.5px solid #B07A1F; color:#B07A1F; padding:4px 10px; margin-bottom:6px; background:var(--parchment); }
+.verdict h3 { font-family:var(--display); font-weight:400; font-size:18px; text-transform:none; letter-spacing:0; margin:0 0 6px; }
+.bug { padding:8px 12px; border:1px solid var(--ink); background:var(--parchment-2); margin:8px 0; }
+.bug h4 { font-family:var(--display); font-weight:700; font-size:13px; margin:0 0 4px; }
+.bug .where { font-family:var(--mono); font-size:9.5px; opacity:.75; }
+.bug .repro { font-family:var(--body); font-size:10.5px; margin:4px 0; }
+.bug .patch { font-family:var(--mono); font-size:9.5px; background:rgba(26,22,18,0.04); border-left:2px solid var(--ink); padding:5px 8px; margin-top:4px; white-space:pre-wrap; }
+.signature { margin-top:14px; padding-top:8px; border-top:1px solid var(--ink); display:flex; justify-content:space-between; font-family:var(--ui); font-size:8.5px; letter-spacing:.16em; text-transform:uppercase; }
+</style>
+</head>
+<body>
+
+<div class="toolbar"><button onclick="window.print()">Print / Save PDF</button></div>
+
+<div class="viewport">
+
+<section class="page">
+  <header class="doc-head">
+    <span class="brand-mark">SOVEREIGN</span>
+    <span class="sigil">Solo / Digital · Phase 4 audit</span>
+    <span>1 / 4</span>
+  </header>
+
+  <h1 class="title">Phase 4 Audit</h1>
+  <div class="subtitle">Scripted opponents · FC-AU-003 · audit of sovereign-solo-phase4-scripted-opponents.html</div>
+
+  <p class="lede">Twelve checks verified against the source. Phase 4 successfully migrates Phase 3's solo state machine to a 3-player table with two deterministic profiles, auctions, and multi-player rent. Two critical bugs, three high/medium bugs, and one cleanup found.</p>
+
+  <h2><span class="ord">§ 01</span>Verdict</h2>
+  <div class="verdict">
+    <div class="stamp">Pass with fixes</div>
+    <h3>Functional. Two critical patches block freeze; three additional fixes recommended before Phase 5.</h3>
+    <p>Card-driven movement (Yellow Fever) and card-driven auctions (Speculation Fever) are both broken by the same root cause: <code>finishLanding()</code> unconditionally ends the turn after a card resolves, clobbering any sub-phase the card set up (auction) or any deferred landing-resolution flag (movement). These are the freeze blockers. The remaining issues are: failed Acts don't actually re-queue (ledger claims they will), opponent <code>decideBuy / decideAuctionBid</code> reasons are dropped at the BUY/DECLINE_ASSET boundary, Crisis-exit ignores the doubles/skip options, and Strict Construction's opponent choice is hardcoded instead of profile-driven.</p>
+  </div>
+
+  <h2><span class="ord">§ 02</span>Checklist · 12 of 12</h2>
+  <table>
+    <thead><tr><th>#</th><th>Check</th><th>Verdict</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="n">01</td><td><code>players[]</code> migration · 3 entries · activePlayerIndex rotates · endgame scores all 3</td><td class="v pass">Pass</td><td>3 players in <code>initialState()</code>. No orphan <code>state.player</code> refs found. Lap advances only when <code>activePlayerIndex</code> returns to 0 (in END_TURN). Endgame iterates all players.</td></tr>
+      <tr><td class="n">02</td><td>Reducer action surface · 16 Phase 3 actions + AUCTION_BID</td><td class="v pass">Pass</td><td>All 17 cases present, exhaustive switch, every dispatch writes ledger via <code>logRow</code> or its helpers.</td></tr>
+      <tr><td class="n">03</td><td>Determinism · seed feeds all RNG; no Date.now / Math.random</td><td class="v pass">Pass</td><td>Mulberry32 unchanged. Opponent decisions are pure on (state, playerIndex). <code>setTimeout</code> only affects UI cadence, not state. Tie-breaking in auctions is by turn order, deterministic.</td></tr>
+      <tr><td class="n">04</td><td>Opponent profiles match spec</td><td class="v pass">Pass</td><td>Treasury/Finance: NF > State Debt > Rev Debt > Bank > Mint; 90 % auction cap; vote rules per spec; Bank force-fee gated on owning Bank + Charter pending. Merchant/Infrastructure: routes first; 100 % cap on routes, 85 % on Commerce/Improvements; Tariff force-fee gated on Resistance ≤ 4. Every decision logs a reason referencing visible state.</td></tr>
+      <tr><td class="n">05</td><td>Auctions · DECLINE → auction · ladder · payment · tie-break</td><td class="v warn">Partial</td><td>Auction flow works for normal DECLINE_ASSET. Bidding starts to decliner's left, decliner bids last. Highest bid pays bid (not list), unsold → unowned, ties broken by turn order via "&gt;" not "&ge;". <strong>Bug:</strong> card-triggered auctions (Speculation Fever) are clobbered by finishLanding. See BUG-02.</td></tr>
+      <tr><td class="n">06</td><td>Multi-player rent · all formulas</td><td class="v pass">Pass</td><td><code>computeRent()</code> implements: full-set ×2, tiers ×5/15/30, Funding ×1.5 permanent, Assumption ×2 permanent, Tariff ×1.5 permanent, Capacity ≥ 6 +25 %, route ladder 25/50/100/150, Credit ≤ 2 routes-halve, Bank 4×/10× dice, Mint 0/10×/20× dice. Owner never pays self (checked in RESOLVE_LANDING). Rent transfer ledgered with payer/payee/amount.</td></tr>
+      <tr><td class="n">07</td><td>Round modifiers expire correctly</td><td class="v pass">Pass</td><td>All flag-based modifiers use <code>=== s.lap</code> comparison; once lap advances the check fails naturally. Shipping Disruption uses <code>turnIndex</code> + 3 (spans one round in 3-player). Excise / Cotton Gin / Treaty / Bank Run / Anti-Fed Pamphlet all checked correctly in <code>computeRent</code> or in their card resolves.</td></tr>
+      <tr><td class="n">08</td><td>Acts and voting · majority of 3 · force-fee</td><td class="v warn">Partial</td><td>CAST_VOTE collects votes from all 3 players; majority (2 or 3 YES) passes. Ties never occur with 3 binary votes (1-2 always fails by majority rule, no abstention path). Passed Acts apply once. Force-fee logic exists in profile <code>decideEarlyVoteFee()</code> but is <strong>never called</strong> in the reducer. See BUG-04. Failed Acts log "will re-queue next lap" but don't actually re-queue. See BUG-03.</td></tr>
+      <tr><td class="n">09</td><td>Track thresholds in multi-player context</td><td class="v pass">Pass</td><td>Default applies cash-halve + random upgrade loss to <em>all 3 players</em>. Rebellion zeroes Revenue tiers across all players, sends owner of space 14 to Crisis if any player owns it. Capacity ≥ 6 affects rent in <code>computeRent</code>. Capacity ≥ 8 affects endgame.</td></tr>
+      <tr><td class="n">10</td><td>Endgame scoring · all 3 players · bug-03 preserved</td><td class="v pass">Pass</td><td><code>scorePlayer()</code> applies v0.2 categories per player. Capacity ≥ 8 uses correct per-system formula (+2/+2, max +4). National Finance split uses actual NF-owner count. Bankruptcy penalty applied per player. Winner card highlights highest <code>finalScores[].total</code>.</td></tr>
+      <tr><td class="n">11</td><td>UI integrity · 3 tokens · active indicator · panels · no placeholders</td><td class="v pass">Pass</td><td>Three colored tokens render on board; active player shown via header pill, board-center active line, and outlined opponent card. Auction panel hidden except during auction phase. No "demo" or "placeholder" pills in runtime UI. No dev-aside comments in source.</td></tr>
+      <tr><td class="n">12</td><td>Phase boundary · no LLM, no backend, no 4-player</td><td class="v pass">Pass</td><td>Source is vanilla JS only. No network calls. No 4-player mode. Profiles list contains only Treasury/Finance and Merchant/Infrastructure.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="signature"><span>Sovereign · Phase 4 Audit · FC-AU-003</span><span>1 / 4</span></div>
+</section>
+
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Critical bugs · 01–02</span><span>2 / 4</span></header>
+
+  <h2><span class="ord">§ 03</span>Bugs Found</h2>
+
+  <div class="bug">
+    <h4>BUG-01 · <span class="tag-fail">Critical</span> · Card-driven movement (Yellow Fever) skips landing resolution</h4>
+    <div class="where">Source: <code>finishLanding()</code> and Market Shock card #8 "Yellow Fever Outbreak". <code>RESOLVE_CARD</code> calls <code>finishLanding(s)</code> which unconditionally calls <code>END_TURN</code>. Yellow Fever sets <code>s.pendingResolveLanding = true</code> intending to trigger a follow-up RESOLVE_LANDING for the new position. But END_TURN advances <code>activePlayerIndex</code> first. The <code>queueMicrotask</code> check then dispatches RESOLVE_LANDING for the <em>next</em> player at whatever space they're standing on.</div>
+    <div class="repro">Land on a Market Shock space, draw Yellow Fever (card #8). Player moves to nearest Commercial Infrastructure. No rent is paid even when that space is owned by an opponent. Next player's turn begins and their turn's landing fires as if they had rolled and landed — but they haven't rolled yet. Ledger shows an out-of-order RESOLVE event.</div>
+    <div class="patch">// In finishLanding(s):
+function finishLanding(s) {
+  if (s.pendingResolveLanding) {
+    s.pendingResolveLanding = false;
+    return reduce(s, { type:'RESOLVE_LANDING' });
+  }
+  s.phase = 'awaiting-roll';
+  return reduce(s, { type:'END_TURN' });
+}
+
+// Remove the matching pendingResolveLanding check from dispatch()
+// since finishLanding now handles it inline before END_TURN.</div>
+  </div>
+
+  <div class="bug">
+    <h4>BUG-02 · <span class="tag-fail">Critical</span> · Card-driven auction (Speculation Fever) gets clobbered</h4>
+    <div class="where">Source: Market Shock card #3 "Speculation Fever" sets <code>s.pendingAuction</code> and <code>s.phase = 'auction'</code>. Then <code>RESOLVE_CARD</code> calls <code>finishLanding(s)</code>, which sets <code>s.phase = 'awaiting-roll'</code> and dispatches END_TURN — destroying the auction's phase before any bids can be collected.</div>
+    <div class="repro">Land on Market Shock, draw Speculation Fever. Track movement (Resistance +1) is logged. Auction is supposed to open for an unowned Rev/State Debt property. Instead the turn ends immediately and the auction is silently dropped. <code>pendingAuction</code> remains set on state but is never rendered or resolved.</div>
+    <div class="patch">// In finishLanding(s), respect card-set sub-phases:
+function finishLanding(s) {
+  if (s.phase === 'auction')        return s;  // auction is live, hold
+  if (s.phase === 'card-choice')    return s;  // sub-decision pending
+  if (s.pendingResolveLanding) {
+    s.pendingResolveLanding = false;
+    return reduce(s, { type:'RESOLVE_LANDING' });
+  }
+  s.phase = 'awaiting-roll';
+  return reduce(s, { type:'END_TURN' });
+}
+
+// And in processNextAuctionBid() resolution path, end the
+// triggering player's turn explicitly via END_TURN — already done.</div>
+  </div>
+
+  <div class="bug">
+    <h4>BUG-03 · <span class="tag-warn">High</span> · Failed Acts do not re-queue · ledger claims otherwise</h4>
+    <div class="where">Source: <code>CAST_VOTE</code> case logs "will re-queue next lap" when an Act fails, but the reducer doesn't modify <code>state.acts</code> beyond clearing <code>current</code>. On the next lap, <code>BEGIN_LAP</code> calls <code>ACTS.find(a =&gt; a.lap === s.lap)</code> which returns the canonical Act for that lap — the failed Act is gone.</div>
+    <div class="repro">Vote NO three times on the Funding Act in lap 1. Ledger says "Funding Act fails · will re-queue next lap." Lap 2 begins, Assumption Act is revealed for vote. Funding Act is never seen again. Per Phase 3 spec this was an accepted simplification — but the ledger claim is misleading.</div>
+    <div class="patch">// Option A (matches Phase 3 simplification): just fix the log
+- detail: act.name + ' fails ' + ... + ' · will re-queue next lap'
++ detail: act.name + ' fails ' + ... + ' · skipped (Phase 4 simplification; re-queue is Phase 5)'
+
+// Option B (proper re-queue): maintain state.acts.failed[] queue
+// and merge into BEGIN_LAP's act-lookup. Larger change; recommend
+// Option A for freeze.</div>
+  </div>
+
+  <div class="signature"><span>Sovereign · Phase 4 Audit · FC-AU-003</span><span>2 / 4</span></div>
+</section>
+
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Medium bugs · 04–06</span><span>3 / 4</span></header>
+
+  <div class="bug">
+    <h4>BUG-04 · <span class="tag-warn">High</span> · Opponent decision reasons lost at BUY_ASSET / DECLINE_ASSET</h4>
+    <div class="where">Source: <code>renderControls()</code> calls <code>dispatch({type:'BUY_ASSET', reason})</code> for opponents after computing <code>decideBuy()</code>. The BUY_ASSET reducer case reads <code>s.pendingLanding</code> but ignores <code>action.reason</code>. The opponent's profile reason ("aligned with profile; cash 820 ≥ cost+reserve 420") is dropped; the ledger logs only the generic "Buy Customs House" entry. Same story for DECLINE_ASSET. <code>decideEarlyVoteFee()</code> is similarly never called in the reducer.</div>
+    <div class="repro">Open the ledger after Hamilton (Treasury/Finance) buys an asset. The reason for the buy is not present. The human cannot read the rule that fired without inspecting the source. Spec requirement § 04 says "every decision logs a reason referencing visible state" — partially met for votes / bids, not met for buy / decline / upgrade for opponents.</div>
+    <div class="patch">// In BUY_ASSET:
+- s = logRow(s, { actor: p.name, event:'OWN',
+-                 detail:'Now owns ' + sp.name, cls:'cash' });
++ s = logRow(s, { actor: p.name, event:'OWN',
++                 detail:'Now owns ' + sp.name +
++                        (action.reason ? ' · ' + action.reason : ''),
++                 cls:'cash' });
+
+// In DECLINE_ASSET: same pattern.
+// In UPGRADE_ASSET: append action.reason if provided (already mostly done).
+// Also call profile.decideEarlyVoteFee(s, pIdx) in runOpponent()
+// before CAST_VOTE — currently the function is defined but never invoked.</div>
+  </div>
+
+  <div class="bug">
+    <h4>BUG-05 · <span class="tag-warn">Medium</span> · Crisis exit ignores doubles and skip-turn options</h4>
+    <div class="where">Source: <code>ROLL_DICE</code> case handles Crisis by auto-paying 50 TN if <code>p.cash &gt;= 50</code>, otherwise skipping. Rules give three options: (a) pay 50 TN, (b) roll doubles, (c) skip one full turn and exit on the following turn. Only (a) is implemented. The human is denied agency; opponents waste cash they could have saved by rolling doubles or skipping.</div>
+    <div class="repro">Land on Constitutional Crisis. Next turn, ROLL_DICE is dispatched. Cash is silently debited 50 TN before the dice are rolled. The human never sees a choice; opponents never roll for doubles.</div>
+    <div class="patch">// Split Crisis exit into a pre-roll sub-phase for the human:
+// when activePlayer is human and inCrisis, set phase='crisis-choice'
+// and render a 3-button UI (Pay 50 / Roll for doubles / Skip turn).
+// For opponents, use a profile-driven decision: roll if cash &lt; 100,
+// pay if cash ≥ 200, skip otherwise. Each path is deterministic
+// and writes its reason to the ledger.
+
+// Minimal patch for freeze: implement the human UI choice;
+// opponents continue with the pay-50 fallback (cheap to keep).</div>
+  </div>
+
+  <div class="bug">
+    <h4>BUG-06 · <span class="tag-warn">Low</span> · Strict Construction Objection · opponent choice hardcoded</h4>
+    <div class="where">Source: <code>DRAW_CARD</code> case, opponent-path. When an opponent draws a card with choices (only Strict Construction), code dispatches <code>RESOLVE_CARD_CHOICE</code> with <code>choiceIndex: 1</code> (always "pay 50 TN") via setTimeout. This is profile-blind: Merchant/Infrastructure might prefer Crisis (it preserves cash for the route grand-slam); Treasury/Finance might prefer paying.</div>
+    <div class="repro">Have an opponent land on a Republic Debate space and draw card #1. They always pay 50 TN. Profile asset priorities don't enter the decision.</div>
+    <div class="patch">// Add a decideCardChoice(profile, player, card, state) function
+// to each profile. Treasury/Finance: prefer paying. Merchant/Infra:
+// prefer Crisis when cash &lt; 200, else pay. Wire it in DRAW_CARD
+// opponent-path:
++ const profile = PROFILES[s.players[pIdx].profile];
++ const idx = profile.decideCardChoice
++               ? profile.decideCardChoice(s, pIdx, card)
++               : 1;
++ setTimeout(() =&gt; dispatch({type:'RESOLVE_CARD_CHOICE', choiceIndex: idx}), 250);</div>
+  </div>
+
+  <h2><span class="ord">§ 04</span>Non-Blocking Deviations</h2>
+  <ul>
+    <li><strong>Opponent auto-resolution timer.</strong> Opponent decisions fire via <code>setTimeout</code> in <code>renderControls()</code> at 250 ms. If <code>render()</code> is called repeatedly in fast succession (it isn't, but defensively), multiple timers could stack. Each fires with a guard (<code>if STATE.phase !== 'asset-decision' || STATE.activePlayerIndex === 0 return</code>) so behavior is correct but the pattern is fragile. Recommend moving the auto-resolve to a single queue inside <code>dispatch()</code> rather than render-bound.</li>
+    <li><strong>Failed-Act re-queue.</strong> Acknowledged Phase 3 simplification, but the ledger should be corrected (see BUG-03).</li>
+    <li><strong>End-of-game Influence on Default during lap 7.</strong> If Default fires after turn 21 (the human's last turn) but before END_TURN advances, the lap-7 increment may double-fire. Verified safe by inspection — <code>pendingDefault</code> is processed before END_TURN — but worth adding a regression test.</li>
+  </ul>
+
+  <div class="signature"><span>Sovereign · Phase 4 Audit · FC-AU-003</span><span>3 / 4</span></div>
+</section>
+
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Freeze verdict · patch order</span><span>4 / 4</span></header>
+
+  <h2><span class="ord">§ 05</span>Freeze Verdict</h2>
+  <div class="verdict">
+    <div class="stamp">Pass with fixes</div>
+    <h3>Apply BUG-01 and BUG-02 immediately. BUG-03 through BUG-06 before Phase 5 spec lock.</h3>
+    <p><strong>BUG-01</strong> and <strong>BUG-02</strong> are blockers: they break two specific cards in a way that produces incorrect game outcomes (missed rent, dropped auctions). The fix is two lines in <code>finishLanding()</code>. <strong>BUG-03</strong> is a misleading ledger string with no behavioral consequence — fix in either a five-character text edit or a Phase 5 proper-re-queue implementation. <strong>BUG-04</strong> degrades the legibility goal that scripted opponents promised (every decision should be inspectable). <strong>BUG-05</strong> reduces human agency in a way the rules explicitly allow. <strong>BUG-06</strong> is profile fidelity at the edges.</p>
+    <p>After BUG-01 and BUG-02 are patched, Phase 4 is functional and freeze-ready. The remaining four bugs do not prevent completing a 3-player game.</p>
+  </div>
+
+  <h2><span class="ord">§ 06</span>Patch Application Order</h2>
+  <ol>
+    <li><strong>BUG-01 first.</strong> Move the <code>pendingResolveLanding</code> handling inside <code>finishLanding()</code>; remove the duplicate check from <code>dispatch()</code>.</li>
+    <li><strong>BUG-02 second.</strong> Add the <code>phase === 'auction'</code> and <code>phase === 'card-choice'</code> guards at the top of <code>finishLanding()</code>.</li>
+    <li><strong>Smoke test.</strong> Replay seed 2026. Walk through one Speculation Fever card and one Yellow Fever card. Confirm: (a) Speculation Fever opens the auction panel, all three players bid, asset transfers correctly; (b) Yellow Fever moves the player and triggers RESOLVE_LANDING at the new position with rent paid to opponent if owed.</li>
+    <li><strong>BUG-03 fix.</strong> One-line ledger text correction.</li>
+    <li><strong>BUG-04 fix.</strong> Append <code>action.reason</code> to BUY/DECLINE/UPGRADE ledger entries; call <code>decideEarlyVoteFee()</code> in <code>runOpponent()</code>.</li>
+    <li><strong>BUG-05 fix.</strong> Add the human Crisis-choice UI; opponents can keep the pay-50 fallback.</li>
+    <li><strong>BUG-06 fix.</strong> Add <code>decideCardChoice()</code> hooks per profile.</li>
+    <li><strong>Freeze.</strong> Tag as <code>sovereign-solo-phase4-scripted-opponents.html v0.2</code>. Phase 5 (narration + replay UI + save/load) is unblocked.</li>
+  </ol>
+
+  <h2><span class="ord">§ 07</span>What Phase 5 Inherits</h2>
+  <ul>
+    <li><strong>Multi-player state shape.</strong> <code>players[]</code> array is stable; per-player <code>bankruptThisLap</code> / <code>keptHamilton</code> / <code>inCrisis</code> fields in place.</li>
+    <li><strong>Deterministic ledger.</strong> Seed pill + ledger array is the foundation for replay scrubbing.</li>
+    <li><strong>Opponent decision functions.</strong> Pure on (state, playerIndex); ready to be moved into a worker for batch simulation in the balance-telemetry mode.</li>
+    <li><strong>Auction state machine.</strong> Ready to extend with mortgages in Phase 5 (mortgaged properties transfer with auction).</li>
+    <li><strong>Failed-Act queue.</strong> If Phase 5 wants real re-queue semantics, <code>state.acts.failed[]</code> already exists in the schema; just needs reducer wiring.</li>
+  </ul>
+
+  <div class="signature"><span>Sovereign · Phase 4 Audit · FC-AU-003</span><span>End · 4 / 4</span></div>
+</section>
+
+</div>
+</body>
+</html>

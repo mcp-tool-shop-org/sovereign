@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+site/.astro/
+site/dist/
+site/node_modules/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Tooling caches
+.polyglot-cache.json
+.npm/
+.DS_Store
+Thumbs.db
+
+# Local archives (the release zip is produced fresh at tag-time)
+sovereign-v*-release.zip
+*.tgz
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

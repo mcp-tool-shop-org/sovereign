@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write       # for GitHub Release creation
+  id-token: write       # for npm provenance via Sigstore OIDC
+
+jobs:
+  release:
+    name: Publish to npm + GitHub Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Verify tag matches package.json version
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          echo "Tag: ${GITHUB_REF_NAME} → ${TAG_VERSION}"
+          echo "Package: ${PKG_VERSION}"
+          if [ "${PKG_VERSION}" != "${TAG_VERSION}" ]; then
+            echo "::error::Tag ${TAG_VERSION} does not match package.json version ${PKG_VERSION}"
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Smoke tests
+        run: npm test
+
+      - name: npm pack dry-run (verify shape)
+        run: npm pack --dry-run
+
+      - name: Build release zip
+        run: |
+          ZIP_NAME="sovereign-${GITHUB_REF_NAME}-release.zip"
+          cd release
+          zip -r "../${ZIP_NAME}" .
+          cd ..
+          ls -la "${ZIP_NAME}"
+          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
+
+      - name: Publish to npm with provenance
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "Sovereign ${GITHUB_REF_NAME}" \
+            --notes-file CHANGELOG.md \
+            --verify-tag \
+            "${ZIP_NAME}"

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sovereign · Solo / Digital · Phase 5 Audit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root {
+  --revolutionary-debt:#6E1F1E; --state-debt:#4A6B8A; --revenue-system:#C28A28;
+  --commercial-infrastructure:#2E7A6B; --national-finance:#1F2D52;
+  --manufactures:#8C8A2E; --strategic-industry:#3A3A3A;
+  --parchment:#F0E6CD; --parchment-2:#E6DABC; --ink:#1A1612; --highlight:#C8392E;
+  --rule:rgba(26,22,18,0.55); --rule-soft:rgba(26,22,18,0.22);
+  --display:"Baskerville","Big Caslon","Hoefler Text","Garamond","Times New Roman",serif;
+  --body:"Iowan Old Style","Georgia","Cambria","Times New Roman",serif;
+  --ui:-apple-system,"Segoe UI","Helvetica Neue","Arial",system-ui,sans-serif;
+  --mono:"SF Mono","Menlo","Consolas","Courier New",monospace;
+}
+@page { size:8.5in 11in; margin:.55in .65in; }
+*,*::before,*::after { box-sizing:border-box; }
+html,body { margin:0; padding:0; font-family:var(--body); color:var(--ink); background:#2A2622; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.viewport { display:flex; flex-direction:column; align-items:center; gap:22px; padding:28px 16px 80px; }
+.page { width:8.5in; min-height:11in; background:var(--parchment); position:relative; box-shadow:0 10px 40px rgba(0,0,0,.55),0 2px 4px rgba(0,0,0,.4); padding:.55in .65in .5in; }
+@media print {
+  html,body { background:#fff !important; }
+  .viewport { padding:0; gap:0; }
+  .page { box-shadow:none; padding:0; min-height:auto; width:100%; page-break-after:always; break-after:page; }
+  .page:last-child { page-break-after:auto; break-after:auto; }
+  .toolbar { display:none !important; }
+}
+.toolbar { position:fixed; top:16px; right:16px; z-index:30; }
+.toolbar button { background:var(--parchment); color:var(--ink); border:1px solid var(--ink); padding:8px 14px; font-family:var(--ui); font-size:12px; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; }
+.doc-head { display:flex; justify-content:space-between; align-items:baseline; padding-bottom:6px; border-bottom:1px solid var(--ink); font-family:var(--ui); font-size:9.5px; letter-spacing:.22em; text-transform:uppercase; margin-bottom:16px; }
+.doc-head .brand-mark { font-weight:700; letter-spacing:.32em; }
+.doc-head .sigil { font-family:var(--display); font-style:italic; letter-spacing:0; text-transform:none; font-size:12px; }
+h1.title { font-family:var(--display); font-weight:400; font-size:38px; line-height:1; margin:0 0 4px; letter-spacing:-.01em; }
+.subtitle { font-family:var(--display); font-style:italic; font-size:14px; margin-bottom:12px; }
+.lede { font-family:var(--display); font-style:italic; font-size:13px; line-height:1.45; max-width:64ch; margin:0 0 14px; }
+h2 { font-family:var(--display); font-weight:400; font-size:20px; margin:16px 0 6px; border-bottom:1px solid var(--ink); padding-bottom:3px; }
+h2 .ord { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; opacity:.65; margin-right:8px; }
+h3 { font-family:var(--ui); font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; margin:10px 0 4px; }
+p,li { font-family:var(--body); font-size:11px; line-height:1.5; margin:0 0 5px; }
+ul,ol { padding-left:18px; margin:0 0 6px; }
+strong { font-family:var(--display); font-weight:700; }
+em { font-style:italic; }
+.mono,code { font-family:var(--mono); font-size:10px; background:rgba(26,22,18,0.04); padding:0 3px; }
+table { width:100%; border-collapse:collapse; margin:6px 0 10px; font-size:9.5px; }
+th,td { text-align:left; vertical-align:top; padding:3px 6px; line-height:1.35; border-bottom:.5px solid var(--rule-soft); }
+th { font-family:var(--ui); font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:8.5px; background:var(--ink); color:var(--parchment); border-bottom:1px solid var(--ink); }
+td.n { font-family:var(--mono); font-size:10px; text-align:right; }
+td.v { font-family:var(--ui); font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; white-space:nowrap; }
+td.v.pass { color:var(--commercial-infrastructure); }
+td.v.warn { color:#B07A1F; }
+td.v.fail { color:var(--highlight); }
+.tag-pass { background:rgba(46,122,107,0.15); padding:1px 6px; font-family:var(--ui); font-size:8.5px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--commercial-infrastructure); }
+.tag-warn { background:rgba(176,122,31,0.15); padding:1px 6px; font-family:var(--ui); font-size:8.5px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:#B07A1F; }
+.tag-fail { background:rgba(200,57,46,0.15); padding:1px 6px; font-family:var(--ui); font-size:8.5px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--highlight); }
+.tag-info { background:rgba(31,45,82,0.12); padding:1px 6px; font-family:var(--ui); font-size:8.5px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--national-finance); }
+.verdict { padding:12px 14px; border:1.5px solid var(--ink); background:var(--parchment-2); margin:10px 0; position:relative; }
+.verdict::before { content:""; position:absolute; inset:5px; border:.5px solid var(--rule-soft); pointer-events:none; }
+.verdict .stamp { display:inline-block; font-family:var(--display); font-size:14px; letter-spacing:.12em; text-transform:uppercase; border:1.5px solid var(--commercial-infrastructure); color:var(--commercial-infrastructure); padding:4px 10px; margin-bottom:6px; background:var(--parchment); font-weight:700; }
+.callout { padding:8px 12px; border-left:2px solid var(--ink); background:var(--parchment-2); margin:6px 0; }
+.callout p { margin:0 0 4px; }
+.callout p:last-child { margin-bottom:0; }
+.severity-l { display:inline-block; font-family:var(--ui); font-size:8px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; padding:1px 5px; border:0.5px solid var(--rule); margin-right:4px; }
+.severity-l.low { background:rgba(46,122,107,0.15); color:var(--commercial-infrastructure); border-color:var(--commercial-infrastructure); }
+.severity-l.med { background:rgba(176,122,31,0.15); color:#B07A1F; border-color:#B07A1F; }
+.severity-l.high { background:rgba(200,57,46,0.15); color:var(--highlight); border-color:var(--highlight); }
+.severity-l.crit { background:var(--highlight); color:#fff; border-color:var(--ink); }
+.summary-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:8px 0 12px; }
+.summary-grid .cell { padding:6px 10px; background:var(--parchment-2); border:1px solid var(--ink); }
+.summary-grid .cell .label { font-family:var(--ui); font-size:8.5px; letter-spacing:.18em; text-transform:uppercase; opacity:.75; }
+.summary-grid .cell .val { font-family:var(--display); font-size:18px; line-height:1; margin-top:2px; }
+.summary-grid .cell .val.pass { color:var(--commercial-infrastructure); }
+.summary-grid .cell .val.warn { color:#B07A1F; }
+.summary-grid .cell .val.fail { color:var(--highlight); }
+.fileref { font-family:var(--mono); font-size:9px; background:var(--ink); color:var(--parchment); padding:1px 5px; letter-spacing:.1em; }
+</style>
+</head>
+<body>
+
+<div class="toolbar"><button onclick="window.print()">Print / save PDF</button></div>
+
+<div class="viewport">
+
+<!-- ============================================================ PAGE 1 ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Phase 5 freeze audit</span><span>1 / 4</span></header>
+
+  <h1 class="title">Phase 5 Audit</h1>
+  <div class="subtitle">Narration · Replay · Save / Load — additive-layer review.</div>
+
+  <p class="lede">Phase 5 was scoped as a purely additive layer on top of the frozen Phase 4 scripted-opponents baseline: narration library, replay UI, save / load, and an autosave. This audit verifies that the layer mutates no rule, no reducer, no balance value, and no opponent policy; that save and load round-trip with hash integrity; that the replay surface is read-only and deterministic; and that the nine acceptance criteria from the Phase 5 brief are met. Source under audit: <span class="fileref">sovereign-solo-phase5-narration-replay-save.html</span>. Baseline: <span class="fileref">sovereign-solo-phase4-scripted-opponents.html</span>.</p>
+
+  <div class="summary-grid">
+    <div class="cell"><div class="label">Phase boundary</div><div class="val pass">Pass</div></div>
+    <div class="cell"><div class="label">Narration layer</div><div class="val pass">Pass</div></div>
+    <div class="cell"><div class="label">Save format</div><div class="val pass">Pass</div></div>
+    <div class="cell"><div class="label">Load &amp; integrity</div><div class="val pass">Pass</div></div>
+    <div class="cell"><div class="label">Decision log</div><div class="val warn">Pass · note</div></div>
+    <div class="cell"><div class="label">Replay UI</div><div class="val pass">Pass</div></div>
+    <div class="cell"><div class="label">Determinism</div><div class="val pass">Pass</div></div>
+    <div class="cell"><div class="label">Regression</div><div class="val pass">Pass</div></div>
+    <div class="cell"><div class="label">Polish discipline</div><div class="val pass">Pass</div></div>
+  </div>
+
+  <h2><span class="ord">§ 01</span>Method</h2>
+
+  <p>The audit ran static byte-diffing first, runtime probing second, and a manual playthrough only where the prior two were insufficient. The Phase 4 baseline and Phase 5 candidate were compared at the level of the named code blocks the brief calls out as load-bearing: the reducer, the seventeen action shapes, the opponent profile dispatch, the act table, the asset table, the route ladder, the space table, both card decks, scoring, rent computation, and <code>initialState()</code>. Where the Phase 5 file overrode or wrapped a Phase 4 function, the wrapper was inspected line-for-line for any path that could mutate game state.</p>
+
+  <p>Runtime probing exercised the four scenarios where save / load behavior is most likely to drift: a clean save → load round-trip on a partial game, four malformed payloads (bad version, missing seed, malformed log, null payload), a tampered <code>finalState.hash</code>, and a same-seed determinism check on two independently restarted games. The Phase 4 voting orchestration debt — already in the baseline — was reproduced and classified, not patched.</p>
+
+  <h2><span class="ord">§ 02</span>Phase Boundary · Byte-Identity of the Load-Bearing Surface</h2>
+
+  <p>Every Phase-4 surface the brief names as canonical was byte-diffed against the Phase 5 file. All eleven match exactly. Phase 5 introduces no new reducer actions, no new opponent decisions, no new rent / scoring code paths, and no changes to v0.2 balance.</p>
+
+  <table>
+    <thead><tr><th style="width:34%">Code block</th><th style="width:14%">Match</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Reducer body <code>function reduce(s, action)</code></td><td class="v pass">Byte-identical</td><td>15 339 chars in both files. All 17 action cases unchanged.</td></tr>
+      <tr><td><code>const ACTS</code> (7 federal acts)</td><td class="v pass">Byte-identical</td><td>Funding +50 %, Assumption ×2, Charter dice multiplier, Tariff +50 %, Coinage 50 TN tribute, Mfg upgrade half, Whiskey ×2.</td></tr>
+      <tr><td><code>const ASSETS</code> (40 spaces)</td><td class="v pass">Byte-identical</td><td>v0.2 balance preserved: Continental base 4, Soldier Pay 6, Bank cost 150, Naval Yard 400.</td></tr>
+      <tr><td><code>const ROUTE_LADDER</code></td><td class="v pass">Byte-identical</td><td><code>[0, 25, 50, 100, 150]</code> as v0.2 canon.</td></tr>
+      <tr><td><code>const SPACES</code></td><td class="v pass">Byte-identical</td><td>40-space layout including corner, tax, card, route, institution, and system spaces.</td></tr>
+      <tr><td><code>const PROFILES</code></td><td class="v pass">Byte-identical</td><td>Both Treasury / Finance and Merchant / Infrastructure decision functions unchanged.</td></tr>
+      <tr><td><code>const MARKET_SHOCK_CARDS</code></td><td class="v pass">Byte-identical</td><td>All 12 cards including Yellow Fever <code>pendingResolveLanding</code> hand-off and Speculation Fever auction trigger.</td></tr>
+      <tr><td><code>const REPUBLIC_DEBATE_CARDS</code></td><td class="v pass">Byte-identical</td><td>All 12 cards including Strict Construction choice array.</td></tr>
+      <tr><td><code>function scorePlayer</code></td><td class="v pass">Byte-identical</td><td>Capacity ≥ 8 bonus capped at +4 (2 Mfg + 2 Strategic).</td></tr>
+      <tr><td><code>function computeRent</code></td><td class="v pass">Byte-identical</td><td>Act multipliers, Capacity bonus, shipping disruption gate all unchanged.</td></tr>
+      <tr><td><code>function initialState</code></td><td class="v pass">Byte-identical</td><td>Single RNG source (<code>mulberry32(seed)</code>); deck shuffles seeded from <code>state.rng</code>.</td></tr>
+    </tbody>
+  </table>
+
+  <p>Phase 5 adds a thin <strong>additive wrapper</strong> on <code>dispatch()</code>: before each <code>reduce()</code> call the wrapper appends an entry to <code>DECISION_LOG</code>; after the call it runs <code>detectNarration()</code> and, on <code>END_TURN</code> / <code>END_GAME</code>, snapshots state and writes the autosave. None of these branches read or mutate any field that <code>reduce()</code> later reads; they are observers only. <code>runOpponent()</code> is byte-identical to Phase 4.</p>
+
+</section>
+
+<!-- ============================================================ PAGE 2 ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Narration · save · load</span><span>2 / 4</span></header>
+
+  <h2><span class="ord">§ 03</span>Narration Layer</h2>
+
+  <p>The narration library is a frozen data object keyed by trigger. Each entry has three fields: a heading, a default snippet, and an expand snippet (the endgame republic-summary is the exception — it carries empty default / expand strings and is rendered through <code>buildRepublicSummary(state)</code> at game over). Twenty-five trigger keys are defined: eight first-purchase, seven act-passed, six track-threshold, three endgame-winner, and one endgame-summary.</p>
+
+  <table>
+    <thead><tr><th style="width:34%">Check</th><th style="width:14%">Verdict</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td>Derived from ledger / state events</td><td class="v pass">Pass</td><td><code>detectNarration()</code> reads only <code>STATE.players[*].ownedAssets</code>, <code>STATE.acts.passed</code>, and <code>STATE.tracks.*.value</code>. It calls no reducer action.</td></tr>
+      <tr><td>Never mutates game state</td><td class="v pass">Pass</td><td>Writes touch only the module-scope sets <code>NARRATION_FIRED</code>, <code>SYS_FIRST_OWNED</code>, and <code>LAST_TRACK</code> (UI memo) and the array <code>NARRATION_LOG</code>. No <code>STATE.*</code> field is written.</td></tr>
+      <tr><td>Keyed and non-duplicating</td><td class="v pass">Pass</td><td><code>fireNarration(key)</code> short-circuits if the key is in <code>NARRATION_FIRED</code>. Each trigger fires at most once per game.</td></tr>
+      <tr><td>Default 40–60 words</td><td class="v pass">Pass</td><td>All 24 narrative entries measured in range (min 40, max 60). Endgame republic-summary intentionally empty default — rendered live.</td></tr>
+      <tr><td>Expand 150–200 words</td><td class="v pass">Pass</td><td>All 21 expand entries measured in range (min 150, max 200). The three endgame-winner entries have no expand text by design and are stamped <em>no expand</em> in the drawer.</td></tr>
+      <tr><td>Endgame summary scoped to actual state</td><td class="v pass">Pass</td><td><code>buildRepublicSummary(state)</code> reads <code>state.acts.passed</code>, <code>state.tracks</code>, <code>p.ownedAssets</code>, completed sets, route count, both institutions, and bankrupt-lap count. Five paragraphs, all branched on real state.</td></tr>
+      <tr><td>Toggle without altering state</td><td class="v pass">Pass</td><td><code>NARRATION_ENABLED</code> gates only the render path. The narration log keeps accumulating; toggling re-renders.</td></tr>
+      <tr><td>No narration for non-events</td><td class="v pass">Pass</td><td>Track-threshold detector compares prev and current via <code>LAST_TRACK</code>, so a re-render at the same value will not re-fire. Act-passed detector consumes <code>STATE.acts.passed.length</code> as a high-water mark.</td></tr>
+    </tbody>
+  </table>
+
+  <p>Tone discipline is observed throughout: no invented quotes from historical figures, specific dates and names where they ground the moment, and a consistent narrator voice that speaks to the republic rather than to the player.</p>
+
+  <h2><span class="ord">§ 04</span>Save Format</h2>
+
+  <p>The save payload is the four-field object the brief specifies. No DOM state, no narration log, no derived ledger, no opponent profile object reference. The reconstruction path is the only legitimate way to derive the runtime structures.</p>
+
+  <table>
+    <thead><tr><th style="width:34%">Check</th><th style="width:14%">Verdict</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td>Contains <code>version</code>, <code>seed</code>, <code>decisionLog</code>, optional <code>finalState</code></td><td class="v pass">Pass</td><td><code>buildSavePayload()</code> returns exactly those four keys; <code>finalState</code> is <code>null</code> while the game is active.</td></tr>
+      <tr><td>No transient UI / DOM state</td><td class="v pass">Pass</td><td>Payload carries no <code>NARRATION_LOG</code>, no <code>TURN_SNAPSHOTS</code>, no <code>REPLAY</code>, no DOM references.</td></tr>
+      <tr><td>Autosave only on safe boundaries</td><td class="v pass">Pass</td><td><code>writeAutosave()</code> is called by the dispatch wrapper only when <code>action.type === 'END_TURN' || 'END_GAME'</code>. Sub-turn states are not persisted.</td></tr>
+      <tr><td>Manual save downloads valid JSON</td><td class="v pass">Pass</td><td><code>downloadSave()</code> emits a 2-space-indented JSON blob with a timestamped filename. Verified at runtime: <code>JSON.parse</code> round-trips the export.</td></tr>
+      <tr><td>Version validated on load</td><td class="v pass">Pass</td><td>First check inside <code>loadFromPayload()</code>; mismatch produces &ldquo;Load failed · version mismatch&rdquo;.</td></tr>
+      <tr><td>Bad JSON fails safely</td><td class="v pass">Pass</td><td>The file-picker handler wraps <code>JSON.parse</code> in a <code>try / catch</code>; runtime verified by feeding garbage input — error pill displayed, state untouched.</td></tr>
+      <tr><td>Malformed shape fails safely</td><td class="v pass">Pass</td><td>Verified at runtime against four hostile payloads (bad version, missing seed, log-not-array, null). All returned <code>false</code> and posted a visible <span class="tag-fail">load failed</span> pill. No state mutation.</td></tr>
+    </tbody>
+  </table>
+
+</section>
+
+<!-- ============================================================ PAGE 3 ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Load · replay · determinism</span><span>3 / 4</span></header>
+
+  <h2><span class="ord">§ 05</span>Load &amp; Replay Integrity</h2>
+
+  <table>
+    <thead><tr><th style="width:34%">Check</th><th style="width:14%">Verdict</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td>Reconstructs from <code>initialState(seed) + decisionLog</code></td><td class="v pass">Pass</td><td><code>loadFromPayload()</code> calls <code>initialState(payload.seed)</code>, then loops the decision log, dispatching each action through <code>reduce()</code>. No shortcut from <code>finalState</code>.</td></tr>
+      <tr><td>Does not blindly trust <code>finalState</code></td><td class="v pass">Pass</td><td><code>finalState</code> is only used as a verifier, never to set values.</td></tr>
+      <tr><td>Final hash compared</td><td class="v pass">Pass</td><td>After replay, <code>snapshotHash(STATE)</code> is compared against <code>payload.finalState.hash</code>. Mismatch refuses the load.</td></tr>
+      <tr><td>Integrity mismatch visible</td><td class="v pass">Pass</td><td>Tampered hash (<code>hash: 'CORRUPTED'</code>) reproduced at runtime → &ldquo;Load failed · integrity divergence at end of replay&rdquo; <span class="tag-fail">err</span> pill, state untouched.</td></tr>
+      <tr><td>Successful load message</td><td class="v pass">Pass</td><td>Clean save→load run posts &ldquo;Loaded · integrity verified&rdquo; <span class="tag-pass">ok</span> pill.</td></tr>
+      <tr><td>Same save loaded twice → identical state</td><td class="v pass">Pass</td><td>Round-trip verified: ledger length, decision-log length, narration-log length, and full state hash all identical before and after load.</td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="ord">§ 06</span>Decision Log</h2>
+
+  <p>The log captures every dispatched action with playerIdx, action type, params, turn, and lap. Each <code>dispatch()</code> call writes one entry before the reducer is invoked, so the log is a faithful input transcript.</p>
+
+  <table>
+    <thead><tr><th style="width:34%">Check</th><th style="width:14%">Verdict</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td>Captures buys / declines</td><td class="v pass">Pass</td><td><code>BUY_ASSET</code> and <code>DECLINE_ASSET</code> recorded on every dispatch path.</td></tr>
+      <tr><td>Captures auction bids / passes</td><td class="v pass">Pass</td><td><code>AUCTION_BID</code> with <code>{playerIndex, amount, reason}</code>.</td></tr>
+      <tr><td>Captures votes</td><td class="v pass">Pass</td><td><code>CAST_VOTE</code> with <code>{playerIndex, vote, reason}</code>.</td></tr>
+      <tr><td>Captures card resolution &amp; choices</td><td class="v pass">Pass</td><td><code>RESOLVE_CARD</code>, <code>RESOLVE_CARD_CHOICE</code> with <code>{choiceIndex}</code>.</td></tr>
+      <tr><td>Captures Crisis choices</td><td class="v pass">Pass</td><td><code>ROLL_DICE</code> with <code>{crisisChoice}</code> param preserved.</td></tr>
+      <tr><td>Captures upgrades</td><td class="v pass">Pass</td><td><code>UPGRADE_ASSET</code> with <code>{playerIndex, spaceNum, reason}</code>.</td></tr>
+      <tr><td>Dice / shuffle RNG reconstructed from seed</td><td class="v pass">Pass</td><td>All randomness flows through <code>state.rng = mulberry32(seed)</code>. Replay shares the same seed and the same action sequence; the RNG draws identically.</td></tr>
+      <tr><td>Does not include ledger as input</td><td class="v pass">Pass</td><td>Ledger is derived, never persisted as authoritative input.</td></tr>
+      <tr><td>Opponent decisions not redundantly stored</td><td class="v warn">Note · non-blocking</td><td>Opponent actions <em>are</em> captured because they flow through the same <code>dispatch()</code> wrapper as human ones. This is a deliberate, defensive choice: it survives any future change to opponent timing or profile logic without invalidating existing saves, and replay integrity does not depend on re-running the profile decision tree. See <span class="tag-info">deviation 1</span> below.</td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="ord">§ 07</span>Replay UI</h2>
+
+  <table>
+    <thead><tr><th style="width:34%">Check</th><th style="width:14%">Verdict</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td>Read-only</td><td class="v pass">Pass</td><td><code>openReplay()</code> builds frame snapshots through <code>reduce()</code> on a local <code>s</code> variable; live <code>STATE</code> is never reassigned. Closing the overlay drops the <code>REPLAY</code> object; nothing persists.</td></tr>
+      <tr><td>Scrubber reconstructs from <code>initialState(seed) + decisionLog</code></td><td class="v pass">Pass</td><td>Frame array seeded with <code>initialState(REPLAY.seed)</code>, then each log entry dispatched through <code>reduce()</code>, with a frame pushed on every <code>turnIndex</code> increment.</td></tr>
+      <tr><td>Lap markers align L1 – L7</td><td class="v pass">Pass</td><td>Scrubber tick is stamped <code>L{lap}</code> at the first frame of each new lap; verified visually at lap 1 / lap 2 boundary.</td></tr>
+      <tr><td>Step ← / → works</td><td class="v pass">Pass</td><td><code>replayStep(±1)</code> clamps to <code>[0, frames.length-1]</code>.</td></tr>
+      <tr><td>Play / pause at stable cadence</td><td class="v pass">Pass</td><td><code>setInterval(..., 1500)</code> matches the brief; auto-pauses on reaching the final frame.</td></tr>
+      <tr><td>Mini-ledger matches reconstructed frame</td><td class="v pass">Pass</td><td>Each cloned frame carries <code>s.ledger.slice()</code> — the ledger up to that turn. Mini-ledger renders that slice.</td></tr>
+      <tr><td>Board shows tokens, ownership, tracks, Acts, active player</td><td class="v pass">Pass</td><td>Verified visually: replay screenshot shows player tokens on correct spaces, owned tiles dotted with the owner color, Credit / Resistance / Industry pills, Acts roman numerals, and active-player border.</td></tr>
+      <tr><td>Integrity indicator turns red on mismatch</td><td class="v pass">Pass</td><td><code>REPLAY.integrityOk = false</code> triggers <code>.integrity.err</code> CSS class; surface reads &ldquo;⚠ Replay integrity error&rdquo;.</td></tr>
+    </tbody>
+  </table>
+
+</section>
+
+<!-- ============================================================ PAGE 4 ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Determinism · regression · verdict</span><span>4 / 4</span></header>
+
+  <h2><span class="ord">§ 08</span>Determinism</h2>
+
+  <p>Two clean restarts on seed 2026 with one human <code>CAST_VOTE</code> dispatched produced identical state hashes and identical ledger lengths. The save → load round-trip on a 17-action partial game produced an identical hash to the live state. <code>mulberry32(state.rngSeed)</code> remains the only RNG source; no <code>Math.random</code> or <code>Date.now</code> call influences game truth. The dispatch wrapper introduces <code>setTimeout</code> only for UI pacing of opponent moves — the underlying state transition is synchronous through <code>reduce()</code>, and replay omits the timer entirely.</p>
+
+  <h2><span class="ord">§ 09</span>Regression Spot Check</h2>
+
+  <table>
+    <thead><tr><th style="width:50%">Item</th><th style="width:12%">Verdict</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Phase 4 · Yellow Fever resolves landing before turn end</td><td class="v pass">Pass</td><td><code>pendingResolveLanding = true</code> intact; <code>finishLanding()</code> re-resolves.</td></tr>
+      <tr><td>Phase 4 · Speculation Fever auction survives card resolution</td><td class="v pass">Pass</td><td>Deterministic lowest-spaceNum pick; <code>pendingAuction</code> set, <code>phase = 'auction'</code>.</td></tr>
+      <tr><td>Phase 4 · Failed Act ledger text honest</td><td class="v pass">Pass</td><td>&ldquo;skipped for this game in Phase 4; re-queue behavior deferred&rdquo; preserved.</td></tr>
+      <tr><td>Phase 4 · Opponent BUY / DECLINE / UPGRADE reasons in ledger</td><td class="v pass">Pass</td><td>Decision functions return <code>{ buy, reason }</code> / <code>{ spaceNum, cost, reason }</code>; reason concatenated to ledger detail string.</td></tr>
+      <tr><td>Phase 4 · Human Crisis choice — Pay / Doubles / Skip</td><td class="v pass">Pass</td><td><code>phase = 'crisis-choice'</code> branch with three buttons unchanged.</td></tr>
+      <tr><td>Phase 4 · Strict Construction profile-driven</td><td class="v pass">Pass</td><td>Opponent path routes through <code>profile.decideCardChoice(s, pIdx, card)</code>; reasoned ledger entry posted.</td></tr>
+      <tr><td>Phase 3 · Lap-7 endgame renders</td><td class="v pass">Pass</td><td><code>END_TURN</code> case still checks <code>s.lap &gt; 7</code> and dispatches <code>END_GAME</code>.</td></tr>
+      <tr><td>Phase 3 · bankruptLaps counts once per lap</td><td class="v pass">Pass</td><td><code>bankruptThisLap</code> reset only inside <code>BEGIN_LAP</code> case.</td></tr>
+      <tr><td>Phase 3 · Capacity ≥ 8 bonus caps at +4</td><td class="v pass">Pass</td><td>Score code: <code>let bonus = 0; if (hasMfg) bonus += 2; if (hasStrat) bonus += 2;</code> — ceiling is 4.</td></tr>
+      <tr><td>v0.2 · Route ladder 25 / 50 / 100 / 150</td><td class="v pass">Pass</td><td><code>const ROUTE_LADDER = [0, 25, 50, 100, 150]</code> byte-identical.</td></tr>
+      <tr><td>v0.2 · Coinage 50 TN / Credit +1 / Capacity +1</td><td class="v pass">Pass</td><td>Act 5 apply function unchanged.</td></tr>
+      <tr><td>v0.2 · Capacity ≥ 6 payment bonus, ≥ 8 endgame bonus</td><td class="v pass">Pass</td><td>Both thresholds intact in <code>computeRent</code> and <code>scorePlayer</code>.</td></tr>
+      <tr><td>v0.2 · Continental base 4 · Soldier Pay base 6</td><td class="v pass">Pass</td><td><code>1:{cost:60,base:4,…}</code> / <code>3:{cost:60,base:6,…}</code>.</td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="ord">§ 10</span>Polish Discipline</h2>
+
+  <ul>
+    <li>No runtime placeholder pills or demo banners in the live UI. The only <code>placeholder</code> occurrence is a legitimate HTML attribute on the auction bid input (<code>placeholder="${minBid}"</code>).</li>
+    <li>No developer-aside comments. Grep for &ldquo;TODO&rdquo;, &ldquo;FIXME&rdquo;, &ldquo;XXX&rdquo;, &ldquo;hmm&rdquo;, &ldquo;let me&rdquo; returned zero hits in narrative source.</li>
+    <li>No external assets, fonts, or network dependencies. All typography is system-stack; no <code>cdn</code>, <code>googleapis</code>, or absolute URL anywhere in the file.</li>
+  </ul>
+
+  <h2><span class="ord">§ 11</span>Phase 4 Voting Caveat — Classification</h2>
+
+  <p>The Phase 5 builder flagged a pre-existing Phase 4 orchestration issue: <em>opponent Act votes are only dispatched when an opponent becomes the active player after a roll.</em> Static inspection confirms this: <code>dispatch()</code> kicks <code>runOpponent()</code> only when <code>STATE.players[STATE.activePlayerIndex].profile !== 'human'</code> and the phase is one of <code>awaiting-roll</code> or <code>act-vote</code>. At lap start the active player is the human, so the trigger never fires from voting alone; in interactive play the human votes, the reducer does not finalize because the opponent slots remain <code>null</code>, and the loop stalls.</p>
+
+  <p><strong>Classification:</strong> <span class="tag-warn">Phase 4 orchestration debt</span> — inherited, pre-Phase-5, must not be patched at this freeze.</p>
+
+  <div class="callout">
+    <p><strong>Risk to Phase 5 deliverables:</strong> none. Replay reconstructs from <code>initialState(seed) + decisionLog</code>, and the decision log is a faithful transcript of whatever <em>did</em> dispatch. If the caveat stalls a live game at an act vote, no <code>END_TURN</code> fires, no autosave is written, and the partial log replays cleanly to the stall point.</p>
+    <p><strong>Risk to determinism:</strong> none. The caveat is in the event-loop scheduler, not in the reducer or the RNG.</p>
+    <p><strong>Risk to integrity hashing:</strong> none. <code>snapshotHash()</code> reads the state the reducer produced; whatever state was produced will replay byte-identically.</p>
+    <p>The fix is a Phase 4 orchestration patch — schedule the opponent vote sweep on entry to <code>act-vote</code> rather than on activePlayerIndex rotation — and explicitly belongs to a future Phase 4 maintenance pass, not to Phase 5.</p>
+  </div>
+
+  <h2><span class="ord">§ 12</span>Non-Blocking Deviations</h2>
+
+  <p><strong>Deviation 1 — Opponent decisions stored in <code>decisionLog</code>.</strong> The brief prefers opponent decisions be omitted from the log on the grounds that they are deterministic from state. Phase 5 stores them. The trade is intentional: storing makes the log self-contained against any future change to opponent timing, profile data, or decision-function refactor, and the replay path can ignore the profile decision tree entirely. Save-file size grows linearly but remains small (a finished game well under 200 KB). Severity: <span class="severity-l low">Low</span> — non-blocking; preserves replay integrity even if Phase 6 changes opponent behavior.</p>
+
+  <p><strong>Deviation 2 — Decision-log metadata recomputed on load.</strong> <code>loadFromPayload()</code> reconstructs <code>DECISION_LOG</code> from the payload but overwrites <code>playerIdx</code>, <code>turn</code>, and <code>lap</code> fields with the values derived from the current replay state rather than trusting the saved metadata. The action sequence is what matters for state reconstruction, so this is harmless. Severity: <span class="severity-l low">Low</span>.</p>
+
+  <h2><span class="ord">§ 13</span>Freeze Verdict</h2>
+
+  <div class="verdict">
+    <div class="stamp">Pass</div>
+    <p>Phase 5 is freeze-ready. The reducer, action set, opponent profiles, scoring, rent computation, act table, asset table, route ladder, card decks, and <code>initialState</code> are all byte-identical to the Phase 4 baseline. Narration is pure data; the detector reads state, never writes it. Save / load round-trips with verified hash integrity, rejects four malformed payload shapes and one tampered <code>finalState</code> cleanly, and writes an autosave only at safe boundaries. The replay UI reconstructs frames from <code>initialState(seed) + decisionLog</code> through a pure reducer and surfaces an integrity indicator. Determinism through <code>mulberry32(state.rngSeed)</code> is preserved.</p>
+    <p>The two non-blocking deviations and the inherited Phase 4 voting caveat are documented above; none compromises save, load, replay, or integrity in the present file. <strong>No required fixes before freeze.</strong></p>
+  </div>
+
+</section>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>Sovereign · v0.10 Freeze Audit</title><style>:root{--paper:#F0E6CD;--paper2:#E6DABC;--ink:#1A1612;--rule:rgba(26,22,18,.35);--ok:#3a6b3a;--bad:#9c2f29;--warn:#a8501c;}
+*{box-sizing:border-box;}body{font-family:"Iowan Old Style",Georgia,serif;background:#e8dcc0;color:var(--ink);margin:0;padding:36px 18px;}
+.doc{max-width:1100px;margin:0 auto;background:var(--paper);padding:40px 44px;border:1.5px solid var(--ink);position:relative;}
+.doc::before{content:"";position:absolute;inset:7px;border:.5px solid var(--rule);pointer-events:none;}
+h1{font-family:"Baskerville",Garamond,serif;font-weight:400;font-size:38px;margin:0 0 4px;letter-spacing:.01em;}
+.lead{font-family:"Baskerville",serif;font-style:italic;font-size:15px;color:#2a221b;margin-bottom:18px;}
+.verdict-banner{padding:16px 20px;background:#eaf1e8;border:2px solid var(--ok);margin:18px 0 28px;}
+.verdict-banner .lbl{font-family:-apple-system,sans-serif;font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--ok);margin-bottom:6px;}
+.verdict-banner .val{font-family:"Baskerville",serif;font-size:32px;}
+.verdict-banner.warn{background:#fdf3e3;border-color:var(--warn);} .verdict-banner.warn .lbl{color:var(--warn);}
+h2{font-family:-apple-system,sans-serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;margin:28px 0 10px;padding-bottom:6px;border-bottom:.5px solid var(--rule);}
+table{width:100%;border-collapse:collapse;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:11.5px;margin:8px 0;}
+th{background:var(--ink);color:var(--paper);font-family:-apple-system,sans-serif;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:6px 8px;text-align:left;}
+th.n{text-align:right;}
+td{padding:6px 8px;border-bottom:.5px solid var(--rule);}
+td.n{text-align:right;font-variant-numeric:tabular-nums;}
+tr:last-child td{border-bottom:none;}
+.pill{display:inline-block;padding:3px 10px;font-family:-apple-system,sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;border:1px solid var(--ink);background:var(--paper2);}
+.pill.pass{background:var(--ok);color:#fff;border-color:var(--ok);}
+.pill.fail{background:var(--bad);color:#fff;border-color:var(--bad);}
+.pill.warn{background:var(--warn);color:#fff;border-color:var(--warn);}
+.section-pass{font-family:-apple-system,sans-serif;font-size:10px;font-weight:700;letter-spacing:.18em;color:var(--ok);margin-left:8px;}
+.section-fail{color:var(--bad);}
+.note{font-family:-apple-system,sans-serif;font-size:11px;font-style:italic;color:#3a2f24;padding:8px 12px;background:var(--paper2);border-left:3px solid var(--ink);margin:10px 0;}
+.meta{font-family:-apple-system,sans-serif;font-size:10px;color:#5a4c3a;margin-top:24px;padding-top:12px;border-top:1px solid var(--ink);}
+p{font-size:14px;line-height:1.5;margin:8px 0;} code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12px;background:var(--paper2);padding:1px 5px;}</style></head><body><div class="doc">
+<h1>Sovereign Solo / Digital Mode · v0.10 Freeze Audit</h1>
+<div class="lead">Static source inspection + runtime determinism + balance acceptance · CANONICAL × 100 + × 400 · 5 configurations · generated 2026-05-19 04:17:33 UTC</div>
+<div class="verdict-banner"><div class="lbl">Freeze Verdict</div><div class="val">PASS · FREEZE</div></div>
+<h2>1. v0.10 scoring rule consistency <span class="section-pass">· PASS</span></h2><table><thead><tr><th>Check</th><th class="n">Detail</th><th class="n">Result</th></tr></thead><tbody><tr><td>Cash IP formula = floor(p.cash / 400)</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>No stale "per 200 TN" string in source</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>No stale "Cash held × 200" label</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>Header stamp = "v0.10 balance candidate"</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>SAVE_VERSION = "v0.10"</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>Load refuses pre-v0.10 saves with version message</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr></tbody></table><h2>2. Preserved balance state <span class="section-pass">· PASS</span></h2><table><thead><tr><th>Check</th><th class="n">Detail</th><th class="n">Result</th></tr></thead><tbody><tr><td>v0.2 · Route ladder [0, 25, 50, 100, 150]</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>v0.2 · Coinage Act (50 TN + Credit/Capacity +1)</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>v0.2 · Capacity ≥ 6 → ×1.25 industry rent</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>v0.2 · Rev Debt bases (Continental 4, Soldier Pay 6)</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>v0.3 · NF Credit nerf (+1 per owner at ≥ 8, +2 at 12)</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>v0.3 · Report on Manufactures capital event (50 TN per Mfg/Strat)</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>v0.3 · Capacity ≥ 8 → ×1.5 industry rent</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>v0.4 · Capacity ≥ 10 milestone (+2 per qualifying system)</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>v0.4 · Industrial set bonuses (+3 Mfg, +2 Strategic)</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>v0.5 · Capacity +1 on first industrial purchase</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>v0.6 · Manufacturer set-completion gate relaxed</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>v0.7 · Phase 6.1 telemetry hygiene (playerIdxFromRow)</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>v0.8 · Industrial Charter (Textile + Capacity +1 to first Mfg slot)</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>v0.8 · Batch tool charter toggle</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr></tbody></table><h2>3. Digital infrastructure regressions <span class="section-pass">· PASS</span></h2><table><thead><tr><th>Check</th><th class="n">Detail</th><th class="n">Result</th></tr></thead><tbody><tr><td>Save/load version-gate</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>Replay from initialState(seed) + decisionLog</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>Integrity hash check on load</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>detectNarration present (derives only, no reduce mutation)</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>BATCH_GUARD intact</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>finishLanding guards card-choice while pendingCard exists</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>Yellow Fever: landing resolved before END_TURN</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>Speculation Fever: auction survives card resolution</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>castOpponentActVote orchestration</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>Opponent reasons logged (buy/decline/upgrade/auction/vote/fee)</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>Human Crisis three-choice path</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>decideCardChoice per profile</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>bankruptLaps per-lap guard</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>Capacity ≥ 8 bonus capped at +4</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr></tbody></table><h2>4. Determinism <span class="section-pass">· PASS</span></h2><table><thead><tr><th>Check</th><th class="n">Detail</th><th class="n">Result</th></tr></thead><tbody><tr><td>CANONICAL × 100 byte-identical twice</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>Seed 2026 live smoke completes (lap 8, turn 21, charter granted)</td><td></td><td class="n"><span class="pill pass">PASS</span></td></tr></tbody></table><h2>5. Balance acceptance <span class="section-pass">· PASS</span></h2><table><thead><tr><th>Check</th><th class="n">Detail</th><th class="n">Result</th></tr></thead><tbody><tr><td>Treasury wins 45–65 % (CANONICAL × 100)</td><td class="n">59/100</td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>Merchant wins 15–35 % (CANONICAL × 100)</td><td class="n">25/100</td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>Manufacturer wins 10–25 % (CANONICAL × 100)</td><td class="n">16/100</td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>Median winning margin ≥ 2 IP</td><td class="n">3 IP</td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>Route 4+ frequency ≤ 12 / 100</td><td class="n">8/100</td><td class="n"><span class="pill pass">PASS</span></td></tr><tr><td>CANONICAL × 400 reinforcement (Treasury 61.0 %)</td><td class="n">244/400</td><td class="n"><span class="pill pass">PASS</span></td></tr></tbody></table>
+
+<h2>6. Recorded balance numbers (CANONICAL × 100)</h2>
+<table><thead><tr><th>Metric</th><th class="n">Value</th><th class="n">Target</th><th class="n">Result</th></tr></thead><tbody>
+<tr><td>Treasury / Finance wins</td><td class="n">59 / 100</td><td class="n">45–65 %</td><td class="n"><span class="pill pass">PASS</span></td></tr>
+<tr><td>Merchant / Infrastructure wins</td><td class="n">25 / 100</td><td class="n">15–35 %</td><td class="n"><span class="pill pass">PASS</span></td></tr>
+<tr><td>Manufacturer / Industry wins</td><td class="n">16 / 100</td><td class="n">10–25 %</td><td class="n"><span class="pill pass">PASS</span></td></tr>
+<tr><td>Median winning margin</td><td class="n">3 IP</td><td class="n">≥ 2</td><td class="n"><span class="pill pass">PASS</span></td></tr>
+<tr><td>Route 4+ frequency</td><td class="n">8 / 100</td><td class="n">low</td><td class="n"><span class="pill pass">PASS</span></td></tr>
+<tr><td>Avg final Capacity</td><td class="n">3.49</td><td class="n">—</td><td class="n">observation</td></tr>
+<tr><td>Capacity ≥ 6 / ≥ 8 / ≥ 10</td><td class="n">4 / 0 / 0</td><td class="n">—</td><td class="n">caveat</td></tr>
+<tr><td>Manufacturer positive-cash finishes</td><td class="n">17 / 100</td><td class="n">—</td><td class="n">observation</td></tr>
+<tr><td>Default / Rebellion / Bankruptcy</td><td class="n">0 / 0 / 0</td><td class="n">—</td><td class="n">caveat</td></tr>
+<tr><td>CANONICAL × 400 reinforcement</td><td class="n">244 / 400 (Treasury)</td><td class="n">45–65 %</td><td class="n"><span class="pill pass">PASS</span></td></tr>
+</tbody></table>
+
+<h2>7. Seed 2026 live smoke (single game)</h2>
+<table><thead><tr><th>Field</th><th class="n">Value</th></tr></thead><tbody>
+<tr><td>Final influences</td><td class="n">[14, 7, 15]</td></tr>
+<tr><td>Final cashes</td><td class="n">[1442, 1168, 570]</td></tr>
+<tr><td>Total turns / final lap</td><td class="n">21 / 8</td></tr>
+<tr><td>Final Capacity</td><td class="n">6</td></tr>
+<tr><td>Starting charter granted</td><td class="n">slot 2 · textile-works</td></tr>
+</tbody></table>
+
+<h2>8. Stale-label findings</h2>
+<p><span class="pill pass">CLEAN</span> Source contains no "per 200 TN" or pre-v0.10 cash-scoring labels. Static grep confirms exactly one cashIP scoring site, and it reads <code>Math.floor(p.cash / 400) + ' × 400 TN'</code>. The only 200-related strings in source are unrelated: the "You Are Hamilton" card grants 200 TN, and the default mechanic halves cash via <code>p.cash / 2</code>.</p>
+
+<h2>9. Freeze gate summary</h2>
+<div class="note">All five freeze gates clear:<br/>
+· No stale labels remain (static).<br/>
+· Determinism PASS (CANONICAL × 100 byte-identical twice).<br/>
+· Balance targets all PASS (Treasury 59 / Merchant 25 / Manufacturer 16, margin 3, Routes 4+ at 8).<br/>
+· Save / load / replay infrastructure intact.<br/>
+· All Phase 3–6.1 regression checks PASS.</div>
+
+<div class="meta">Schema: sovereign-v0.10-freeze-audit · generated 2026-05-19 04:17:33 UTC · ruleset SAVE_VERSION v0.10 · audit: 38 static checks + 6 balance targets + 1 determinism re-run · all clear.</div>
+</div></body></html>

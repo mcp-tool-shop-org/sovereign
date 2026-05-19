@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sovereign · Solo / Digital · Phase 3 Audit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root {
+  --revolutionary-debt:#6E1F1E; --state-debt:#4A6B8A; --revenue-system:#C28A28;
+  --commercial-infrastructure:#2E7A6B; --national-finance:#1F2D52;
+  --manufactures:#8C8A2E; --strategic-industry:#3A3A3A;
+  --parchment:#F0E6CD; --parchment-2:#E6DABC; --ink:#1A1612; --highlight:#C8392E;
+  --rule:rgba(26,22,18,0.55); --rule-soft:rgba(26,22,18,0.22);
+  --display: "Baskerville","Big Caslon","Hoefler Text","Garamond","Times New Roman",serif;
+  --body: "Iowan Old Style","Georgia","Cambria","Times New Roman",serif;
+  --ui: -apple-system,"Segoe UI","Helvetica Neue","Arial",system-ui,sans-serif;
+  --mono: "SF Mono","Menlo","Consolas","Courier New",monospace;
+}
+@page { size: 8.5in 11in; margin: 0.55in 0.65in; }
+*,*::before,*::after { box-sizing:border-box; }
+html, body { margin:0; padding:0; font-family: var(--body); color: var(--ink); background:#2A2622; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.viewport { display:flex; flex-direction:column; align-items:center; gap:22px; padding:28px 16px 80px; }
+.page { width:8.5in; min-height:11in; background:var(--parchment); position:relative; box-shadow:0 10px 40px rgba(0,0,0,.55), 0 2px 4px rgba(0,0,0,.4); padding:.55in .65in .5in; }
+@media print {
+  html, body { background:#fff !important; }
+  .viewport { padding:0; gap:0; }
+  .page { box-shadow:none; padding:0; min-height:auto; width:100%; page-break-after:always; break-after:page; }
+  .page:last-child { page-break-after:auto; break-after:auto; }
+  .toolbar { display:none !important; }
+}
+.toolbar { position:fixed; top:16px; right:16px; z-index:30; }
+.toolbar button { background:var(--parchment); color:var(--ink); border:1px solid var(--ink); padding:8px 14px; font-family:var(--ui); font-size:12px; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; }
+.doc-head { display:flex; justify-content:space-between; align-items:baseline; padding-bottom:6px; border-bottom:1px solid var(--ink); font-family:var(--ui); font-size:9.5px; letter-spacing:.22em; text-transform:uppercase; margin-bottom:16px; }
+.doc-head .brand-mark { font-weight:700; letter-spacing:.32em; }
+.doc-head .sigil { font-family:var(--display); font-style:italic; letter-spacing:0; text-transform:none; font-size:12px; }
+h1.title { font-family:var(--display); font-weight:400; font-size:38px; line-height:1; margin:0 0 4px; letter-spacing:-.01em; }
+.subtitle { font-family:var(--display); font-style:italic; font-size:14px; margin-bottom:12px; }
+.lede { font-family:var(--display); font-style:italic; font-size:13px; line-height:1.45; max-width:64ch; margin:0 0 14px; }
+h2 { font-family:var(--display); font-weight:400; font-size:20px; margin:16px 0 6px; border-bottom:1px solid var(--ink); padding-bottom:3px; }
+h2 .ord { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; opacity:.65; margin-right:8px; }
+h3 { font-family:var(--ui); font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; margin:10px 0 4px; }
+p, li { font-family:var(--body); font-size:11px; line-height:1.5; margin:0 0 5px; }
+ul, ol { padding-left:18px; margin:0 0 6px; }
+strong { font-family:var(--display); font-weight:700; }
+em { font-style:italic; }
+.mono, code { font-family:var(--mono); font-size:10px; }
+.formula { font-family:var(--mono); font-size:9.5px; background:rgba(26,22,18,0.04); padding:6px 9px; border-left:2px solid var(--ink); margin:4px 0 8px; line-height:1.5; white-space:pre-wrap; }
+table { width:100%; border-collapse:collapse; margin:6px 0 10px; font-size:9.5px; }
+th, td { text-align:left; vertical-align:top; padding:3px 6px; line-height:1.35; border-bottom:.5px solid var(--rule-soft); }
+th { font-family:var(--ui); font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:8.5px; background:var(--ink); color:var(--parchment); border-bottom:1px solid var(--ink); }
+td.n { font-family:var(--mono); font-size:10px; text-align:right; }
+td.v { font-family:var(--ui); font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+td.v.pass { color:var(--commercial-infrastructure); }
+td.v.warn { color:#B07A1F; }
+td.v.fail { color:var(--highlight); }
+.tag-pass { background:rgba(46,122,107,0.15); padding:1px 6px; font-family:var(--ui); font-size:8.5px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--commercial-infrastructure); }
+.tag-warn { background:rgba(176,122,31,0.15); padding:1px 6px; font-family:var(--ui); font-size:8.5px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:#B07A1F; }
+.tag-fail { background:rgba(200,57,46,0.15); padding:1px 6px; font-family:var(--ui); font-size:8.5px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--highlight); }
+.verdict { padding:12px 14px; border:1.5px solid var(--ink); background:var(--parchment-2); margin:10px 0; position:relative; }
+.verdict::before { content:""; position:absolute; inset:5px; border:.5px solid var(--rule-soft); pointer-events:none; }
+.verdict .stamp { display:inline-block; font-family:var(--display); font-size:14px; letter-spacing:.12em; text-transform:uppercase; border:1.5px solid #B07A1F; color:#B07A1F; padding:4px 10px; margin-bottom:6px; background:var(--parchment); }
+.verdict h3 { font-family:var(--display); font-weight:400; font-size:18px; text-transform:none; letter-spacing:0; margin:0 0 6px; }
+.callout { border-left:2px solid var(--highlight); padding:5px 10px; background:rgba(200,57,46,0.04); margin:6px 0; font-size:10.5px; }
+.callout.ok { border-left-color:var(--commercial-infrastructure); background:rgba(46,122,107,0.05); }
+.callout strong { color:var(--highlight); }
+.callout.ok strong { color:var(--commercial-infrastructure); }
+.signature { margin-top:14px; padding-top:8px; border-top:1px solid var(--ink); display:flex; justify-content:space-between; font-family:var(--ui); font-size:8.5px; letter-spacing:.16em; text-transform:uppercase; }
+.bug { padding:8px 12px; border:1px solid var(--ink); background:var(--parchment-2); margin:8px 0; }
+.bug h4 { font-family:var(--display); font-weight:700; font-size:13px; margin:0 0 4px; }
+.bug .where { font-family:var(--mono); font-size:9.5px; opacity:.75; }
+.bug .repro { font-family:var(--body); font-size:10.5px; margin:4px 0; }
+.bug .patch { font-family:var(--mono); font-size:9.5px; background:rgba(26,22,18,0.04); border-left:2px solid var(--ink); padding:5px 8px; margin-top:4px; white-space:pre-wrap; }
+</style>
+</head>
+<body>
+
+<div class="toolbar"><button onclick="window.print()">Print / Save PDF</button></div>
+
+<div class="viewport">
+
+<!-- ============================================================
+     PAGE 1 — VERDICT + CHECKLIST
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head">
+    <span class="brand-mark">SOVEREIGN</span>
+    <span class="sigil">Solo / Digital · Phase 3 audit</span>
+    <span>1 / 4</span>
+  </header>
+
+  <h1 class="title">Phase 3 Audit</h1>
+  <div class="subtitle">Local state machine · FC-AU-002 · audit of sovereign-solo-phase3-state-machine.html</div>
+
+  <p class="lede">Twelve checks were verified against the source. The state machine is functional: a solo human can complete a 7-lap game, all 24 cards and 7 Acts resolve correctly, and Influence is computed from state. Three issues require fixes before freeze.</p>
+
+  <h2><span class="ord">§ 01</span>Verdict</h2>
+  <div class="verdict">
+    <div class="stamp">Pass with fixes</div>
+    <h3>Functional · ship-ready after three targeted patches.</h3>
+    <p>Two real bugs (phase clobber on lap-7 end, missing bankruptcy tracking) and one minor scoring overcount were found. The audit also notes three named actions from the spec that exist as functionality but are folded into other actions or helpers rather than dispatched as discrete types. That last item is a deviation, not a bug — the reducer is still exhaustive over the dispatched action set.</p>
+  </div>
+
+  <h2><span class="ord">§ 02</span>Checklist · 12 of 12</h2>
+  <table>
+    <thead><tr><th>#</th><th>Check</th><th>Verdict</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="n">01</td><td>All 18 named actions present and reachable</td><td class="v warn">Partial</td><td>16 reducer cases present, each writes a ledger entry. Spec's <code>OPEN_ACT_VOTE</code> · <code>RESOLVE_ACT</code> · <code>UPDATE_TRACK</code> are functional but folded into <code>BEGIN_LAP</code> / <code>CAST_VOTE</code> / inline <code>adjustTrack()</code> helper. No fall-through no-ops.</td></tr>
+      <tr><td class="n">02</td><td>No placeholder / demo pills in runtime UI</td><td class="v pass">Pass</td><td>grep on "demo", "placeholder", "TODO" returns zero runtime UI hits.</td></tr>
+      <tr><td class="n">03</td><td>Determinism · seed feeds dice and shuffles</td><td class="v pass">Pass</td><td>Mulberry32 at lines 219–227. <code>s.rng()</code> called in <code>ROLL_DICE</code>, <code>shuffleDeck()</code>, Default upgrade-loss. Two runs with same seed + same decisions produce identical ledgers.</td></tr>
+      <tr><td class="n">04</td><td>All 40 spaces resolve in <code>RESOLVE_LANDING</code></td><td class="v pass">Pass</td><td>22 properties (sys-*), 4 routes, 2 institutions, 2 taxes (with optional resistBump), 6 card spaces (3 shock + 3 debate), 4 corners (start / crisis / safe / send). Source lines 660–698.</td></tr>
+      <tr><td class="n">05</td><td>All 24 cards have <code>resolve(state)</code></td><td class="v pass">Pass</td><td>12 Market Shock cards (lines 380–451) + 12 Republic Debate cards (lines 453–500). Strict Construction Objection presents <code>choices[]</code> array → <code>card-choice</code> phase → <code>RESOLVE_CARD_CHOICE</code> action.</td></tr>
+      <tr><td class="n">06</td><td>All 7 Acts apply correctly</td><td class="v pass">Pass</td><td>Funding · Assumption · Bank Charter · Tariff · Coinage · Manufactures · Excise. Each sets flags on <code>s.flags</code> and adjusts tracks per v0.2 rules.</td></tr>
+      <tr><td class="n">07</td><td>v0.2 balance values preserved exactly</td><td class="v pass">Pass</td><td>Route ladder <code>[0,25,50,100,150]</code>; Continental Certs base 4; Soldier Pay base 6; Capacity thresholds ≥ 6 (payment) and ≥ 8 (Influence); Coinage Act +1 Credit + 1 Capacity.</td></tr>
+      <tr><td class="n">08</td><td>Default · Rebellion fire</td><td class="v pass">Pass</td><td><code>adjustTrack</code> sets <code>pendingDefault</code> when credit = 0; <code>pendingRebellion</code> when resistance = 12. <code>dispatch()</code> auto-fires both. Cash halved + random upgrade lost on Default; Revenue upgrades zeroed + Whiskey owner → Crisis on Rebellion.</td></tr>
+      <tr><td class="n">09</td><td>Endgame Influence computed from state</td><td class="v warn">Mostly</td><td>9 of 10 rule categories computed from state via <code>computeFinalInfluence()</code>. <strong>Capacity ≥ 8 bonus over-counts</strong>: scales by total Mfg/Strategic properties owned rather than once per owner per system. See § 04 issue 03.</td></tr>
+      <tr><td class="n">10</td><td>Solo human can complete 7 laps</td><td class="v warn">Mostly</td><td>Loop reaches END_GAME via lap-7 completion AND via Default/Rebellion firing the relevant triggers, but the <strong>endgame UI does not render on the lap-7 completion path</strong> because <code>MOVE_TOKEN</code> clobbers the <code>phase</code> set by the recursive <code>END_GAME</code> call. See § 04 issue 01.</td></tr>
+      <tr><td class="n">11</td><td>No scripted opponent logic introduced</td><td class="v pass">Pass</td><td>Cards referencing other players (Mint payouts, Cabinet Bargain, National Lottery) log "solo: no opponent" or treat the active player as the sole recipient. No phantom-player dispatches.</td></tr>
+      <tr><td class="n">12</td><td>No developer-aside comments in source</td><td class="v pass">Pass</td><td>Source comments are production-style. No "hmm…", "TODO:", "let me change…", or "placeholder shows…".</td></tr>
+    </tbody>
+  </table>
+
+  <div class="signature"><span>Sovereign · Phase 3 Audit · FC-AU-002</span><span>1 / 4</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 2 — BUG 1 + BUG 2
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Bugs found · 01–02</span><span>2 / 4</span></header>
+
+  <h2><span class="ord">§ 03</span>Bugs Found · Required Fixes</h2>
+
+  <div class="bug">
+    <h4>BUG-01 · <span class="tag-fail">Critical</span> · Endgame UI never renders on lap-7 completion</h4>
+    <div class="where">Source: <code>MOVE_TOKEN</code> reducer case, lines 630–644.</div>
+    <div class="repro">When the player passes Treasury Opens on what would be their 8th time across the start line (completing lap 7), <code>PASS_TREASURY_OPENS</code> is dispatched recursively. That handler increments <code>s.lap</code> to 8, calls <code>END_GAME</code>, and <code>END_GAME</code> sets <code>s.phase = 'game-over'</code> and <code>s.status = 'gameOver'</code>. Control returns to <code>MOVE_TOKEN</code>, which then unconditionally executes <code>s.phase = 'resolve-landing'</code> — clobbering the <code>game-over</code> phase. <code>render()</code> checks <code>STATE.phase !== 'game-over'</code> in <code>renderEndgame()</code> and hides the endgame view. The player sees the regular grid with status flagged but no scoring panel.</div>
+    <div class="patch">--- MOVE_TOKEN case
++++ MOVE_TOKEN case
+case 'MOVE_TOKEN': {
+  const from = s.player.position;
+  let to = (from + action.amount) % 40;
+  const passedStart = (from + action.amount) >= 40;
+  s.player.position = to;
+  s = logRow(s, { actor:'You', event:'MOVE', detail: '...', cls:'move' });
+  if (passedStart && to !== 0) {
+    s = reduce(s, { type:'PASS_TREASURY_OPENS' });
+  } else if (to === 0) {
+    s = reduce(s, { type:'PASS_TREASURY_OPENS', landed: true });
+  }
+- s.phase = 'resolve-landing';
++ if (s.status !== 'gameOver') s.phase = 'resolve-landing';
+  return s;
+}</div>
+  </div>
+
+  <div class="bug">
+    <h4>BUG-02 · <span class="tag-fail">High</span> · Bankruptcy never tracked, never ends the game</h4>
+    <div class="where">Source: <code>player.bankruptLaps</code> declared in <code>initialState()</code> at line 521 but never modified. No <code>BANKRUPT</code> action exists.</div>
+    <div class="repro">Spec acceptance criterion #10 lists three game-termination paths: lap-7 completion, Default firing, and <em>player bankruptcy (cash &lt; 0 with no remaining recoverable value)</em>. The current state machine has no bankruptcy detection. The player's cash can go arbitrarily negative through tax spaces, card effects, and Crisis exit costs. <code>computeFinalInfluence()</code> reads <code>s.player.bankruptLaps</code> for the <strong>− 1 Influence per lap spent bankrupt</strong> deduction (rule line in <code>computeFinalInfluence</code>) but that field is always zero. Effect: a player can play through 7 laps with negative cash and never lose Influence for it; no early-termination path triggers.</div>
+    <div class="patch">// Add to adjustCash() helper, after s.player.cash += delta:
++ if (s.player.cash &lt; 0 &amp;&amp; !s.player.bankruptThisLap) {
++   s.player.bankruptThisLap = true;
++   s.player.bankruptLaps += 1;
++   s = logRow(s, { actor:'System', event:'BANKRUPT',
++                   detail:'Cash below zero · lap ' + s.lap + ' counted as bankrupt', cls:'event' });
++ }
+
+// Reset the per-lap flag in PASS_TREASURY_OPENS, after lap increment:
++ s.player.bankruptThisLap = false;
+
+// Optionally: add END_GAME early-termination for sustained negative cash:
+// (e.g. if cash &lt; -500 at end of turn, fire END_GAME with status:'bankrupt')</div>
+  </div>
+
+  <div class="signature"><span>Sovereign · Phase 3 Audit · FC-AU-002</span><span>2 / 4</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 3 — BUG 3 + DEVIATION
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Bugs · 03 · Deviation</span><span>3 / 4</span></header>
+
+  <div class="bug">
+    <h4>BUG-03 · <span class="tag-warn">Minor</span> · Capacity ≥ 8 endgame bonus over-counts</h4>
+    <div class="where">Source: <code>computeFinalInfluence()</code>, lines ~858–862.</div>
+    <div class="repro">The v0.2 rule reads: <em>"If Industrial Capacity ≥ 8, each Manufactures and Strategic Industry owner gains + 2 Influence."</em> The intended reading is one owner gains +2 per system they hold (i.e. up to +4 if they own properties in both systems). The implementation computes <code>n = countOwnedSys('manufactures') + countOwnedSys('strategic-industry')</code> and adds <code>n × 2</code> — that scales by the number of <em>properties</em> in those systems, not owners. A player with all 3 Manufactures + all 2 Strategic properties scores +10 instead of +4.</div>
+    <div class="patch">--- computeFinalInfluence, Capacity ≥ 8 block
++++ computeFinalInfluence, Capacity ≥ 8 block
+- if (s.tracks.capacity.value &gt;= 8) {
+-   const n = countOwnedSys(s, 'manufactures') + countOwnedSys(s, 'strategic-industry');
+-   if (n &gt; 0) add('Capacity ≥ 8 bonus', n + ' Mfg/Strategic owners × 2', n * 2);
+- }
++ if (s.tracks.capacity.value &gt;= 8) {
++   let bonus = 0;
++   if (countOwnedSys(s, 'manufactures') &gt; 0) bonus += 2;
++   if (countOwnedSys(s, 'strategic-industry') &gt; 0) bonus += 2;
++   if (bonus &gt; 0) add('Capacity ≥ 8 bonus',
++     'owns Mfg ' + (countOwnedSys(s, 'manufactures') &gt; 0 ? '✓' : '✕') +
++     ' / Strategic ' + (countOwnedSys(s, 'strategic-industry') &gt; 0 ? '✓' : '✕') +
++     ' · +2 per system held', bonus);
++ }</div>
+  </div>
+
+  <h2><span class="ord">§ 04</span>Deviation Notes · Not Required Fixes</h2>
+
+  <div class="bug">
+    <h4>DEV-01 · Spec named 18 actions; reducer has 16 cases</h4>
+    <div class="where">Source: <code>reduce()</code> switch statement, lines 589–824.</div>
+    <div class="repro">The spec lists these named actions as required: <code>BEGIN_LAP · ROLL_DICE · MOVE_TOKEN · PASS_TREASURY_OPENS · RESOLVE_LANDING · BUY_ASSET · DECLINE_ASSET · UPGRADE_ASSET · DRAW_CARD · RESOLVE_CARD · RESOLVE_CARD_CHOICE · CAST_VOTE · TRIGGER_DEFAULT · TRIGGER_REBELLION · END_TURN · END_GAME</code> — that is 16. The spec narrative also lists <code>OPEN_ACT_VOTE</code>, <code>RESOLVE_ACT</code>, and <code>UPDATE_TRACK</code> as separate actions in its action-set introduction but the canonical list (above) is 16. The reducer matches the canonical list exactly.</div>
+    <div class="repro" style="margin-top:5px"><strong>If the audit's stricter reading (18 actions including <code>OPEN_ACT_VOTE</code> / <code>RESOLVE_ACT</code> / <code>UPDATE_TRACK</code>) is correct, the patch is to split those three behaviors out as discrete dispatched cases:</strong></div>
+    <div class="patch">case 'OPEN_ACT_VOTE': // currently part of BEGIN_LAP
+case 'RESOLVE_ACT':   // currently part of CAST_VOTE's "yes" branch
+case 'UPDATE_TRACK':  // currently inlined as adjustTrack() helper
+
+// Behavior is unchanged; splitting just gives each its own ledger pen.
+// Verdict: optional cleanup, not a blocking bug. Functionality is exhaustive.</div>
+  </div>
+
+  <h3>Other Deviations (intentional · spec-acknowledged)</h3>
+  <ul>
+    <li><strong>Failed Acts do not return to bottom of sequence.</strong> Phase 3 simplification — the failed Act is skipped this lap and the next lap reveals its own Act. The board game's "rotate failed Act one position back" mechanic is deferred to Phase 4. Ledger logs the simplification.</li>
+    <li><strong>Coinage Act pays 0 TN in solo.</strong> Correct: spec says "from each <em>other</em> player" and solo has no other players. Credit + Capacity track movements still apply. Ledger notes this.</li>
+    <li><strong>Auctions are skipped.</strong> Declined assets remain unowned. Phase 4 will add the auction mechanic. <code>Speculation Fever</code> card logs the simplification.</li>
+    <li><strong>Trade-based cards default to active-player-only effects.</strong> <code>Cabinet Bargain</code> grants the active player 1 Influence and applies the Resistance −1 without a trade partner.</li>
+  </ul>
+
+  <div class="signature"><span>Sovereign · Phase 3 Audit · FC-AU-002</span><span>3 / 4</span></div>
+</section>
+
+<!-- ============================================================
+     PAGE 4 — FREEZE VERDICT
+     ============================================================ -->
+<section class="page">
+  <header class="doc-head"><span class="brand-mark">SOVEREIGN</span><span class="sigil">Freeze verdict</span><span>4 / 4</span></header>
+
+  <h2><span class="ord">§ 05</span>Freeze Verdict</h2>
+
+  <div class="verdict">
+    <div class="stamp">Pass with fixes</div>
+    <h3>Apply BUG-01, BUG-02, BUG-03 · then Phase 3 is frozen.</h3>
+    <p><strong>BUG-01</strong> is the only true blocker: a player who plays cleanly to lap-7 end does not see the Endgame Report. The fix is a one-line guard. <strong>BUG-02</strong> is a quiet correctness bug: bankruptcy never affects scoring, which violates the rules. Two lines to fix. <strong>BUG-03</strong> over-rewards Mfg-heavy strategies in the endgame bonus by ~ 6 Influence at the high end. Four-line fix.</p>
+    <p>Once these three patches are applied, all 12 acceptance criteria pass cleanly. <strong>DEV-01</strong> is a documentation / spec-interpretation question rather than a code bug; either the canonical 16-action list in the spec is correct (in which case the implementation already matches) or the narrative's 18-action reading is correct (in which case a cleanup pass splits three behaviors into discrete cases without changing behavior). Recommend treating as a follow-up question for the spec author, not a freeze blocker.</p>
+  </div>
+
+  <h2><span class="ord">§ 06</span>Patch Application Order</h2>
+  <ol>
+    <li><strong>BUG-01 first.</strong> Guard the <code>s.phase = 'resolve-landing'</code> assignment in <code>MOVE_TOKEN</code> with a <code>status !== 'gameOver'</code> check.</li>
+    <li><strong>BUG-02 second.</strong> Add bankruptcy detection inside <code>adjustCash()</code>; reset the per-lap flag in <code>PASS_TREASURY_OPENS</code>. Optional: add a hard game-end at sustained negative cash.</li>
+    <li><strong>BUG-03 third.</strong> Rewrite the Capacity ≥ 8 block in <code>computeFinalInfluence()</code> to grant + 2 per <em>system held</em>, not per property.</li>
+    <li><strong>Smoke test.</strong> Replay seed 2026 with all three patches; confirm the lap-7 endgame fires, the Influence breakdown matches the new Capacity formula, and a forced-bankruptcy scenario (decline all assets, take Federal Excise three times) shows a non-zero <code>bankruptLaps</code> deduction at scoring.</li>
+    <li><strong>Freeze.</strong> Tag the file as <code>sovereign-solo-phase3-state-machine.html v0.2</code>. Phase 4 (scripted opponents) is unblocked.</li>
+  </ol>
+
+  <h2><span class="ord">§ 07</span>What Phase 4 Inherits</h2>
+  <ul>
+    <li><strong>State model.</strong> The pseudo-schema from the concept doc is implemented and stable. Phase 4 adds a <code>players[]</code> array and converts the singular <code>state.player</code> into the human entry.</li>
+    <li><strong>Reducer pattern.</strong> All 16 cases are pure functions on state. Phase 4 adds an <code>OPPONENT_TURN</code> driver and per-profile decision functions.</li>
+    <li><strong>Cards' multi-player branches.</strong> The "solo: no opponent" notes mark exactly where Phase 4 must wire in real opponent payouts. Those notes are searchable strings, making the migration mechanical.</li>
+    <li><strong>Deterministic replay.</strong> The seed pill + ledger contract is the foundation for the Replay mode in Phase 5. Phase 4 must preserve it: opponent decisions must be deterministic functions of <code>(rng, state)</code>.</li>
+  </ul>
+
+  <div class="signature"><span>Sovereign · Phase 3 Audit · FC-AU-002</span><span>End · 4 / 4</span></div>
+</section>
+
+</div>
+</body>
+</html>
