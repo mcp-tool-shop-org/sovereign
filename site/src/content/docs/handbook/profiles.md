@@ -2,7 +2,7 @@
 title: Profiles
 description: The three scripted opponent strategies in detail. Pure functions of visible state.
 sidebar:
-  order: 4
+  order: 3
 ---
 
 Sovereign ships with three scripted opponent profiles. Each profile is a **pure function of visible state** — given the same board state, cash, tracks, and lap, a profile always produces the same decision. There is no LLM. There is no hidden state. Every decision logs the rule that fired to the ledger.

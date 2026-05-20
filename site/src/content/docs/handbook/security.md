@@ -2,7 +2,7 @@
 title: Security
 description: Threat model, data handling, vulnerability reporting.
 sidebar:
-  order: 7
+  order: 6
 ---
 
 Sovereign is a self-contained browser-based board game. The CLI opens a local HTML file in the user's default browser. There is **no server, no network call, no account, no cloud sync**.
