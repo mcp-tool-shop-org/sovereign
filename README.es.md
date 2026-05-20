@@ -15,7 +15,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Landing Page](https://img.shields.io/badge/landing-page-1F2D52?style=flat)](https://mcp-tool-shop-org.github.io/sovereign/)
 
-</div>
+</div
+
+---
+
+**Estado — v1.1.1 (beta).** La versión v1.1.0 fue retirada el mismo día de su lanzamiento (20 de mayo de 2026) después de que una sesión de juego con usuarios reales revelara dos fallos estructurales en la jugabilidad que las auditorías de simulación no pudieron detectar. La versión v1.1.1 es una reconstrucción: se ha mejorado la jugabilidad para usuarios, se ha ajustado el ritmo a 12 rondas, se ha implementado un modelo de victoria por mandato y se han añadido elementos relacionados con el alquiler. Es una **beta opcional**: el modo digital se ha lanzado porque es significativamente mejor que la versión v1.1.0, pero no se ha probado exhaustivamente con usuarios. El juego de mesa imprimible sigue siendo estable en la versión v0.2. Consulte el archivo `CHANGELOG.md` para obtener información detallada sobre los cambios y las limitaciones de la beta.
 
 ---
 
@@ -23,9 +27,9 @@
 
 Sovereign es un **juego de mesa al estilo "Monopoly" basado en el sistema de Hamilton**, sobre la creación del crédito público estadounidense, además de una **adaptación completa para un solo jugador / digital** que ejecuta las mismas reglas localmente en un navegador contra dos oponentes simulados y deterministas.
 
-- **Juego de mesa** — Edición imprimible de 34 hojas. Tablero de 40 casillas, 22 propiedades + 4 rutas + 2 instituciones, 8 sistemas de colores, 7 leyes del Congreso en orden histórico fijo, 4 roles de jugador, 3 pistas compartidas (Crédito Público · Resistencia Pública · Capacidad Industrial), 12+12 cartas de evento. Dos vías económicas viables además del Tesoro: Comercio y Manufactura.
-- **Modo digital** — Un único archivo HTML autocontenido. Máquina de estados completa, generador de números aleatorios determinista mulberry32, oponentes simulados con IA (Tesoro / Finanzas, Comercio / Infraestructura, Manufactura / Industria), guardar / cargar con integridad de hash, herramienta de depuración de repeticiones, herramienta de simulación por lotes, telemetría local de equilibrio.
-- **Punto de equilibrio** — v0.10, congelado después de un ciclo de nueve versiones impulsado por más de 1000 simulaciones de juegos deterministas. Tesoro 59% · Comercio 25% · Manufactura 16% (CANÓNICO × 100, el rango objetivo se cumplió para los tres perfiles).
+- **Juego de mesa** — Edición imprimible de 34 hojas. Tablero de 40 casillas, 22 propiedades + 4 rutas + 2 instituciones, 8 sistemas de colores, 7 Actas del Congreso en orden histórico fijo, 4 roles de jugador, 3 pistas compartidas (Crédito Público · Resistencia Pública · Capacidad Industrial), 12 + 12 cartas de evento. Dos vías económicas viables además del Tesoro: Comerciante y Fabricante. Equilibrio de la versión v0.2, congelado.
+- **Modo digital** — Un único archivo HTML autocontenido. Juego de 12 rondas con modelo de victoria por mandato: a partir de la ronda 8, un jugador con 15 puntos de influencia y una ventaja de 5 puntos activa la "Cuentas Finales" y termina el juego. Si no hay mandato, el juego termina en la ronda 12. Generador de números aleatorios determinista mulberry32, oponentes con IA programada (Tesoro / Finanzas, Comerciante / Infraestructura, Fabricante / Industria), guardar / cargar con integridad de hash, herramienta de simulación por lotes para el diseñador y función de eliminación de repeticiones.
+- **Punto de referencia de equilibrio** — Modelo de mandato de 12 rondas (beta v1.1.1): Tesoro 51 %, Comerciante 33 %, Fabricante 16 % (CANÓNICO × 100). Los tres perfiles pueden obtener el mandato; ningún perfil está bloqueado. Las mecánicas subyacentes de la versión v0.18 (Crisis Crediticia, puntuación de propiedad intelectual en efectivo, Carta Industrial, bonificaciones por completar conjuntos) se conservan idénticamente en bytes desde el ciclo de diseño v0.3 → v0.10 → v0.18, basado en más de 1000 simulaciones deterministas.
 
 ---
 
@@ -123,10 +127,11 @@ El cuarto perfil conceptual (Oportunista/Efectivo) se pospone. El conjunto compe
 
 ## Limitaciones conocidas
 
-- **Los umbrales de capacidad siguen siendo raros en el juego canónico.** La capacidad final promedio es de 3,49; ≥ 6 se alcanza en solo 4 de cada 100 juegos. La puntuación industrial al final del juego existe como un límite, no como una ruta habitual.
-- **La Tesorería/Finanzas sigue siendo intencionalmente la más fuerte**, dentro del rango objetivo. Esto coincide con la tesis histórica: el crédito público y las finanzas federales fueron el principal instrumento económico de Hamilton.
-- **Los eventos de fallo se activaron 0/400 veces** en la prueba de la versión 0.10. Las amenazas predeterminadas de Default/Rebelión/Bancarrota son actualmente decorativas; una versión futura podría revisar la presión de los estados de fallo.
-- **Solo se ha probado mediante simulación.** El equilibrio se valida contra más de 1000 juegos deterministas en el ciclo de la versión 0.3 a la 0.10. Aún no se ha probado con jugadores humanos; la desviación estratégica puede cambiar estas tasas.
+- **La versión v1.1.1 es una beta.** El modo digital se ha sometido a auditorías con diagnósticos de simulación, y el lote CANÓNICO × 100 dentro del HTML generó 62 / 100 activaciones de mandato (frente a las 67 previstas), con una distribución de ganadores de 51 / 33 / 16 exactamente como se predijo. **No** se ha probado exhaustivamente con un usuario real; la adaptación del comportamiento (cómo se comportan realmente los jugadores una vez que conocen el mandato) no se ha medido. Considérela como una beta opcional hasta que la pruebe usted mismo.
+- **Los perfiles de IA aún no compiten por el mandato.** Utilizan las mismas funciones de decisión de la versión v0.18, lo que significa que juegan para acumular influencia a lo largo de todo el juego, en lugar de alcanzar rápidamente el umbral de 15 puntos de influencia. Una versión futura ajustará las decisiones de los perfiles para tener en cuenta el mandato. Los jugadores humanos reales pueden comportarse de manera diferente.
+- **La quiebra es una presión dinámica suave a las 12 rondas.** Aproximadamente 7 / 100 eventos en CANÓNICO × 100 con mandato (frente a aproximadamente 18 / 100 sin mandato, porque los juegos terminan antes). Es interesante observarlo durante el juego.
+- **El Tesoro / Finanzas sigue siendo intencionalmente el perfil más fuerte**, dentro del rango objetivo. Esto coincide con la tesis histórica: el crédito público y las finanzas federales fueron el principal instrumento económico de Hamilton.
+- **Los eventos de fallo (Impago / Rebelión) siguen siendo principalmente decorativos.** La Crisis Crediticia se activa en aproximadamente 2 / 100 a las 12 rondas. El sistema de escalada tiene más tiempo para desarrollarse, pero rara vez llega al impago o la rebelión. Las versiones futuras podrían revisar la presión de los estados de fallo.
 
 ---
 
@@ -155,4 +160,4 @@ MIT © mcp-tool-shop. Consulte el archivo [`LICENSE`](./LICENSE).
 
 Desarrollado por <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
 
-</div>
+</div

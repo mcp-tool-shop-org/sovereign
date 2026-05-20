@@ -15,7 +15,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Landing Page](https://img.shields.io/badge/landing-page-1F2D52?style=flat)](https://mcp-tool-shop-org.github.io/sovereign/)
 
-</div>
+</div
+
+---
+
+**Statut — v1.1.1 (bêta).** La version v1.1.0 a été retirée le même jour de sa sortie (2026-05-20) après qu'une session de jeu humaine ait révélé deux problèmes structurels affectant la jouabilité, que les audits de simulation n'avaient pas détectés. La version v1.1.1 est une refonte : amélioration de la jouabilité pour les joueurs humains + rythme de 12 tours + modèle de victoire par mandat + apparition de la location. Il s'agit d'une **bêta optionnelle** : le mode numérique est proposé car il est significativement meilleur que la version v1.1.0, mais il n'a pas été testé en profondeur de bout en bout. La version imprimable du jeu de plateau reste stable à la version v0.2. Consultez le fichier `CHANGELOG.md` pour connaître les modifications complètes et les limitations de la version bêta.
 
 ---
 
@@ -23,9 +27,9 @@
 
 Sovereign est un **jeu de société du type Monopoly, basé sur le système Hamilton**, qui traite de la création du crédit public américain, ainsi qu'une **adaptation complète pour un mode solo / numérique** qui exécute les mêmes règles localement dans un navigateur, contre deux adversaires simulés et déterministes.
 
-- **Jeu de société** — prototype imprimable en 34 feuilles. Plateau de 40 cases, 22 propriétés + 4 routes + 2 institutions, 8 systèmes de couleurs, 7 actes du Congrès dans un ordre historique fixe, 4 rôles de joueurs, 3 pistes communes (Crédit public · Résistance publique · Capacité industrielle), 12+12 cartes d'événements. Deux voies économiques viables en dehors du Trésor : le commerce et l'industrie.
-- **Mode numérique** — un seul fichier HTML autonome. Machine d'état complète, générateur de nombres aléatoires déterministe mulberry32, adversaires simulés (Trésor / Finance, Commerce / Infrastructure, Industrie / Production), sauvegarde / chargement avec intégrité de la somme de contrôle, outil de relecture, outil de simulation par lots, télémétrie locale de l'équilibre.
-- **Équilibre de base** — v0.10, figé après une série de neuf versions, basée sur plus de 1000 simulations de jeux déterministes. Trésor : 59 % · Commerce : 25 % · Industrie : 16 % (valeur canonique × 100, la plage cible est atteinte pour les trois profils).
+- **Jeu de plateau** — édition imprimable en 34 feuilles. Plateau de 40 cases, 22 propriétés + 4 itinéraires + 2 institutions, 8 systèmes de couleurs, 7 actes du Congrès dans un ordre historique fixe, 4 rôles de joueurs, 3 pistes communes (Crédit public · Résistance publique · Capacité industrielle), 12 + 12 cartes d'événements. Deux voies économiques viables en dehors du Trésor : le commerçant et le fabricant. Équilibrage de la version v0.2, figé.
+- **Mode numérique** — un seul fichier HTML autonome. Jeu de 12 tours avec un modèle de victoire par mandat : à partir du tour 8, un joueur disposant de 15 points d'influence et d'une avance de 5 points déclenche le bilan final et met fin à la partie. S'il n'y a pas de mandat, la partie se termine au tour 12. Générateur de nombres aléatoires déterministe mulberry32, adversaires IA programmés (Trésor / Finances, Commerçant / Infrastructures, Fabricant / Industrie), sauvegarde / chargement avec vérification de l'intégrité, outil de relecture des parties, outil de simulation en lot réservé aux concepteurs.
+- **Équilibre de base** — modèle de 12 tours avec mandat (bêta v1.1.1) : Trésor 51 % · Commerçant 33 % · Fabricant 16 % (CANONIQUE × 100). Les trois profils peuvent obtenir un mandat ; aucun profil n'est exclu. Les mécanismes sous-jacents de la version v0.18 (Crise du crédit, système de points d'influence, Charte industrielle, bonus pour la complétion des ensembles) sont conservés de manière identique, provenant de l'évolution de la conception v0.3 → v0.10 → v0.18, basée sur plus de 1000 simulations déterministes.
 
 ---
 
@@ -54,7 +58,7 @@ Ouvrez la page d'accueil hébergée à l'adresse **<https://mcp-tool-shop-org.gi
 
 ### Imprimer et jouer
 
-Le prototype du jeu de société est un document HTML autonome en 34 feuilles. Ouvrez `release/board-game/sovereign-board-game.html` depuis le paquet (ou depuis un téléchargement), puis `Cmd/Ctrl-P → Enregistrer sous PDF → Format US Letter → 100 % de l'échelle`. Découpez et jouez.
+Le prototype du jeu de société est un document HTML autonome en 34 feuilles. Ouvrez `release/board-game/sovereign-prototype.html` depuis le paquet (ou depuis un téléchargement), puis `Cmd/Ctrl-P → Enregistrer sous PDF → Format US Letter → 100 % de l'échelle`. Découpez et jouez.
 
 ### Paquet de publication hors ligne
 
@@ -123,10 +127,11 @@ Le quatrième profil conceptuel (Opportuniste / Trésorerie) est reporté. L'ens
 
 ## Limitations connues
 
-- **Les seuils de capacité restent rares dans le jeu canonique.** La capacité finale moyenne est de 3,49 ; ≥ 6 est atteint dans seulement 4 / 100 parties. La notation industrielle de fin de partie existe comme un plafond, et non comme un chemin régulier.
-- **La Trésorerie / Finance reste intentionnellement la plus forte**, dans la plage cible. Cela correspond à la thèse historique : le crédit public + la finance fédérale étaient le principal levier économique de Hamilton.
-- **Les événements d'échec se sont déclenchés 0 / 400 fois** lors de la passe de validation de la v0.10. Les menaces par défaut / rébellion / faillite sont actuellement décoratives ; une version future pourrait revoir la pression des états d'échec.
-- **Testé uniquement par simulation.** L'équilibre est validé par rapport à plus de 1 000 parties déterministes sur l'arc v0.3 → v0.10. Pas encore testé par des joueurs humains ; la déviation stratégique peut modifier ces taux.
+- **La version v1.1.1 est une bêta.** Le mode numérique a été testé par rapport aux diagnostics de simulation, et le test en lot CANONIQUE × 100 a donné 62 / 100 déclenchements de mandat (par rapport aux 67 prévus), avec une répartition des gagnants de 51 / 33 / 16, exactement comme prévu. Il **n'a pas** été testé en profondeur de bout en bout par un joueur humain ; l'adaptation comportementale (la manière dont les joueurs se comportent une fois qu'ils connaissent le système de mandat) n'a pas été mesurée. Considérez-le comme une version optionnelle jusqu'à ce que vous l'ayez vous-même testée.
+- **Les profils d'IA ne sont pas encore en compétition pour le mandat.** Ils utilisent les mêmes fonctions de décision de la version v0.18, ce qui signifie qu'ils jouent pour accumuler des points d'influence sur toute la partie, et non pour atteindre rapidement le seuil de 15 points d'influence. Une version future ajustera les décisions des profils en fonction de la prise de conscience du mandat. Les joueurs humains peuvent se comporter différemment.
+- **La faillite est une pression indirecte à 12 tours.** Environ 7 / 100 d'événements dans CANONIQUE × 100 avec mandat (par rapport à environ 18 / 100 sans mandat, car les parties se terminent plus tôt). Il est intéressant de l'observer lors des tests.
+- **Le Trésor / Finances reste intentionnellement le profil le plus puissant**, dans la plage cible. Cela correspond à la thèse historique : le crédit public et les finances fédérales étaient les principaux leviers économiques de Hamilton.
+- **Les événements de défaillance (Défaut / Rébellion) restent principalement décoratifs.** La Crise du crédit se déclenche environ 2 / 100 fois à 12 tours. Le système d'escalade a plus de temps pour s'accumuler, mais atteint rarement un état de défaut ou de rébellion. Les versions futures pourraient revoir la pression exercée en cas de défaillance.
 
 ---
 
@@ -155,4 +160,4 @@ MIT © mcp-tool-shop. Voir le fichier [`LICENSE`](./LICENSE).
 
 Créé par <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
 
-</div>
+</div

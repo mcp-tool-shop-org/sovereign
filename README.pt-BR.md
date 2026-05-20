@@ -15,7 +15,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Landing Page](https://img.shields.io/badge/landing-page-1F2D52?style=flat)](https://mcp-tool-shop-org.github.io/sovereign/)
 
-</div>
+</div
+
+---
+
+**Status — v1.1.1 (beta).** A versão v1.1.0 foi descontinuada no mesmo dia do lançamento (2026-05-20) após uma sessão de jogo com jogadores reais que revelou duas falhas estruturais na jogabilidade que as auditorias de simulação não conseguiram detectar. A v1.1.1 é uma nova versão: jogabilidade aprimorada com base em testes com jogadores reais + ritmo de 12 rodadas + modelo de vitória por mandato + introdução de elementos de aluguel. É uma **versão beta opcional**: o modo digital está disponível porque é significativamente melhor que a v1.1.0, mas não foi testado completamente do início ao fim. A versão física do jogo de tabuleiro permanece estável na versão v0.2. Consulte o arquivo `CHANGELOG.md` para obter detalhes completos sobre as alterações e as limitações da versão beta.
 
 ---
 
@@ -23,9 +27,9 @@
 
 Sovereign é um **jogo de tabuleiro do tipo Monopoly, inspirado no sistema Hamilton**, sobre a fundação do crédito público dos EUA, além de uma **adaptação completa para jogar sozinho / digitalmente** que executa as mesmas regras localmente em um navegador contra dois oponentes programados e determinísticos.
 
-- **Jogo de tabuleiro** — protótipo imprimível em 34 páginas. Tabuleiro com 40 espaços, 22 propriedades + 4 rotas + 2 instituições, 8 sistemas de cores, 7 Atos do Congresso em ordem histórica fixa, 4 papéis de jogador, 3 trilhas compartilhadas (Crédito Público · Resistência Pública · Capacidade Industrial), 12+12 cartas de evento. Dois caminhos econômicos viáveis além do Tesouro: Comércio e Indústria.
-- **Modo digital** — um único arquivo HTML autônomo. Máquina de estados completa, RNG determinístico mulberry32, oponentes de IA programados (Tesouro / Finanças, Comércio / Infraestrutura, Indústria / Indústria), salvar / carregar com integridade de hash, ferramenta de reprodução, ferramenta de simulação em lote, telemetria local de equilíbrio.
-- **Equilíbrio base** — v0.10, congelado após um arco de nove versões impulsionado por mais de 1.000 jogos de simulação determinísticos. Tesouro 59% · Comércio 25% · Indústria 16% (CANÔNICO × 100, a faixa alvo foi atingida para todos os três perfis).
+- **Jogo de tabuleiro** — edição impressa com 34 páginas. Tabuleiro com 40 espaços, 22 propriedades + 4 rotas + 2 instituições, 8 sistemas de cores, 7 Atos do Congresso em ordem histórica fixa, 4 papéis de jogador, 3 trilhas compartilhadas (Crédito Público · Resistência Pública · Capacidade Industrial), 12 cartas de evento + 12 cartas de evento. Duas opções econômicas viáveis além do Tesouro: Comerciante e Fabricante. Equilíbrio da versão v0.2, fixo.
+- **Modo digital** — um único arquivo HTML autônomo. Jogo de 12 rodadas com modelo de vitória por mandato: a partir da rodada 8, um jogador com 15 pontos de influência e uma vantagem de 5 pontos aciona a "Contabilização Final" e encerra o jogo. Se não houver vitória por mandato, o jogo termina na rodada 12. Gerador de números aleatórios mulberry32 determinístico, oponentes de IA programados (Tesouro / Finanças, Comerciante / Infraestrutura, Fabricante / Indústria), salvamento / carregamento com integridade de hash, ferramenta de simulação em lote para o designer.
+- **Equilíbrio base** — modelo de mandato de 12 rodadas (versão v1.1.1 beta): Tesouro 51% · Comerciante 33% · Fabricante 16% (VALOR DE REFERÊNCIA × 100). Todos os três perfis podem alcançar a vitória por mandato; nenhum perfil está bloqueado. As mecânicas subjacentes da versão v0.18 (Crise de Crédito, pontuação de propriedade, Carta Industrial, bônus por completar conjuntos) são preservadas byte a byte, derivadas do ciclo de design v0.3 → v0.10 → v0.18, baseado em mais de 1.000 jogos de simulação determinísticos.
 
 ---
 
@@ -54,7 +58,7 @@ Abra a página de destino hospedada em **<https://mcp-tool-shop-org.github.io/so
 
 ### Imprimir e jogar
 
-O protótipo do jogo de tabuleiro é um documento HTML autônomo de 34 páginas. Abra `release/board-game/sovereign-board-game.html` do pacote (ou de um download), depois `Cmd/Ctrl-P → Salvar como PDF → US Letter → 100% de escala`. Recorte e jogue.
+O protótipo do jogo de tabuleiro é um documento HTML autônomo de 34 páginas. Abra `release/board-game/sovereign-prototype.html` do pacote (ou de um download), depois `Cmd/Ctrl-P → Salvar como PDF → US Letter → 100% de escala`. Recorte e jogue.
 
 ### Pacote de lançamento offline
 
@@ -123,10 +127,11 @@ O quarto perfil conceitual (Oportunista / Caixa) está adiado. O conjunto compet
 
 ## Observações
 
-- **Os limites de capacidade permanecem raros no jogo padrão.** A capacidade final média é de 3,49; ≥ 6 é alcançada em apenas 4/100 jogos. A pontuação industrial no final do jogo existe como um limite máximo, não como um caminho comum.
-- **O perfil Treasury / Finance permanece intencionalmente o mais forte**, dentro da faixa alvo. Isso corresponde à tese histórica: o crédito público + as finanças federais eram o principal instrumento econômico de Hamilton.
-- **Eventos de falha ocorreram 0 / 400 vezes** na versão de teste da v0.10. As ameaças de falha (default, rebelião, falência) são atualmente decorativas; uma versão futura pode reavaliar a pressão para atingir um estado de falha.
-- **Testado apenas em simulação.** O equilíbrio é validado contra mais de 1.000 jogos determinísticos no intervalo v0.3 → v0.10. Ainda não foi testado com jogadores humanos; desvios estratégicos podem alterar essas taxas.
+- **A versão v1.1.1 é uma versão beta.** O modo digital foi testado com base nos diagnósticos de simulação, e a execução em lote com o VALOR DE REFERÊNCIA × 100 resultou em 62/100 ativações de mandato (em comparação com as 67 previstas), com uma divisão de vencedores de 51/33/16 exatamente como previsto. Não foi testado completamente do início ao fim por um jogador humano; a adaptação comportamental (como os jogadores realmente se comportam depois de entender o conceito de mandato) não foi medida. Utilize-o como uma versão beta opcional até que você mesmo o teste.
+- **Os perfis de IA ainda não competem pelo mandato.** Eles usam as mesmas funções de decisão da versão v0.18, o que significa que eles jogam para acumular influência ao longo de todo o jogo, e não para atingir rapidamente o limite de 15 pontos de influência. Uma versão futura ajustará as decisões dos perfis para ter consciência do mandato. Jogadores humanos reais podem se comportar de maneira diferente.
+- **A falência é uma pressão sutil em 12 rodadas.** Aproximadamente 7/100 eventos no VALOR DE REFERÊNCIA × 100 com mandato (em comparação com aproximadamente 18/100 sem mandato, porque os jogos terminam mais cedo). Vale a pena observar durante os testes.
+- **O Tesouro / Finanças permanece intencionalmente o mais forte**, dentro da faixa alvo. Isso corresponde à tese histórica: o crédito público e as finanças federais eram os principais instrumentos econômicos de Hamilton.
+- **Os eventos de falha (Inadimplência / Rebelião) permanecem principalmente decorativos.** A Crise de Crédito ocorre em aproximadamente 2/100 a 12 rodadas. O sistema de escalada tem mais tempo para se desenvolver, mas raramente atinge a Inadimplência ou a Rebelião. Versões futuras podem reavaliar a pressão dos estados de falha.
 
 ---
 
@@ -155,4 +160,4 @@ MIT © mcp-tool-shop. Consulte o arquivo [`LICENSE`](./LICENSE).
 
 Desenvolvido por <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
 
-</div>
+</div

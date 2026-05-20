@@ -19,13 +19,17 @@
 
 ---
 
+> **Status — v1.1.1 (beta).** v1.1.0 was withdrawn the same day it shipped (2026-05-20) after a cold human play session surfaced two structural playability failures the simulation audits could not catch. v1.1.1 is the rebuild: human-playability rebuild + 12-round pacing + mandate victory model + rent surfacing. It is **opt-in beta**: the digital mode here is shipped because it is meaningfully better than v1.1.0, but it has not been cold-walked end-to-end. The printable board game remains stable at v0.2. See `CHANGELOG.md` for the full delta and beta caveats.
+
+---
+
 ## What it is
 
-Sovereign is a **Hamilton-system Monopoly-grammar board game** about the founding of US public credit, plus a **complete solo / digital adaptation** that runs the same rules locally in a browser against two deterministic scripted opponents.
+Sovereign is a **Hamilton-system Monopoly-grammar board game** about the founding of US public credit, plus a **solo / digital adaptation** that runs the same rules locally in a browser against two deterministic scripted opponents.
 
-- **Board game** — printable 34-sheet edition. 40-space board, 22 properties + 4 routes + 2 institutions, 8 color systems, 7 Acts of Congress in fixed historical order, 4 player roles, 3 shared tracks (Public Credit · Public Resistance · Industrial Capacity), 12+12 event cards. Two viable economic paths beyond Treasury: Merchant and Manufacturer.
-- **Digital mode** — single self-contained HTML file. Full state machine, deterministic mulberry32 RNG, scripted AI opponents (Treasury / Finance, Merchant / Infrastructure, Manufacturer / Industry), save / load with hash integrity, replay scrubber, batch simulation tool, local balance telemetry.
-- **Balance baseline** — v0.10, frozen after a nine-version arc driven by 1,000+ deterministic simulation games. Treasury 59% · Merchant 25% · Manufacturer 16% (CANONICAL × 100, target band met for all three profiles).
+- **Board game** — printable 34-sheet edition. 40-space board, 22 properties + 4 routes + 2 institutions, 8 color systems, 7 Acts of Congress in fixed historical order, 4 player roles, 3 shared tracks (Public Credit · Public Resistance · Industrial Capacity), 12+12 event cards. Two viable economic paths beyond Treasury: Merchant and Manufacturer. v0.2 balance, frozen.
+- **Digital mode** — single self-contained HTML file. 12-round game with mandate victory model: from round 8 onward, a player with 15 Influence and a 5-point lead triggers Final Accounting and ends the game. If no mandate, the game ends at the round-12 hard cap. Deterministic mulberry32 RNG, scripted AI opponents (Treasury / Finance, Merchant / Infrastructure, Manufacturer / Industry), save / load with hash integrity, replay scrubber, designer-gated batch simulation tool.
+- **Balance baseline** — 12-round mandate model (v1.1.1 beta): Treasury 51 % · Merchant 33 % · Manufacturer 16 % (CANONICAL × 100). All three profiles win mandates; no profile is locked out. The underlying v0.18 mechanics (Credit Crisis, cash IP scoring, Industrial Charter, set completion bonuses) are preserved byte-identical from the v0.3 → v0.10 → v0.18 design arc driven by 1,000+ deterministic simulation games.
 
 ---
 
@@ -97,7 +101,7 @@ See [`SECURITY.md`](./SECURITY.md) for vulnerability reporting and the full secu
 
 ## Features
 
-- **Solo 7-lap game** vs. two scripted opponents (Treasury / Finance and Merchant / Infrastructure by default; Manufacturer / Industry available for batch play).
+- **Solo 12-round game with mandate victory** vs. two scripted opponents (Treasury / Finance and Merchant / Infrastructure by default; Manufacturer / Industry available for batch play). Mandate triggers from end of round 8 if a player holds 15 Influence and a 5-point lead. Otherwise the game ends at the round-12 hard cap.
 - **Deterministic AI** — every opponent decision is a pure function of visible state with a ledgered reason. No LLM, no opaque magic.
 - **8 game surfaces** — Board, Treasury Panel, Asset Inspector, Event Drawer, Acts of Congress, Shared Tracks, Turn Log / Ledger, Endgame Report.
 - **Auctions** — declined assets go to multi-player auction with profile-driven scripted bidding.
@@ -123,10 +127,11 @@ The fourth concept-doc profile (Opportunist / Cash) is deferred. The locked v0.1
 
 ## Known caveats
 
-- **Capacity thresholds remain rare in canonical play.** Avg final Capacity is 3.49; ≥ 6 reached in only 4 / 100 games. The endgame industrial scoring exists as a ceiling, not a regular path.
+- **v1.1.1 is a beta.** The digital mode has been audited against the simulation diagnostics and the in-HTML CANONICAL × 100 batch returned 62 / 100 mandate triggers (vs predicted 67), 51 / 33 / 16 winner split exactly as predicted. It has **not** been cold-walked end-to-end by a fresh human player; behavioral adaptation (how players actually behave once they know about the mandate) is unmeasured. Treat it as opt-in until you've walked it yourself.
+- **AI profiles do not yet race for the mandate.** They run the same v0.18 decision functions, which means they play to accumulate Influence over a full game, not to hit the 15-IP threshold quickly. A future version will tune profile decisions for mandate awareness. Real human players may behave differently.
+- **Bankruptcy is a soft pressure dynamic at 12 rounds.** ~7 / 100 events in CANONICAL × 100 with mandate (down from ~18 / 100 without mandate, because games end earlier). Worth observing in cold play.
 - **Treasury / Finance remains intentionally strongest**, within the target band. This matches the historical thesis: public credit + federal finance were Hamilton's dominant economic lever.
-- **Failure events fired 0 / 400 times** in the v0.10 evidence pass. Default / Rebellion / Bankruptcy threats are currently decorative; a future version may revisit fail-state pressure.
-- **Simulation-tested only.** Balance is validated against 1,000+ deterministic games across the v0.3 → v0.10 arc. Not yet human-playtested; strategic deviation may shift these rates.
+- **Failure events (Default / Rebellion) remain mostly decorative.** Credit Crisis fires ~2 / 100 at 12 rounds. The escalation system has more time to compound but still rarely reaches Default or Rebellion. Future versions may revisit fail-state pressure.
 
 ---
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Sovereign · Solo / Digital · Phase 6 Telemetry · Batch</title>
+<title>Sovereign — Solo / Digital Mode</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
 :root {
@@ -405,7 +405,1409 @@ input[type="number"] { font-family:var(--mono); font-size:13px; padding:5px 8px;
 .batch-modal .winrate-bar { height:10px; background:var(--parchment); border:0.5px solid var(--rule-soft); position:relative; }
 .batch-modal .winrate-bar .fill { height:100%; background:var(--commercial-infrastructure); }
 .batch-modal .ex-actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+
+/* =====================================================================
+   v0.18 POLISHED — visual identity, event emphasis, orientation panel
+   No mechanic changes. CSS additions only.
+   ===================================================================== */
+
+/* Topbar identity treatment — strong "Sovereign" wordmark, secondary mode line */
+.brand .title { font-family:var(--display); font-size:34px; line-height:.96; letter-spacing:-.015em; margin-top:1px; display:flex; align-items:baseline; gap:14px; }
+.brand .title .title-mode { font-family:var(--display); font-style:italic; font-weight:400; font-size:13px; letter-spacing:0; opacity:.7; }
+.brand .sub { font-family:var(--display); font-style:italic; font-size:12.5px; line-height:1.4; margin-top:5px; max-width:62ch; }
+.brand .eyebrow { font-family:var(--ui); font-size:9px; letter-spacing:.32em; text-transform:uppercase; color:var(--national-finance); }
+
+.version-pill { font-family:var(--mono); font-size:9px; letter-spacing:.14em; padding:4px 9px; background:var(--parchment-2); border:0.5px solid var(--rule); color:var(--ink); opacity:.75; }
+
+/* ---- Ledger event emphasis: CREDIT_CRISIS / DEFAULT / REBELLION stand out ---- */
+.ledger .row.event { background:rgba(200,57,46,.05); border-left:2px solid var(--highlight); padding-left:6px; }
+.ledger .row.event .actor { color:var(--highlight); }
+.ledger .row.row-credit-crisis { background:rgba(200,57,46,.12); border-left:3px solid var(--highlight); padding-left:5px; }
+.ledger .row.row-credit-crisis .actor { color:var(--highlight); font-weight:800; }
+.ledger .row.row-credit-crisis::before { content:"⚠"; position:absolute; }
+.ledger .row.row-default { background:#1A1612; color:var(--parchment); border-left:3px solid var(--highlight); padding:2px 6px; }
+.ledger .row.row-default .actor { color:var(--highlight); font-weight:800; letter-spacing:.14em; }
+.ledger .row.row-default .stamp { color:var(--parchment); opacity:.6; }
+.ledger .row.row-rebellion { background:var(--revolutionary-debt); color:var(--parchment); border-left:3px solid var(--ink); padding:2px 6px; }
+.ledger .row.row-rebellion .actor { color:#F0E6CD; font-weight:800; letter-spacing:.14em; }
+.ledger .row.row-rebellion .stamp { color:var(--parchment); opacity:.7; }
+
+/* Subtle stripes for track changes to distinguish from events */
+.ledger .row.track { opacity:.92; }
+
+/* ---- Tracks panel: warning band shading on Credit ≤ 4 zone + critical at 0 ---- */
+.tracks-panel .t-row.credit .scale .tk[data-pos="0"] { background:#1A1612; color:var(--parchment); font-weight:700; }
+.tracks-panel .t-row.credit .scale .tk[data-pos="1"],
+.tracks-panel .t-row.credit .scale .tk[data-pos="2"],
+.tracks-panel .t-row.credit .scale .tk[data-pos="3"],
+.tracks-panel .t-row.credit .scale .tk[data-pos="4"] { background:rgba(200,57,46,.18); }
+.tracks-panel .t-row.resist .scale .tk[data-pos="12"] { background:var(--revolutionary-debt); color:var(--parchment); font-weight:700; }
+.tracks-panel .t-row.resist .scale .tk[data-pos="10"],
+.tracks-panel .t-row.resist .scale .tk[data-pos="11"] { background:rgba(110,31,30,.22); }
+
+/* Crisis state ribbon on track row when value is in danger zone */
+.tracks-panel .t-row.credit.in-warning { border-left:3px solid var(--highlight); padding-left:6px; margin-left:-6px; }
+.tracks-panel .t-row.credit.in-default { border-left:3px solid var(--highlight); padding-left:6px; margin-left:-6px; background:rgba(26,22,18,.08); }
+.tracks-panel .t-row.resist.in-warning { border-left:3px solid var(--revolutionary-debt); padding-left:6px; margin-left:-6px; }
+
+.tracks-panel .crisis-tag { font-family:var(--ui); font-size:8px; font-weight:800; letter-spacing:.2em; text-transform:uppercase; padding:2px 7px; margin-top:4px; display:inline-block; }
+.tracks-panel .crisis-tag.warning { background:var(--highlight); color:#fff; }
+.tracks-panel .crisis-tag.locked { background:var(--ink); color:var(--parchment); }
+
+/* ---- Orientation panel: dismissible explainer, first-load + recall ---- */
+.orient-overlay { position:fixed; inset:0; z-index:70; background:rgba(26,22,18,0.78); display:flex; align-items:center; justify-content:center; padding:32px 16px; overflow-y:auto; }
+.orient-panel { background:var(--parchment); border:1.5px solid var(--ink); max-width:680px; width:100%; padding:22px 28px 24px; position:relative; }
+.orient-panel::before { content:""; position:absolute; inset:5px; border:0.5px solid var(--rule-soft); pointer-events:none; }
+.orient-panel .eyebrow { font-family:var(--ui); font-size:9px; letter-spacing:.32em; text-transform:uppercase; color:var(--national-finance); }
+.orient-panel h2 { font-family:var(--display); font-weight:400; font-size:28px; line-height:1; margin:4px 0 2px; }
+.orient-panel .lede { font-family:var(--display); font-style:italic; font-size:13.5px; margin:0 0 14px; line-height:1.45; max-width:54ch; }
+.orient-panel ol { list-style:none; padding:0; margin:0 0 12px; counter-reset:o; }
+.orient-panel ol li { position:relative; padding:7px 0 9px 38px; border-bottom:0.5px dashed var(--rule-soft); counter-increment:o; font-family:var(--body); font-size:12.5px; line-height:1.55; }
+.orient-panel ol li::before { content:counter(o); position:absolute; left:0; top:7px; width:26px; height:26px; border-radius:50%; background:var(--ink); color:var(--parchment); font-family:var(--display); font-size:13px; display:flex; align-items:center; justify-content:center; font-weight:700; }
+.orient-panel ol li:last-child { border-bottom:0; }
+.orient-panel ol li strong { font-family:var(--display); font-weight:700; font-style:normal; color:var(--ink); }
+.orient-panel .crisis-row { padding:8px 12px; background:rgba(200,57,46,.08); border-left:3px solid var(--highlight); font-family:var(--body); font-size:12px; line-height:1.5; margin:10px 0; }
+.orient-panel .crisis-row strong { font-family:var(--display); font-weight:700; color:var(--highlight); }
+.orient-panel .default-row { padding:8px 12px; background:var(--ink); color:var(--parchment); border-left:3px solid var(--highlight); font-family:var(--body); font-size:12px; line-height:1.5; margin:8px 0; }
+.orient-panel .default-row strong { font-family:var(--display); font-weight:700; color:var(--highlight); }
+.orient-panel .rebellion-row { padding:8px 12px; background:var(--revolutionary-debt); color:var(--parchment); border-left:3px solid var(--ink); font-family:var(--body); font-size:12px; line-height:1.5; margin:8px 0; }
+.orient-panel .rebellion-row strong { font-family:var(--display); font-weight:700; color:#F0E6CD; }
+.orient-panel .footer-row { display:flex; justify-content:space-between; align-items:center; margin-top:14px; gap:10px; }
+.orient-panel .footer-row .meta { font-family:var(--mono); font-size:9px; letter-spacing:.14em; opacity:.6; }
+
+/* ---- Card drawer: a little more breathing room + improved chip contrast ---- */
+.card-drawer .drawer-card { padding:12px 14px; }
+.card-drawer .effect { font-size:12px; line-height:1.55; }
+.card-drawer .chip { padding:3px 8px; font-size:9px; border:1.5px solid var(--ink); }
+
+/* ---- Endgame: distinguish stable / strained / collapsed credit posture, crisis chip ---- */
+.endgame .posture-row { margin:14px 0 0; display:flex; gap:8px; flex-wrap:wrap; }
+.endgame .posture-chip { font-family:var(--ui); font-size:9.5px; letter-spacing:.18em; text-transform:uppercase; font-weight:700; padding:5px 11px; border:1.5px solid var(--ink); }
+.endgame .posture-chip.stable { background:var(--commercial-infrastructure); color:#fff; }
+.endgame .posture-chip.strained { background:var(--revenue-system); color:var(--ink); }
+.endgame .posture-chip.collapsed { background:var(--highlight); color:#fff; }
+.endgame .posture-chip.avoided { background:var(--parchment-2); color:var(--ink); }
+.endgame .posture-chip.fired { background:var(--ink); color:var(--parchment); }
+
+/* ---- Responsive: keep readable on narrow viewports ---- */
+@media (max-width: 880px) {
+  .topbar { grid-template-columns:1fr; }
+  .controls { justify-content:flex-start; }
+  .brand .title { font-size:26px; }
+  .brand .sub { font-size:11.5px; max-width:none; }
+  .grid { grid-template-columns:1fr; grid-template-rows:auto auto auto; }
+  .panel-pane { grid-column:1; grid-row:2; max-height:none; }
+  .ledger-pane { grid-column:1; grid-row:3; }
+}
+
+/* ---- Print stylesheet: screenshot-friendly export ---- */
+@media print {
+  body { background:#fff; }
+  .app { border:0; box-shadow:none; max-width:none; }
+  .controls, .controls-bar, .resume-pill, .orient-overlay, .batch-overlay, .replay-overlay { display:none !important; }
+  .ledger { max-height:none; }
+  .panel-pane { max-height:none; overflow:visible; }
+}
+
+/* =====================================================================
+   v0.18 POLISH v2 — whole-game art direction layer
+   Deeper polish across all 16 surfaces. CSS additions only.
+   No mechanic, ID, class-removal, or token changes.
+   ===================================================================== */
+
+/* ---- Color tokens, severity tiers, decorative variables ---- */
+:root {
+  --severity-warning: #C8392E;        /* same as --highlight */
+  --severity-catastrophic: #6E1F1E;   /* deep oxblood for Default / Rebellion */
+  --severity-pass: #2E7A6B;           /* commercial-infrastructure green */
+  --severity-neutral: #E6DABC;        /* parchment-2 */
+  --foil: #8C6B2A;                    /* federalist gilt */
+  --foil-soft: #B89554;
+  --rule-strong: rgba(26,22,18,0.78);
+  --rule-hair: rgba(26,22,18,0.14);
+  --shadow-card: 0 2px 0 rgba(26,22,18,0.10), 0 6px 14px -8px rgba(26,22,18,0.35);
+  --shadow-deep: 0 4px 0 rgba(26,22,18,0.12), 0 16px 32px -14px rgba(26,22,18,0.5);
+}
+
+/* ---- App frame: gilt accent on outer border ---- */
+.app { box-shadow:0 0 0 1px var(--foil-soft) inset, var(--shadow-deep); }
+body { background:#221E1A; }
+
+/* ---- Topbar refinement: subtle rule, version pill leveled ---- */
+.topbar { border-bottom:1.5px solid var(--ink); position:relative; }
+.topbar::after { content:""; position:absolute; left:14px; right:14px; bottom:-3px; height:1px; background:var(--foil-soft); opacity:.55; }
+.brand .eyebrow::before { content:"§ "; color:var(--foil); font-weight:700; }
+.brand .title { letter-spacing:-.02em; }
+.brand .title .title-mode { color:var(--ink); opacity:.55; }
+
+/* Controls bar: tighter spacing, better wrap behavior */
+.controls { gap:5px; row-gap:6px; }
+.controls button { font-size:10px; padding:6px 11px; letter-spacing:.1em; }
+.controls .seed-pill, .controls .phase-pill, .controls .active-pill, .controls .version-pill { white-space:nowrap; }
+
+/* ---- Board: gilt frame + corner crests + system band gloss ---- */
+.board-view { background:linear-gradient(180deg, var(--parchment) 0%, var(--parchment-2) 100%); box-shadow:inset 0 0 0 1px var(--foil-soft), var(--shadow-card); }
+.board-view::before { border-color:var(--foil-soft); }
+.board-grid { gap:0; background:var(--ink); }
+.board-cell { padding:3px 4px 4px; transition:background-color 120ms ease, outline-color 120ms ease; }
+.board-cell .band { height:6px; box-shadow:inset 0 -1px 0 rgba(26,22,18,0.18); }
+.board-cell .num { letter-spacing:.06em; font-weight:600; }
+.board-cell .nm { padding-top:5px; }
+
+/* Corner crests — distinct treatments */
+.board-cell.corner { background:linear-gradient(135deg, var(--parchment-2) 0%, var(--parchment) 100%); border:1px solid var(--foil-soft); }
+.board-cell.corner .num { display:none; }
+.board-cell.corner .nm { font-size:9.5px; font-weight:700; padding-top:18px; text-align:center; letter-spacing:.02em; }
+.board-cell.corner::before { content:""; position:absolute; top:5px; left:50%; transform:translateX(-50%); width:24px; height:24px; border-radius:50%; border:1.5px solid var(--foil); background:var(--parchment); display:flex; align-items:center; justify-content:center; }
+.board-cell.corner::after { content:"§"; position:absolute; top:5px; left:0; right:0; text-align:center; font-family:var(--display); font-size:14px; color:var(--foil); line-height:24px; font-weight:700; }
+.board-cell[data-num="0"]::after { content:"★"; color:var(--foil); }   /* Treasury Opens */
+.board-cell[data-num="10"]::after { content:"!"; color:var(--severity-warning); } /* Constitutional Crisis */
+.board-cell[data-num="20"]::after { content:"$"; color:var(--severity-pass); }    /* National Dividend */
+.board-cell[data-num="30"]::after { content:"→"; color:var(--severity-warning); } /* Go to Crisis */
+
+/* Card spaces: paper texture hint */
+.board-cell.card-debate { background:repeating-linear-gradient(45deg, var(--parchment) 0 4px, var(--parchment-2) 4px 5px); }
+.board-cell.card-shock { background:repeating-linear-gradient(135deg, var(--parchment) 0 4px, var(--parchment-2) 4px 5px); }
+.board-cell.card-debate .nm, .board-cell.card-shock .nm { font-style:italic; }
+
+/* Institution spaces: subtle stipple ground */
+.board-cell.institution { background:radial-gradient(rgba(26,22,18,.05) 0.7px, transparent 1.2px); background-size:5px 5px; background-color:var(--parchment-2); }
+
+/* Route spaces: dashed crawl */
+.board-cell.route .nm { text-transform:uppercase; font-family:var(--ui); font-size:7px; letter-spacing:.12em; }
+
+/* Tax / Speculation Scandal: clear danger flag */
+.board-cell.tax { background:rgba(200,57,46,.06); }
+.board-cell.tax .nm { color:var(--severity-warning); font-weight:700; }
+
+/* Owner tokens + tier glyphs — non-color-only differentiation */
+.board-cell .owner-dot { width:10px; height:10px; border-width:1.5px; box-shadow:0 1px 2px rgba(26,22,18,.3); }
+.board-cell.owned-p0 .owner-dot { border-radius:50%; }
+.board-cell.owned-p1 .owner-dot { border-radius:2px; transform:rotate(45deg); }
+.board-cell.owned-p2 .owner-dot { border-radius:2px; }
+.board-cell .tier { font-family:var(--display); font-weight:700; font-size:8px; letter-spacing:.04em; background:var(--foil); color:var(--ink); border-color:var(--ink); padding:0 3px; }
+
+/* Player pawns on board: shape per slot, with hairline + drop shadow */
+.board-cell .tokens .tok { box-shadow:0 1px 2px rgba(26,22,18,.4); }
+.board-cell .tokens .tok.p0 { border-radius:50%; }
+.board-cell .tokens .tok.p1 { border-radius:2px; transform:rotate(45deg); }
+.board-cell .tokens .tok.p2 { border-radius:2px; }
+
+/* Active space pulse */
+@keyframes activeSpacePulse { 0%,100% { outline-color:var(--highlight); } 50% { outline-color:var(--foil); } }
+.board-cell.active-space { outline:3px solid var(--highlight); animation:activeSpacePulse 1800ms ease-in-out infinite; z-index:2; }
+
+/* Center plaque: gilt rule + serif body */
+.board-center { background:radial-gradient(ellipse at center, var(--parchment) 0%, var(--parchment-2) 100%); }
+.board-center::before, .board-center::after { background:var(--foil-soft); opacity:.7; }
+.bc-eyebrow { color:var(--foil); }
+.bc-title { letter-spacing:.005em; }
+.bc-sub { color:var(--ink); opacity:.7; }
+.bc-tracks .t { font-family:var(--ui); font-weight:700; text-transform:uppercase; letter-spacing:.08em; }
+
+/* ---- Panels: refined heads with gilt rule + better hierarchy ---- */
+.panel { box-shadow:var(--shadow-card); }
+.panel .panel-head { position:relative; }
+.panel .panel-head::after { content:""; position:absolute; left:0; right:0; bottom:-2px; height:1px; background:var(--foil-soft); opacity:.55; }
+.panel .panel-head .name { color:var(--ink); }
+.panel .panel-head .surface-id { background:var(--foil); color:var(--ink); font-weight:700; }
+
+/* Treasury — emphasis cash + holdings as small cards */
+.treasury .cash { color:var(--ink); letter-spacing:-.01em; }
+.treasury .cash::before { content:"₸ "; font-family:var(--display); color:var(--foil); opacity:.8; }
+.treasury .role-tag { background:var(--p0); border:1px solid var(--ink); }
+.treasury .h-row { padding:5px 4px; align-items:center; }
+.treasury .h-row .sw { width:11px; height:11px; box-shadow:inset 0 0 0 0.5px rgba(255,255,255,.4); }
+.treasury .up-btn { background:var(--ink); color:var(--parchment); font-weight:700; letter-spacing:.12em; }
+.treasury .up-btn:hover { background:var(--foil); color:var(--ink); }
+.treasury .tier-badge { font-family:var(--display); font-weight:700; font-size:9px; background:var(--foil); color:var(--ink); padding:1px 5px; }
+
+/* Opponents — slot color accent stripe at left */
+.opp-card { position:relative; padding-left:14px; }
+.opp-card::before { content:""; position:absolute; left:0; top:0; bottom:0; width:4px; }
+.opp-card.p1::before { background:var(--p1); }
+.opp-card.p2::before { background:var(--p2); }
+.opp-card .head .pdot { box-shadow:0 1px 2px rgba(26,22,18,.3); }
+.opp-card .cash::before { content:"₸ "; color:var(--foil); opacity:.7; }
+
+/* Acts — refined vote chrome */
+.acts-panel .current-act { box-shadow:inset 0 0 0 1px var(--foil-soft); position:relative; }
+.acts-panel .current-act::before { content:""; position:absolute; top:5px; right:6px; width:18px; height:18px; border:1px solid var(--foil-soft); border-radius:50%; }
+.acts-panel .current-act::after { content:"⚖"; position:absolute; top:5px; right:6px; width:18px; height:18px; line-height:18px; text-align:center; color:var(--foil); font-size:11px; }
+.acts-panel .pretitle { color:var(--foil-soft); }
+.acts-panel .vote-row { transition:background-color 120ms ease; }
+.acts-panel .vote-row.pending { opacity:.78; }
+.acts-panel .ballot { box-shadow:0 1px 0 rgba(26,22,18,.18); }
+.acts-panel .slot { position:relative; padding-left:18px; }
+.acts-panel .slot::before { content:""; position:absolute; left:5px; top:50%; transform:translateY(-50%); width:6px; height:6px; border-radius:50%; background:var(--severity-pass); }
+
+/* Narration entry: small foil flourish */
+.narration-entry { box-shadow:0 1px 0 rgba(26,22,18,.06); }
+.narration-entry::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--foil-soft); }
+.narration-entry .trig::after { content:" §"; color:var(--foil); }
+
+/* Tracks panel — bigger scale cells + sharper marker + labelled zones */
+.tracks-panel .lbl-t::before { content:""; display:inline-block; width:8px; height:8px; border-radius:50%; vertical-align:middle; margin-right:6px; }
+.tracks-panel .t-row.credit .lbl-t::before { background:var(--national-finance); }
+.tracks-panel .t-row.resist .lbl-t::before { background:var(--highlight); }
+.tracks-panel .t-row.indust .lbl-t::before { background:var(--manufactures); }
+.tracks-panel .scale { height:22px; }
+.tracks-panel .tk { font-size:9px; font-weight:700; color:rgba(26,22,18,.55); }
+.tracks-panel .tk.marker { color:transparent; }
+.tracks-panel .tk.marker::after { inset:3px; box-shadow:0 0 0 1px var(--parchment), 0 1px 3px rgba(26,22,18,.4); }
+.tracks-panel .t-row.credit .scale .tk[data-pos="8"],
+.tracks-panel .t-row.credit .scale .tk[data-pos="12"] { background:rgba(46,122,107,.18); color:var(--severity-pass); }
+
+/* Inspector + Card drawer: card-feel ---- */
+.inspector .card-art, .card-drawer .drawer-card, .auction .auction-card { box-shadow:var(--shadow-card); padding:11px 13px 12px; }
+.inspector .band, .card-drawer .band, .auction .band { padding:5px 8px; font-weight:800; box-shadow:inset 0 -1px 0 rgba(255,255,255,.18); }
+.inspector .nm, .card-drawer .nm, .auction .nm { letter-spacing:-.005em; font-size:17px; }
+.inspector .flavor, .card-drawer .alert { color:var(--ink); opacity:.85; }
+.inspector .meta-row::before { content:"§ "; color:var(--foil); }
+.inspector .pay-table { box-shadow:inset 0 0 0 1px var(--rule-hair); }
+
+/* Card drawer: Market Shock vs Republic Debate distinct backs */
+.card-drawer .drawer-card[data-deck="market"] { background:linear-gradient(180deg, #F2E4C6 0%, #E5D2A5 100%); }
+.card-drawer .drawer-card[data-deck="market"] .band { background:linear-gradient(90deg, var(--highlight) 0 50%, var(--ink) 50%); color:#fff; }
+.card-drawer .drawer-card[data-deck="debate"] { background:linear-gradient(180deg, #ECE5D2 0%, #D8CCAD 100%); }
+.card-drawer .drawer-card[data-deck="debate"] .band { background:var(--ink); color:var(--parchment); }
+.card-drawer .effect { background:rgba(255,255,255,.4); padding:8px 12px; border:0.5px dashed var(--rule); }
+.card-drawer .chip { box-shadow:0 1px 0 rgba(26,22,18,.2); }
+
+/* Auction — bid rows with subtle alternating ground */
+.auction .bid-row:nth-child(even) { background:var(--parchment-2); }
+.auction .bid-row .amt::before { content:"$"; color:var(--foil); opacity:.7; }
+.auction .high-bid { font-weight:700; }
+
+/* ---- Ledger refinements: cleaner stamps, severity-toned hairlines ---- */
+.ledger { font-feature-settings:"tnum" 1; }
+.ledger .head { font-size:10px; }
+.ledger .row { padding:3px 0 4px; }
+.ledger .row .stamp { font-size:9px; }
+.ledger .row .actor { font-size:9.5px; }
+.ledger .row.track .actor { font-weight:800; }
+.ledger .row.cash .actor::after { content:" ₸"; color:var(--foil); opacity:.7; }
+.ledger .row.event { box-shadow:inset 2px 0 0 var(--highlight); }
+.ledger .row.row-credit-crisis { box-shadow:inset 3px 0 0 var(--highlight); }
+.ledger .row.row-default { box-shadow:inset 3px 0 0 var(--severity-warning); }
+.ledger .row.row-rebellion { box-shadow:inset 3px 0 0 var(--ink); }
+
+/* ---- Endgame: more dramatic winner laurel ---- */
+.endgame { padding:24px 28px 32px; }
+.endgame h2 { font-size:38px; line-height:1; letter-spacing:-.01em; }
+.endgame .sub { font-size:14px; }
+.endgame .winner { position:relative; overflow:hidden; padding:18px 22px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.25), var(--shadow-card); }
+.endgame .winner::before { content:""; position:absolute; left:0; right:0; top:0; height:3px; background:linear-gradient(90deg, var(--foil) 0%, #E5C36A 50%, var(--foil) 100%); }
+.endgame .winner::after { content:"§"; position:absolute; right:18px; top:50%; transform:translateY(-50%); font-family:var(--display); font-size:60px; opacity:.18; color:#fff; }
+.endgame .winner .lbl { color:rgba(255,255,255,.8); }
+.endgame .winner .nm { font-size:28px; line-height:1.05; }
+.endgame .winner .score { font-size:13px; opacity:.92; }
+.endgame .posture-row { margin-top:12px; }
+.endgame .posture-chip { box-shadow:0 1px 0 rgba(26,22,18,.18); }
+.endgame .pcol h3 { letter-spacing:-.01em; }
+.endgame .pcol .total::before { content:"= "; color:var(--foil); font-family:var(--display); font-weight:400; opacity:.55; }
+.endgame .actions button { padding:9px 16px; font-weight:700; }
+
+/* Endgame narration block: subtle inner rule */
+.endgame-narration { background:linear-gradient(180deg, var(--parchment-2) 0%, var(--parchment) 100%); }
+.endgame-narration h3 { color:var(--ink); font-size:20px; }
+.endgame-narration p { line-height:1.65; }
+.endgame-narration p::first-letter { font-family:var(--display); font-size:26px; line-height:1; padding-right:2px; color:var(--foil); }
+
+/* ---- Replay overlay refinement ---- */
+.replay-overlay { background:rgba(34,30,26,0.88); }
+.replay-overlay .replay-frame { box-shadow:0 0 0 1px var(--foil-soft) inset, var(--shadow-deep); }
+.scrubber .ticks { background:linear-gradient(180deg, var(--parchment) 0%, var(--parchment-2) 100%); }
+.scrubber .tick.lap-start { background:linear-gradient(180deg, rgba(140,107,42,.18) 0%, transparent 100%); }
+.scrubber .marker { box-shadow:0 0 6px rgba(200,57,46,.5); }
+.scrubber .scrub-meta { font-weight:700; letter-spacing:.16em; }
+
+/* ---- Batch / balance modal refinement ---- */
+.batch-modal { box-shadow:var(--shadow-deep); }
+.batch-modal .bm-head .ttl { letter-spacing:-.005em; }
+.batch-modal .bm-head .ttl::before { content:"§ "; color:var(--foil); opacity:.75; font-weight:400; }
+.batch-modal .ctrl-block { background:linear-gradient(180deg, var(--parchment-2) 0%, var(--parchment) 100%); }
+.batch-modal .ctrl-block .lbl { color:var(--ink); }
+.batch-modal .ctrl-row label.sel { background:var(--ink); color:var(--parchment); box-shadow:inset 0 0 0 1px var(--foil-soft); }
+.batch-modal .progress-row { background:var(--ink); }
+.batch-modal .progress-row .pct { color:var(--foil-soft); }
+.batch-modal .progress-bar > .fill { background:linear-gradient(90deg, var(--severity-pass) 0%, #58B19F 100%); }
+
+/* Resume pill: ink panel with foil accent */
+.resume-pill { box-shadow:0 0 0 1px var(--foil-soft) inset, var(--shadow-deep); }
+.resume-pill .lbl::before { content:"§ "; color:var(--foil); opacity:.75; }
+
+/* Orientation overlay: foil border */
+.orient-panel { box-shadow:0 0 0 1px var(--foil-soft) inset, var(--shadow-deep); }
+.orient-panel h2 { letter-spacing:-.01em; }
+.orient-panel ol li::before { box-shadow:0 0 0 1px var(--foil-soft) inset; }
+
+/* ---- Accessibility: keyboard focus, sr-only ---- */
+button:focus-visible, select:focus-visible, input:focus-visible { outline:2.5px solid var(--foil); outline-offset:2px; }
+.sr-only { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+
+/* ---- Responsive ≤768px ---- */
+@media (max-width: 768px) {
+  .topbar { padding:10px 14px; }
+  .brand .title { font-size:22px; }
+  .brand .title .title-mode { display:none; }
+  .brand .sub { font-size:11px; line-height:1.35; }
+  .grid { padding:10px 12px; gap:10px; }
+  .board-view { max-width:none; }
+  .ledger { font-size:9.5px; }
+  .ledger .row { grid-template-columns:60px 100px 1fr; gap:6px; }
+  .orient-panel { padding:18px 20px; }
+  .orient-panel h2 { font-size:22px; }
+  .batch-modal .bm-controls { grid-template-columns:1fr; }
+  .endgame .results { grid-template-columns:1fr; }
+}
+
+/* ---- Print polish ---- */
+@media print {
+  .board-view { box-shadow:none; max-width:none; }
+  .endgame { padding:18px 24px; }
+  .endgame .winner { background:#fff !important; color:var(--ink) !important; border:2px solid var(--ink); }
+  .endgame .winner::after { display:none; }
+  .endgame .winner .lbl, .endgame .winner .score { color:var(--ink) !important; }
+  .endgame-narration { background:#fff; }
+  .ledger { background:#fff; }
+  .ledger .row.row-default, .ledger .row.row-rebellion { background:#fff !important; color:var(--ink) !important; border:1px solid var(--ink); }
+  .ledger .row.row-default .actor, .ledger .row.row-rebellion .actor { color:var(--ink) !important; }
+}
+
+/* =====================================================================
+   v0.18 PLAYTEST FIXES — readability + action banner + player picker
+   No mechanic changes. CSS + render layer only.
+   ===================================================================== */
+
+/* Bump base type so the whole game reads larger */
+html, body { font-size:15px; }
+
+/* Board cell legibility — bigger names + numbers */
+.board-cell .nm { font-size:10.5px; line-height:1.15; padding-top:6px; font-weight:500; }
+.board-cell .num { font-size:9.5px; opacity:.7; font-weight:600; }
+.board-cell.corner .nm { font-size:11px; padding-top:24px; }
+.board-cell .owner-dot { width:13px; height:13px; }
+.board-cell .tier { font-size:10px; padding:1px 5px; top:8px; }
+.board-cell .tokens .tok { width:13px; height:13px; }
+.board-cell .tokens .tok.glyph { font-family:var(--display); font-size:10px; font-weight:700; color:#fff; line-height:13px; text-align:center; display:inline-block; text-shadow:0 1px 0 rgba(0,0,0,.4); }
+
+/* Board center plaque */
+.bc-eyebrow { font-size:9px; letter-spacing:.32em; }
+.bc-title { font-size:26px; }
+.bc-sub { font-size:11.5px; }
+.bc-lap { font-size:11px; padding:4px 12px; }
+.bc-tracks .t { font-size:10px; padding:3px 9px; }
+.bc-tracks .t .v { font-size:12px; margin-left:5px; }
+.bc-acts { font-size:9px; }
+.bc-active { font-size:11px; padding:3px 10px; }
+
+/* Panel heads — read more easily */
+.panel .panel-head .name { font-size:10.5px; letter-spacing:.22em; }
+.panel .panel-head .surface-id { font-size:10px; padding:2px 7px; }
+
+/* Treasury — louder cash, clearer holdings */
+.treasury .cash { font-size:28px; }
+.treasury .lbl { font-size:10px; letter-spacing:.18em; }
+.treasury .role-tag { font-size:9.5px; padding:2px 8px; }
+.treasury .inf { font-size:10.5px; margin-top:6px; }
+.treasury .h-row { font-size:12px; padding:6px 6px; }
+.treasury .tier-badge { font-size:10px; padding:1px 6px; }
+.treasury .up-btn { font-size:9.5px; padding:4px 9px; }
+
+/* Opponents — clearer cards */
+.opp-card { padding:10px 12px 10px 16px; }
+.opp-card .head .nm { font-size:14.5px; }
+.opp-card .head .pdot { width:14px; height:14px; }
+.opp-card .pl { font-size:9.5px; letter-spacing:.18em; }
+.opp-card .cash { font-size:16px; }
+.opp-card .holdings { font-size:11.5px; line-height:1.5; }
+.opp-card .strategy { font-size:11.5px; line-height:1.5; }
+
+/* Tracks — bigger values, larger scale */
+.tracks-panel .lbl-t { font-size:10.5px; }
+.tracks-panel .val { font-size:22px; }
+.tracks-panel .scale { height:24px; }
+.tracks-panel .tk { font-size:10px; }
+.tracks-panel .reason { font-size:10px; }
+
+/* Acts — readable vote rows */
+.acts-panel .pretitle { font-size:9px; }
+.acts-panel .nm { font-size:19px; }
+.acts-panel .effect { font-size:11.5px; }
+.acts-panel .vote-row { padding:6px 10px; font-size:11.5px; }
+.acts-panel .vote-row .who { font-size:10px; }
+.acts-panel .vote-row .reason { font-size:11px; }
+.acts-panel .vote-row .ballot { font-size:14px; padding:3px 10px; min-width:46px; }
+.acts-panel .tally { font-size:11px; padding:5px 9px; }
+.acts-panel .slot { font-size:11px; padding:4px 9px 4px 19px; }
+
+/* Inspector + Card drawer — bigger card body */
+.inspector .nm, .card-drawer .nm, .auction .nm { font-size:18px; }
+.inspector .subkind { font-size:9.5px; }
+.inspector .flavor, .card-drawer .alert { font-size:11.5px; line-height:1.5; }
+.inspector .pay-table th, .inspector .pay-table td { font-size:10.5px; padding:4px 7px; }
+.inspector .pay-table td.val { font-size:12.5px; }
+.inspector .meta-row { font-size:10.5px; }
+.card-drawer .effect { font-size:13px; }
+.card-drawer .chip { font-size:10px; padding:3px 9px; }
+
+/* Auction — readable bids */
+.auction .bid-row { font-size:11.5px; padding:5px 8px; grid-template-columns:14px 92px 70px 1fr; }
+.auction .bid-row .who { font-size:10px; }
+.auction .bid-row .amt { font-size:14.5px; }
+.auction .bid-row .reason { font-size:10.5px; }
+.auction .high-bid { font-size:11.5px; padding:6px 10px; }
+
+/* Ledger — readable rows */
+.ledger { font-size:11px; }
+.ledger .head { font-size:10.5px; }
+.ledger .row { padding:4px 0 5px; grid-template-columns:96px 150px 1fr; gap:10px; }
+.ledger .row .stamp { font-size:10px; }
+.ledger .row .actor { font-size:10.5px; }
+
+/* Topbar pills + controls — louder */
+.controls .seed-pill, .controls .phase-pill, .controls .active-pill, .controls .version-pill { font-size:10.5px; padding:6px 11px; }
+.controls button { font-size:11.5px; padding:7px 14px; letter-spacing:.1em; }
+
+/* =====================================================================
+   ACTION BANNER — always tells the user what to do next
+   ===================================================================== */
+.action-banner {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:14px 20px;
+  background:linear-gradient(180deg, var(--parchment) 0%, var(--parchment-2) 100%);
+  border:2px solid var(--ink);
+  box-shadow:inset 0 0 0 1px var(--foil-soft), 0 3px 0 rgba(26,22,18,0.18), 0 8px 18px -10px rgba(26,22,18,.4);
+  position:relative;
+  margin:4px 0 2px;
+  min-height:64px;
+  flex-wrap:wrap;
+}
+@media (max-width: 1200px) {
+  .action-banner { flex-direction:column; align-items:stretch; gap:10px; padding:14px 18px; }
+  .action-banner .ab-actions { justify-content:flex-start; }
+}
+.action-banner::before {
+  content:"";
+  position:absolute; left:0; right:0; top:0; height:3px;
+  background:linear-gradient(90deg, var(--foil) 0%, #E5C36A 50%, var(--foil) 100%);
+}
+.action-banner.opponent-turn {
+  background:var(--parchment-2);
+  box-shadow:inset 0 0 0 1px var(--rule-soft);
+  border-color:var(--rule);
+  border-width:1px;
+  min-height:48px;
+  padding:10px 18px;
+}
+.action-banner.opponent-turn::before { display:none; }
+
+.action-banner .ab-text { flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+.action-banner .ab-prompt {
+  font-family:var(--display);
+  font-size:18px;
+  line-height:1.15;
+  letter-spacing:-.005em;
+  font-weight:400;
+  color:var(--ink);
+}
+.action-banner.opponent-turn .ab-prompt { font-style:italic; opacity:.75; font-size:14px; }
+.action-banner .ab-hint {
+  font-family:var(--body);
+  font-size:13px;
+  line-height:1.4;
+  opacity:.78;
+}
+.action-banner .ab-actions { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.action-banner .ab-actions button {
+  font-family:var(--ui);
+  font-size:12.5px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-weight:700;
+  padding:10px 18px;
+  border:1.5px solid var(--ink);
+  background:var(--parchment);
+  color:var(--ink);
+  cursor:pointer;
+  box-shadow:0 2px 0 rgba(26,22,18,.18);
+  transition:transform 80ms ease, box-shadow 80ms ease;
+}
+.action-banner .ab-actions button:hover:not([disabled]) { transform:translateY(-1px); box-shadow:0 3px 0 rgba(26,22,18,.22); }
+.action-banner .ab-actions button:active:not([disabled]) { transform:translateY(1px); box-shadow:0 1px 0 rgba(26,22,18,.18); }
+.action-banner .ab-actions button.primary { background:var(--ink); color:var(--parchment); box-shadow:0 2px 0 rgba(26,22,18,.3); }
+.action-banner .ab-actions button.primary:hover:not([disabled]) { background:var(--national-finance); box-shadow:0 3px 0 rgba(26,22,18,.35); }
+.action-banner .ab-actions button:focus-visible { outline:2.5px solid var(--foil); outline-offset:3px; }
+.action-banner .ab-actions button[disabled] { opacity:.45; cursor:not-allowed; box-shadow:none; }
+
+.controls-bar { padding:6px 0 8px; min-height:60px; }
+
+/* =====================================================================
+   PLAYER PICKER (in orientation overlay)
+   ===================================================================== */
+.orient-panel .pick-section {
+  margin:14px 0 0;
+  padding:14px 16px;
+  background:var(--parchment-2);
+  border:1.5px solid var(--ink);
+  position:relative;
+}
+.orient-panel .pick-section::before { content:""; position:absolute; left:0; right:0; top:0; height:2px; background:var(--foil-soft); }
+.orient-panel .pick-section h3 {
+  font-family:var(--ui);
+  font-size:10.5px;
+  letter-spacing:.26em;
+  text-transform:uppercase;
+  font-weight:700;
+  margin:0 0 10px;
+  color:var(--foil);
+}
+.orient-panel .pick-row { display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap; }
+.orient-panel .pick-field { flex:1; min-width:180px; display:flex; flex-direction:column; gap:4px; }
+.orient-panel .pick-field label {
+  font-family:var(--ui);
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  font-weight:700;
+  color:var(--ink);
+}
+.orient-panel .pick-field input[type="text"] {
+  font-family:var(--display);
+  font-size:18px;
+  padding:8px 12px;
+  border:1.5px solid var(--ink);
+  background:var(--parchment);
+  color:var(--ink);
+  width:100%;
+}
+.orient-panel .pick-field input[type="text"]:focus-visible { outline:2.5px solid var(--foil); outline-offset:2px; }
+.glyph-picker { display:flex; gap:6px; flex-wrap:wrap; margin-top:2px; }
+.glyph-picker button {
+  width:42px; height:42px;
+  border:1.5px solid var(--ink);
+  background:var(--parchment);
+  color:var(--ink);
+  font-family:var(--display);
+  font-size:22px;
+  line-height:1;
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:transform 80ms ease;
+}
+.glyph-picker button:hover { transform:translateY(-1px); background:var(--parchment-2); }
+.glyph-picker button.sel {
+  background:var(--state-debt);
+  color:#fff;
+  box-shadow:inset 0 0 0 2px var(--ink), 0 2px 0 rgba(26,22,18,.3);
+}
+.glyph-picker button:focus-visible { outline:2.5px solid var(--foil); outline-offset:2px; }
+
+/* Role picker — three cards for Treasury / Merchant / Manufacturer */
+.role-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin:6px 0 4px; }
+.role-grid .role-card {
+  text-align:left; padding:12px 14px; background:var(--parchment); color:var(--ink);
+  border:1.5px solid var(--ink); cursor:pointer;
+  box-shadow:0 2px 0 rgba(26,22,18,.12);
+  transition:transform 80ms ease, box-shadow 80ms ease, background-color 80ms ease;
+  position:relative;
+}
+.role-grid .role-card::before { content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--rule-soft); }
+.role-grid .role-card:hover { transform:translateY(-1px); box-shadow:0 3px 0 rgba(26,22,18,.18); }
+.role-grid .role-card.sel { background:var(--ink); color:var(--parchment); }
+.role-grid .role-card.sel::before { background:var(--foil); }
+.role-grid .role-card[data-role="treasury"].sel::before { background:var(--national-finance); }
+.role-grid .role-card[data-role="merchant"].sel::before { background:var(--commercial-infrastructure); }
+.role-grid .role-card[data-role="manufacturer"].sel::before { background:var(--manufactures); }
+.role-grid .role-card .role-eyebrow {
+  font-family:var(--ui); font-size:9px; letter-spacing:.22em; text-transform:uppercase;
+  font-weight:800; color:var(--foil);
+}
+.role-grid .role-card.sel .role-eyebrow { color:var(--foil-soft); }
+.role-grid .role-card .role-title {
+  font-family:var(--display); font-size:15px; line-height:1.1; margin-top:3px; font-weight:400;
+}
+.role-grid .role-card .role-blurb {
+  font-family:var(--body); font-size:11.5px; line-height:1.45; margin-top:6px; opacity:.85;
+}
+.role-grid .role-card:focus-visible { outline:2.5px solid var(--foil); outline-offset:2px; }
+
+/* Player token glyph on board (Unicode character inside the dot) */
+.board-cell .tokens .tok {
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--display); color:#fff; font-weight:700;
+  font-size:9px; line-height:1; text-shadow:0 1px 0 rgba(0,0,0,.45);
+}
+/* =====================================================================
+   HUMAN PLAYABILITY REBUILD — overrides + new layers
+   ===================================================================== */
+
+/* Bigger board: push away from "panel" feel toward "this is the game" */
+.board-view { max-width:820px; }
+
+/* Board space typography — readable at a glance, centered in each cell */
+.board-cell { padding:5px 6px 6px; text-align:center; align-items:center; }
+.board-cell .nm { font-size:11.5px; line-height:1.16; padding-top:7px; font-weight:600; text-align:center; text-wrap:balance; }
+.board-cell .num { font-size:9.5px; opacity:.7; text-align:center; }
+.board-cell.corner .nm { font-size:11.5px; padding-top:26px; font-weight:700; text-align:center; }
+
+/* Owner-mark: small initial/sigil badge in the lower-right of an owned tile.
+   Distinct from the player's pawn-token; signals ownership without re-using shape. */
+.board-cell .owner-mark {
+  position:absolute; bottom:3px; right:3px;
+  width:15px; height:15px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--display); font-weight:800; font-size:10px;
+  color:#fff; text-shadow:0 1px 0 rgba(0,0,0,.45);
+  border:1.5px solid var(--ink);
+  box-shadow:0 1px 2px rgba(26,22,18,.4);
+}
+.board-cell.owned-p0 .owner-mark { background:var(--p0); border-radius:50%; }
+.board-cell.owned-p1 .owner-mark { background:var(--p1); border-radius:3px; transform:rotate(45deg); }
+.board-cell.owned-p1 .owner-mark > span { transform:rotate(-45deg); display:inline-block; }
+.board-cell.owned-p2 .owner-mark { background:var(--p2); border-radius:3px; }
+.board-cell.owned-p0 { box-shadow:inset 0 0 0 2px var(--p0); }
+.board-cell.owned-p1 { box-shadow:inset 0 0 0 2px var(--p1); }
+.board-cell.owned-p2 { box-shadow:inset 0 0 0 2px var(--p2); }
+.board-cell .owner-dot { display:none; } /* replaced by .owner-mark */
+
+/* Tier marker now sits top-left so it doesn't clash with owner-mark */
+.board-cell .tier { top:8px; right:auto; left:3px; font-size:10px; padding:1px 5px; }
+
+/* Player pawns on the board — bigger, with initial/sigil inside */
+.board-cell .tokens { gap:2px; top:7px; }
+.board-cell .tokens .tok {
+  width:18px; height:18px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--display); color:#fff; font-weight:800;
+  font-size:11px; line-height:1; text-shadow:0 1px 0 rgba(0,0,0,.55);
+  box-shadow:0 1px 3px rgba(26,22,18,.45);
+  border-width:1.5px;
+}
+.board-cell .tokens .tok.p1 > span,
+.board-cell.owned-p1 .owner-mark > span { transform:rotate(-45deg); display:inline-block; line-height:1; }
+
+/* HUMAN PLAYABILITY ROUND 3 — make player positions unmistakable */
+.board-cell .tokens {
+  /* Center pawns horizontally at the bottom of the cell, overlapping cell name */
+  position:absolute; top:auto; left:50%; transform:translateX(-50%); bottom:4px;
+  display:flex; gap:3px; z-index:5;
+}
+.board-cell .tokens .tok {
+  width:26px; height:26px;
+  font-size:15px; font-weight:800;
+  border:2.5px solid var(--ink);
+  box-shadow:0 2px 4px rgba(26,22,18,.55), 0 0 0 2px rgba(255,255,255,.55) inset;
+}
+/* The active player's token pulses with a foil halo so it really pops */
+.board-cell.active-space .tokens .tok.active-pawn {
+  animation:activePawnPulse 1400ms ease-in-out infinite;
+  box-shadow:0 2px 4px rgba(26,22,18,.55), 0 0 0 2px rgba(255,255,255,.55) inset, 0 0 0 4px var(--foil), 0 0 14px 4px rgba(140,107,42,.5);
+}
+@keyframes activePawnPulse {
+  0%, 100% { transform:scale(1); }
+  50% { transform:scale(1.12); }
+}
+/* "Your position" pointer — a Federalist gilt chevron above the active player's space */
+.board-cell.you-here::before {
+  content:"";
+  position:absolute; top:-14px; left:50%; transform:translateX(-50%);
+  width:0; height:0;
+  border-left:9px solid transparent; border-right:9px solid transparent;
+  border-top:10px solid var(--foil);
+  z-index:6;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.4));
+}
+.board-cell.you-here::after {
+  content:"YOU";
+  position:absolute; top:-30px; left:50%; transform:translateX(-50%);
+  font-family:var(--ui); font-size:9px; font-weight:800;
+  letter-spacing:.18em; color:var(--foil);
+  background:var(--ink); padding:2px 7px;
+  border:1px solid var(--foil);
+  white-space:nowrap;
+  z-index:6;
+}
+/* The active-space outline becomes solid foil instead of red — so "active" reads "you" */
+.board-cell.active-space { outline-color:var(--foil); }
+.board-cell.you-here.active-space { outline-color:var(--foil); }
+/* Opponent active space stays red so it's distinct */
+.board-cell.opponent-active { outline:3px solid var(--highlight); outline-offset:-3px; }
+.board-cell.opponent-active::before {
+  content:""; position:absolute; top:-14px; left:50%; transform:translateX(-50%);
+  width:0; height:0;
+  border-left:8px solid transparent; border-right:8px solid transparent;
+  border-top:9px solid var(--highlight);
+  z-index:6; filter:drop-shadow(0 1px 1px rgba(0,0,0,.35));
+}
+.board-cell.opponent-active::after {
+  content:attr(data-opp-label);
+  position:absolute; top:-28px; left:50%; transform:translateX(-50%);
+  font-family:var(--ui); font-size:8.5px; font-weight:700;
+  letter-spacing:.16em; color:#fff;
+  background:var(--highlight); padding:2px 6px;
+  border:1px solid var(--ink);
+  white-space:nowrap; z-index:6;
+}
+
+/* Positions status line — printed above the action rail so you always know
+   where everyone is, even when the board is tight */
+.positions-strip {
+  display:flex; gap:18px; flex-wrap:wrap;
+  padding:8px 14px;
+  background:var(--parchment-2);
+  border:1px solid var(--ink);
+  margin:0 0 6px;
+  font-family:var(--ui); font-size:11px;
+}
+.positions-strip .pos-row { display:flex; align-items:center; gap:8px; }
+.positions-strip .pos-tok {
+  width:22px; height:22px; border:2px solid var(--ink);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--display); color:#fff; font-weight:800;
+  font-size:12px; line-height:1;
+  box-shadow:0 1px 2px rgba(0,0,0,.35);
+}
+.positions-strip .pos-row.p0 .pos-tok { background:var(--p0); border-radius:50%; }
+.positions-strip .pos-row.p1 .pos-tok { background:var(--p1); border-radius:3px; transform:rotate(45deg); }
+.positions-strip .pos-row.p1 .pos-tok > span { transform:rotate(-45deg); display:inline-block; }
+.positions-strip .pos-row.p2 .pos-tok { background:var(--p2); border-radius:3px; }
+.positions-strip .pos-name { font-weight:700; letter-spacing:.06em; text-transform:uppercase; font-size:10px; }
+.positions-strip .pos-space {
+  font-family:var(--display); font-style:italic; font-weight:400;
+  font-size:13px; letter-spacing:0; text-transform:none;
+}
+.positions-strip .pos-row.is-active .pos-name { color:var(--foil); }
+.positions-strip .pos-row.is-active .pos-tok { box-shadow:0 0 0 2px var(--foil), 0 1px 2px rgba(0,0,0,.4); }
+.positions-strip .pos-ip {
+  font-family:var(--ui); font-size:10.5px; letter-spacing:.06em;
+  font-weight:800; color:var(--foil); margin-left:4px;
+}
+.positions-strip .pos-mandate {
+  font-family:var(--ui); font-size:9.5px; letter-spacing:.12em;
+  text-transform:uppercase; font-weight:800;
+  margin-top:3px;
+  padding:2px 7px;
+  background:var(--foil); color:var(--ink);
+  border:1px solid var(--ink); display:inline-block;
+}
+
+/* =====================================================================
+   PORTFOLIO STRIP — compact "your holdings" near the action rail
+   ===================================================================== */
+.portfolio-strip {
+  display:flex; gap:14px; align-items:stretch; flex-wrap:wrap;
+  padding:9px 14px;
+  background:var(--parchment);
+  border:1px solid var(--ink);
+  border-top:0;
+  margin:0 0 6px;
+}
+.portfolio-strip .pf-head {
+  display:flex; flex-direction:column; gap:2px; min-width:118px;
+}
+.portfolio-strip .pf-eyebrow {
+  font-family:var(--ui); font-size:9px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--foil); font-weight:800;
+}
+.portfolio-strip .pf-eyebrow::before { content:"§ "; }
+.portfolio-strip .pf-line {
+  font-family:var(--display); font-size:14px; line-height:1.15;
+  letter-spacing:-.005em; font-weight:400;
+}
+.portfolio-strip .pf-cash {
+  font-family:var(--mono); font-size:11.5px; font-weight:700;
+  color:var(--ink); margin-top:2px;
+}
+.portfolio-strip .pf-cash::before { content:"₸ "; color:var(--foil); opacity:.7; }
+.portfolio-strip .pf-list {
+  display:flex; gap:6px; flex-wrap:wrap; align-items:center;
+  flex:1; min-width:0;
+}
+.portfolio-strip .pf-empty {
+  font-family:var(--display); font-style:italic; font-size:13px;
+  opacity:.7; align-self:center;
+}
+.portfolio-strip .pf-chip {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:5px 10px;
+  background:var(--parchment-2);
+  border:1px solid var(--ink);
+  font-family:var(--display); font-size:12.5px; font-weight:400;
+  line-height:1.1;
+  position:relative; padding-left:14px;
+}
+.portfolio-strip .pf-chip::before {
+  content:""; position:absolute; left:0; top:0; bottom:0; width:5px;
+}
+.portfolio-strip .pf-chip[data-sys="revolutionary-debt"]::before { background:var(--revolutionary-debt); }
+.portfolio-strip .pf-chip[data-sys="state-debt"]::before { background:var(--state-debt); }
+.portfolio-strip .pf-chip[data-sys="revenue-system"]::before { background:var(--revenue-system); }
+.portfolio-strip .pf-chip[data-sys="commercial-infrastructure"]::before { background:var(--commercial-infrastructure); }
+.portfolio-strip .pf-chip[data-sys="national-finance"]::before { background:var(--national-finance); }
+.portfolio-strip .pf-chip[data-sys="internal-improvements"]::before { background:var(--internal-improvements); }
+.portfolio-strip .pf-chip[data-sys="manufactures"]::before { background:var(--manufactures); }
+.portfolio-strip .pf-chip[data-sys="strategic-industry"]::before { background:var(--strategic-industry); }
+.portfolio-strip .pf-chip[data-kind="route"]::before { background:var(--ink); background-image:repeating-linear-gradient(90deg,transparent 0 3px,rgba(255,255,255,.5) 3px 4px); }
+.portfolio-strip .pf-chip[data-kind="institution"]::before { background:var(--ink); background-image:radial-gradient(rgba(255,255,255,.6) .6px,transparent 1.1px); background-size:3px 3px; }
+.portfolio-strip .pf-chip .tier-roman {
+  font-family:var(--display); font-weight:800; font-size:10.5px;
+  background:var(--foil); color:var(--ink); padding:1px 5px;
+  border:1px solid var(--ink); border-radius:2px; letter-spacing:.04em;
+}
+.portfolio-strip .pf-open {
+  font-family:var(--ui); font-size:10.5px; letter-spacing:.16em;
+  text-transform:uppercase; font-weight:800;
+  padding:7px 12px; border:1.5px solid var(--ink); background:var(--parchment);
+  color:var(--ink); cursor:pointer;
+  box-shadow:0 2px 0 rgba(26,22,18,.18);
+  align-self:center;
+}
+.portfolio-strip .pf-open:hover { background:var(--ink); color:var(--parchment); }
+.portfolio-strip .pf-open:focus-visible { outline:2.5px solid var(--foil); outline-offset:2px; }
+
+/* =====================================================================
+   LANDING OUTCOME BAND — explains what just happened on your roll
+   ===================================================================== */
+.landing-band {
+  display:flex; gap:14px; align-items:center;
+  padding:10px 16px;
+  background:var(--parchment);
+  border:1.5px solid var(--ink);
+  border-top:0;
+  margin:0 0 6px;
+  position:relative;
+  box-shadow:inset 0 0 0 1px var(--foil-soft);
+}
+.landing-band::before {
+  content:""; position:absolute; left:0; right:0; top:-1px; height:2px;
+  background:linear-gradient(90deg, var(--foil) 0%, #E5C36A 50%, var(--foil) 100%);
+}
+.landing-band .lb-eyebrow {
+  font-family:var(--ui); font-size:9px; letter-spacing:.26em;
+  text-transform:uppercase; font-weight:800; color:var(--foil);
+  white-space:nowrap;
+}
+.landing-band .lb-eyebrow::before { content:"§ "; }
+.landing-band .lb-text {
+  font-family:var(--display); font-size:15px; line-height:1.25;
+  letter-spacing:-.005em; font-weight:400; color:var(--ink);
+  flex:1;
+}
+.landing-band .lb-text em { font-style:italic; }
+.landing-band.is-paid { background:rgba(200,57,46,.06); }
+.landing-band.is-paid .lb-text strong { color:var(--highlight); font-weight:700; font-family:var(--display); }
+.landing-band.is-own { background:rgba(46,122,107,.08); }
+.landing-band.is-own .lb-text strong { color:var(--severity-pass); font-weight:700; font-family:var(--display); }
+.landing-band.is-neutral { background:var(--parchment-2); }
+
+/* =====================================================================
+   FIRST-LAP HINT — extra calm guidance under the rail on lap 1 only
+   ===================================================================== */
+.action-banner .first-lap-hint {
+  grid-column:1 / -1;
+  margin-top:10px;
+  padding:10px 14px;
+  background:rgba(140,107,42,.10);
+  border-left:3px solid var(--foil);
+  font-family:var(--body); font-size:12.5px; line-height:1.5;
+  font-style:italic; color:var(--ink);
+}
+.action-banner .first-lap-hint::before {
+  content:"§ Helping hand: "; font-style:normal;
+  font-family:var(--ui); font-size:9.5px; letter-spacing:.16em;
+  text-transform:uppercase; font-weight:800; color:var(--foil);
+  margin-right:4px;
+}
+
+/* =====================================================================
+   ACTION RAIL — primary interaction surface
+   ===================================================================== */
+.controls-bar { padding:10px 0 4px; min-height:128px; align-items:stretch; flex-direction:column; }
+.action-banner {
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:18px;
+  padding:16px 22px 18px;
+  align-items:center;
+  background:linear-gradient(180deg, var(--parchment) 0%, var(--parchment-2) 100%);
+  border:2px solid var(--ink);
+  box-shadow:inset 0 0 0 1px var(--foil-soft), 0 4px 0 rgba(26,22,18,0.18), 0 12px 22px -10px rgba(26,22,18,.4);
+  position:relative;
+  min-height:96px;
+}
+.action-banner::before {
+  content:""; position:absolute; left:0; right:0; top:0; height:4px;
+  background:linear-gradient(90deg, var(--foil) 0%, #E5C36A 50%, var(--foil) 100%);
+}
+.action-banner .ab-text { display:flex; flex-direction:column; gap:4px; min-width:0; }
+.action-banner .ab-eyebrow {
+  font-family:var(--ui); font-size:10px; letter-spacing:.26em; text-transform:uppercase;
+  color:var(--foil); font-weight:800;
+}
+.action-banner .ab-prompt {
+  font-family:var(--display); font-size:22px; line-height:1.15;
+  letter-spacing:-.005em; color:var(--ink); font-weight:400;
+}
+.action-banner .ab-prompt em { font-style:italic; font-weight:400; }
+.action-banner .ab-hint {
+  font-family:var(--body); font-size:13.5px; line-height:1.45; opacity:.78;
+  max-width:54ch;
+}
+.action-banner .ab-actions { display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:flex-end; }
+.action-banner .ab-actions button {
+  font-family:var(--ui); font-size:13px; letter-spacing:.14em; text-transform:uppercase; font-weight:800;
+  padding:13px 22px; border:1.5px solid var(--ink); background:var(--parchment); color:var(--ink);
+  cursor:pointer; box-shadow:0 3px 0 rgba(26,22,18,.2);
+  transition:transform 80ms ease, box-shadow 80ms ease, background-color 80ms ease;
+}
+.action-banner .ab-actions button:hover:not([disabled]) { transform:translateY(-1px); box-shadow:0 4px 0 rgba(26,22,18,.25); }
+.action-banner .ab-actions button:active:not([disabled]) { transform:translateY(1px); box-shadow:0 1px 0 rgba(26,22,18,.18); }
+.action-banner .ab-actions button.primary {
+  background:var(--ink); color:var(--parchment); box-shadow:0 3px 0 rgba(26,22,18,.35);
+  font-family:var(--display); font-weight:700; letter-spacing:.06em; text-transform:none; font-size:17px;
+  padding:14px 26px;
+}
+.action-banner .ab-actions button.primary:hover:not([disabled]) { background:var(--national-finance); }
+.action-banner .ab-actions button:focus-visible { outline:2.5px solid var(--foil); outline-offset:3px; }
+.action-banner .ab-actions button[disabled] { opacity:.4; cursor:not-allowed; box-shadow:none; }
+.action-banner .ab-actions input[type="number"] {
+  font-family:var(--mono); font-size:14px; padding:11px 12px; width:108px;
+  border:1.5px solid var(--ink); background:var(--parchment);
+}
+
+/* Opponent-turn rail state — quiet */
+.action-banner.opponent-turn {
+  background:var(--parchment-2);
+  box-shadow:inset 0 0 0 1px var(--rule-soft);
+  border-color:var(--rule);
+  border-width:1px;
+  min-height:64px;
+  padding:12px 20px;
+}
+.action-banner.opponent-turn::before { display:none; }
+.action-banner.opponent-turn .ab-prompt { font-style:italic; opacity:.78; font-size:16px; }
+.action-banner.opponent-turn .ab-eyebrow { color:var(--neutral); }
+
+/* Crisis-fired rail state — warning red */
+.action-banner.crisis-rail { border-color:var(--severity-warning); }
+.action-banner.crisis-rail::before { background:linear-gradient(90deg, var(--severity-warning) 0%, #E66B5F 50%, var(--severity-warning) 100%); }
+.action-banner.crisis-rail .ab-eyebrow { color:var(--severity-warning); }
+
+@media (max-width: 1200px) {
+  .action-banner { grid-template-columns:1fr; gap:12px; }
+  .action-banner .ab-actions { justify-content:flex-start; }
+}
+
+/* =====================================================================
+   DIM-DURING-DECISION — quiet side panels when human action is pending
+   ===================================================================== */
+body.decision-active .panel-pane { opacity:.72; transition:opacity 200ms ease; }
+body.decision-active .panel-pane:hover { opacity:.95; }
+body.decision-active .ledger-pane { opacity:.62; transition:opacity 200ms ease; }
+body.decision-active .ledger-pane:hover { opacity:.92; }
+
+/* =====================================================================
+   WELCOME FLOW — three steps replacing the old single orient overlay
+   ===================================================================== */
+.orient-overlay { background:rgba(26,22,18,0.86); }
+.orient-panel { max-width:640px; padding:34px 40px 28px; }
+.orient-panel.welcome-step .eyebrow,
+.orient-panel.welcome-step h2,
+.orient-panel.welcome-step .lede,
+.orient-panel.welcome-step .welcome-lede,
+.orient-panel.welcome-step ol,
+.orient-panel.welcome-step .crisis-row,
+.orient-panel.welcome-step .default-row,
+.orient-panel.welcome-step .rebellion-row,
+.orient-panel.welcome-step .pick-section,
+.orient-panel.welcome-step .footer-row,
+.orient-panel.welcome-step .tour-section { display:none; }
+
+/* Step indicators */
+.welcome-progress {
+  display:flex; gap:8px; align-items:center; justify-content:center;
+  margin:0 0 24px;
+}
+.welcome-progress .dot { width:8px; height:8px; border-radius:50%; background:var(--rule-soft); border:1px solid var(--ink); }
+.welcome-progress .dot.sel { background:var(--ink); box-shadow:0 0 0 2px var(--foil-soft); }
+
+/* Step 1 — Welcome */
+.orient-panel[data-step="1"] .eyebrow,
+.orient-panel[data-step="1"] h2,
+.orient-panel[data-step="1"] .welcome-lede,
+.orient-panel[data-step="1"] .footer-row { display:block; }
+.orient-panel[data-step="1"] .footer-row { display:flex; }
+.orient-panel[data-step="1"] h2 { font-size:38px; line-height:1; margin:8px 0 18px; letter-spacing:-.02em; }
+.orient-panel[data-step="1"] .welcome-lede {
+  font-family:var(--display); font-style:italic;
+  font-size:20px; line-height:1.45; max-width:30ch;
+  margin:0 auto 28px; text-align:center; color:var(--ink); opacity:.92;
+}
+.orient-panel[data-step="1"] { text-align:center; }
+.orient-panel[data-step="1"] .footer-row { justify-content:center; }
+.orient-panel[data-step="1"] .eyebrow { text-align:center; }
+
+/* Step 2 — Delegate picker */
+.orient-panel[data-step="2"] .eyebrow,
+.orient-panel[data-step="2"] h2,
+.orient-panel[data-step="2"] .pick-section,
+.orient-panel[data-step="2"] .footer-row { display:block; }
+.orient-panel[data-step="2"] .footer-row { display:flex; }
+.orient-panel[data-step="2"] h2 { font-size:30px; line-height:1; margin:6px 0 18px; }
+.orient-panel[data-step="2"] .pick-section { background:transparent; border:0; padding:0; }
+.orient-panel[data-step="2"] .pick-section::before { display:none; }
+.orient-panel[data-step="2"] .pick-section h3 { font-size:11px; color:var(--foil); }
+.orient-panel[data-step="2"] .pick-section .preview-row {
+  display:flex; gap:18px; align-items:center; justify-content:center;
+  margin:16px 0 8px;
+  padding:14px 16px;
+  background:var(--parchment-2);
+  border:1px solid var(--ink);
+}
+.preview-token-set { display:flex; gap:14px; align-items:center; }
+.preview-token { display:flex; flex-direction:column; align-items:center; gap:4px; }
+.preview-token .ptok {
+  width:38px; height:38px; border:2px solid var(--ink);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--display); color:#fff; font-weight:800;
+  font-size:18px; box-shadow:0 2px 0 rgba(26,22,18,.25);
+}
+.preview-token.p0 .ptok { background:var(--p0); border-radius:50%; }
+.preview-token.p1 .ptok { background:var(--p1); border-radius:5px; transform:rotate(45deg); }
+.preview-token.p1 .ptok > span { transform:rotate(-45deg); display:inline-block; }
+.preview-token.p2 .ptok { background:var(--p2); border-radius:5px; }
+.preview-token .ptok-label {
+  font-family:var(--ui); font-size:9.5px; letter-spacing:.16em;
+  text-transform:uppercase; font-weight:700; color:var(--ink);
+}
+
+/* Step 3 — On-board tour */
+.orient-panel[data-step="3"] .eyebrow,
+.orient-panel[data-step="3"] h2,
+.orient-panel[data-step="3"] .tour-section,
+.orient-panel[data-step="3"] .footer-row { display:block; }
+.orient-panel[data-step="3"] .footer-row { display:flex; }
+.orient-panel[data-step="3"] h2 { font-size:30px; line-height:1; margin:6px 0 14px; }
+.orient-panel[data-step="3"] .tour-section { font-family:var(--body); font-size:14px; line-height:1.55; }
+.orient-panel[data-step="3"] .tour-section .tour-row {
+  display:grid; grid-template-columns:48px 1fr;
+  gap:14px; padding:10px 0 14px;
+  border-bottom:0.5px dashed var(--rule-soft); align-items:center;
+}
+.orient-panel[data-step="3"] .tour-section .tour-row:last-child { border-bottom:0; }
+.orient-panel[data-step="3"] .tour-section .tour-num {
+  width:36px; height:36px; border-radius:50%;
+  background:var(--ink); color:var(--parchment);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--display); font-size:16px; font-weight:700;
+  box-shadow:inset 0 0 0 1px var(--foil-soft);
+}
+.orient-panel[data-step="3"] .tour-section .tour-row strong {
+  font-family:var(--display); font-weight:700; font-style:normal;
+}
+
+/* On-board tour spotlight rings (added when step 3 active) */
+body.tour-step-tracks .panel.tracks-panel,
+body.tour-step-rail .controls-bar,
+body.tour-step-ledger .ledger {
+  box-shadow:0 0 0 3px var(--foil), 0 0 0 5px rgba(140,107,42,.4), var(--shadow-card);
+  position:relative; z-index:2;
+}
+
+/* Step 1 of the welcome — also hide the version pill / how-to-play during welcome */
+body.welcome-active .topbar .controls,
+body.welcome-active .grid,
+body.welcome-active .endgame { filter:saturate(.8); }
+
+/* =====================================================================
+   DESIGNER GATE — hide Balance Sweep + designer chrome by default
+   ===================================================================== */
+#btnBatch { display:none; }
+body.designer-mode #btnBatch { display:inline-block; }
+body.designer-mode::after {
+  content:"Designer mode";
+  position:fixed; bottom:8px; left:8px;
+  font-family:var(--mono); font-size:9px; letter-spacing:.18em;
+  text-transform:uppercase;
+  padding:4px 8px; background:var(--foil); color:var(--ink);
+  z-index:90;
+  border:1px solid var(--ink);
+}
+
+/* =====================================================================
+   LEDGER as SECONDARY surface — quieter by default, expand on toggle
+   ===================================================================== */
+.ledger-pane { transition:opacity 200ms ease, max-height 280ms ease; }
+body:not(.ledger-expanded) .ledger { opacity:.88; }
+body.ledger-expanded .ledger-pane { opacity:1; }
+body.ledger-expanded .ledger { opacity:1; }
+.ledger .head { gap:8px; }
+.ledger-toggle {
+  font-family:var(--ui); font-size:9.5px; letter-spacing:.18em;
+  text-transform:uppercase; font-weight:700;
+  padding:3px 9px; border:1px solid var(--ink); background:var(--parchment);
+  color:var(--ink); cursor:pointer; margin-left:auto;
+}
+.ledger-toggle:hover { background:var(--ink); color:var(--parchment); }
+body.ledger-expanded .ledger-toggle::after { content:" ▲"; }
+body:not(.ledger-expanded) .ledger-toggle::after { content:" ▼"; }
+
+/* Hide the version pill from the player by default (designer-only) */
+body:not(.designer-mode) .version-pill { display:none; }
+body:not(.designer-mode) .phase-pill { display:none; }
+body:not(.designer-mode) #seedPill { display:none; }
+
+/* Hide the "Replay" button until the game ends — already set hidden in HTML;
+   keep it hidden in default styling outside endgame */
+#btnReplay { display:none; }
+.endgame-active #btnReplay { display:inline-block; }
+
+/* Endgame "VIEW FINAL REPORT" CTA on game-over rail */
+.action-banner.endgame-rail { background:linear-gradient(180deg, var(--parchment-2) 0%, #DDC890 100%); }
+.action-banner.endgame-rail::before { background:linear-gradient(90deg, var(--foil) 0%, #E5C36A 50%, var(--foil) 100%); }
+.action-banner.endgame-rail .ab-eyebrow { color:var(--foil); }
+
+/* =====================================================================
+   DICE ROLL ANIMATION — overlay with two flashing dice
+   ===================================================================== */
+.dice-overlay {
+  position:fixed; inset:0; z-index:75;
+  background:rgba(26,22,18,0.55);
+  display:flex; align-items:center; justify-content:center;
+  pointer-events:none;
+}
+.dice-overlay.hidden { display:none; }
+.dice-roll {
+  display:flex; gap:18px;
+  padding:24px 28px;
+  background:var(--parchment);
+  border:2px solid var(--ink);
+  box-shadow:inset 0 0 0 1px var(--foil-soft), 0 8px 28px -8px rgba(0,0,0,.6);
+}
+.dice-roll .die {
+  width:72px; height:72px;
+  background:var(--parchment-2);
+  border:1.5px solid var(--ink);
+  border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--display); font-size:48px; font-weight:700;
+  color:var(--ink);
+  box-shadow:0 3px 0 rgba(26,22,18,.18), inset 0 0 0 1px rgba(140,107,42,.4);
+  animation:diceTumble 320ms steps(1,end) infinite;
+}
+.dice-roll .die:nth-child(2) { animation-delay:160ms; }
+@keyframes diceTumble {
+  0% { transform:rotate(0deg) scale(1); }
+  25% { transform:rotate(-7deg) scale(1.04); }
+  50% { transform:rotate(0deg) scale(.96); }
+  75% { transform:rotate(7deg) scale(1.04); }
+  100% { transform:rotate(0deg) scale(1); }
+}
+.dice-overlay.settled .die { animation:none; transform:none; box-shadow:0 3px 0 rgba(26,22,18,.25), inset 0 0 0 1px var(--foil); }
+.dice-roll .sum {
+  align-self:center;
+  font-family:var(--ui); font-size:11px; letter-spacing:.26em;
+  text-transform:uppercase; font-weight:700;
+  color:var(--foil); margin-left:4px;
+  min-width:60px;
+}
+
+/* =====================================================================
+   EVENT TOAST — pops up for Act pass/fail, Crisis, Default, Rebellion, etc.
+   ===================================================================== */
+.event-toast-stack {
+  position:fixed; top:96px; left:50%; transform:translateX(-50%);
+  z-index:65; display:flex; flex-direction:column; gap:10px;
+  pointer-events:none;
+  max-width:540px; width:90%;
+}
+.event-toast {
+  background:var(--parchment);
+  border:2px solid var(--ink);
+  box-shadow:inset 0 0 0 1px var(--foil-soft), 0 6px 22px -8px rgba(0,0,0,.45);
+  padding:14px 20px 16px;
+  position:relative;
+  animation:toastIn 220ms ease-out, toastOut 320ms ease-in forwards;
+  animation-delay:0s, 3.4s;
+  pointer-events:auto;
+}
+.event-toast::before {
+  content:""; position:absolute; left:0; right:0; top:0; height:4px;
+  background:linear-gradient(90deg, var(--foil) 0%, #E5C36A 50%, var(--foil) 100%);
+}
+@keyframes toastIn {
+  from { opacity:0; transform:translateY(-12px) scale(.98); }
+  to { opacity:1; transform:translateY(0) scale(1); }
+}
+@keyframes toastOut {
+  to { opacity:0; transform:translateY(-12px) scale(.98); }
+}
+.event-toast .toast-eyebrow {
+  font-family:var(--ui); font-size:10px; letter-spacing:.26em; text-transform:uppercase;
+  font-weight:800; color:var(--foil);
+}
+.event-toast .toast-title {
+  font-family:var(--display); font-size:22px; line-height:1.15;
+  letter-spacing:-.005em; margin-top:2px;
+}
+.event-toast .toast-body {
+  font-family:var(--body); font-size:13px; line-height:1.5; margin-top:4px; opacity:.85;
+}
+.event-toast.pass { border-color:var(--severity-pass); }
+.event-toast.pass::before { background:linear-gradient(90deg, var(--severity-pass) 0%, #58B19F 50%, var(--severity-pass) 100%); }
+.event-toast.pass .toast-eyebrow { color:var(--severity-pass); }
+.event-toast.fail { border-color:var(--highlight); }
+.event-toast.fail::before { background:linear-gradient(90deg, var(--highlight) 0%, #E66B5F 50%, var(--highlight) 100%); }
+.event-toast.fail .toast-eyebrow { color:var(--highlight); }
+.event-toast.crisis { background:rgba(200,57,46,.08); border-color:var(--highlight); }
+.event-toast.crisis::before { background:linear-gradient(90deg, var(--highlight) 0%, #E66B5F 50%, var(--highlight) 100%); }
+.event-toast.crisis .toast-eyebrow { color:var(--highlight); }
+.event-toast.default { background:var(--ink); color:var(--parchment); border-color:var(--highlight); }
+.event-toast.default::before { background:var(--highlight); }
+.event-toast.default .toast-eyebrow { color:var(--highlight); }
+.event-toast.rebellion { background:var(--revolutionary-debt); color:var(--parchment); border-color:var(--ink); }
+.event-toast.rebellion::before { background:var(--ink); }
+.event-toast.rebellion .toast-eyebrow { color:#F0E6CD; }
+
+/* =====================================================================
+   LAP RECAP CARD — story beat between laps
+   ===================================================================== */
+.lap-recap-overlay {
+  position:fixed; inset:0; z-index:72;
+  background:rgba(26,22,18,0.84);
+  display:flex; align-items:center; justify-content:center;
+  padding:24px;
+  animation:lapRecapIn 320ms ease-out;
+}
+.lap-recap-overlay.hidden { display:none; }
+@keyframes lapRecapIn { from { opacity:0; } to { opacity:1; } }
+.lap-recap {
+  max-width:620px; width:100%;
+  background:linear-gradient(180deg, var(--parchment) 0%, var(--parchment-2) 100%);
+  border:2px solid var(--ink);
+  padding:28px 36px 26px;
+  position:relative;
+  box-shadow:inset 0 0 0 1px var(--foil-soft), 0 14px 40px -10px rgba(0,0,0,.55);
+}
+.lap-recap::before {
+  content:""; position:absolute; left:0; right:0; top:0; height:5px;
+  background:linear-gradient(90deg, var(--foil) 0%, #E5C36A 50%, var(--foil) 100%);
+}
+.lap-recap .eyebrow {
+  font-family:var(--ui); font-size:11px; letter-spacing:.32em; text-transform:uppercase;
+  font-weight:800; color:var(--foil); text-align:center;
+}
+.lap-recap h2 {
+  font-family:var(--display); font-size:36px; line-height:1; margin:6px 0 4px;
+  text-align:center; letter-spacing:-.015em; font-weight:400;
+}
+.lap-recap .lap-sub {
+  font-family:var(--display); font-style:italic; font-size:15px;
+  text-align:center; opacity:.78; margin-bottom:18px;
+}
+.lap-recap .recap-body {
+  font-family:var(--body); font-size:15px; line-height:1.65;
+  text-wrap:pretty; max-width:60ch; margin:0 auto;
+}
+.lap-recap .recap-body::first-letter {
+  font-family:var(--display); font-size:30px; line-height:1;
+  padding-right:3px; color:var(--foil); font-weight:400;
+}
+.lap-recap .recap-meta {
+  margin-top:18px; padding-top:12px; border-top:0.5px dashed var(--rule-soft);
+  display:flex; justify-content:center; gap:18px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.12em;
+  text-transform:uppercase; opacity:.78;
+}
+.lap-recap .recap-meta .m { display:flex; flex-direction:column; align-items:center; gap:2px; }
+.lap-recap .recap-meta .m .v { font-family:var(--display); font-size:18px; font-weight:400; opacity:1; }
+.lap-recap .recap-actions { margin-top:20px; display:flex; justify-content:center; }
+.lap-recap .recap-actions button {
+  font-family:var(--display); font-size:17px; font-weight:700;
+  padding:12px 28px; background:var(--ink); color:var(--parchment);
+  border:1.5px solid var(--ink); cursor:pointer; letter-spacing:.04em;
+  box-shadow:0 3px 0 rgba(26,22,18,.35);
+  transition:transform 80ms ease, background-color 80ms ease;
+}
+.lap-recap .recap-actions button:hover { background:var(--national-finance); transform:translateY(-1px); }
+.lap-recap .recap-actions button:focus-visible { outline:2.5px solid var(--foil); outline-offset:3px; }
+
+/* =====================================================================
+   COLLAPSIBLE RIGHT SIDEBAR — defaults to collapsed for board focus
+   ===================================================================== */
+.grid { transition:grid-template-columns 220ms ease; }
+body.sidebar-collapsed .grid { grid-template-columns:minmax(0, 1fr); }
+body.sidebar-collapsed .panel-pane { display:none; }
+body.sidebar-collapsed .ledger-pane { grid-column:1; grid-row:2; }
+body.sidebar-collapsed .board-view { max-width:1100px; }
+
+/* Sidebar toggle — a prominent gilt tab so it's easy to find */
+.sidebar-toggle {
+  position:fixed; top:96px; right:14px;
+  z-index:55;
+  font-family:var(--ui); font-size:11.5px; letter-spacing:.18em;
+  text-transform:uppercase; font-weight:800;
+  padding:10px 16px;
+  background:var(--foil); color:var(--ink);
+  border:2px solid var(--ink);
+  cursor:pointer;
+  box-shadow:0 3px 0 rgba(26,22,18,.25), inset 0 0 0 1px rgba(255,255,255,.35);
+  transition:background-color 100ms ease, transform 80ms ease, box-shadow 80ms ease;
+  display:flex; align-items:center; gap:8px;
+}
+.sidebar-toggle:hover { background:#E5C36A; transform:translateY(-1px); box-shadow:0 4px 0 rgba(26,22,18,.3); }
+.sidebar-toggle:active { transform:translateY(1px); box-shadow:0 1px 0 rgba(26,22,18,.18); }
+.sidebar-toggle:focus-visible { outline:2.5px solid var(--ink); outline-offset:3px; }
+.sidebar-toggle::before { content:"◀  "; font-family:var(--display); font-size:13px; }
+body:not(.sidebar-collapsed) .sidebar-toggle::before { content:"▶  "; }
+body:not(.sidebar-collapsed) .sidebar-toggle { background:var(--parchment); }
+body:not(.sidebar-collapsed) .sidebar-toggle:hover { background:var(--parchment-2); }
+
+/* Gentle attract pulse when the sidebar is closed so newcomers see the toggle */
+@keyframes sidebarTogglePulse {
+  0%, 100% { box-shadow:0 3px 0 rgba(26,22,18,.25), inset 0 0 0 1px rgba(255,255,255,.35), 0 0 0 0 rgba(140,107,42,0); }
+  60%      { box-shadow:0 3px 0 rgba(26,22,18,.25), inset 0 0 0 1px rgba(255,255,255,.35), 0 0 0 8px rgba(140,107,42,0); }
+  100%     { box-shadow:0 3px 0 rgba(26,22,18,.25), inset 0 0 0 1px rgba(255,255,255,.35), 0 0 0 0 rgba(140,107,42,0); }
+}
+body.sidebar-collapsed .sidebar-toggle { animation:sidebarTogglePulse 2400ms ease-in-out infinite; }
+body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
+
+/* Positions strip — add cash per player so collapsing the sidebar doesn't hide critical info */
+.positions-strip .pos-cash {
+  font-family:var(--mono); font-size:11px; font-weight:700;
+  color:var(--ink); margin-top:1px;
+}
+.positions-strip .pos-cash::before { content:"₸ "; color:var(--foil); opacity:.7; }
+
+@media (max-width: 768px) {
+  .sidebar-toggle { top:auto; bottom:14px; right:10px; writing-mode:horizontal-tb; padding:8px 14px; }
+  body.sidebar-collapsed .sidebar-toggle { animation:none; top:auto; bottom:14px; right:14px; padding:10px 16px; }
+  .action-banner { padding:14px 16px; min-height:0; }
+  .action-banner .ab-prompt { font-size:18px; }
+  .action-banner .ab-actions button.primary { font-size:15px; padding:11px 18px; }
+  .dice-roll .die { width:54px; height:54px; font-size:36px; }
+}
 </style>
+<template id="__bundler_thumbnail" data-bg-color="#2A2622">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="1200" height="800" fill="#2A2622"/>
+    <g transform="translate(600 400)">
+      <circle r="240" fill="none" stroke="#F0E6CD" stroke-width="6"/>
+      <circle r="220" fill="none" stroke="#F0E6CD" stroke-width="1.5"/>
+      <circle r="170" fill="#F0E6CD"/>
+      <text x="0" y="42" text-anchor="middle" font-family="Baskerville, 'Big Caslon', 'Hoefler Text', Garamond, 'Times New Roman', serif" font-size="220" font-weight="400" fill="#1A1612" font-style="italic">S</text>
+      <g font-family="Baskerville, serif" font-size="22" fill="#F0E6CD" letter-spacing="8">
+        <text x="0" y="-200" text-anchor="middle">SOVEREIGN</text>
+        <text x="0" y="218" text-anchor="middle" font-size="14" letter-spacing="6">v0.18 · FAILURE-PRESSURE</text>
+      </g>
+    </g>
+  </svg>
+</template>
 </head>
 <body>
 
@@ -418,32 +1820,29 @@ input[type="number"] { font-family:var(--mono); font-size:13px; padding:5px 8px;
   <input type="file" id="loadFile" accept="application/json,.json" class="hidden" />
   <header class="topbar">
     <div class="brand">
-      <div class="eyebrow">Sovereign · Solo / Digital · Phase 6.1 · v0.10 balance candidate</div>
-      <div class="title">Telemetry · Batch</div>
-      <div class="sub">v0.10 balance candidate — cash scoring softened to +1 IP per 400 TN.</div>
+      <div class="eyebrow">Solo / Digital Mode · The Hamilton System</div>
+      <div class="title">Sovereign<span class="title-mode">Federal economy in twelve rounds</span></div>
+      <div class="sub">Steer the early American republic through debt, credit, public resistance, and industrial capacity. The ledger on the right records every payment, vote, track shift, and event.</div>
     </div>
     <div class="controls">
       <span class="seed-pill" id="seedPill">seed: ----</span>
       <span class="phase-pill" id="phasePill">phase: setup</span>
       <span class="active-pill" id="activePill">Active: You</span>
-      <button id="btnSave" title="Download decision log + localStorage autosave">Save</button>
-      <button id="btnLoad" title="Import a saved JSON or load the autosave">Load</button>
-      <button id="btnReplay" class="hidden" title="Scrub through this finished game">Replay</button>
-      <button id="btnBatch" title="Run a scripted batch of 10 / 50 / 100 games">Batch</button>
-      <button id="btnNewSeed">New seed</button>
-      <button id="btnReset">Reset (same seed)</button>
+      <button id="btnHelp" title="Orientation panel for new players">How to play</button>
+      <button id="btnSave" title="Save your game (download a file + write to browser storage)">Save game</button>
+      <button id="btnLoad" title="Load a saved game from file or browser storage">Load game</button>
+      <button id="btnReplay" class="hidden" title="Step through this finished game turn by turn">Replay this game</button>
+      <button id="btnBatch" title="Run a scripted batch of 10 / 50 / 100 games">Balance Sweep</button>
+      <button id="btnNewSeed">New game</button>
+      <button id="btnReset">Restart this game</button>
+      <span class="version-pill" title="Build provenance · no mechanic change since v0.18 candidate">v0.18 · Phase 6.1</span>
     </div>
   </header>
 
   <main class="grid" id="mainGrid">
     <section class="board-pane">
-      <div class="panel" style="padding:6px 12px; border-bottom-width:0">
-        <div class="panel-head" style="margin-bottom:0; padding-bottom:0; border-bottom:0">
-          <span class="name">Board View</span><span class="surface-id">A</span>
-        </div>
-      </div>
-      <div class="board-view"><div class="board-grid" id="boardGrid"></div></div>
       <div class="controls-bar" id="controlsBar"></div>
+      <div class="board-view"><div class="board-grid" id="boardGrid"></div></div>
     </section>
 
     <aside class="panel-pane">
@@ -513,10 +1912,127 @@ input[type="number"] { font-family:var(--mono); font-size:13px; padding:5px 8px;
   <section class="endgame hidden" id="endgameView"></section>
 </div>
 
+<div class="lap-recap-overlay hidden" id="lapRecapOverlay" role="dialog" aria-modal="true">
+  <div class="lap-recap">
+    <div class="eyebrow">§ Round closes</div>
+    <h2 id="lapRecapTitle">Round 1 of 12</h2>
+    <div class="lap-sub" id="lapRecapSub">After round 1</div>
+    <div class="recap-body" id="lapRecapBody"></div>
+    <div class="recap-meta" id="lapRecapMeta"></div>
+    <div class="recap-actions"><button type="button" id="lapRecapDismiss">Continue</button></div>
+  </div>
+</div>
+
+<div class="event-toast-stack" id="toastStack"></div>
+
+<button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Toggle right panel"><span id="sidebarToggleLabel">Show panels</span></button>
+
+<div class="dice-overlay hidden" id="diceOverlay" aria-hidden="true">
+  <div class="dice-roll">
+    <div class="die" id="die1">⚀</div>
+    <div class="die" id="die2">⚀</div>
+    <div class="sum" id="diceSum">rolling…</div>
+  </div>
+</div>
+
+<div class="orient-overlay hidden" id="orientOverlay" role="dialog" aria-modal="true" aria-labelledby="orientTitle">
+  <div class="orient-panel welcome-step" id="welcomePanel" data-step="1">
+    <div class="welcome-progress" id="welcomeProgress">
+      <span class="dot sel" data-step="1"></span>
+      <span class="dot" data-step="2"></span>
+      <span class="dot" data-step="3"></span>
+    </div>
+    <div class="eyebrow">Solo / Digital Mode · The Hamilton System</div>
+    <h2 id="orientTitle">Sovereign</h2>
+
+    <!-- Step 1: Welcome -->
+    <p class="welcome-lede">You are trying to build a durable republic. Public Credit is trust, Public Resistance is political strain, Industrial Capacity is productive power. Each turn you roll, land, and choose. The game will guide you. The ledger will record everything.</p>
+
+    <!-- Step 2: Delegate picker -->
+    <div class="pick-section">
+      <h3>§ Choose your role</h3>
+      <div class="role-grid" id="roleGrid" role="radiogroup" aria-label="Pick your role">
+        <button type="button" class="role-card sel" data-role="treasury">
+          <div class="role-eyebrow">Treasury</div>
+          <div class="role-title">Treasury / Finance</div>
+          <div class="role-blurb">The Hamiltonian apex. Public Credit, federal debt, the Bank of the United States.</div>
+        </button>
+        <button type="button" class="role-card" data-role="merchant">
+          <div class="role-eyebrow">Merchant</div>
+          <div class="role-title">Merchant / Infrastructure</div>
+          <div class="role-blurb">The commerce line. Routes, ports, exchanges. Works whenever Credit holds.</div>
+        </button>
+        <button type="button" class="role-card" data-role="manufacturer">
+          <div class="role-eyebrow">Manufacturer</div>
+          <div class="role-title">Manufacturer / Industry</div>
+          <div class="role-blurb">The industrial line. Manufactures, Strategic Industry, Capacity scoring.</div>
+        </button>
+      </div>
+      <h3 style="margin-top:18px">§ Choose your delegate</h3>
+      <div class="pick-row">
+        <div class="pick-field">
+          <label for="playerNameInput">Your name</label>
+          <input type="text" id="playerNameInput" maxlength="28" placeholder="You" autocomplete="off" />
+        </div>
+        <div class="pick-field">
+          <label>Your sigil</label>
+          <div class="glyph-picker" id="glyphPicker" role="radiogroup" aria-label="Pick your sigil">
+            <button type="button" data-glyph="§" title="Treasury">§</button>
+            <button type="button" data-glyph="★" title="Star">★</button>
+            <button type="button" data-glyph="⚖" title="Justice">⚖</button>
+            <button type="button" data-glyph="⚓" title="Anchor">⚓</button>
+            <button type="button" data-glyph="⚙" title="Industry">⚙</button>
+            <button type="button" data-glyph="⚔" title="Arms">⚔</button>
+            <button type="button" data-glyph="⚜" title="Fleur-de-lis">⚜</button>
+            <button type="button" data-glyph="♛" title="Crown">♛</button>
+          </div>
+        </div>
+      </div>
+      <div class="preview-row">
+        <div class="preview-token-set">
+          <div class="preview-token p0"><div class="ptok" id="previewYouTok"><span>§</span></div><div class="ptok-label" id="previewYouName">You</div></div>
+          <div class="preview-token p1"><div class="ptok" id="previewOpp1Tok"><span>H</span></div><div class="ptok-label" id="previewOpp1Name">Hamilton</div></div>
+          <div class="preview-token p2"><div class="ptok" id="previewOpp2Tok"><span>M</span></div><div class="ptok-label" id="previewOpp2Name">Morris</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: On-board tour -->
+    <div class="tour-section">
+      <p style="font-family:var(--display); font-style:italic; font-size:15px; line-height:1.55; margin:0 0 16px; opacity:.88">A few things to know before you begin.</p>
+      <div class="tour-row">
+        <div class="tour-num">1</div>
+        <div><strong>Your turn loop</strong> is <em>Roll → Land → Choose → Consequence</em>. The rail above the board will tell you what to do next.</div>
+      </div>
+      <div class="tour-row">
+        <div class="tour-num">2</div>
+        <div><strong>Each round, every player takes one turn</strong> — twelve rounds total. Passing Treasury Opens is a board circuit; a round is not a full lap around the board.</div>
+      </div>
+      <div class="tour-row">
+        <div class="tour-num">3</div>
+        <div><strong>Three shared tracks</strong> — Public Credit, Public Resistance, Industrial Capacity — change as the Republic plays out.</div>
+      </div>
+      <div class="tour-row">
+        <div class="tour-num">4</div>
+        <div><strong>Your portfolio</strong> appears in a strip beside the action rail. Use the "Panels" button on the right edge to see opponent details and the ledger.</div>
+      </div>
+      <div class="tour-row">
+        <div class="tour-num">5</div>
+        <div><strong>The mandate</strong> — from round 8 onward, a player with 15 Influence and a 5-point lead can claim the mandate and trigger Final Accounting. If no one does, the game ends after round 12.</div>
+      </div>
+    </div>
+
+    <div class="footer-row">
+      <span class="meta" id="welcomeMeta">Step 1 of 3 · "How to play" recalls this any time.</span>
+      <button class="primary" id="welcomeAdvance">Continue</button>
+    </div>
+  </div>
+</div>
+
 <div class="batch-overlay hidden" id="batchOverlay">
   <div class="batch-modal">
     <div class="bm-head">
-      <div><div class="ttl">Batch Simulation</div><div class="sub">Scripted profiles only. Local. Deterministic per seed.</div></div>
+      <div><div class="ttl">Balance Evidence Run</div><div class="sub">Many seeds, scripted profiles only — to test balance, not for daily play. Local. Deterministic per seed.</div></div>
       <button id="batchClose">Close</button>
     </div>
     <div class="bm-controls">
@@ -737,9 +2253,9 @@ const MARKET_SHOCK_CARDS = [
   { id:2, name:'Foreign Demand Rises', tags:['System'],
     effectText:'All <strong>Manufactures</strong> owners collect 40 TN.',
     resolve(s){ for(let i=0;i<s.players.length;i++){ if(countOwnedSys(s,i,'manufactures')>0) s = adjustCash(s,40,'Foreign Demand Rises: owns Manufactures',i); } return s; } },
-  { id:3, name:'Speculation Fever', tags:['Track'], chips:{resist:1},
-    effectText:'Choose an unowned Rev/State Debt property; auction it. Resistance +1.',
-    resolve(s, idx){ s = adjustTrack(s,'resistance',1,'Speculation Fever'); /* find an unowned Rev/State Debt property; if any, open auction */ const candidates = [1,3,6,8,9].filter(n => findOwnerIndex(s,n) < 0); if(candidates.length === 0) return logRow(s,{actor:'Card',event:'NO EFFECT',detail:'Speculation Fever: no unowned Rev/State Debt properties',cls:'card'}); /* pick deterministically: lowest spaceNum */ const target = candidates[0]; s.pendingAuction = startAuction(s, target, idx, 'Speculation Fever card'); s.phase = 'auction'; return logRow(s,{actor:'Card',event:'AUCTION',detail:'Speculation Fever: auctioning ' + SPACES[target].name,cls:'card'}); } },
+  { id:3, name:'Speculation Fever', tags:['Track'], chips:{credit:-1, resist:1},
+    effectText:'Public Credit -1 if Credit ≥ 7, or Public Credit -2 if Credit ≤ 6. Public Resistance +1. Choose an unowned Rev/State Debt property; auction it.',
+    resolve(s, idx){ const credDelta = s.tracks.credit.value >= 7 ? -1 : -2; s = adjustTrack(s,'credit',credDelta,'Speculation Fever'); s = adjustTrack(s,'resistance',1,'Speculation Fever'); /* find an unowned Rev/State Debt property; if any, open auction */ const candidates = [1,3,6,8,9].filter(n => findOwnerIndex(s,n) < 0); if(candidates.length === 0) return logRow(s,{actor:'Card',event:'NO EFFECT',detail:'Speculation Fever: no unowned Rev/State Debt properties',cls:'card'}); /* pick deterministically: lowest spaceNum */ const target = candidates[0]; s.pendingAuction = startAuction(s, target, idx, 'Speculation Fever card'); s.phase = 'auction'; return logRow(s,{actor:'Card',event:'AUCTION',detail:'Speculation Fever: auctioning ' + SPACES[target].name,cls:'card'}); } },
   { id:4, name:'Shipping Disruption', tags:['Suspension'],
     effectText:'Commerce / Route payments suspended until your next turn.',
     resolve(s, idx){ s.flags.shippingDisruptedUntilTurn = s.turnIndex + 3; return logRow(s,{actor:'Card',event:'EFFECT',detail:'Shipping Disruption: Commerce/Route payments suspended',cls:'card'}); } },
@@ -758,9 +2274,9 @@ const MARKET_SHOCK_CARDS = [
   { id:9, name:'Successful Bond Auction', tags:['Multi-system'],
     effectText:'Rev Debt and Nat\'l Finance owners collect 30 TN per property.',
     resolve(s){ for(let i=0;i<s.players.length;i++){ const n = countOwnedSys(s,i,'revolutionary-debt') + countOwnedSys(s,i,'national-finance'); if(n>0) s = adjustCash(s, 30*n, 'Bond Auction: ' + n + ' × 30 TN', i); } return s; } },
-  { id:10, name:'Bank Run', tags:['Conditional','Track'], chips:{indust:-1},
-    effectText:'If Charter passed, Nat\'l Finance owners lose 1 upgrade. Capacity -1.',
-    resolve(s){ s = adjustTrack(s,'capacity',-1,'Bank Run'); if(!s.flags.bankCharterPassed) return logRow(s,{actor:'Card',event:'NO EFFECT',detail:'Bank Run: Charter not passed, skipped',cls:'card'}); for(let i=0;i<s.players.length;i++){ const nfs = s.players[i].ownedAssets.filter(a => ASSETS[a.spaceNum]?.sys === 'national-finance' && a.tier > 0); if(nfs.length > 0){ const target = nfs.reduce((m,a)=> a.tier > m.tier ? a : m); target.tier -= 1; s = logRow(s,{actor:'Card',event:'EFFECT',detail:'Bank Run: '+s.players[i].name+' loses 1 upgrade on '+SPACES[target.spaceNum].name,cls:'card'}); } } return s; } },
+  { id:10, name:'Bank Run', tags:['Conditional','Track'], chips:{credit:-1, indust:-1},
+    effectText:'If Charter passed, Nat\'l Finance owners lose 1 upgrade. Public Credit -1. Industrial Capacity -1.',
+    resolve(s){ s = adjustTrack(s,'credit',-1,'Bank Run'); s = adjustTrack(s,'capacity',-1,'Bank Run'); if(!s.flags.bankCharterPassed) return logRow(s,{actor:'Card',event:'NO EFFECT',detail:'Bank Run: Charter not passed, skipped',cls:'card'}); for(let i=0;i<s.players.length;i++){ const nfs = s.players[i].ownedAssets.filter(a => ASSETS[a.spaceNum]?.sys === 'national-finance' && a.tier > 0); if(nfs.length > 0){ const target = nfs.reduce((m,a)=> a.tier > m.tier ? a : m); target.tier -= 1; s = logRow(s,{actor:'Card',event:'EFFECT',detail:'Bank Run: '+s.players[i].name+' loses 1 upgrade on '+SPACES[target.spaceNum].name,cls:'card'}); } } return s; } },
   { id:11, name:'Cotton Gin Patented', tags:['System','Track'], chips:{indust:1},
     effectText:'Textile Works payment doubled. Capacity +1.',
     resolve(s){ s.flags.textileDoubleLap = s.lap; return adjustTrack(s,'capacity',1,'Cotton Gin Patented'); } },
@@ -794,9 +2310,9 @@ const REPUBLIC_DEBATE_CARDS = [
   { id:7, name:'Federalist Victory', tags:['Conditional','Track'], chips:{credit:1},
     effectText:'If you own Nat\'l Finance, collect 100 TN. Credit +1.',
     resolve(s, idx){ s = adjustTrack(s,'credit',1,'Federalist Victory'); return countOwnedSys(s,idx,'national-finance') > 0 ? adjustCash(s,100,'Federalist Victory',idx) : logRow(s,{actor:'Card',event:'NO EFFECT',detail:'Federalist Victory: no NF held',cls:'card'}); } },
-  { id:8, name:'Anti-Federalist Pamphlet', tags:['System','Track'], chips:{resist:1},
-    effectText:'All Revenue owners pay 30 TN per property. Resistance +1.',
-    resolve(s){ s = adjustTrack(s,'resistance',1,'Anti-Federalist Pamphlet'); for(let i=0;i<s.players.length;i++){ const n = countOwnedSys(s,i,'revenue-system'); if(n>0) s = adjustCash(s, -30*n, 'Anti-Fed Pamphlet: '+n+' × 30 TN', i); } return s; } },
+  { id:8, name:'Anti-Federalist Pamphlet', tags:['System','Track'], chips:{credit:-1, resist:1},
+    effectText:'Public Credit -1. All Revenue owners pay 30 TN per property. Resistance +1.',
+    resolve(s){ s = adjustTrack(s,'credit',-1,'Anti-Federalist Pamphlet'); s = adjustTrack(s,'resistance',1,'Anti-Federalist Pamphlet'); for(let i=0;i<s.players.length;i++){ const n = countOwnedSys(s,i,'revenue-system'); if(n>0) s = adjustCash(s, -30*n, 'Anti-Fed Pamphlet: '+n+' × 30 TN', i); } return s; } },
   { id:9, name:'Funding Plan Advances', tags:['Vote'],
     effectText:'Force next Act vote immediately. (Phase 4: noted only.)',
     resolve(s){ return logRow(s,{actor:'Card',event:'NOTE',detail:'Funding Plan Advances: force-vote mechanic deferred',cls:'card'}); } },
@@ -941,7 +2457,7 @@ const NARRATION = {
     x: '',
   },
   'endgame · republic-summary': {
-    h: 'Your Republic, after lap 7',
+    h: 'Your Republic, after twelve rounds',
     d: '',
     x: '',
   },
@@ -1238,6 +2754,7 @@ function adjustTrack(s, key, delta, reason) {
   s = logRow(s, { actor:'Track', event:key.toUpperCase(), detail: reason + ' · ' + before + ' → ' + next + ' (' + (delta>=0?'+':'') + delta + ')', cls:'track' });
   if (key === 'credit' && before > 0 && next === 0) s.pendingDefault = true;
   if (key === 'resistance' && next === 12) s.pendingRebellion = true;
+  if (key === 'credit' && next <= 4 && next > 0 && !s.flags.creditCrisisFired) s.pendingCreditCrisis = true;
   return s;
 }
 function logRow(s, row) {
@@ -1317,7 +2834,7 @@ function initialState(seed) {
     },
     flags: {},
     pendingCard: null, pendingLanding: null, pendingAuction: null, pendingResolveLanding: false,
-    pendingDefault: false, pendingRebellion: false,
+    pendingDefault: false, pendingRebellion: false, pendingCreditCrisis: false,
     ledger: [{ actor:'System', event:'INIT', detail:'3-player game · seed ' + seed + ' · You + Hamilton + Morris', cls:'event', lap:1, turn:0 }],
   };
 }
@@ -1361,7 +2878,28 @@ let TURN_SNAPSHOTS = [];
 let NARRATION_LOG = [];
 let NARRATION_ENABLED = true;
 const AUTOSAVE_KEY = 'sovereign.autosave';
-const SAVE_VERSION = 'v0.10';
+const SAVE_VERSION = 'v0.20-mandate-candidate';
+const TOTAL_ROUNDS = 12;
+const LATE_REPUBLIC_START = 8;
+
+/* Mandate victory model — designer-overridable via URL in ?designer=1 mode */
+const MANDATE = (function() {
+  const def = { threshold: 15, lead: 5, minRound: 8, hardCap: 12 };
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('designer') === '1') {
+      const t = parseInt(params.get('mandate_threshold'), 10);
+      const l = parseInt(params.get('mandate_lead'), 10);
+      const m = parseInt(params.get('mandate_min_round'), 10);
+      const c = parseInt(params.get('mandate_hard_cap'), 10);
+      if (Number.isFinite(t)) def.threshold = t;
+      if (Number.isFinite(l)) def.lead = l;
+      if (Number.isFinite(m)) def.minRound = m;
+      if (Number.isFinite(c)) def.hardCap = c;
+    }
+  } catch (e) {}
+  return def;
+})();
 let REPLAY = null;
 
 function dispatch(action) {
@@ -1380,12 +2918,13 @@ function dispatch(action) {
   render();
   if (STATE.pendingDefault) queueMicrotask(() => dispatch({ type:'TRIGGER_DEFAULT' }));
   else if (STATE.pendingRebellion) queueMicrotask(() => dispatch({ type:'TRIGGER_REBELLION' }));
+  else if (STATE.pendingCreditCrisis) queueMicrotask(() => dispatch({ type:'TRIGGER_CREDIT_CRISIS' }));
   else if (STATE.phase === 'act-vote' && STATE.acts.current) {
     const nextOpp = findNextUnvotedOpponent();
-    if (nextOpp >= 0) setTimeout(() => castOpponentActVote(nextOpp), 250);
+    if (nextOpp >= 0) setTimeout(() => castOpponentActVote(nextOpp), 1500);
   }
   else if (STATE.players[STATE.activePlayerIndex].profile !== 'human' && (STATE.phase === 'awaiting-roll' || STATE.phase === 'act-vote')) {
-    setTimeout(() => runOpponent(), 250);
+    setTimeout(() => runOpponent(), 1500);
   }
 }
 
@@ -1454,7 +2993,7 @@ function reduce(s, action) {
       if (act) {
         s.acts.current = { actId: act.id, voting: true, votes: { 0:null, 1:null, 2:null } };
         s.phase = 'act-vote';
-        s = logRow(s, { actor:'Acts', event:'REVEAL', detail:'Lap ' + s.lap + ' begins · ' + act.name + ' revealed for vote', cls:'act' });
+        s = logRow(s, { actor:'Acts', event:'REVEAL', detail:'Round ' + s.lap + ' begins · ' + act.name + ' revealed for vote', cls:'act' });
       } else {
         s.phase = 'awaiting-roll';
       }
@@ -1736,6 +3275,14 @@ function reduce(s, action) {
       return s;
     }
 
+    case 'TRIGGER_CREDIT_CRISIS': {
+      s = logRow(s, { actor:'System', event:'CREDIT_CRISIS', detail:'Public Credit collapses to ' + s.tracks.credit.value + ' · financial panic spreads · Public Resistance rises by 1', cls:'event' });
+      s = adjustTrack(s, 'resistance', 1, 'Credit Crisis');
+      s.flags.creditCrisisFired = true;
+      s.pendingCreditCrisis = false;
+      return s;
+    }
+
     case 'TRIGGER_REBELLION': {
       s = logRow(s, { actor:'System', event:'REBELLION', detail:'Resistance = 12 · Revenue upgrades destroyed · Whiskey owner → Crisis · Resistance → 6', cls:'event' });
       for (let i = 0; i < s.players.length; i++) {
@@ -1756,10 +3303,32 @@ function reduce(s, action) {
       s.activePlayerIndex = (s.activePlayerIndex + 1) % s.players.length;
       s.phase = 'awaiting-roll';
       if (s.activePlayerIndex === 0) {
+        /* End-of-round mandate check (rounds 8–11). Mandate fires if a player
+           has Influence ≥ MANDATE.threshold AND a lead of ≥ MANDATE.lead
+           over second place. Sole highest-Influence holder triggers; ties for
+           highest do not trigger. Evaluated before round/lap advances. */
+        if (s.lap >= MANDATE.minRound && s.lap < MANDATE.hardCap) {
+          const scored = s.players.map((p, idx) => ({ idx, name: p.name, total: scorePlayer(s, idx).total }));
+          const sorted = scored.slice().sort((a, b) => b.total - a.total);
+          const top = sorted[0], second = sorted[1];
+          const eligible = top.total >= MANDATE.threshold && (top.total - second.total) >= MANDATE.lead;
+          const sharedTop = scored.filter(x => x.total === top.total).length > 1;
+          if (eligible && !sharedTop) {
+            s.mandateTrigger = {
+              playerIdx: top.idx, playerName: top.name,
+              round: s.lap, influence: top.total, lead: top.total - second.total,
+              threshold: MANDATE.threshold, leadRequired: MANDATE.lead,
+            };
+            s = logRow(s, { actor:'System', event:'MANDATE',
+              detail: top.name + ' claims the mandate · ' + top.total + ' Influence · lead ' + (top.total - second.total) + ' over ' + second.name,
+              cls:'event' });
+            return reduce(s, { type:'END_GAME' });
+          }
+        }
         /* Full round done · advance lap */
         s.lap += 1;
-        if (s.lap > 7) {
-          s = logRow(s, { actor:'System', event:'GAME OVER', detail:'7 laps complete · scoring', cls:'event' });
+        if (s.lap > TOTAL_ROUNDS) {
+          s = logRow(s, { actor:'System', event:'GAME OVER', detail: TOTAL_ROUNDS + ' rounds complete · scoring', cls:'event' });
           return reduce(s, { type:'END_GAME' });
         }
         s = logRow(s, { actor:'System', event:'LAP', detail:'Begin lap ' + s.lap, cls:'event' });
@@ -1967,6 +3536,17 @@ function renderBoard() {
       cell.dataset.num = space.num;
       cell.style.gridColumn = (c+1);
       cell.style.gridRow = (r+1);
+      /* Tooltip: name, type, cost summary */
+      const _asset = ASSETS[space.num];
+      const _typeLbl = space.kind === 'route' ? 'Route' :
+                       space.kind === 'institution' ? 'Institution' :
+                       space.kind === 'card-shock' ? 'Market Shock space' :
+                       space.kind === 'card-debate' ? 'Republic Debate space' :
+                       space.kind === 'tax' ? 'Tax / Scandal' :
+                       space.kind && space.kind.startsWith('corner') ? 'Corner' :
+                       _asset && _asset.sys ? (SYS_LABEL[_asset.sys] || 'Property') : 'Space';
+      const _costLbl = _asset && _asset.cost ? ' · Cost ' + _asset.cost + ' TN' : '';
+      cell.title = space.name + ' · ' + _typeLbl + _costLbl;
       cell.innerHTML = `<div class="band"></div><div class="num">${String(space.num).padStart(2,'0')}</div><div class="nm">${space.name}</div><div class="tokens"></div>`;
       grid.appendChild(cell);
     }
@@ -1978,7 +3558,7 @@ function renderBoard() {
     <div class="bc-eyebrow">Sovereign · Hamilton System</div>
     <div class="bc-title">Founding Credit</div>
     <div class="bc-sub">Fund the debt. Build the bank. Industrialize the republic.</div>
-    <div class="bc-lap" id="bcLap">Lap 1 / 7</div>
+    <div class="bc-lap" id="bcLap">Round 1 of 12</div>
     <div class="bc-tracks">
       <span class="t credit">Credit<span class="v" id="bcCredit">5</span></span>
       <span class="t resist">Resist<span class="v" id="bcResist">2</span></span>
@@ -1992,8 +3572,9 @@ function renderBoard() {
 
 function applyOwnership() {
   document.querySelectorAll('.board-cell').forEach(cell => {
-    cell.classList.remove('owned-p0','owned-p1','owned-p2','active-space');
-    cell.querySelectorAll('.owner-dot, .tier').forEach(e => e.remove());
+    cell.classList.remove('owned-p0','owned-p1','owned-p2','active-space','you-here','opponent-active');
+    cell.removeAttribute('data-opp-label');
+    cell.querySelectorAll('.owner-dot, .tier, .owner-mark').forEach(e => e.remove());
     cell.querySelectorAll('.tokens').forEach(e => e.innerHTML = '');
   });
   STATE.players.forEach((p, idx) => {
@@ -2001,21 +3582,41 @@ function applyOwnership() {
       const cell = document.querySelector('.board-cell[data-num="' + a.spaceNum + '"]');
       if (!cell) return;
       cell.classList.add('owned-p' + idx);
-      cell.appendChild(el('div', 'owner-dot'));
+      /* v0.18 human playability rebuild — replace plain dot with a sigil/initial badge */
+      const mark = el('div', 'owner-mark');
+      const glyph = idx === 0 ? (p.glyph || '§') : (p.name?.[0] || ['Y','H','M'][idx]);
+      mark.innerHTML = '<span>' + glyph + '</span>';
+      cell.appendChild(mark);
       if (a.tier > 0) cell.appendChild(el('div', 'tier', 'I'.repeat(a.tier)));
     });
   });
-  /* Tokens */
+  /* Player pawns on the board — bigger, with initial/sigil inside */
   STATE.players.forEach((p, idx) => {
     const cell = document.querySelector('.board-cell[data-num="' + p.position + '"]');
     if (!cell) return;
     const tw = cell.querySelector('.tokens');
-    if (tw) { const t = el('div', 'tok p' + idx); tw.appendChild(t); }
+    if (tw) {
+      const t = el('div', 'tok p' + idx + (STATE.activePlayerIndex === idx ? ' active-pawn' : ''));
+      const glyph = idx === 0 ? (p.glyph || '§') : (p.name?.[0] || ['Y','H','M'][idx]);
+      t.innerHTML = '<span>' + glyph + '</span>';
+      tw.appendChild(t);
+    }
   });
-  /* Highlight active player's position */
-  const cur = document.querySelector('.board-cell[data-num="' + STATE.players[STATE.activePlayerIndex].position + '"]');
-  if (cur) cur.classList.add('active-space');
-  document.getElementById('bcLap').textContent = 'Lap ' + Math.min(STATE.lap, 7) + ' / 7';
+  /* Highlight YOU and the active opponent distinctly */
+  const youCell = document.querySelector('.board-cell[data-num="' + STATE.players[0].position + '"]');
+  if (youCell) youCell.classList.add('you-here');
+  const activeIdx = STATE.activePlayerIndex;
+  if (activeIdx !== 0) {
+    const oppCell = document.querySelector('.board-cell[data-num="' + STATE.players[activeIdx].position + '"]');
+    if (oppCell) {
+      oppCell.classList.add('opponent-active');
+      oppCell.setAttribute('data-opp-label', STATE.players[activeIdx].name.toUpperCase() + "'S TURN");
+    }
+  } else {
+    /* Your own active space pulse */
+    if (youCell) youCell.classList.add('active-space');
+  }
+  document.getElementById('bcLap').textContent = 'Round ' + Math.min(STATE.lap, TOTAL_ROUNDS) + ' of ' + TOTAL_ROUNDS + (STATE.lap >= LATE_REPUBLIC_START ? ' · Late Republic' : '');
   document.getElementById('bcCredit').textContent = STATE.tracks.credit.value;
   document.getElementById('bcResist').textContent = STATE.tracks.resistance.value;
   document.getElementById('bcIndust').textContent = STATE.tracks.capacity.value;
@@ -2082,12 +3683,22 @@ function renderTracks() {
   ];
   TRACKS.forEach(t => {
     const v = STATE.tracks[t.key].value;
-    const row = el('div', 't-row ' + t.cls);
+    /* v0.18 polished — danger-zone classes so failure thresholds are visible at a glance */
+    let warnCls = '';
+    if (t.key === 'credit' && v === 0) warnCls = ' in-default';
+    else if (t.key === 'credit' && v <= 4) warnCls = ' in-warning';
+    else if (t.key === 'resistance' && v >= 10) warnCls = ' in-warning';
+    const row = el('div', 't-row ' + t.cls + warnCls);
     let html = '<div class="lbl-t">' + t.label + '</div><div class="val">' + v + '</div>';
     html += '<div class="scale">';
-    for (let i = 0; i <= 12; i++) html += '<div class="tk' + (i%3===0?' major':'') + (i===v?' marker':'') + '">' + i + '</div>';
+    for (let i = 0; i <= 12; i++) html += '<div class="tk' + (i%3===0?' major':'') + (i===v?' marker':'') + '" data-pos="' + i + '">' + i + '</div>';
     html += '</div>';
     html += '<div class="reason">Reason: ' + STATE.tracks[t.key].lastReason + '</div>';
+    /* Crisis tag: visible chip when warning band entered or sticky flag set (Credit Crisis already fired) */
+    if (t.key === 'credit' && v <= 4 && v > 0) html += '<span class="crisis-tag warning">⚠ Credit Crisis zone</span> ';
+    if (t.key === 'credit' && v === 0) html += '<span class="crisis-tag warning">⚠ Default</span> ';
+    if (t.key === 'credit' && STATE.flags.creditCrisisFired) html += '<span class="crisis-tag locked">Credit Crisis fired</span> ';
+    if (t.key === 'resistance' && v >= 10) html += '<span class="crisis-tag warning">⚠ Rebellion approaches</span> ';
     t.thresholds.forEach(th => {
       const hit = v >= th.at;
       html += '<span class="' + (hit ? 'threshold-hit' : 'threshold-miss') + '">' + (hit ? '✓ ' : '○ ') + th.msg + '</span> ';
@@ -2221,7 +3832,7 @@ function renderCardDrawer() {
     actions = `<em style="font-family:var(--display);font-size:11px;opacity:.7">Opponent resolving automatically…</em>`;
   }
   root.innerHTML = `
-    <div class="drawer-card">
+    <div class="drawer-card" data-deck="${deck}">
       <div class="band" style="background:${bandColor}"><span>${deckLabel}</span><span>№ ${String(card.id).padStart(2,'0')}</span></div>
       <div style="font-family:var(--ui);font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;text-align:center;margin-top:4px;opacity:.7">Drawn by ${drawnBy}</div>
       <div class="nm">${card.name}</div>
@@ -2285,7 +3896,12 @@ function renderLedger() {
   root.innerHTML = '';
   STATE.ledger.slice().reverse().forEach((row, i) => {
     const stamp = 'L' + row.lap + '·T' + row.turn + '·#' + (STATE.ledger.length - i);
-    const r = el('div', 'row ' + (row.cls || ''));
+    /* v0.18 polished — failure-tier emphasis classes (display-only; event identifiers preserved) */
+    let extraCls = '';
+    if (row.event === 'CREDIT_CRISIS') extraCls = ' row-credit-crisis';
+    else if (row.event === 'DEFAULT') extraCls = ' row-default';
+    else if (row.event === 'REBELLION') extraCls = ' row-rebellion';
+    const r = el('div', 'row ' + (row.cls || '') + extraCls);
     r.innerHTML = `<span class="stamp">${stamp}</span><span class="actor">${row.actor} · ${row.event}</span><span>${row.detail}</span>`;
     root.appendChild(r);
   });
@@ -2296,29 +3912,204 @@ function renderControls() {
   const bar = document.getElementById('controlsBar');
   bar.innerHTML = '';
   const isHumanTurn = STATE.activePlayerIndex === 0;
-  if (STATE.phase === 'awaiting-roll' && isHumanTurn) {
-    const roll = el('button', 'primary', '🎲 Roll dice');
-    roll.onclick = () => dispatch({ type:'ROLL_DICE' });
-    bar.appendChild(roll);
-  } else if (STATE.phase === 'crisis-choice' && isHumanTurn) {
-    const lbl = el('div', '', '<em style="font-family:var(--display);font-size:11px;margin-right:8px">In Crisis. Choose:</em>');
-    bar.appendChild(lbl);
-    const pay = el('button', 'primary', 'Pay 50 TN');
-    pay.onclick = () => dispatch({ type:'ROLL_DICE', crisisChoice: 'pay' });
-    bar.appendChild(pay);
-    const dbl = el('button', '', 'Roll for doubles');
-    dbl.onclick = () => dispatch({ type:'ROLL_DICE', crisisChoice: 'doubles' });
-    bar.appendChild(dbl);
-    const skp = el('button', '', 'Skip turn');
-    skp.onclick = () => dispatch({ type:'ROLL_DICE', crisisChoice: 'skip' });
-    bar.appendChild(skp);
-  } else if (STATE.phase === 'awaiting-roll' && !isHumanTurn) {
-    const hint = el('div', '', `<em style="font-family:var(--display);font-size:11px">${STATE.players[STATE.activePlayerIndex].name} is taking their turn…</em>`);
-    bar.appendChild(hint);
-  } else if (STATE.phase === 'asset-decision' && !isHumanTurn) {
-    const hint = el('div', '', `<em style="font-family:var(--display);font-size:11px">${STATE.players[STATE.activePlayerIndex].name} is deciding buy / decline…</em>`);
-    bar.appendChild(hint);
-    /* Auto-resolve opponent decision */
+  const phase = STATE.phase;
+  let humanDecisionPending = false;
+  const isFirstLap = STATE.lap === 1;
+
+  /* Positions strip — always rendered first so the player can read where everyone is */
+  if (phase !== 'game-over') {
+    const strip = el('div', 'positions-strip');
+    STATE.players.forEach((p, idx) => {
+      const row = el('div', 'pos-row p' + idx + (STATE.activePlayerIndex === idx ? ' is-active' : ''));
+      const glyph = idx === 0 ? (p.glyph || '§') : (p.name?.[0] || ['Y','H','M'][idx]);
+      const where = SPACES[p.position]?.name || ('space ' + p.position);
+      /* Show current Influence (mandate score) inline */
+      const ip = scorePlayer(STATE, idx).total;
+      /* Mandate distance badge — leader only, only from MANDATE.minRound onward */
+      let mandateBadge = '';
+      if (STATE.lap >= MANDATE.minRound && STATE.phase !== 'game-over') {
+        const scored = STATE.players.map((pl, i) => ({ idx: i, total: scorePlayer(STATE, i).total }));
+        const sorted = scored.slice().sort((a, b) => b.total - a.total);
+        const top = sorted[0], second = sorted[1];
+        if (idx === top.idx && top.total > second.total) {
+          const fromThreshold = MANDATE.threshold - top.total;
+          const fromLead = MANDATE.lead - (top.total - second.total);
+          let badgeText;
+          if (fromThreshold > 0 && fromLead > 0) {
+            badgeText = fromThreshold + ' from threshold · +' + fromLead + ' lead needed';
+          } else if (fromThreshold > 0) {
+            badgeText = fromThreshold + ' from threshold';
+          } else if (fromLead > 0) {
+            badgeText = 'lead ' + (top.total - second.total) + ' of ' + MANDATE.lead;
+          } else {
+            badgeText = 'mandate eligible';
+          }
+          mandateBadge = '<div class="pos-mandate">' + badgeText + '</div>';
+        }
+      }
+      row.innerHTML = '<div class="pos-tok"><span>' + glyph + '</span></div>' +
+                      '<div>' +
+                        '<div class="pos-name">' + p.name + '</div>' +
+                        '<div class="pos-space">' + where + '</div>' +
+                        '<div class="pos-cash">' + p.cash.toLocaleString('en-US') + ' \u00b7 <span class="pos-ip">' + ip + ' IP</span></div>' +
+                        mandateBadge +
+                      '</div>';
+      strip.appendChild(row);
+    });
+    bar.appendChild(strip);
+
+    /* Landing outcome band — explains what just happened to YOU since your last roll */
+    if (LAST_LANDING_OUTCOME && LAST_LANDING_OUTCOME.text) {
+      const lb = el('div', 'landing-band ' + (LAST_LANDING_OUTCOME.cls || ''));
+      lb.innerHTML = '<div class="lb-eyebrow">What just happened</div>' +
+                     '<div class="lb-text">' + LAST_LANDING_OUTCOME.text + '</div>';
+      bar.appendChild(lb);
+    }
+
+    /* Portfolio strip — compact "your holdings" so the player doesn't need the sidebar */
+    const you = STATE.players[0];
+    const pf = el('div', 'portfolio-strip');
+    const head = el('div', 'pf-head');
+    const count = you.ownedAssets.length;
+    head.innerHTML = '<div class="pf-eyebrow">Your portfolio</div>' +
+                     '<div class="pf-line">' + (count === 0 ? 'no holdings yet' : (count + ' holding' + (count === 1 ? '' : 's'))) + '</div>' +
+                     '<div class="pf-cash">' + you.cash.toLocaleString('en-US') + '</div>';
+    pf.appendChild(head);
+    const pflist = el('div', 'pf-list');
+    if (count === 0) {
+      pflist.innerHTML = '<span class="pf-empty">Land on an unowned property to buy your first holding.</span>';
+    } else {
+      you.ownedAssets.forEach(a => {
+        const sp = SPACES[a.spaceNum];
+        const asset = ASSETS[a.spaceNum];
+        const kind = (sp.kind === 'route' || sp.kind === 'institution') ? sp.kind : '';
+        const sys = (kind === '' && asset && asset.sys) ? asset.sys : '';
+        const chip = el('span', 'pf-chip');
+        if (sys) chip.setAttribute('data-sys', sys);
+        if (kind) chip.setAttribute('data-kind', kind);
+        chip.innerHTML = sp.name + (a.tier > 0 ? ' <span class="tier-roman">' + 'I'.repeat(a.tier) + '</span>' : '');
+        pflist.appendChild(chip);
+      });
+    }
+    pf.appendChild(pflist);
+    const openBtn = el('button', 'pf-open', count === 0 ? 'Open panels' : 'Open portfolio');
+    openBtn.type = 'button';
+    openBtn.title = 'Show the right-side panels (Treasury, opponents, ledger)';
+    openBtn.onclick = () => {
+      document.body.classList.remove('sidebar-collapsed');
+      try { localStorage.setItem(SIDEBAR_KEY, '0'); } catch (e) {}
+      const lbl = document.getElementById('sidebarToggleLabel');
+      if (lbl) lbl.textContent = 'Hide panels';
+      const t = document.getElementById('panelTreasury');
+      if (t && t.scrollIntoView) t.scrollIntoView({ behavior:'smooth', block:'start' });
+    };
+    pf.appendChild(openBtn);
+    bar.appendChild(pf);
+  }
+
+  /* v0.18 playtest fix — always show an action banner so the user knows what to do next */
+  function addBanner(eyebrow, prompt, hint, actions, opts) {
+    opts = opts || {};
+    const banner = el('div', 'action-banner' + (opts.opponent ? ' opponent-turn' : '') + (opts.crisis ? ' crisis-rail' : '') + (opts.endgame ? ' endgame-rail' : ''));
+    const textBox = el('div', 'ab-text');
+    let inner = '';
+    if (eyebrow) inner += '<div class="ab-eyebrow">' + eyebrow + '</div>';
+    if (prompt) inner += '<div class="ab-prompt">' + prompt + '</div>';
+    if (hint) inner += '<div class="ab-hint">' + hint + '</div>';
+    textBox.innerHTML = inner;
+    banner.appendChild(textBox);
+    if (actions && actions.length) {
+      const btns = el('div', 'ab-actions');
+      actions.forEach(a => {
+        if (a.input) {
+          const wrap = document.createElement('span');
+          wrap.style.display = 'inline-flex';
+          wrap.style.gap = '6px';
+          wrap.style.alignItems = 'center';
+          const inp = document.createElement('input');
+          inp.type = 'number'; inp.id = a.input.id; inp.min = a.input.min || 10;
+          inp.placeholder = a.input.placeholder || '';
+          inp.value = a.input.value || '';
+          wrap.appendChild(inp);
+          const btn = el('button', a.primary ? 'primary' : '', a.label);
+          if (a.disabled) btn.disabled = true;
+          btn.onclick = () => a.onClick(inp.value);
+          wrap.appendChild(btn);
+          btns.appendChild(wrap);
+          return;
+        }
+        const btn = el('button', a.primary ? 'primary' : '', a.label);
+        if (a.disabled) btn.disabled = true;
+        btn.onclick = a.onClick;
+        btns.appendChild(btn);
+      });
+      banner.appendChild(btns);
+    }
+    /* First-lap helping hand — calm guidance for the first time you see each phase */
+    if (opts.firstLapHint) {
+      const hintEl = el('div', 'first-lap-hint');
+      hintEl.innerHTML = opts.firstLapHint;
+      banner.appendChild(hintEl);
+    }
+    bar.appendChild(banner);
+  }
+
+  /* Human's vote outstanding on the current Act */
+  if (phase === 'act-vote' && STATE.acts.current && STATE.acts.current.votes[0] == null) {
+    humanDecisionPending = true;
+    const actId = STATE.acts.current.actId;
+    const act = ACTS.find(a => a.id === actId);
+    addBanner('Congress · Floor Vote',
+      'The <em>' + act.name + '</em> is on the floor.',
+      'What it does: ' + (act.summary || act.effect || 'see panel') + '<br /><strong>Vote YES</strong> to pass it. <strong>Vote NO</strong> to block. Pass needs majority.', [
+      { label:'Vote YES', primary:true, onClick: () => humanVote('yes') },
+      { label:'Vote NO', onClick: () => humanVote('no') },
+    ], isFirstLap ? { firstLapHint: 'Acts of Congress change the whole Republic. Read the effect, then choose. Most Acts only come up once — this is your moment to influence them.' } : undefined);
+  }
+  else if (phase === 'act-vote') {
+    addBanner('Congress · Floor Vote', 'Opponents are casting their ballots…', 'The game continues automatically.', [], { opponent:true });
+  }
+  else if (phase === 'awaiting-roll' && isHumanTurn) {
+    humanDecisionPending = true;
+    addBanner('Your turn', 'Roll the dice to move through the Republic.', 'Two six-sided dice. Land where you land.', [
+      { label:'🎲 Roll dice', primary:true, onClick: () => rollWithAnimation() },
+    ], isFirstLap ? { firstLapHint: 'Start your first turn — roll the dice. The game will move your delegate and explain whatever you land on.' } : undefined);
+  }
+  else if (phase === 'crisis-choice' && isHumanTurn) {
+    humanDecisionPending = true;
+    addBanner('Constitutional Crisis', 'You sit in the Crisis chamber.', 'Pay to leave, gamble on doubles, or skip this turn.', [
+      { label:'Pay 50 TN', primary:true, onClick: () => dispatch({ type:'ROLL_DICE', crisisChoice: 'pay' }) },
+      { label:'Roll for doubles', onClick: () => dispatch({ type:'ROLL_DICE', crisisChoice: 'doubles' }) },
+      { label:'Skip turn', onClick: () => dispatch({ type:'ROLL_DICE', crisisChoice: 'skip' }) },
+    ]);
+  }
+  else if (phase === 'awaiting-roll' && !isHumanTurn) {
+    addBanner('Opponent turn', STATE.players[STATE.activePlayerIndex].name + ' is taking their turn…', 'The game will continue automatically.', [], { opponent:true });
+  }
+  else if (phase === 'asset-decision' && isHumanTurn && STATE.pendingLanding) {
+    humanDecisionPending = true;
+    const num = STATE.pendingLanding.spaceNum;
+    const sp = SPACES[num];
+    const asset = ASSETS[num];
+    const cost = asset ? asset.cost : 0;
+    const owned = findOwnerIndex(STATE, num);
+    if (owned >= 0 && owned !== 0) {
+      /* Landed on opponent property — rent owed (already auto-settled by reducer in this branch).
+         This branch shouldn't normally hit asset-decision; defensive log only. */
+      addBanner('Landing', 'You stand on ' + sp.name + ' — owned by ' + STATE.players[owned].name + '.', '', []);
+    } else {
+      const canBuy = STATE.players[0].cash >= cost;
+      addBanner('Landing',
+        'You landed on <em>' + sp.name + '</em>.',
+        canBuy ? 'Buy it outright for ' + cost + ' TN, or decline and let it go to forced auction.'
+               : 'You cannot afford ' + cost + ' TN — you must decline; it goes to forced auction.', [
+        { label:'Buy ' + cost + ' TN', primary:true, disabled: !canBuy, onClick: () => dispatch({ type:'BUY_ASSET' }) },
+        { label:'Decline → Auction', onClick: () => dispatch({ type:'DECLINE_ASSET' }) },
+      ], isFirstLap ? { firstLapHint: 'Buying gives you income whenever players land on this space and counts toward your final Influence. Declining sends it to auction — sometimes the right call if your cash is low.' } : undefined);
+    }
+  }
+  else if (phase === 'asset-decision' && !isHumanTurn) {
+    addBanner('Opponent turn', STATE.players[STATE.activePlayerIndex].name + ' is deciding buy or decline…', '', [], { opponent:true });
     setTimeout(() => {
       if (STATE.phase !== 'asset-decision' || STATE.activePlayerIndex === 0) return;
       const pIdx = STATE.activePlayerIndex;
@@ -2326,8 +4117,64 @@ function renderControls() {
       const decision = PROFILES[STATE.players[pIdx].profile].decideBuy(STATE, pIdx, num);
       if (decision.buy) dispatch({ type:'BUY_ASSET', reason: decision.reason });
       else dispatch({ type:'DECLINE_ASSET', reason: decision.reason });
-    }, 250);
+    }, 1700);
   }
+  else if (phase === 'card-resolve' && isHumanTurn && STATE.pendingCard) {
+    humanDecisionPending = true;
+    const card = (STATE.pendingCard.deck === 'market' ? MARKET_SHOCK_CARDS : REPUBLIC_DEBATE_CARDS).find(c => c.id === STATE.pendingCard.cardId);
+    const eyebrow = STATE.pendingCard.deck === 'market' ? 'Market Shock' : 'Republic Debate';
+    const effectLine = card && card.effectText ? card.effectText.replace(/<[^>]+>/g, '') : 'See the card on the right for details.';
+    addBanner(eyebrow, 'You drew <em>' + (card ? card.name : 'an event card') + '</em>.', 'Effect: ' + effectLine, [
+      { label:'Resolve effect', primary:true, onClick: () => dispatch({ type:'RESOLVE_CARD' }) },
+    ], isFirstLap ? { firstLapHint: 'Cards are historical shocks and debates. Resolve to apply the effect — most fire instantly, some send a property to auction.' } : undefined);
+  }
+  else if (phase === 'card-resolve' && !isHumanTurn) {
+    addBanner('Opponent turn', STATE.players[STATE.activePlayerIndex].name + ' resolves their card…', '', [], { opponent:true });
+  }
+  else if (phase === 'card-choice' && isHumanTurn && STATE.pendingCard) {
+    humanDecisionPending = true;
+    const card = (STATE.pendingCard.deck === 'market' ? MARKET_SHOCK_CARDS : REPUBLIC_DEBATE_CARDS).find(c => c.id === STATE.pendingCard.cardId);
+    if (card && card.choices) {
+      const effectLine = card.effectText ? card.effectText.replace(/<[^>]+>/g, '') : '';
+      addBanner('Card decision', 'The card requires a choice.', effectLine,
+        card.choices.map((c, i) => ({ label: c.label, primary: i === 0, onClick: () => dispatch({ type:'RESOLVE_CARD_CHOICE', choiceIndex: i }) }))
+      );
+    }
+  }
+  else if (phase === 'auction' && STATE.pendingAuction) {
+    const a = STATE.pendingAuction;
+    const humanUp = a.bidsRemaining[0] === 0;
+    const spaceName = SPACES[a.spaceNum].name;
+    if (humanUp) {
+      humanDecisionPending = true;
+      addBanner('Auction', '<em>' + spaceName + '</em> is up for auction.', 'Current high bid: ' + a.highBid + ' TN. Enter a bid (must exceed the high) or pass.', [
+        { input: { id:'humanBidInput', min: a.highBid + 10, placeholder: 'bid' }, label:'Bid', primary:true, onClick: (v) => {
+          const amount = parseInt(v, 10);
+          if (isNaN(amount) || amount < 10 || amount > STATE.players[0].cash) { alert('Enter a bid between 10 and your cash on hand.'); return; }
+          if (amount <= STATE.pendingAuction.highBid) { alert('Bid must exceed current high bid of ' + STATE.pendingAuction.highBid); return; }
+          dispatch({ type:'AUCTION_BID', playerIndex: 0, amount, reason: 'human bid' });
+        } },
+        { label:'Pass', onClick: () => submitHumanPass() },
+      ]);
+    } else {
+      const bidder = STATE.players[a.bidsRemaining[0]];
+      addBanner('Auction', bidder.name + ' is considering their bid on ' + spaceName + '…', 'High bid: ' + a.highBid + ' TN.', [], { opponent:true });
+    }
+  }
+  else if (phase === 'game-over') {
+    document.body.classList.add('endgame-active');
+    addBanner('Twelve rounds complete', 'The founding struggle has ended. Final tally posted in the report.', '', [
+      { label:'View final report', primary:true, onClick: () => document.getElementById('endgameView')?.scrollIntoView({behavior:'smooth', block:'start'}) },
+    ], { endgame:true });
+  }
+  else if (!isHumanTurn) {
+    addBanner('Opponent turn', STATE.players[STATE.activePlayerIndex].name + ' is taking their turn…', '', [], { opponent:true });
+  }
+
+  /* Dim side panels during human decisions */
+  document.body.classList.toggle('decision-active', humanDecisionPending);
+  if (phase !== 'game-over') document.body.classList.remove('endgame-active');
+
   document.getElementById('phasePill').textContent = 'phase: ' + STATE.phase;
   document.getElementById('seedPill').textContent = 'seed: ' + STATE.rngSeed;
   const ap = STATE.players[STATE.activePlayerIndex];
@@ -2346,13 +4193,38 @@ function renderEndgame() {
   const root = document.getElementById('endgameView');
   root.classList.remove('hidden');
   const winner = STATE.players.reduce((m, p, i) => STATE.finalScores[i].total > STATE.finalScores[m.idx].total ? { idx: i, total: STATE.finalScores[i].total } : m, { idx: 0, total: STATE.finalScores[0].total });
+  /* v0.18 polished — failure-tier posture chips (display-only) */
+  const _ledger = STATE.ledger;
+  const _crisisFired = !!STATE.flags.creditCrisisFired || _ledger.some(r => r.event === 'CREDIT_CRISIS');
+  const _defaultFired = _ledger.some(r => r.event === 'DEFAULT');
+  const _rebellionFired = _ledger.some(r => r.event === 'REBELLION');
+  const _finalCred = STATE.tracks.credit.value;
+  let _postureCls = 'stable', _postureLbl = 'Stable credit';
+  if (_finalCred <= 2) { _postureCls = 'collapsed'; _postureLbl = 'Collapsed credit'; }
+  else if (_finalCred <= 5 || _crisisFired || _defaultFired) { _postureCls = 'strained'; _postureLbl = 'Strained credit'; }
+  const _crisisChip = _defaultFired
+    ? '<span class="posture-chip collapsed">Default fired</span>'
+    : _crisisFired ? '<span class="posture-chip fired">Credit Crisis fired</span>' : '<span class="posture-chip avoided">No Credit Crisis</span>';
+  const _rebellionChip = _rebellionFired
+    ? '<span class="posture-chip collapsed">Rebellion fired</span>'
+    : '<span class="posture-chip avoided">No Rebellion</span>';
+  const _m = STATE.mandateTrigger;
+  const _endTitle = _m ? 'Final Accounting' : 'Twelve rounds complete';
+  const _endSub = _m
+    ? _m.playerName + ' claimed the mandate at round ' + _m.round + ' with ' + _m.influence + ' Influence, leading by ' + _m.lead + '.'
+    : 'No founder secured a mandate. The Republic decides by final accounting after twelve rounds.';
   let html = `
-    <h2>Endgame Report <span class="surface-id">H</span></h2>
-    <div class="sub">After lap 7. Three players. Influence breakdown computed from rules.</div>
+    <h2>${_endTitle} <span class="surface-id">H</span></h2>
+    <div class="sub">${_endSub}</div>
     <div class="winner">
       <div class="lbl">Winner</div>
       <div class="nm">${STATE.players[winner.idx].name} · ${PROFILES[STATE.players[winner.idx].profile]?.label || STATE.players[winner.idx].role}</div>
       <div class="score">Influence ${winner.total} · cash $${STATE.players[winner.idx].cash.toLocaleString('en-US')} · ${STATE.players[winner.idx].ownedAssets.length} assets</div>
+    </div>
+    <div class="posture-row">
+      <span class="posture-chip ${_postureCls}">${_postureLbl} · Credit ${_finalCred}</span>
+      ${_crisisChip}
+      ${_rebellionChip}
     </div>
     <div class="results">`;
   STATE.players.forEach((p, i) => {
@@ -2393,6 +4265,608 @@ function startNewGame(seed) {
 
 document.getElementById('btnNewSeed').addEventListener('click', () => startNewGame(Math.floor(Math.random() * 1e9)));
 document.getElementById('btnReset').addEventListener('click', () => startNewGame(STATE.rngSeed));
+
+/* Dice rolling animation — flashes two dice for ~700ms, then lands and dispatches.
+   Determinism preserved: the reducer is called once at the end; the visual is decorative. */
+const DICE_FACES = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+function rollWithAnimation() {
+  const overlay = document.getElementById('diceOverlay');
+  const d1 = document.getElementById('die1');
+  const d2 = document.getElementById('die2');
+  const sum = document.getElementById('diceSum');
+  if (!overlay || !d1 || !d2) { dispatch({ type:'ROLL_DICE' }); return; }
+  overlay.classList.remove('hidden', 'settled');
+  sum.textContent = 'rolling…';
+  let ticks = 0;
+  const iv = setInterval(() => {
+    d1.textContent = DICE_FACES[Math.floor(Math.random() * 6)];
+    d2.textContent = DICE_FACES[Math.floor(Math.random() * 6)];
+    ticks++;
+    if (ticks >= 12) {
+      clearInterval(iv);
+      /* Dispatch and read the actual rolled value */
+      dispatch({ type:'ROLL_DICE' });
+      const last = STATE.lastRoll;
+      if (last && last.d1 && last.d2) {
+        d1.textContent = DICE_FACES[last.d1 - 1];
+        d2.textContent = DICE_FACES[last.d2 - 1];
+        sum.textContent = (last.d1 + last.d2) + ' moves';
+        overlay.classList.add('settled');
+      }
+      setTimeout(() => overlay.classList.add('hidden'), 1400);
+    }
+  }, 160);
+}
+
+/* Orientation panel — 3-step welcome (Welcome → Delegate → Tour) + recall via "How to play" button */
+const ORIENT_KEY = 'sovereign.orientation.seen';
+const PLAYER_NAME_KEY = 'sovereign.playerName';
+const PLAYER_GLYPH_KEY = 'sovereign.playerGlyph';
+const PLAYER_ROLE_KEY = 'sovereign.playerRole';
+let WELCOME_STEP = 1;
+const WELCOME_LABELS = {
+  1: { title: 'Sovereign', meta: 'Step 1 of 3 · You can recall this any time from "How to play".', btn: 'Begin' },
+  2: { title: 'Choose your delegate', meta: 'Step 2 of 3 · Your role, name, and sigil persist across games.', btn: 'Next' },
+  3: { title: 'How a turn works', meta: 'Step 3 of 3 · No more overlays after this.', btn: 'Start the game' },
+};
+
+const ROLE_DEFS = {
+  treasury:     { profile:'treasury-finance',       label:'Treasury / Finance',       defaultName:'You' },
+  merchant:     { profile:'merchant-infrastructure', label:'Merchant / Infrastructure', defaultName:'You' },
+  manufacturer: { profile:'manufacturer-industry',  label:'Manufacturer / Industry',  defaultName:'You' },
+};
+const ROLE_OPPS = {
+  treasury: [
+    { profile:'merchant-infrastructure', name:'Morris',  role:'Merchant / Infrastructure' },
+    { profile:'manufacturer-industry',  name:'Slater',  role:'Manufacturer / Industry' },
+  ],
+  merchant: [
+    { profile:'treasury-finance',       name:'Hamilton', role:'Treasury / Finance' },
+    { profile:'manufacturer-industry',  name:'Slater',  role:'Manufacturer / Industry' },
+  ],
+  manufacturer: [
+    { profile:'treasury-finance',       name:'Hamilton', role:'Treasury / Finance' },
+    { profile:'merchant-infrastructure', name:'Morris',  role:'Merchant / Infrastructure' },
+  ],
+};
+
+function getPlayerCustom() {
+  let name = 'You', glyph = '§', role = 'treasury';
+  try {
+    name = localStorage.getItem(PLAYER_NAME_KEY) || 'You';
+    glyph = localStorage.getItem(PLAYER_GLYPH_KEY) || '§';
+    role = localStorage.getItem(PLAYER_ROLE_KEY) || 'treasury';
+  } catch (e) {}
+  if (!ROLE_DEFS[role]) role = 'treasury';
+  return { name: name.trim() || 'You', glyph, role };
+}
+function applyPlayerCustom() {
+  const { name, glyph, role } = getPlayerCustom();
+  if (!STATE || !STATE.players || !STATE.players[0]) return;
+  STATE.players[0].name = name;
+  STATE.players[0].glyph = glyph;
+  STATE.players[0].role = ROLE_DEFS[role].label;
+  const opps = ROLE_OPPS[role];
+  if (STATE.players[1]) {
+    STATE.players[1].profile = opps[0].profile;
+    STATE.players[1].name = opps[0].name;
+    STATE.players[1].role = opps[0].role;
+  }
+  if (STATE.players[2]) {
+    STATE.players[2].profile = opps[1].profile;
+    STATE.players[2].name = opps[1].name;
+    STATE.players[2].role = opps[1].role;
+  }
+}
+function paintGlyphPicker() {
+  const { name, glyph, role } = getPlayerCustom();
+  const input = document.getElementById('playerNameInput');
+  if (input) input.value = name === 'You' ? '' : name;
+  document.querySelectorAll('#glyphPicker button').forEach(b => {
+    b.classList.toggle('sel', b.dataset.glyph === glyph);
+    b.setAttribute('aria-checked', b.dataset.glyph === glyph ? 'true' : 'false');
+  });
+  document.querySelectorAll('#roleGrid .role-card').forEach(b => {
+    b.classList.toggle('sel', b.dataset.role === role);
+    b.setAttribute('aria-checked', b.dataset.role === role ? 'true' : 'false');
+  });
+  updatePreviewToken();
+}
+function updatePreviewToken() {
+  const input = document.getElementById('playerNameInput');
+  const selGlyph = document.querySelector('#glyphPicker button.sel');
+  const selRole = document.querySelector('#roleGrid .role-card.sel');
+  const name = (input?.value || 'You').trim() || 'You';
+  const glyph = selGlyph?.dataset.glyph || '§';
+  const role = selRole?.dataset.role || 'treasury';
+  const previewYou = document.getElementById('previewYouTok');
+  const previewYouName = document.getElementById('previewYouName');
+  if (previewYou) previewYou.innerHTML = '<span>' + glyph + '</span>';
+  if (previewYouName) previewYouName.textContent = name;
+  const opps = ROLE_OPPS[role] || ROLE_OPPS['treasury'];
+  const o1 = document.getElementById('previewOpp1Tok');
+  const o1n = document.getElementById('previewOpp1Name');
+  const o2 = document.getElementById('previewOpp2Tok');
+  const o2n = document.getElementById('previewOpp2Name');
+  if (o1) o1.innerHTML = '<span>' + opps[0].name[0] + '</span>';
+  if (o1n) o1n.textContent = opps[0].name;
+  if (o2) o2.innerHTML = '<span>' + opps[1].name[0] + '</span>';
+  if (o2n) o2n.textContent = opps[1].name;
+}
+function savePlayerCustom() {
+  const input = document.getElementById('playerNameInput');
+  const selGlyph = document.querySelector('#glyphPicker button.sel');
+  const selRole = document.querySelector('#roleGrid .role-card.sel');
+  const name = (input?.value || '').trim();
+  const glyph = selGlyph?.dataset.glyph || '§';
+  const role = selRole?.dataset.role || 'treasury';
+  try {
+    if (name) localStorage.setItem(PLAYER_NAME_KEY, name); else localStorage.removeItem(PLAYER_NAME_KEY);
+    localStorage.setItem(PLAYER_GLYPH_KEY, glyph);
+    localStorage.setItem(PLAYER_ROLE_KEY, role);
+  } catch (e) {}
+  applyPlayerCustom();
+  render();
+  renderBoard();
+  applyOwnership();
+}
+
+function setWelcomeStep(step) {
+  WELCOME_STEP = step;
+  const panel = document.getElementById('welcomePanel');
+  panel.setAttribute('data-step', String(step));
+  const labels = WELCOME_LABELS[step] || WELCOME_LABELS[1];
+  document.getElementById('orientTitle').textContent = labels.title;
+  document.getElementById('welcomeMeta').textContent = labels.meta;
+  document.getElementById('welcomeAdvance').textContent = labels.btn;
+  document.querySelectorAll('#welcomeProgress .dot').forEach(d => {
+    d.classList.toggle('sel', parseInt(d.dataset.step, 10) === step);
+  });
+  document.body.classList.toggle('tour-step-3', step === 3);
+  if (step === 2) { paintGlyphPicker(); }
+}
+function showOrient(startStep) {
+  document.body.classList.add('welcome-active');
+  document.getElementById('orientOverlay').classList.remove('hidden');
+  setWelcomeStep(startStep || 1);
+}
+function hideOrient() {
+  document.body.classList.remove('welcome-active');
+  document.body.classList.remove('tour-step-3');
+  /* Always save delegate (in case they edited at step 2) */
+  savePlayerCustom();
+  document.getElementById('orientOverlay').classList.add('hidden');
+  try { localStorage.setItem(ORIENT_KEY, '1'); } catch (e) {}
+}
+
+document.getElementById('btnHelp').addEventListener('click', () => showOrient(1));
+document.getElementById('welcomeAdvance').addEventListener('click', () => {
+  if (WELCOME_STEP === 1) { setWelcomeStep(2); }
+  else if (WELCOME_STEP === 2) { savePlayerCustom(); setWelcomeStep(3); }
+  else { hideOrient(); }
+});
+document.getElementById('orientOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'orientOverlay' && WELCOME_STEP === 3) hideOrient();
+});
+document.querySelectorAll('#glyphPicker button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#glyphPicker button').forEach(x => x.classList.remove('sel'));
+    b.classList.add('sel');
+    updatePreviewToken();
+  });
+});
+document.querySelectorAll('#roleGrid .role-card').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#roleGrid .role-card').forEach(x => x.classList.remove('sel'));
+    b.classList.add('sel');
+    updatePreviewToken();
+  });
+});
+document.addEventListener('input', (e) => {
+  if (e.target && e.target.id === 'playerNameInput') updatePreviewToken();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !document.getElementById('orientOverlay').classList.contains('hidden') && WELCOME_STEP === 3) hideOrient();
+});
+
+/* Designer gate — Balance Sweep + version pill visible only with ?designer=1 */
+(function applyDesignerGate() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('designer') === '1') document.body.classList.add('designer-mode');
+  } catch (e) {}
+})();
+
+/* Sidebar collapse — defaults to COLLAPSED so the board takes the stage. Persists to localStorage. */
+const SIDEBAR_KEY = 'sovereign.sidebarCollapsed';
+function applySidebarState() {
+  let collapsed = true;
+  try {
+    const raw = localStorage.getItem(SIDEBAR_KEY);
+    if (raw === '0') collapsed = false; else if (raw === '1') collapsed = true;
+  } catch (e) {}
+  document.body.classList.toggle('sidebar-collapsed', collapsed);
+  const lbl = document.getElementById('sidebarToggleLabel');
+  if (lbl) lbl.textContent = collapsed ? 'Show panels' : 'Hide panels';
+}
+function toggleSidebar() {
+  const wasCollapsed = document.body.classList.contains('sidebar-collapsed');
+  document.body.classList.toggle('sidebar-collapsed', !wasCollapsed);
+  const lbl = document.getElementById('sidebarToggleLabel');
+  if (lbl) lbl.textContent = !wasCollapsed ? 'Show panels' : 'Hide panels';
+  try { localStorage.setItem(SIDEBAR_KEY, !wasCollapsed ? '1' : '0'); } catch (e) {}
+}
+/* =====================================================================
+   LANDING OUTCOME — synthesizes a human-readable summary from the ledger
+   No reducer changes. Display-only.
+   ===================================================================== */
+let LAST_LANDING_OUTCOME = null;
+let __LAST_LANDING_LEDGER_LEN = 0;
+
+function classifyLandingOutcome() {
+  if (!STATE || !STATE.ledger) return;
+  /* Find the most recent MOVE event for player 0 (the human) since we last looked. */
+  const ledger = STATE.ledger;
+  const youName = STATE.players[0]?.name;
+  if (!youName) return;
+  /* Walk backwards from end of ledger looking for a recent MOVE by you. */
+  let moveIdx = -1;
+  for (let i = ledger.length - 1; i >= __LAST_LANDING_LEDGER_LEN; i--) {
+    const r = ledger[i];
+    if (r.actor === youName && r.event === 'MOVE') { moveIdx = i; break; }
+  }
+  if (moveIdx < 0) { __LAST_LANDING_LEDGER_LEN = ledger.length; return; }
+  /* Compose the outcome from rows after the MOVE */
+  const after = ledger.slice(moveIdx + 1);
+  const pos = STATE.players[0].position;
+  const sp = SPACES[pos];
+  const asset = ASSETS[pos];
+  const where = sp?.name || ('space ' + pos);
+  let text = null, cls = 'is-neutral';
+
+  /* Rent paid (CASH row with reason starting "Rent on ...") */
+  const rentRow = after.find(r => r.event === 'CASH' && /^Rent on /.test(r.detail || '') && r.actor === youName);
+  const safeRow = after.find(r => r.event === 'SAFE' && (r.detail || '').includes(youName));
+  const ownRow = after.find(r => r.event === 'OWN' && (r.detail || '').includes(youName));
+  const noRentRow = after.find(r => r.event === 'NO RENT');
+  const crisisRow = after.find(r => r.event === 'CRISIS' && (r.detail || '').includes(youName));
+  const sendRow = after.find(r => r.event === 'SEND' && (r.detail || '').includes(youName));
+  const taxRow = after.find(r => r.event === 'CASH' && / tax\b/.test(r.detail || '') && r.actor === youName);
+  const buyRow = after.find(r => r.event === 'OWN' && (r.detail || '').match(/^Buy /));
+
+  if (rentRow) {
+    const m = rentRow.detail.match(/^Rent on (.+?) to (.+?) · ([+-]?\d+) TN/);
+    if (m) {
+      const space = m[1], ownerName = m[2], amount = Math.abs(parseInt(m[3], 10));
+      const ownerIdx = STATE.players.findIndex(p => p.name === ownerName);
+      const ownerPossessive = ownerName + (ownerName.endsWith('s') ? "'" : "'s");
+      const isRoute = sp?.kind === 'route';
+      const isInst = sp?.kind === 'institution';
+      const kindWord = isRoute ? 'route toll' : (isInst ? 'institution payment' : 'rent');
+      text = 'You landed on <em>' + ownerPossessive + ' ' + space + '</em>. Paid <strong>' + amount + ' TN</strong> ' + kindWord + '.';
+      cls = 'is-paid';
+    }
+  } else if (ownRow) {
+    /* Landed on own property */
+    const owned = STATE.players[0].ownedAssets.find(a => a.spaceNum === pos);
+    const isRoute = sp?.kind === 'route';
+    const isInst = sp?.kind === 'institution';
+    const hasFullSet = asset && asset.sys && ownsFullSet(STATE, 0, asset.sys);
+    const canUpgrade = hasFullSet && owned && owned.tier < 3 && !isRoute && !isInst;
+    let body = 'You landed on <em>your ' + where + '</em>. <strong>No rent due.</strong>';
+    if (canUpgrade) body += ' Upgrade available because you own the full set.';
+    text = body; cls = 'is-own';
+  } else if (noRentRow) {
+    text = 'You landed on <em>' + where + '</em>. <strong>No rent due</strong> (payments suspended or unowned).';
+    cls = 'is-neutral';
+  } else if (taxRow) {
+    const m = taxRow.detail.match(/([+-]?\d+) TN/);
+    const amount = m ? Math.abs(parseInt(m[1], 10)) : '';
+    text = 'You landed on <em>' + where + '</em>. Paid <strong>' + amount + ' TN</strong> in tax.';
+    cls = 'is-paid';
+  } else if (crisisRow) {
+    text = 'You landed on <em>Constitutional Crisis</em>. You will sit out until you pay, roll doubles, or skip.';
+    cls = 'is-paid';
+  } else if (sendRow) {
+    text = 'You were sent to <em>Constitutional Crisis</em>.';
+    cls = 'is-paid';
+  } else if (buyRow) {
+    text = 'You bought <em>' + where + '</em>.';
+    cls = 'is-own';
+  } else if (sp?.kind && sp.kind.startsWith('corner') && sp.kind !== 'corner-crisis' && sp.kind !== 'corner-send') {
+    text = 'You landed on <em>' + where + '</em>.';
+    cls = 'is-neutral';
+  } else if (sp?.kind === 'card-shock' || sp?.kind === 'card-debate') {
+    text = 'You landed on <em>' + where + '</em>. Draw an event card.';
+    cls = 'is-neutral';
+  } else if (safeRow) {
+    text = 'You landed on <em>' + where + '</em>. No action.';
+    cls = 'is-neutral';
+  }
+
+  if (text) {
+    LAST_LANDING_OUTCOME = { text, cls };
+  }
+  __LAST_LANDING_LEDGER_LEN = ledger.length;
+}
+
+/* Clear the band when you start your next roll */
+const __LAND_origRoll = (typeof rollWithAnimation === 'function') ? rollWithAnimation : null;
+if (__LAND_origRoll) {
+  rollWithAnimation = function() {
+    LAST_LANDING_OUTCOME = null;
+    return __LAND_origRoll.apply(this, arguments);
+  };
+}
+
+/* Hook into render after toast scanner */
+const __LAND_origRender = render;
+render = function() {
+  __LAND_origRender();
+  classifyLandingOutcome();
+};
+/* Reset on new game */
+const __LAND_origStart = startNewGame;
+startNewGame = function(seed) {
+  LAST_LANDING_OUTCOME = null;
+  __LAST_LANDING_LEDGER_LEN = 0;
+  __LAND_origStart(seed);
+};
+
+applySidebarState();
+document.getElementById('sidebarToggle')?.addEventListener('click', toggleSidebar);
+
+/* =====================================================================
+   EVENT TOAST — watches the ledger for key events and pops a toast.
+   Display-only; no reducer effect. The toast auto-dismisses after ~3.7s.
+   ===================================================================== */
+const TOAST_SEEN_KEY = '__sovereign_toast_last_idx';
+let __TOAST_LAST_LEDGER_LEN = 0;
+let __LATE_REPUBLIC_SHOWN = false;
+const __TOAST_ACT_TITLES = {
+  1: 'Funding Act', 2: 'Assumption Act', 3: 'Bank Charter',
+  4: 'Manufactures Subsidy', 5: 'Coinage Act', 6: 'Tariff Act',
+  7: 'Excise Enforcement', 8: 'Internal Improvements',
+};
+
+/* Profile-flavored opponent narration — three voices for three roles */
+const __PROFILE_FLAVOR = {
+  'treasury-finance': {
+    role: 'Treasury / Finance',
+    rollVerb: 'considers the chamber',
+    moveTo: (where) => 'arrives at ' + where + ' with a Treasurer\u2019s air',
+    buy: (where, cost) => 'takes ' + where + ' for ' + cost + ' TN \u2014 another rung on the federal-credit ladder',
+    decline: (where) => 'lets ' + where + ' pass to auction \u2014 not worth the Treasury\u2019s purse',
+    vote: (verdict) => 'casts ' + verdict + ' on the floor of Congress',
+    upgrade: (where) => 'raises ' + where + ' a tier \u2014 the bond market notices',
+    crisis: 'is summoned to the Crisis chamber',
+    bid: (amount) => 'bids ' + amount + ' TN at the auction block',
+  },
+  'merchant-infrastructure': {
+    role: 'Merchant / Infrastructure',
+    rollVerb: 'sets out from the counting-house',
+    moveTo: (where) => 'reaches ' + where + ' by the post road',
+    buy: (where, cost) => 'acquires ' + where + ' for ' + cost + ' TN \u2014 commerce favours the prepared',
+    decline: (where) => 'passes on ' + where + ' \u2014 the trade does not warrant the outlay',
+    vote: (verdict) => 'votes ' + verdict + ' \u2014 the merchant interest weighs in',
+    upgrade: (where) => 'improves ' + where + ' \u2014 the wharf is busier this lap',
+    crisis: 'is sent to the Crisis bench',
+    bid: (amount) => 'bids ' + amount + ' TN \u2014 a merchant\u2019s number, considered',
+  },
+  'manufacturer-industry': {
+    role: 'Manufacturer / Industry',
+    rollVerb: 'starts the day at the foundry',
+    moveTo: (where) => 'walks to ' + where + ' with workshop\u2019s pace',
+    buy: (where, cost) => 'buys ' + where + ' for ' + cost + ' TN \u2014 industry consolidates',
+    decline: (where) => 'leaves ' + where + ' to others \u2014 the works call elsewhere',
+    vote: (verdict) => 'casts ' + verdict + ' for the manufactures',
+    upgrade: (where) => 'expands ' + where + ' \u2014 capacity rises with the smoke',
+    crisis: 'is forced into Crisis by the politics of the day',
+    bid: (amount) => 'tables ' + amount + ' TN \u2014 industry has cash',
+  },
+};
+function flavorFor(playerName) {
+  if (!STATE || !STATE.players) return null;
+  const p = STATE.players.find(pl => pl.name === playerName);
+  if (!p) return null;
+  return __PROFILE_FLAVOR[p.profile] || null;
+}
+function pushToast({ cls, eyebrow, title, body }) {
+  const stack = document.getElementById('toastStack');
+  if (!stack) return;
+  const t = document.createElement('div');
+  t.className = 'event-toast' + (cls ? ' ' + cls : '');
+  t.innerHTML = '<div class="toast-eyebrow">' + eyebrow + '</div>' +
+                '<div class="toast-title">' + title + '</div>' +
+                (body ? '<div class="toast-body">' + body + '</div>' : '');
+  stack.appendChild(t);
+  setTimeout(() => t.remove(), 3800);
+}
+function scanLedgerForToasts() {
+  if (!STATE || !STATE.ledger) return;
+  const ledger = STATE.ledger;
+  const start = __TOAST_LAST_LEDGER_LEN;
+  for (let i = start; i < ledger.length; i++) {
+    const row = ledger[i];
+    if (!row) continue;
+    const isOpponentActor = row.actor && row.actor !== 'System' && row.actor !== 'Card' && row.actor !== 'Track' && STATE.players.findIndex(p => p.name === row.actor && p.profile !== 'human') >= 0;
+
+    if (row.event === 'PASS' && /Act passes/i.test(row.detail || '')) {
+      const actName = (row.detail || '').split(' passes')[0];
+      pushToast({ cls:'pass', eyebrow:'Congress · Act passed', title: actName, body: 'Congress carries the measure. Its effects take hold immediately.' });
+    } else if (row.event === 'PASS' && /Act fails/i.test(row.detail || '')) {
+      const actName = (row.detail || '').split(' fails')[0];
+      pushToast({ cls:'fail', eyebrow:'Congress · Act failed', title: actName, body: 'The floor vote did not carry. The measure is set aside.' });
+    } else if (row.event === 'CREDIT_CRISIS') {
+      pushToast({ cls:'crisis', eyebrow:'Public Credit', title:'Credit Crisis', body: row.detail || 'Public Credit collapses to 4 or below. Financial panic spreads.' });
+    } else if (row.event === 'DEFAULT') {
+      pushToast({ cls:'default', eyebrow:'Catastrophe', title:'Default', body:'Public Credit reaches zero. Every player loses 50 % cash and one upgrade; Credit resets to 3.' });
+    } else if (row.event === 'REBELLION') {
+      pushToast({ cls:'rebellion', eyebrow:'Catastrophe', title:'Rebellion', body:'Public Resistance reaches twelve. Revenue upgrades destroyed; Resistance resets to 6.' });
+    } else if (row.event === 'AUCTION WIN' || (row.event === 'AUCTION' && /wins/i.test(row.detail || ''))) {
+      pushToast({ eyebrow:'Auction settled', title: row.detail || 'Auction won', body:'' });
+    } else if (row.event === 'MANDATE') {
+      pushToast({ cls:'pass', eyebrow:'The mandate is claimed', title: row.detail, body:'The Republic moves to Final Accounting.' });
+    } else if (row.event === 'GAME OVER') {
+      const hadMandate = STATE.mandateTrigger;
+      if (hadMandate) {
+        pushToast({ eyebrow:'Final Accounting', title: hadMandate.playerName + ' claims the mandate', body: hadMandate.influence + ' Influence at round ' + hadMandate.round + ', lead ' + hadMandate.lead + ' over second place.' });
+      } else {
+        pushToast({ eyebrow:'Twelve rounds complete', title:'No founder secured a mandate', body:'The Republic decides by final accounting. View the report.' });
+      }
+    }
+    /* Opponent narration — verbose play-by-play with profile-flavored voice */
+    else if (isOpponentActor && row.event === 'ROLL') {
+      const f = flavorFor(row.actor);
+      pushToast({ eyebrow: row.actor + ' \u00b7 ' + (f ? f.rollVerb : 'rolls'), title: row.detail, body:'' });
+    } else if (isOpponentActor && row.event === 'MOVE') {
+      const m = (row.detail || '').match(/\(([^)]+)\)\s*$/);
+      const where = m ? m[1] : (row.detail || '').split(' ').slice(-1)[0];
+      const f = flavorFor(row.actor);
+      pushToast({ eyebrow: row.actor + ' \u00b7 moves', title: f ? f.moveTo(where) : ('Lands on ' + where), body:'' });
+    } else if (isOpponentActor && row.event === 'BUY') {
+      const f = flavorFor(row.actor);
+      const m = (row.detail || '').match(/^(.*?)\s+for\s+(\d+)/);
+      const where = m ? m[1] : (row.detail || '').split(' ')[0];
+      const cost = m ? m[2] : '';
+      pushToast({ cls:'pass', eyebrow: row.actor + ' \u00b7 buys', title: f ? f.buy(where, cost) : row.detail, body:'' });
+    } else if (isOpponentActor && row.event === 'DECLINE') {
+      const f = flavorFor(row.actor);
+      const m = (row.detail || '').match(/^Declines\s+(.*?)$/);
+      const where = m ? m[1] : (row.detail || '').split(' ').slice(-1)[0];
+      pushToast({ eyebrow: row.actor + ' \u00b7 declines', title: f ? f.decline(where) : row.detail, body: 'It goes to forced auction.' });
+    } else if (isOpponentActor && row.event === 'BID') {
+      const f = flavorFor(row.actor);
+      const m = (row.detail || '').match(/\b(\d+)\s*TN\b/);
+      const amt = m ? m[1] : '';
+      pushToast({ eyebrow: row.actor + ' \u00b7 bids', title: f && amt ? f.bid(amt) : row.detail, body:'' });
+    } else if (isOpponentActor && row.event === 'VOTE') {
+      const f = flavorFor(row.actor);
+      const m = (row.detail || '').match(/Vote\s+(YES|NO)/i);
+      const verdict = m ? m[1].toLowerCase() : 'their ballot';
+      pushToast({ eyebrow: row.actor + ' \u00b7 votes', title: f ? f.vote(verdict) : row.detail, body:'' });
+    } else if (isOpponentActor && row.event === 'UPGRADE') {
+      const f = flavorFor(row.actor);
+      const m = (row.detail || '').match(/^Upgrade\s+(.+?)(\s+to|\s+\(|$)/);
+      const where = m ? m[1] : '';
+      pushToast({ cls:'pass', eyebrow: row.actor + ' \u00b7 upgrades', title: f && where ? f.upgrade(where) : row.detail, body:'' });
+    } else if (isOpponentActor && row.event === 'CRISIS') {
+      const f = flavorFor(row.actor);
+      pushToast({ cls:'fail', eyebrow: row.actor + ' \u00b7 \u2192 Crisis', title: f ? f.crisis : row.detail, body:'' });
+    }
+    /* Lap-end recap: trigger when a new lap begins (lap > 1) */
+    if (row.event === 'LAP' && /Begin lap (\d+)/.test(row.detail || '')) {
+      const m = row.detail.match(/Begin lap (\d+)/);
+      const lap = parseInt(m[1], 10);
+      if (lap > 1) setTimeout(() => showLapRecap(lap - 1), 600);
+      /* Late Republic one-shot toast at the start of round LATE_REPUBLIC_START */
+      if (lap === LATE_REPUBLIC_START && !__LATE_REPUBLIC_SHOWN) {
+        __LATE_REPUBLIC_SHOWN = true;
+        setTimeout(() => pushToast({
+          cls:'pass', eyebrow:'Late Republic',
+          title:'The Founding Acts are decided.',
+          body:'The Republic now plays out its consequences. Rounds 8\u201312 are the late stretch \u2014 no new Acts will be tabled.',
+        }), 1400);
+      }
+    }
+  }
+  __TOAST_LAST_LEDGER_LEN = ledger.length;
+}
+/* Hook toast scan into the render loop */
+const __TOAST_origRender = render;
+render = function() {
+  __TOAST_origRender();
+  scanLedgerForToasts();
+};
+/* Reset on new game */
+const __TOAST_origStart = startNewGame;
+startNewGame = function(seed) {
+  __TOAST_LAST_LEDGER_LEN = 0;
+  __LATE_REPUBLIC_SHOWN = false;
+  __TOAST_origStart(seed);
+};
+
+/* =====================================================================
+   LAP RECAP — Federalist-voice paragraph at the close of each lap
+   ===================================================================== */
+function buildLapRecap(lap) {
+  /* Walk the ledger for events with row.lap === lap */
+  const rows = STATE.ledger.filter(r => r.lap === lap);
+  const buys = rows.filter(r => r.event === 'BUY');
+  const passed = rows.filter(r => r.event === 'PASS' && /passes/i.test(r.detail || ''));
+  const failed = rows.filter(r => r.event === 'PASS' && /fails/i.test(r.detail || ''));
+  const creditMoves = rows.filter(r => r.event === 'CREDIT');
+  const crisisFired = rows.some(r => r.event === 'CREDIT_CRISIS');
+  const defaultFired = rows.some(r => r.event === 'DEFAULT');
+  const rebellionFired = rows.some(r => r.event === 'REBELLION');
+  const c = STATE.tracks.credit.value;
+  const r = STATE.tracks.resistance.value;
+  const ic = STATE.tracks.capacity.value;
+  const youCash = STATE.players[0].cash;
+  const sentences = [];
+  sentences.push('Round ' + lap + ' closes.');
+  /* Mandate status from round MANDATE.minRound onward */
+  if (lap >= MANDATE.minRound) {
+    const scored = STATE.players.map((p, idx) => ({ idx, name: p.name, total: scorePlayer(STATE, idx).total }));
+    const sorted = scored.slice().sort((a, b) => b.total - a.total);
+    const top = sorted[0], second = sorted[1];
+    if (top.total === second.total) {
+      sentences.push(top.name + ' and ' + second.name + ' are tied at ' + top.total + ' Influence — no mandate yet.');
+    } else if (top.total >= MANDATE.threshold && (top.total - second.total) >= MANDATE.lead) {
+      sentences.push(top.name + ' has ' + top.total + ' Influence and leads by ' + (top.total - second.total) + '. Final Accounting begins.');
+    } else {
+      const lead = top.total - second.total;
+      const need = [];
+      if (top.total < MANDATE.threshold) need.push((MANDATE.threshold - top.total) + ' more Influence');
+      if (lead < MANDATE.lead) need.push((MANDATE.lead - lead) + ' more lead');
+      sentences.push(top.name + ' leads with ' + top.total + ' Influence, but ' + need.join(' and ') + ' — no mandate yet.');
+    }
+  }
+  if (passed.length > 0) {
+    sentences.push('Congress carried ' + passed.map(x => (x.detail||'').split(' passes')[0]).join(' and ') + '.');
+  }
+  if (failed.length > 0) {
+    sentences.push('The floor turned aside ' + failed.map(x => (x.detail||'').split(' fails')[0]).join(' and ') + '.');
+  }
+  if (buys.length === 1) sentences.push('A single property changed hands: ' + (buys[0].detail || '').split(' for ')[0] + '.');
+  else if (buys.length > 1) sentences.push(buys.length + ' properties changed hands this lap.');
+  if (crisisFired) sentences.push('Credit Crisis fired — financial panic stirred Public Resistance.');
+  if (defaultFired) sentences.push('The Republic defaulted on its bonds — every player lost half their cash.');
+  if (rebellionFired) sentences.push('Rebellion broke out — Revenue upgrades were destroyed.');
+  if (c >= 9) sentences.push('Public Credit firms at ' + c + ' — the bond market trusts the Treasury.');
+  else if (c <= 4) sentences.push('Public Credit slips to ' + c + ' — the warning band is in sight.');
+  else sentences.push('Public Credit holds at ' + c + '.');
+  if (r >= 9) sentences.push('Resistance has climbed to ' + r + ' — the western counties stir.');
+  if (ic >= 6) sentences.push('Industrial Capacity rises to ' + ic + ' — the workshops favour the manufactures.');
+  return sentences.join(' ');
+}
+
+function showLapRecap(lapEnded) {
+  if (!STATE || STATE.status === 'gameOver') return;
+  const overlay = document.getElementById('lapRecapOverlay');
+  if (!overlay) return;
+  const title = 'Round ' + lapEnded + ' of ' + TOTAL_ROUNDS;
+  const sub = 'A federalist accounting';
+  const body = buildLapRecap(lapEnded);
+  document.getElementById('lapRecapTitle').textContent = title;
+  document.getElementById('lapRecapSub').textContent = sub;
+  document.getElementById('lapRecapBody').textContent = body;
+  const m = document.getElementById('lapRecapMeta');
+  m.innerHTML = '<div class="m"><span class="lbl">Credit</span><span class="v">' + STATE.tracks.credit.value + '</span></div>' +
+                '<div class="m"><span class="lbl">Resist</span><span class="v">' + STATE.tracks.resistance.value + '</span></div>' +
+                '<div class="m"><span class="lbl">Capacity</span><span class="v">' + STATE.tracks.capacity.value + '</span></div>' +
+                '<div class="m"><span class="lbl">Your cash</span><span class="v">$' + STATE.players[0].cash.toLocaleString('en-US') + '</span></div>';
+  overlay.classList.remove('hidden');
+}
+function hideLapRecap() {
+  document.getElementById('lapRecapOverlay')?.classList.add('hidden');
+}
+document.getElementById('lapRecapDismiss')?.addEventListener('click', hideLapRecap);
+document.getElementById('lapRecapOverlay')?.addEventListener('click', (e) => { if (e.target.id === 'lapRecapOverlay') hideLapRecap(); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !document.getElementById('lapRecapOverlay')?.classList.contains('hidden')) hideLapRecap();
+  if (e.key === 'Enter' && !document.getElementById('lapRecapOverlay')?.classList.contains('hidden')) hideLapRecap();
+});
 document.addEventListener('keydown', (e) => {
   if (e.key === ' ' && STATE && STATE.phase === 'awaiting-roll' && STATE.activePlayerIndex === 0) { e.preventDefault(); dispatch({ type:'ROLL_DICE' }); }
 });
@@ -2549,7 +5023,7 @@ function buildRepublicSummary(state) {
 
   const paras = [];
   /* Para 1 — verdict + headline numbers */
-  let p1 = 'After lap 7 the republic’s books close. ';
+  let p1 = 'After twelve rounds the republic’s books close. ';
   if (won) {
     p1 += 'You hold the largest Influence position, with ' + score.total + ' points against ' + state.finalScores[1].total + ' for Hamilton and ' + state.finalScores[2].total + ' for Morris. ';
   } else {
@@ -2603,6 +5077,19 @@ function buildRepublicSummary(state) {
   if (r >= 8) p4 += 'Resistance at or above eight means the Whiskey Rebellion was live the whole back half. ';
   if (ic >= 8) p4 += 'Capacity at or above eight pays the industrial endgame bonus: two Influence for Manufactures, two more for Strategic Industry. ';
   else if (ic >= 6) p4 += 'Capacity at six or above pays the twenty-five-percent industrial rent bonus, but did not reach the endgame Influence threshold. ';
+  /* v0.18 polished — failure-tier narrative: did Credit Crisis fire? Did Default? Rebellion? */
+  const ledger = state.ledger;
+  const defaultFired = ledger.some(row => row.event === 'DEFAULT');
+  const rebellionFired = ledger.some(row => row.event === 'REBELLION');
+  const crisisFired = !!state.flags.creditCrisisFired || ledger.some(row => row.event === 'CREDIT_CRISIS');
+  if (defaultFired) {
+    p4 += 'The republic suffered a Default this game — Public Credit reached zero and every player lost half their cash and an upgrade. The Treasury reset Credit to three and the game continued. ';
+  } else if (crisisFired) {
+    p4 += 'The republic crossed into Credit Crisis — Public Credit collapsed to four or below at least once, ticking Public Resistance up by one. The warning was absorbed without a Default. ';
+  } else {
+    p4 += 'Neither Credit Crisis nor Default fired this game: Public Credit held above five throughout. ';
+  }
+  if (rebellionFired) p4 += 'Public Resistance reached twelve and Rebellion fired — Revenue upgrades were destroyed and Resistance reset to six. ';
   paras.push(p4);
 
   /* Para 5 — verdict + history */
@@ -2653,13 +5140,38 @@ function showResumePill() {
 function hideResumePill() { document.getElementById('resumePill').classList.add('hidden'); }
 
 function loadFromPayload(payload) {
-  if (!payload || payload.version !== SAVE_VERSION) {
+  if (payload && payload.version === 'v0.18-candidate') {
+    showIoPill('This save is from an earlier game length and cannot be loaded. Start a new game to play the 12-round model.', true);
+    return false;
+  }
+  if (payload && payload.version === 'v0.19-pacing-candidate') {
+    showIoPill('This save is from before the mandate model and cannot be loaded. Start a new game to play the mandate victory candidate.', true);
+    return false;
+  }
+  if (!payload || (payload.version !== SAVE_VERSION && payload.version !== 'v0.10' && payload.version !== 'v0.11-candidate' && payload.version !== 'v0.12-candidate' && payload.version !== 'v0.13-candidate' && payload.version !== 'v0.14-candidate' && payload.version !== 'v0.15-candidate' && payload.version !== 'v0.16-candidate' && payload.version !== 'v0.17-candidate')) {
     if (payload && (payload.version === 'phase5' || payload.version === 'v0.3' || payload.version === 'v0.4' || payload.version === 'v0.5' || payload.version === 'v0.6' || payload.version === 'v0.8')) {
       showIoPill('Save file from pre-v0.10 ruleset; cannot replay under current balance. Export to keep as historical artifact.', true);
     } else {
       showIoPill('Load failed · version mismatch', true);
     }
     return false;
+  }
+  if (payload.version === 'v0.10') {
+    showIoPill('Loaded v0.10 save under v0.18 candidate — Credit Crisis event added at Credit ≤ 4. Multiple pressure layers active. Behavior differs.');
+  } else if (payload.version === 'v0.11-candidate') {
+    showIoPill('Loaded v0.11 save under v0.18 candidate — Credit Crisis event added at Credit ≤ 4. Bank Run v0.11 preserved. Behavior differs.');
+  } else if (payload.version === 'v0.12-candidate') {
+    showIoPill('Loaded v0.12 save under v0.18 candidate — Credit Crisis event added at Credit ≤ 4. Charter scaling not in this branch. Behavior differs.');
+  } else if (payload.version === 'v0.13-candidate') {
+    showIoPill('Loaded v0.13 save under v0.18 candidate — Credit Crisis event added at Credit ≤ 4. Spec Fever + Anti-Fed pressure layers active. Behavior differs.');
+  } else if (payload.version === 'v0.14-candidate') {
+    showIoPill('Loaded v0.14 save under v0.18 candidate — Credit Restored gate NOT in this branch. Credit Crisis event added at Credit ≤ 4.');
+  } else if (payload.version === 'v0.15-candidate') {
+    showIoPill('Loaded v0.15 save under v0.18 candidate — Recovery gates NOT in this branch. Credit Crisis event added at Credit ≤ 4.');
+  } else if (payload.version === 'v0.16-candidate') {
+    showIoPill('Loaded v0.16 save under v0.18 candidate — Spec Fever conditional v0.17 active. Credit Crisis event added at Credit ≤ 4.');
+  } else if (payload.version === 'v0.17-candidate') {
+    showIoPill('Loaded v0.17 save under v0.18 candidate — Credit Crisis event added: triggers once per game when Credit first reaches ≤ 4 (and > 0). Penalty: +1 Resistance to all. Default at Credit 0 unchanged.');
   }
   if (typeof payload.seed !== 'number') { showIoPill('Load failed · invalid seed', true); return false; }
   if (!Array.isArray(payload.decisionLog)) { showIoPill('Load failed · invalid decisionLog', true); return false; }
@@ -2902,7 +5414,7 @@ function renderReplay() {
     tk.style.left = (i / total * 100) + '%';
     tk.style.width = (100 / total) + '%';
     tk.dataset.idx = i;
-    tk.title = 'Lap ' + f.lap + ' · Turn ' + f.turn;
+    tk.title = 'Round ' + f.lap + ' · Turn ' + f.turn;
     tk.addEventListener('click', (e) => { e.stopPropagation(); REPLAY.index = i; if (REPLAY.timer) { clearInterval(REPLAY.timer); REPLAY.timer = null; REPLAY.playing = false; updateReplayPlayBtn(); } renderReplay(); });
     ticksEl.appendChild(tk);
   }
@@ -2974,6 +5486,9 @@ const _origStart = startNewGame;
 startNewGame = function(seed) {
   resetNarrationDetector();
   _origStart(seed);
+  applyPlayerCustom();
+  renderBoard();
+  render();
 };
 
 /* =====================================================================
@@ -3510,6 +6025,7 @@ function runBatchGame(seed, profileTriplet, charterEnabled) {
   while (s.status !== 'gameOver' && safety-- > 0) {
     if (s.pendingDefault) { step({ type:'TRIGGER_DEFAULT' }); continue; }
     if (s.pendingRebellion) { step({ type:'TRIGGER_REBELLION' }); continue; }
+    if (s.pendingCreditCrisis) { step({ type:'TRIGGER_CREDIT_CRISIS' }); continue; }
     if (s.phase === 'act-vote' && s.acts.current) {
       let advanced = false;
       for (let i = 0; i < s.players.length; i++) {
@@ -3877,7 +6393,29 @@ reduce = function(s, action) {
 
 /* ---- Initial boot: start the game, then offer autosave resume ---- */
 startNewGame(2026);
+applyPlayerCustom();
+render();
 showResumePill();
+
+/* First-load welcome flow — auto-show three-step welcome when no autosave and not seen */
+(function maybeShowFirstRunOrient() {
+  let seen = false;
+  try { seen = !!localStorage.getItem(ORIENT_KEY); } catch (e) {}
+  if (!seen && !hasAutosave()) showOrient(1);
+})();
+
+/* Ledger expand/collapse toggle — add an in-head button */
+(function wireLedgerToggle() {
+  const head = document.querySelector('.ledger .head');
+  if (!head || head.querySelector('.ledger-toggle')) return;
+  const btn = document.createElement('button');
+  btn.className = 'ledger-toggle';
+  btn.type = 'button';
+  btn.textContent = 'Ledger';
+  btn.title = 'Expand or collapse the ledger';
+  btn.addEventListener('click', () => document.body.classList.toggle('ledger-expanded'));
+  head.appendChild(btn);
+})();
 </script>
 
 </body>
