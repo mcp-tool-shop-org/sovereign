@@ -24,8 +24,15 @@ jobs:
         with:
           node-version: 22
 
-      - name: Upgrade npm to latest (for OIDC trusted-publishing support)
-        run: npm install -g npm@latest
+      - name: Upgrade npm to >=11.5 for OIDC trusted-publishing auth
+        run: |
+          # Double-install workaround for the in-place npm self-upgrade race
+          # (first attempt may fail with MODULE_NOT_FOUND on promise-retry as
+          # the running npm process replaces its own files mid-rebuild; the
+          # second attempt runs against the freshly-installed npm and completes).
+          npm install -g npm@latest || true
+          npm install -g npm@latest
+          echo "npm version after upgrade: $(npm --version)"
 
       - name: Verify tag matches package.json version
         run: |
