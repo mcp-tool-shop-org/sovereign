@@ -22,8 +22,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 20
-          registry-url: 'https://registry.npmjs.org/'
+          node-version: 22
+
+      - name: Upgrade npm to latest (for OIDC trusted-publishing support)
+        run: npm install -g npm@latest
 
       - name: Verify tag matches package.json version
         run: |
@@ -54,10 +56,8 @@ jobs:
           ls -la "${ZIP_NAME}"
           echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
 
-      - name: Publish to npm with provenance
+      - name: Publish to npm with provenance (OIDC trusted publisher)
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub Release
         env:
