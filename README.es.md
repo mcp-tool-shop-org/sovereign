@@ -15,7 +15,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Landing Page](https://img.shields.io/badge/landing-page-1F2D52?style=flat)](https://mcp-tool-shop-org.github.io/sovereign/)
 
-</div>
+</div
 
 ---
 
@@ -23,9 +23,54 @@
 
 Sovereign es un **juego de mesa al estilo "Monopoly" basado en el sistema de Hamilton**, sobre la creación del crédito público estadounidense, además de una **adaptación completa para un solo jugador / digital** que ejecuta las mismas reglas localmente en un navegador contra dos oponentes simulados y deterministas.
 
-- **Juego de mesa** — Edición imprimible de 34 hojas. Tablero de 40 casillas, 22 propiedades + 4 rutas + 2 instituciones, 8 sistemas de colores, 7 leyes del Congreso en orden histórico fijo, 4 roles de jugador, 3 pistas compartidas (Crédito Público · Resistencia Pública · Capacidad Industrial), 12+12 cartas de evento. Dos vías económicas viables además del Tesoro: Comercio y Manufactura.
-- **Modo digital** — Un único archivo HTML autocontenido. Máquina de estados completa, generador de números aleatorios determinista mulberry32, oponentes simulados con IA (Tesoro / Finanzas, Comercio / Infraestructura, Manufactura / Industria), guardar / cargar con integridad de hash, herramienta de depuración de repeticiones, herramienta de simulación por lotes, telemetría local de equilibrio.
-- **Punto de equilibrio** — v0.10, congelado después de un ciclo de nueve versiones impulsado por más de 1000 simulaciones de juegos deterministas. Tesoro 59% · Comercio 25% · Manufactura 16% (CANÓNICO × 100, el rango objetivo se cumplió para los tres perfiles).
+- **Juego de mesa** — edición imprimible de 34 hojas. Tablero con 40 casillas, 22 propiedades + 4 rutas + 2 instituciones, 8 sistemas de colores, 7 Actas del Congreso en orden histórico fijo, 4 roles de jugador, 3 pistas compartidas (Crédito Público · Resistencia Pública · Capacidad Industrial), 12+12 cartas de evento. Dos vías económicas viables además del Tesoro: Comerciante y Fabricante.
+- **Modo digital** — un único archivo HTML autocontenido. Máquina de estados completa, generador de números aleatorios mulberry32 determinista, oponentes con IA programada (Tesoro / Finanzas, Comerciante / Infraestructura, Fabricante / Industria), guardar / cargar con integridad mediante hash, herramienta de análisis de repeticiones, herramienta de simulación por lotes, telemetría de equilibrio local.
+- **Punto de equilibrio base** — el equilibrio central de la versión 0.10 se mantiene hasta la versión 1.1.0. Tesoro 60.0% · Comerciante 23.5% · Fabricante 16.5% (valor CANÓNICO × 400 en la base refinada de la versión 0.18; la banda objetivo se cumple para los tres perfiles).
+- **Sistema de fallos** — tres niveles: **Crisis de Crédito** (Crédito Público ≤ 4, advertencia), **Rebelión** (Resistencia Pública 12, catástrofe), **Impago** (Crédito Público 0, catástrofe). Nuevo a partir de la versión 1.1.0; los puntos finales catastróficos no han cambiado desde la versión 0.10.
+
+---
+
+## Novedades en la versión 1.1.0
+
+### Fundamento del sistema de fallos
+
+La versión 1.1.0 introduce una jerarquía de fallos de tres niveles. El impago en el Crédito Público 0 se mantiene como la condición de colapso financiero catastrófico (se pierden el 50% del efectivo + 1 mejora por jugador). La rebelión en la Resistencia Pública 12 se mantiene como el colapso político catastrófico (las mejoras de ingresos se destruyen). Entre estos, un nuevo evento intermedio —**Crisis de Crédito**— se activa la primera vez que el Crédito Público baja a 4 o menos, aumenta la Resistencia en +1 y registra una fila en el registro. No restablece el Crédito, no destruye activos y no termina el juego.
+
+Para que la capa de fallos sea realmente visible durante el juego, cuatro cartas de presión ahora reducen el Crédito:
+
+| Carta | Efecto |
+|---|---|
+| Huida bancaria | Crédito Público −1, Capacidad Industrial −1 |
+| Fiebre especulativa (Crédito ≥ 7) | Crédito Público −1, Resistencia +1, subasta de deudas/impuestos estatales no reclamados |
+| Fiebre especulativa (Crédito ≤ 6) | Crédito Público −2, Resistencia +1, subasta de deudas/impuestos estatales no reclamados |
+| Panfleto antifederalista | Crédito Público −1, Resistencia +1, 30 TN por propiedad del sistema de ingresos |
+
+La Ley de Financiamiento en la ronda 1 sigue añadiendo +2 Crédito. El punto final catastrófico de Impago se mantiene como un límite dramático, no como un objetivo de equilibrio; la Crisis de Crédito proporciona la señal activa.
+
+Evidencia CANÓNICA-400 (semillas 2026 – 2425): Tesoro 60.0% · Comerciante 23.5% · Fabricante 16.5%. La Crisis de Crédito se activa 2 / 400 veces. El Impago se activa 0 / 400 veces. La Rebelión se activa 0 / 400 veces. La Resistencia ≥ 8 se mantiene en 0 / 400. Determinismo: PASADO. Evidencia completa en `experiments/v0.18-failure-pressure-candidate/sovereign-v0.18-evidence-sweep.html`.
+
+### Pulido visual general del juego
+
+Cada elemento visible para el jugador está diseñado visualmente como un producto coherente del Tesoro Federalista:
+
+- Logotipo superior + etiqueta de modo + una versión discreta (ya no es un encabezado del panel de telemetría)
+- Superposición de orientación al cargar por primera vez que introduce las tres pistas y los tres niveles de fallo
+- Losetas del tablero con cresta en las esquinas, bandas de color del sistema, tratamientos distintos para instituciones, rutas, impuestos y espacios de eventos
+- Las filas del registro para `CREDIT_CRISIS` / `DEFAULT` / `REBELLION` tienen tratamientos de gravedad distintos (color + borde + etiqueta; con atención a la accesibilidad)
+- El panel de pistas marca la banda de advertencia de la Crisis de Crédito (1–4) y los puntos finales de Impago y Rebelión
+- El informe de final de juego muestra fichas de postura (postura del crédito / estado de Crisis / estado de Rebelión) sobre las columnas de puntuación, con una narración que menciona explícitamente los resultados de Crisis / Impago / Rebelión
+- El modal de simulación por lotes se ha reformulado como "Ejecución de evidencia de equilibrio"
+- Punto de interrupción responsivo ≤ 768 px y una hoja de estilo para impresión.
+
+La documentación de referencia del sistema de diseño y una auditoría visual de quince fotogramas se encuentran en el directorio `release/design-system/`. Estos son los registros definitivos de cómo se ve la interfaz de usuario de la versión 1.1.0.
+
+### Mecánicas conservadas
+
+La auditoría de la promoción v0.18 superó las 44 pruebas en las áreas de origen, implementación, regresión, evidencia de equilibrio/fallos y preparación de la documentación. El hash del estado del juego canónico, generado a partir de 100 semillas, es idéntico en bytes entre la simulación de Node de la versión v0.18 y el código HTML optimizado (`3189375454`). La variable `SAVE_VERSION` sigue siendo `'v0.18-candidate'` porque ninguna mecánica cambió durante el proceso de optimización.
+
+### Advertencia
+
+Las mecánicas de la versión 1.1.0 se han verificado mediante simulación en el conjunto canónico de T/M/Mfg (400 semillas) y en la variante MFG-MIRROR (100 semillas). Aún no se han probado con usuarios humanos.
 
 ---
 
@@ -155,4 +200,4 @@ MIT © mcp-tool-shop. Consulte el archivo [`LICENSE`](./LICENSE).
 
 Desarrollado por <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
 
-</div>
+</div
