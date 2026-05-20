@@ -3,8 +3,8 @@ import type { SiteConfig } from '@mcptoolshop/site-theme';
 export const config: SiteConfig = {
   title: 'Sovereign · The Hamilton System Board Game',
   description:
-    'A Hamilton-system economic board game and its solo / digital adaptation. ' +
-    'Play in your browser against deterministic scripted opponents. No install, no account, no network.',
+    'A Hamilton-system economic board game and its design history. ' +
+    'Digital mode is withdrawn pending human playability review.',
   logoBadge: 'S',
   brandName: 'Sovereign',
   repoUrl: 'https://github.com/mcp-tool-shop-org/sovereign',
@@ -13,20 +13,16 @@ export const config: SiteConfig = {
     'MIT Licensed — built by <a href="https://mcp-tool-shop.github.io/" style="color:var(--color-muted);text-decoration:underline">MCP Tool Shop</a>',
 
   hero: {
-    badge: 'v1.0 · Free · Open Source',
+    badge: 'Digital mode withdrawn',
     headline: 'Sovereign',
     headlineAccent: 'Founding Credit.',
     description:
-      'A Hamiltonian economic strategy game about the founding of US public credit. ' +
-      'Fund the debt, build the bank, industrialize the republic — solo against two scripted opponents, ' +
-      'in your browser, with no install. Same seed plays out the same way every time.',
-    primaryCta: { href: 'release/digital-mode/sovereign-solo.html', label: 'Play now' },
-    secondaryCta: { href: 'handbook/', label: 'Read the Handbook' },
-    previews: [
-      { label: 'npx', code: 'npx @mcptoolshop/sovereign' },
-      { label: 'Print', code: 'npx @mcptoolshop/sovereign --print' },
-      { label: 'Web', code: 'https://mcp-tool-shop-org.github.io/sovereign/' },
-    ],
+      'Sovereign digital mode is withdrawn pending human playability review. ' +
+      'The printable board game (v0.2) and the design handbook remain available; ' +
+      'the digital adaptation will return only after the player-experience gap is resolved.',
+    primaryCta: { href: 'handbook/', label: 'Read the Handbook' },
+    secondaryCta: { href: 'https://github.com/mcp-tool-shop-org/sovereign', label: 'View on GitHub' },
+    previews: [],
   },
 
   sections: [
@@ -105,24 +101,12 @@ export const config: SiteConfig = {
 
     {
       kind: 'code-cards',
-      id: 'play',
-      title: 'Play it',
+      id: 'printable',
+      title: 'Printable edition',
       cards: [
         {
-          title: 'Browser (zero install)',
-          code: 'npx @mcptoolshop/sovereign',
-        },
-        {
-          title: 'Hosted',
-          code: '# Open in any browser:\nhttps://mcp-tool-shop-org.github.io/sovereign/',
-        },
-        {
-          title: 'Print and play',
+          title: 'Print and play (v0.2 board game)',
           code: 'npx @mcptoolshop/sovereign --print\n# Then Ctrl-P → Save as PDF → US Letter → 100% scale',
-        },
-        {
-          title: 'Offline bundle',
-          code: '# Download sovereign-vX.Y.Z-release.zip\n# from the GitHub Release page,\n# unzip, open 00-START-HERE.html',
         },
       ],
     },
