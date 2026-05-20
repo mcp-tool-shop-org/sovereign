@@ -1,8 +1,8 @@
 ---
 title: Design History
-description: How Sovereign was balanced from v0.2 to v0.10, with evidence.
+description: How Sovereign was balanced from v0.2 to v0.18, with evidence.
 sidebar:
-  order: 5
+  order: 6
 ---
 
 The balance arc was a nine-version push from "Treasury crushes everything" to "three viable economic paths." Every change was driven by deterministic simulation evidence — 100-game or 400-game batches against fixed seed sequences — not by guesswork.

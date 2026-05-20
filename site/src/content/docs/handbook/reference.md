@@ -2,7 +2,7 @@
 title: Reference
 description: CLI flags, save / load format, batch simulation, exact rules tables.
 sidebar:
-  order: 4
+  order: 5
 ---
 
 ## CLI

@@ -5,6 +5,46 @@
 
 ---
 
+## v1.1.0 (release candidate) — Failure-system foundation + whole-game visual polish — 2026-05-20
+
+Promotes the v0.18 failure-pressure foundation and the whole-game visual polish pass to the canonical Sovereign Solo / Digital Mode release surface. The digital artifact ships at `release/digital-mode/sovereign-solo.html`; the prior v0.10 canonical is archived alongside it as `sovereign-solo-v0.10-baseline.html` for historical reference and save-compatibility verification. The v0.18 in-HTML `SAVE_VERSION` remains `'v0.18-candidate'` — no mechanic changed across the polish pass, and that string is the canonical save-format identifier.
+
+**v0.11 → v0.18 failure-pressure arc — what shipped:**
+
+- **Credit Crisis** at Public Credit ≤ 4 — soft intermediate failure event. Fires once per game when Credit first collapses into the warning band. Logs a `CREDIT_CRISIS` System row, ticks Public Resistance +1, does not reset Credit. CANONICAL-400 fire rate: 2 / 400 (seeds 2139, 2313). Three-tier hierarchy now visible: Crisis (warning) < Rebellion / Default (catastrophe).
+- **Default** at Public Credit 0 — catastrophic endpoint, unchanged. 50% cash loss + 1 random upgrade per player; credit resets to 3.
+- **Rebellion** at Public Resistance 12 — catastrophic endpoint, unchanged. Revenue upgrades destroyed; Whiskey Excise owner → Crisis; resistance resets to 6.
+- **Bank Run** (v0.11) — drops Public Credit -1 and Industrial Capacity -1.
+- **Speculation Fever** Credit pressure (v0.13) — drops Public Credit -1 + ticks Resistance +1 + auctions an unowned Rev/State Debt property.
+- **Anti-Federalist Pamphlet** Credit pressure (v0.16) — adds Public Credit -1 to the existing Resistance +1 + 30 TN per Revenue-System property hit.
+- **Speculation Fever fragile-credit escalation** (v0.17) — Credit -1 at Credit ≥ 7, Credit -2 at Credit ≤ 6. Resistance +1 and auction behavior unchanged.
+
+**Why v0.14 / v0.15 recovery gates were rejected:**
+
+The v0.14 (Credit Restored gated on Credit ≥ 6) and v0.15 (Gold and Silver Inflow gated, layered on v0.14) candidates were mechanically correct but aggregate-inert: they only fired at Credit ≤ 5, and only 3 / 400 games ever reached Credit 5 in v0.13. Gating recovery at a floor few games reach is a no-op in aggregate. The v0.16 → v0.18 chain pivoted to pressure-side changes (more games reach the floor) rather than recovery-side gates (fewer recoveries from the floor).
+
+**Whole-game visual polish (presentation only, mechanics byte-identical):**
+
+All 16 player-facing surfaces art-directed as one Federalist Treasury system: topbar wordmark + mode tag + version pill; first-load orientation overlay; board tile crests with corner glyphs and system color bands; gilt-foil panel heads; ledger row severity treatments for `CREDIT_CRISIS` / `DEFAULT` / `REBELLION`; tracks panel warning bands for Crisis (1–4), Default (0), Rebellion (10–12); distinct Market Shock vs Republic Debate card chrome; endgame posture chips (credit posture / Crisis state / Rebellion state) + drop-cap narration; "Balance Evidence Run" framing for the batch modal; responsive ≤ 768 px breakpoint; print stylesheet. Design-system reference at `release/design-system/sovereign-visual-system-v0.18.html` and `release/design-system/sovereign-screen-audit-v0.18.html`.
+
+**Mechanics preservation evidence:**
+
+- v0.18 promotion audit: **44 / 44 PASS** across five categories (provenance, implementation, regression, balance/failure evidence, documentation). Report at `experiments/v0.18-failure-pressure-candidate/sovereign-v0.18-promotion-audit.html`.
+- CANONICAL-400 (seeds 2026–2425): Treasury **60.0 %** / Merchant **23.5 %** / Manufacturer **16.5 %** — all in v0.10 balance bands. Median margin 3 IP. Default 0 / 400, Rebellion 0 / 400, Bankruptcy 1. Resistance ≥ 8 stays at 0 / 400. Determinism A vs B byte-identical. Report at `experiments/v0.18-failure-pressure-candidate/sovereign-v0.18-evidence-sweep.html`.
+- 100-seed canonical state hash: **3189375454**, byte-identical between Node sim and the polished HTML.
+
+**Save compatibility:**
+
+`SAVE_VERSION` stays `'v0.18-candidate'`. Saves from v0.10 – v0.17 still load via `loadFromPayload`; a transient info pill explains the behavior difference when loading older saves under the new failure system. Hash integrity check on load is unchanged.
+
+**Caveat:**
+
+v0.18 mechanics are simulation-verified across the canonical T/M/Mfg triplet (400 seeds) and the MFG-MIRROR variant (100 seeds). They are not yet human-playtested.
+
+**This entry covers Stage A only.** v1.1.0 is a release candidate; no npm publish, no tag, no GitHub release. The release train (translations, shipcheck, version bump in `package.json`, tag, npm publish, GH release, Pages verification) is a separate kickoff.
+
+---
+
 ## v1.0.2 — Branding correction: it's a board game, not a "prototype" — 2026-05-19
 
 The product is shipped, signed, versioned, and on npm. "Prototype" language was design-time scaffolding that should have been retired at v1.0.0. This release removes that language across all user-facing surfaces.

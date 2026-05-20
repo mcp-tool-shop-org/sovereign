@@ -5,6 +5,40 @@
 
 ---
 
+## v1.1.0 (release candidate) — Failure-system foundation + whole-game visual polish — 2026-05-20
+
+Promotes the v0.18 failure-pressure foundation and the whole-game visual polish pass to the canonical Sovereign Solo / Digital Mode release surface. The digital artifact ships at `release/digital-mode/sovereign-solo.html`; the prior v0.10 canonical is archived alongside it as `sovereign-solo-v0.10-baseline.html`. The in-HTML `SAVE_VERSION` remains `'v0.18-candidate'` — no mechanic changed across the polish pass.
+
+**Three-tier failure system (new in v1.1.0):**
+
+| Tier | Trigger | Severity | Effect | Reset |
+|---|---|---|---|---|
+| Credit Crisis | Public Credit ≤ 4 (first time per game) | warning | Resistance +1, System log | none |
+| Rebellion | Public Resistance 12 | catastrophe | Revenue upgrades destroyed; Whiskey owner → Crisis | resistance → 6 |
+| Default | Public Credit 0 | catastrophe | 50% cash + 1 upgrade per player | credit → 3 |
+
+**Failure-pressure arc (v0.11 → v0.18) — what shipped:**
+
+- Bank Run drops Public Credit -1 + Industrial Capacity -1 (v0.11).
+- Speculation Fever drops Public Credit -1 + Resistance +1 + auctions an unowned Rev/State Debt property (v0.13).
+- Anti-Federalist Pamphlet adds Public Credit -1 to its existing Resistance +1 + 30 TN per Revenue-System property hit (v0.16).
+- Speculation Fever fragile-credit escalation: Credit -1 at Credit ≥ 7, Credit -2 at Credit ≤ 6 (v0.17).
+- Credit Crisis intermediate failure event at Credit ≤ 4 (v0.18).
+
+**Why v0.14 / v0.15 recovery gates were rejected:** mechanically correct but aggregate-inert. The v0.16 → v0.18 chain pivoted to pressure-side changes rather than recovery-side gates.
+
+**Whole-game visual polish (presentation only, mechanics byte-identical):**
+
+All 16 player-facing surfaces art-directed as one Federalist Treasury system: topbar wordmark; first-load orientation overlay; board tile crests with corner glyphs and system color bands; ledger row severity treatments for `CREDIT_CRISIS` / `DEFAULT` / `REBELLION`; tracks panel warning bands; distinct Market Shock vs Republic Debate card chrome; endgame posture chips + drop-cap narration; "Balance Evidence Run" batch modal; responsive ≤ 768 px breakpoint; print stylesheet. Design-system reference under `release/design-system/`.
+
+**Mechanics-preservation evidence:** v0.18 promotion audit 44 / 44 PASS. CANONICAL-400 balance bands held: Treasury 60.0 % / Merchant 23.5 % / Manufacturer 16.5 %. 100-seed canonical state hash 3189375454 byte-identical between Node sim and polished HTML.
+
+**Caveat:** v0.18 mechanics are simulation-verified, not yet human-playtested.
+
+**This release candidate covers Stage A only.** No npm publish, no tag, no GitHub release until the release train is authorized as a separate step.
+
+---
+
 ## v1.0.2 — Branding correction: it's a board game, not a "prototype" — 2026-05-19
 
 The product is shipped, signed, versioned, and on npm. "Prototype" language was design-time scaffolding that should have been retired at v1.0.0. This release removes that language across all user-facing surfaces.
