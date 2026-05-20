@@ -21,7 +21,7 @@ export const config: SiteConfig = {
       'v1.1.1 rebuilds the digital mode after v1.1.0 was withdrawn the same day it shipped: ' +
       'human-playability rebuild + 12-round pacing + mandate victory + rent surfacing. ' +
       'Opt-in beta — meaningfully better than v1.1.0, but not yet cold-walked end-to-end.',
-    primaryCta: { href: 'digital-mode/sovereign-solo.html', label: 'Play the digital mode (beta)' },
+    primaryCta: { href: 'release/digital-mode/sovereign-solo.html', label: 'Play the digital mode (beta)' },
     secondaryCta: { href: 'handbook/', label: 'Read the Handbook' },
     previews: [],
   },
