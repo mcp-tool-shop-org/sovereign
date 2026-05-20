@@ -4,7 +4,7 @@ export const config: SiteConfig = {
   title: 'Sovereign · The Hamilton System Board Game',
   description:
     'A Hamilton-system economic board game and its solo / digital adaptation. ' +
-    'Digital mode is v1.1.1 beta after the v1.1.0 withdrawal and rebuild.',
+    'Digital mode is v1.1.2 beta: ends when a player carries their faction around the Republic four times.',
   logoBadge: 'S',
   brandName: 'Sovereign',
   repoUrl: 'https://github.com/mcp-tool-shop-org/sovereign',
@@ -13,13 +13,13 @@ export const config: SiteConfig = {
     'MIT Licensed — built by <a href="https://mcp-tool-shop.github.io/" style="color:var(--color-muted);text-decoration:underline">MCP Tool Shop</a>',
 
   hero: {
-    badge: 'v1.1.1 · Digital mode beta',
+    badge: 'v1.1.2 · Digital mode beta',
     headline: 'Sovereign',
     headlineAccent: 'Founding Credit.',
     description:
       'A Hamilton-system Monopoly-grammar board game and its solo / digital adaptation. ' +
-      'v1.1.1 rebuilds the digital mode after v1.1.0 was withdrawn the same day it shipped: ' +
-      'human-playability rebuild + 12-round pacing + mandate victory + rent surfacing. ' +
+      'The game ends when one player carries their faction around the Republic four times. ' +
+      'Whoever holds the strongest ledger at that moment wins — not necessarily the one who got there first. ' +
       'Opt-in beta — meaningfully better than v1.1.0, but not yet cold-walked end-to-end.',
     primaryCta: { href: 'release/digital-mode/sovereign-solo.html', label: 'Play the digital mode (beta)' },
     secondaryCta: { href: 'handbook/', label: 'Read the Handbook' },
@@ -39,19 +39,19 @@ export const config: SiteConfig = {
           title: 'Treasury / Finance',
           desc:
             'Public Credit ramp, federal debt, the Bank of the United States. ' +
-            'The historically dominant path — 51% wins at v1.1.1 (12-round mandate model).',
+            'The historically dominant path — 56% wins at v1.1.2 (circuit-victory model).',
         },
         {
           title: 'Merchant / Infrastructure',
           desc:
             'Routes, ports, internal improvements, the commerce of the republic. ' +
-            'Strong economy without depending on Acts of Congress. 33% wins at v1.1.1.',
+            'Strong mid-game economy. 19% wins at v1.1.2 — Merchant peaks faster than the longer arc rewards.',
         },
         {
           title: 'Manufacturer / Industry',
           desc:
             'Manufactures, Strategic Industry, Industrial Capacity scoring. ' +
-            'Requires deliberate sponsorship — but viable. 16% wins at v1.1.1.',
+            'Longer games let industrial sets mature — 25% wins at v1.1.2, the strongest Manufacturer share yet.',
         },
       ],
     },

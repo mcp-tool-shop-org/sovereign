@@ -19,7 +19,7 @@
 
 ---
 
-> **Status — v1.1.1 (beta).** v1.1.0 was withdrawn the same day it shipped (2026-05-20) after a cold human play session surfaced two structural playability failures the simulation audits could not catch. v1.1.1 is the rebuild: human-playability rebuild + 12-round pacing + mandate victory model + rent surfacing. It is **opt-in beta**: the digital mode here is shipped because it is meaningfully better than v1.1.0, but it has not been cold-walked end-to-end. The printable board game remains stable at v0.2. See `CHANGELOG.md` for the full delta and beta caveats.
+> **Status — v1.1.2 (beta).** v1.1.0 was withdrawn the same day it shipped (2026-05-20). v1.1.1 rebuilt the digital mode with playability fixes + 12-round pacing + a mandate victory threshold but still felt too short. v1.1.2 swaps the round-cap end condition for a **circuit-based** end condition: the game ends when one player has carried their faction around the Republic four times. Median game length ~23 rounds / 67 turns (1.9× v1.1.1). The player who triggers the end doesn't automatically win — the highest Influence at Final Accounting does. The printable board game remains stable at v0.2. See `CHANGELOG.md` for the full delta and beta caveats.
 
 ---
 
@@ -28,8 +28,8 @@
 Sovereign is a **Hamilton-system Monopoly-grammar board game** about the founding of US public credit, plus a **solo / digital adaptation** that runs the same rules locally in a browser against two deterministic scripted opponents.
 
 - **Board game** — printable 34-sheet edition. 40-space board, 22 properties + 4 routes + 2 institutions, 8 color systems, 7 Acts of Congress in fixed historical order, 4 player roles, 3 shared tracks (Public Credit · Public Resistance · Industrial Capacity), 12+12 event cards. Two viable economic paths beyond Treasury: Merchant and Manufacturer. v0.2 balance, frozen.
-- **Digital mode** — single self-contained HTML file. 12-round game with mandate victory model: from round 8 onward, a player with 15 Influence and a 5-point lead triggers Final Accounting and ends the game. If no mandate, the game ends at the round-12 hard cap. Deterministic mulberry32 RNG, scripted AI opponents (Treasury / Finance, Merchant / Infrastructure, Manufacturer / Industry), save / load with hash integrity, replay scrubber, designer-gated batch simulation tool.
-- **Balance baseline** — 12-round mandate model (v1.1.1 beta): Treasury 51 % · Merchant 33 % · Manufacturer 16 % (CANONICAL × 100). All three profiles win mandates; no profile is locked out. The underlying v0.18 mechanics (Credit Crisis, cash IP scoring, Industrial Charter, set completion bonuses) are preserved byte-identical from the v0.3 → v0.10 → v0.18 design arc driven by 1,000+ deterministic simulation games.
+- **Digital mode** — single self-contained HTML file. Circuit-based end condition: the game ends when one player completes their fourth crossing of Treasury Opens. Median game length ~23 rounds (67 turns). At Final Accounting the highest-Influence player wins, *not necessarily the one who got around the board first*. Hard cap stays at round 30 as safety (never fires in CANONICAL × 100). Deterministic mulberry32 RNG, scripted AI opponents (Treasury / Finance, Merchant / Infrastructure, Manufacturer / Industry), save / load with hash integrity, replay scrubber, designer-gated batch simulation tool.
+- **Balance baseline** — circuit model (v1.1.2 beta): Treasury 56 % · Merchant 19 % · Manufacturer 25 % (CANONICAL × 100). All three profiles win meaningfully; Manufacturer rises in longer games as industrial sets have time to mature; Merchant share drops as routes are less dominant when cash gets spent on upgrades over a longer arc. The underlying v0.18 mechanics (Credit Crisis, cash IP scoring, Industrial Charter, set completion bonuses) are preserved byte-identical from the v0.3 → v0.10 → v0.18 design arc driven by 1,000+ deterministic simulation games.
 
 ---
 
@@ -101,7 +101,7 @@ See [`SECURITY.md`](./SECURITY.md) for vulnerability reporting and the full secu
 
 ## Features
 
-- **Solo 12-round game with mandate victory** vs. two scripted opponents (Treasury / Finance and Merchant / Infrastructure by default; Manufacturer / Industry available for batch play). Mandate triggers from end of round 8 if a player holds 15 Influence and a 5-point lead. Otherwise the game ends at the round-12 hard cap.
+- **Solo circuit-victory game** vs. two scripted opponents (Treasury / Finance and Merchant / Infrastructure by default; Manufacturer / Industry available for batch play). The game ends when one player completes their fourth crossing of Treasury Opens. Median ~23 rounds / 67 turns. Highest Influence at Final Accounting wins.
 - **Deterministic AI** — every opponent decision is a pure function of visible state with a ledgered reason. No LLM, no opaque magic.
 - **8 game surfaces** — Board, Treasury Panel, Asset Inspector, Event Drawer, Acts of Congress, Shared Tracks, Turn Log / Ledger, Endgame Report.
 - **Auctions** — declined assets go to multi-player auction with profile-driven scripted bidding.
@@ -127,11 +127,12 @@ The fourth concept-doc profile (Opportunist / Cash) is deferred. The locked v0.1
 
 ## Known caveats
 
-- **v1.1.1 is a beta.** The digital mode has been audited against the simulation diagnostics and the in-HTML CANONICAL × 100 batch returned 62 / 100 mandate triggers (vs predicted 67), 51 / 33 / 16 winner split exactly as predicted. It has **not** been cold-walked end-to-end by a fresh human player; behavioral adaptation (how players actually behave once they know about the mandate) is unmeasured. Treat it as opt-in until you've walked it yourself.
-- **AI profiles do not yet race for the mandate.** They run the same v0.18 decision functions, which means they play to accumulate Influence over a full game, not to hit the 15-IP threshold quickly. A future version will tune profile decisions for mandate awareness. Real human players may behave differently.
-- **Bankruptcy is a soft pressure dynamic at 12 rounds.** ~7 / 100 events in CANONICAL × 100 with mandate (down from ~18 / 100 without mandate, because games end earlier). Worth observing in cold play.
-- **Treasury / Finance remains intentionally strongest**, within the target band. This matches the historical thesis: public credit + federal finance were Hamilton's dominant economic lever.
-- **Failure events (Default / Rebellion) remain mostly decorative.** Credit Crisis fires ~2 / 100 at 12 rounds. The escalation system has more time to compound but still rarely reaches Default or Rebellion. Future versions may revisit fail-state pressure.
+- **v1.1.2 is a beta.** Numbers from the diagnostic held on the in-HTML batch sim (100 / 100 games trigger circuit-end, median 23 rounds, 56 / 19 / 25 winner split). It has **not** been cold-walked end-to-end by a fresh human player. Treat it as opt-in until you've walked it yourself.
+- **AI profiles do not yet race for circuits.** They run v0.18 decision functions — playing to accumulate Influence rather than racing to the fourth circuit. Real human players may behave very differently once they understand the end condition.
+- **Trigger ≠ winner.** The player who completes the fourth circuit only wins by Influence in about a third of games. This is intentional — Final Accounting rewards economic depth, not speed around the board. Endgame copy makes the distinction explicit.
+- **Late Republic stretch is long with no Acts.** Acts still fire in rounds 1-7. Median play is ~23 rounds, leaving ~16 rounds of Late Republic with no new political shocks. If this feels empty in cold play, the next fix is an Acts redistribution pass, not a return to mandate.
+- **Treasury / Finance remains intentionally strongest**, within the target band. Matches the historical thesis: public credit + federal finance were Hamilton's dominant economic lever.
+- **Failure events (Default / Rebellion) remain mostly decorative.** Credit Crisis fires occasionally; Default and Rebellion almost never. The escalation system has more time to compound but still rarely reaches the top tiers. Future versions may revisit fail-state pressure.
 
 ---
 

@@ -1187,15 +1187,32 @@ html, body { font-size:15px; }
   font-family:var(--ui); font-size:10.5px; letter-spacing:.06em;
   font-weight:800; color:var(--foil); margin-left:4px;
 }
-.positions-strip .pos-mandate {
+.positions-strip .pos-circuits {
   font-family:var(--ui); font-size:9.5px; letter-spacing:.12em;
   text-transform:uppercase; font-weight:800;
+  color:var(--neutral);
   margin-top:3px;
-  padding:2px 7px;
-  background:var(--foil); color:var(--ink);
-  border:1px solid var(--ink); display:inline-block;
+  display:inline-flex; align-items:center; gap:5px;
 }
-
+.positions-strip .pos-circuits .v {
+  font-family:var(--mono); font-weight:700; font-size:10.5px; letter-spacing:.04em;
+  color:var(--ink);
+  padding:1px 5px 1px;
+  background:var(--parchment-2);
+  box-shadow:inset 0 0 0 1px var(--rule-soft);
+  border-radius:2px;
+}
+.positions-strip .pos-row.is-active .pos-circuits .v {
+  background:var(--ink); color:var(--parchment);
+  box-shadow:inset 0 0 0 1px var(--ink);
+}
+.positions-strip .pos-row.circuit-warning .pos-circuits {
+  color:var(--foil);
+}
+.positions-strip .pos-row.circuit-warning .pos-circuits .v {
+  background:var(--foil); color:var(--ink);
+  box-shadow:inset 0 0 0 1px var(--foil);
+}
 /* =====================================================================
    PORTFOLIO STRIP — compact "your holdings" near the action rail
    ===================================================================== */
@@ -1821,7 +1838,7 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
   <header class="topbar">
     <div class="brand">
       <div class="eyebrow">Solo / Digital Mode · The Hamilton System</div>
-      <div class="title">Sovereign<span class="title-mode">Federal economy in twelve rounds</span></div>
+      <div class="title">Sovereign<span class="title-mode">Federal economy · first to four circuits</span></div>
       <div class="sub">Steer the early American republic through debt, credit, public resistance, and industrial capacity. The ledger on the right records every payment, vote, track shift, and event.</div>
     </div>
     <div class="controls">
@@ -1835,7 +1852,7 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
       <button id="btnBatch" title="Run a scripted batch of 10 / 50 / 100 games">Balance Sweep</button>
       <button id="btnNewSeed">New game</button>
       <button id="btnReset">Restart this game</button>
-      <span class="version-pill" title="Build provenance · no mechanic change since v0.18 candidate">v0.18 · Phase 6.1</span>
+      <span class="version-pill" title="Build provenance · circuit-victory candidate · v0.21">v0.21 · circuit-victory · target <span id="circuitTargetPill">4</span></span>
     </div>
   </header>
 
@@ -1915,7 +1932,7 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
 <div class="lap-recap-overlay hidden" id="lapRecapOverlay" role="dialog" aria-modal="true">
   <div class="lap-recap">
     <div class="eyebrow">§ Round closes</div>
-    <h2 id="lapRecapTitle">Round 1 of 12</h2>
+    <h2 id="lapRecapTitle">Round 1</h2>
     <div class="lap-sub" id="lapRecapSub">After round 1</div>
     <div class="recap-body" id="lapRecapBody"></div>
     <div class="recap-meta" id="lapRecapMeta"></div>
@@ -2006,7 +2023,7 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
       </div>
       <div class="tour-row">
         <div class="tour-num">2</div>
-        <div><strong>Each round, every player takes one turn</strong> — twelve rounds total. Passing Treasury Opens is a board circuit; a round is not a full lap around the board.</div>
+        <div><strong>Each round, every player takes one turn.</strong> The game does not end by a turn-counter — it ends by state. Pass Treasury Opens to complete a board circuit; build income and influence between crossings.</div>
       </div>
       <div class="tour-row">
         <div class="tour-num">3</div>
@@ -2018,7 +2035,7 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
       </div>
       <div class="tour-row">
         <div class="tour-num">5</div>
-        <div><strong>The mandate</strong> — from round 8 onward, a player with 15 Influence and a 5-point lead can claim the mandate and trigger Final Accounting. If no one does, the game ends after round 12.</div>
+        <div><strong>Four times around ends it.</strong> The game ends when one of you has carried your faction around the Republic four times. Whoever holds the strongest ledger at that moment wins — not necessarily the one who got there first.</div>
       </div>
     </div>
 
@@ -2457,7 +2474,7 @@ const NARRATION = {
     x: '',
   },
   'endgame · republic-summary': {
-    h: 'Your Republic, after twelve rounds',
+    h: 'Your Republic, at Final Accounting',
     d: '',
     x: '',
   },
@@ -2811,11 +2828,11 @@ function initialState(seed) {
   const rng = makeRng(seed);
   const players = [
     { idx:0, name:'You',      profile:'human',                  role:'Treasury Architect',
-      cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false },
+      cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false, circuitsCompleted:0 },
     { idx:1, name:'Hamilton', profile:'treasury-finance',       role:'Treasury / Finance',
-      cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false },
+      cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false, circuitsCompleted:0 },
     { idx:2, name:'Morris',   profile:'merchant-infrastructure', role:'Merchant / Infrastructure',
-      cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false },
+      cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false, circuitsCompleted:0 },
   ];
   return {
     rngSeed: seed, rng, lap: 1, turnIndex: 0, activePlayerIndex: 0,
@@ -2878,24 +2895,26 @@ let TURN_SNAPSHOTS = [];
 let NARRATION_LOG = [];
 let NARRATION_ENABLED = true;
 const AUTOSAVE_KEY = 'sovereign.autosave';
-const SAVE_VERSION = 'v0.20-mandate-candidate';
-const TOTAL_ROUNDS = 12;
+const SAVE_VERSION = 'v0.21-circuit-candidate';
+/* HARD_CAP_ROUNDS is a safety net for pathological games; the diagnostic
+   showed 100 % of CANONICAL games complete Race N=4 by round 28. The game
+   ends by state (first to N circuits), not by clock. */
+const HARD_CAP_ROUNDS = 30;
 const LATE_REPUBLIC_START = 8;
 
-/* Mandate victory model — designer-overridable via URL in ?designer=1 mode */
-const MANDATE = (function() {
-  const def = { threshold: 15, lead: 5, minRound: 8, hardCap: 12 };
+/* Circuit victory model — designer-overridable via URL in ?designer=1 mode.
+   target = number of board circuits required to trigger Final Accounting.
+   A circuit is one PASS_TREASURY_OPENS event (landed or passed).
+   Default 4 — chosen because (a) 100 % of CANONICAL games complete by
+   round 28, (b) median ~23 rounds / ~67 turns feels right, (c) N=5 has
+   ~22 % hard-cap fallback, (d) N=6 almost never triggers. */
+const CIRCUIT_VICTORY = (function() {
+  const def = { target: 4, hardCap: HARD_CAP_ROUNDS };
   try {
     const params = new URLSearchParams(window.location.search);
     if (params.get('designer') === '1') {
-      const t = parseInt(params.get('mandate_threshold'), 10);
-      const l = parseInt(params.get('mandate_lead'), 10);
-      const m = parseInt(params.get('mandate_min_round'), 10);
-      const c = parseInt(params.get('mandate_hard_cap'), 10);
-      if (Number.isFinite(t)) def.threshold = t;
-      if (Number.isFinite(l)) def.lead = l;
-      if (Number.isFinite(m)) def.minRound = m;
-      if (Number.isFinite(c)) def.hardCap = c;
+      const n = parseInt(params.get('circuit_target'), 10);
+      if (Number.isFinite(n) && n >= 1 && n <= 10) def.target = n;
     }
   } catch (e) {}
   return def;
@@ -3093,6 +3112,35 @@ function reduce(s, action) {
       const pIdx = s.activePlayerIndex;
       const amount = action.landed ? 400 : 200;
       s = adjustCash(s, amount, action.landed ? 'Treasury Opens: landed' : 'Treasury Opens: passed', pIdx);
+      /* v0.21 circuit-victory model — every PASS_TREASURY_OPENS is one
+         board circuit for the active player. The payday math above is
+         unchanged from v0.20; circuit counting is layered on top. */
+      s.players[pIdx].circuitsCompleted += 1;
+      const c = s.players[pIdx].circuitsCompleted;
+      const T = CIRCUIT_VICTORY.target;
+      const pName = s.players[pIdx].name;
+      /* Per-circuit narration in human voice — only for circuits below the trigger.
+         Circuit T fires its own MANDATE row below; emitting both would be redundant. */
+      if (c < T) {
+        const circuitDetail = (c === 1)
+          ? pName + ' finishes their first lap around the Republic.'
+          : (c === 2)
+            ? pName + ' is two circuits in.'
+            : pName + ' is three deep. One more pass and the books close.';
+        s = logRow(s, { actor:'System', event:'CIRCUIT', detail: circuitDetail, cls:'event' });
+      }
+      if (c >= T) {
+        s.circuitTrigger = {
+          playerIdx: pIdx, playerName: pName,
+          round: s.lap, turn: s.turnIndex,
+          circuits: c, target: T,
+          influence: scorePlayer(s, pIdx).total,
+        };
+        s = logRow(s, { actor:'System', event:'MANDATE',
+          detail: pName + ' has been around four times. The books close. Final Accounting.',
+          cls:'event' });
+        return reduce(s, { type:'END_GAME' });
+      }
       return s;
     }
 
@@ -3300,35 +3348,19 @@ function reduce(s, action) {
     }
 
     case 'END_TURN': {
+      if (s.status === 'gameOver') return s;
       s.activePlayerIndex = (s.activePlayerIndex + 1) % s.players.length;
       s.phase = 'awaiting-roll';
       if (s.activePlayerIndex === 0) {
-        /* End-of-round mandate check (rounds 8–11). Mandate fires if a player
-           has Influence ≥ MANDATE.threshold AND a lead of ≥ MANDATE.lead
-           over second place. Sole highest-Influence holder triggers; ties for
-           highest do not trigger. Evaluated before round/lap advances. */
-        if (s.lap >= MANDATE.minRound && s.lap < MANDATE.hardCap) {
-          const scored = s.players.map((p, idx) => ({ idx, name: p.name, total: scorePlayer(s, idx).total }));
-          const sorted = scored.slice().sort((a, b) => b.total - a.total);
-          const top = sorted[0], second = sorted[1];
-          const eligible = top.total >= MANDATE.threshold && (top.total - second.total) >= MANDATE.lead;
-          const sharedTop = scored.filter(x => x.total === top.total).length > 1;
-          if (eligible && !sharedTop) {
-            s.mandateTrigger = {
-              playerIdx: top.idx, playerName: top.name,
-              round: s.lap, influence: top.total, lead: top.total - second.total,
-              threshold: MANDATE.threshold, leadRequired: MANDATE.lead,
-            };
-            s = logRow(s, { actor:'System', event:'MANDATE',
-              detail: top.name + ' claims the mandate · ' + top.total + ' Influence · lead ' + (top.total - second.total) + ' over ' + second.name,
-              cls:'event' });
-            return reduce(s, { type:'END_GAME' });
-          }
-        }
-        /* Full round done · advance lap */
+        /* v0.21 — Victory is now state-based (first to CIRCUIT_VICTORY.target
+           circuits, evaluated inside PASS_TREASURY_OPENS). No end-of-round
+           mandate check. We still keep a hard cap at HARD_CAP_ROUNDS as a
+           safety net against pathological games; the diagnostic showed
+           this essentially never fires. */
         s.lap += 1;
-        if (s.lap > TOTAL_ROUNDS) {
-          s = logRow(s, { actor:'System', event:'GAME OVER', detail: TOTAL_ROUNDS + ' rounds complete · scoring', cls:'event' });
+        if (s.lap > HARD_CAP_ROUNDS) {
+          s = logRow(s, { actor:'System', event:'GAME OVER',
+            detail: HARD_CAP_ROUNDS + ' rounds in. No one made it around four times. The books close anyway.', cls:'event' });
           return reduce(s, { type:'END_GAME' });
         }
         s = logRow(s, { actor:'System', event:'LAP', detail:'Begin lap ' + s.lap, cls:'event' });
@@ -3350,6 +3382,8 @@ function reduce(s, action) {
 }
 
 function finishLanding(s) {
+  /* v0.21 — short-circuit if circuit victory already fired during this move */
+  if (s.status === 'gameOver') return s;
   /* Preserve live sub-phases set by cards (auctions, choices). */
   if (s.phase === 'auction')     return s;
   if (s.phase === 'card-choice' && s.pendingCard) return s;
@@ -3558,7 +3592,7 @@ function renderBoard() {
     <div class="bc-eyebrow">Sovereign · Hamilton System</div>
     <div class="bc-title">Founding Credit</div>
     <div class="bc-sub">Fund the debt. Build the bank. Industrialize the republic.</div>
-    <div class="bc-lap" id="bcLap">Round 1 of 12</div>
+    <div class="bc-lap" id="bcLap">Round 1</div>
     <div class="bc-tracks">
       <span class="t credit">Credit<span class="v" id="bcCredit">5</span></span>
       <span class="t resist">Resist<span class="v" id="bcResist">2</span></span>
@@ -3616,7 +3650,7 @@ function applyOwnership() {
     /* Your own active space pulse */
     if (youCell) youCell.classList.add('active-space');
   }
-  document.getElementById('bcLap').textContent = 'Round ' + Math.min(STATE.lap, TOTAL_ROUNDS) + ' of ' + TOTAL_ROUNDS + (STATE.lap >= LATE_REPUBLIC_START ? ' · Late Republic' : '');
+  document.getElementById('bcLap').textContent = 'Round ' + STATE.lap + (STATE.lap >= LATE_REPUBLIC_START ? ' · Late Republic' : '');
   document.getElementById('bcCredit').textContent = STATE.tracks.credit.value;
   document.getElementById('bcResist').textContent = STATE.tracks.resistance.value;
   document.getElementById('bcIndust').textContent = STATE.tracks.capacity.value;
@@ -3920,39 +3954,27 @@ function renderControls() {
   if (phase !== 'game-over') {
     const strip = el('div', 'positions-strip');
     STATE.players.forEach((p, idx) => {
-      const row = el('div', 'pos-row p' + idx + (STATE.activePlayerIndex === idx ? ' is-active' : ''));
+      const circuitsDone = p.circuitsCompleted || 0;
+      const target = CIRCUIT_VICTORY.target;
+      const oneFromVictory = circuitsDone === target - 1;
+      const rowCls = 'pos-row p' + idx
+        + (STATE.activePlayerIndex === idx ? ' is-active' : '')
+        + (oneFromVictory && STATE.phase !== 'game-over' ? ' circuit-warning' : '');
+      const row = el('div', rowCls);
       const glyph = idx === 0 ? (p.glyph || '§') : (p.name?.[0] || ['Y','H','M'][idx]);
       const where = SPACES[p.position]?.name || ('space ' + p.position);
-      /* Show current Influence (mandate score) inline */
+      /* Show current Influence inline */
       const ip = scorePlayer(STATE, idx).total;
-      /* Mandate distance badge — leader only, only from MANDATE.minRound onward */
-      let mandateBadge = '';
-      if (STATE.lap >= MANDATE.minRound && STATE.phase !== 'game-over') {
-        const scored = STATE.players.map((pl, i) => ({ idx: i, total: scorePlayer(STATE, i).total }));
-        const sorted = scored.slice().sort((a, b) => b.total - a.total);
-        const top = sorted[0], second = sorted[1];
-        if (idx === top.idx && top.total > second.total) {
-          const fromThreshold = MANDATE.threshold - top.total;
-          const fromLead = MANDATE.lead - (top.total - second.total);
-          let badgeText;
-          if (fromThreshold > 0 && fromLead > 0) {
-            badgeText = fromThreshold + ' from threshold · +' + fromLead + ' lead needed';
-          } else if (fromThreshold > 0) {
-            badgeText = fromThreshold + ' from threshold';
-          } else if (fromLead > 0) {
-            badgeText = 'lead ' + (top.total - second.total) + ' of ' + MANDATE.lead;
-          } else {
-            badgeText = 'mandate eligible';
-          }
-          mandateBadge = '<div class="pos-mandate">' + badgeText + '</div>';
-        }
-      }
+      /* Circuit badge — every player, always visible. Active player highlighted;
+         brightens to foil when one circuit from victory. */
+      const circuitBadge = '<div class="pos-circuits" title="Board circuits completed">'
+        + 'Circuits <span class="v">' + circuitsDone + ' / ' + target + '</span></div>';
       row.innerHTML = '<div class="pos-tok"><span>' + glyph + '</span></div>' +
                       '<div>' +
                         '<div class="pos-name">' + p.name + '</div>' +
                         '<div class="pos-space">' + where + '</div>' +
                         '<div class="pos-cash">' + p.cash.toLocaleString('en-US') + ' \u00b7 <span class="pos-ip">' + ip + ' IP</span></div>' +
-                        mandateBadge +
+                        circuitBadge +
                       '</div>';
       strip.appendChild(row);
     });
@@ -4163,7 +4185,12 @@ function renderControls() {
   }
   else if (phase === 'game-over') {
     document.body.classList.add('endgame-active');
-    addBanner('Twelve rounds complete', 'The founding struggle has ended. Final tally posted in the report.', '', [
+    const _ct = STATE.circuitTrigger;
+    const eyebrow = _ct ? 'Final Accounting' : 'Thirty rounds in';
+    const prompt = _ct
+      ? _ct.playerName + ' rounded the Republic for the fourth time at round ' + _ct.round + '.'
+      : 'No one made it around four times. The books close anyway.';
+    addBanner(eyebrow, prompt, 'Final tally posted in the report.', [
       { label:'View final report', primary:true, onClick: () => document.getElementById('endgameView')?.scrollIntoView({behavior:'smooth', block:'start'}) },
     ], { endgame:true });
   }
@@ -4208,11 +4235,15 @@ function renderEndgame() {
   const _rebellionChip = _rebellionFired
     ? '<span class="posture-chip collapsed">Rebellion fired</span>'
     : '<span class="posture-chip avoided">No Rebellion</span>';
-  const _m = STATE.mandateTrigger;
-  const _endTitle = _m ? 'Final Accounting' : 'Twelve rounds complete';
-  const _endSub = _m
-    ? _m.playerName + ' claimed the mandate at round ' + _m.round + ' with ' + _m.influence + ' Influence, leading by ' + _m.lead + '.'
-    : 'No founder secured a mandate. The Republic decides by final accounting after twelve rounds.';
+  const _ct = STATE.circuitTrigger;
+  const _endTitle = _ct ? 'Final Accounting' : 'Thirty rounds in';
+  const _winnerName = STATE.players[winner.idx].name;
+  const _triggerWon = _ct && _ct.playerIdx === winner.idx;
+  const _endSub = _ct
+    ? (_triggerWon
+        ? _ct.playerName + ' carried the Republic around four times — and the ledger agreed.'
+        : _ct.playerName + ' rounded the Republic four times — but the heaviest ledger belonged to ' + _winnerName + '.')
+    : 'After ' + HARD_CAP_ROUNDS + ' rounds, none of you had carried the Republic around four times. The strongest ledger takes the day.';
   let html = `
     <h2>${_endTitle} <span class="surface-id">H</span></h2>
     <div class="sub">${_endSub}</div>
@@ -4475,6 +4506,9 @@ document.addEventListener('keydown', (e) => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('designer') === '1') document.body.classList.add('designer-mode');
   } catch (e) {}
+  /* Always sync the circuit-target pill so designer chrome reflects the URL flag */
+  const t = document.getElementById('circuitTargetPill');
+  if (t) t.textContent = String(CIRCUIT_VICTORY.target);
 })();
 
 /* Sidebar collapse — defaults to COLLAPSED so the board takes the stage. Persists to localStorage. */
@@ -4705,14 +4739,40 @@ function scanLedgerForToasts() {
       pushToast({ cls:'rebellion', eyebrow:'Catastrophe', title:'Rebellion', body:'Public Resistance reaches twelve. Revenue upgrades destroyed; Resistance resets to 6.' });
     } else if (row.event === 'AUCTION WIN' || (row.event === 'AUCTION' && /wins/i.test(row.detail || ''))) {
       pushToast({ eyebrow:'Auction settled', title: row.detail || 'Auction won', body:'' });
-    } else if (row.event === 'MANDATE') {
-      pushToast({ cls:'pass', eyebrow:'The mandate is claimed', title: row.detail, body:'The Republic moves to Final Accounting.' });
-    } else if (row.event === 'GAME OVER') {
-      const hadMandate = STATE.mandateTrigger;
-      if (hadMandate) {
-        pushToast({ eyebrow:'Final Accounting', title: hadMandate.playerName + ' claims the mandate', body: hadMandate.influence + ' Influence at round ' + hadMandate.round + ', lead ' + hadMandate.lead + ' over second place.' });
+    } else if (row.event === 'CIRCUIT') {
+      /* v0.21 — quiet circuit progress toast. Foil eyebrow on the
+         penultimate circuit so the player feels the noose tightening. */
+      const T = CIRCUIT_VICTORY.target;
+      const m = (row.detail || '').match(/circuit\s+(\d+)\s+of\s+(\d+)/i);
+      const completed = m ? parseInt(m[1], 10) : 0;
+      const oneShort = completed === T - 1;
+      if (oneShort) {
+        const actorName = row.actor === 'System' ? (STATE.players[STATE.activePlayerIndex]?.name || '') : row.actor;
+        const subject = (row.detail || '').split(' is three')[0].split(' is two')[0].split(' finishes')[0] || actorName;
+        pushToast({ cls:'pass', eyebrow:'Three deep',
+          title: row.detail,
+          body: subject + ' is one pass from closing the books.' });
       } else {
-        pushToast({ eyebrow:'Twelve rounds complete', title:'No founder secured a mandate', body:'The Republic decides by final accounting. View the report.' });
+        pushToast({ eyebrow:'Board circuit', title: row.detail, body:'' });
+      }
+    } else if (row.event === 'MANDATE') {
+      /* v0.21 — fired when a player completes their target circuit. */
+      const ct = STATE.circuitTrigger;
+      const title = ct
+        ? ct.playerName + ' has been around four times. The books close.'
+        : row.detail;
+      pushToast({ cls:'pass', eyebrow:'The books close', title,
+        body:'Final Accounting decides the rest.' });
+    } else if (row.event === 'GAME OVER') {
+      const hadCircuit = STATE.circuitTrigger;
+      if (hadCircuit) {
+        pushToast({ eyebrow:'Final Accounting',
+          title: hadCircuit.playerName + ' rounded the Republic four times',
+          body: hadCircuit.influence + ' Influence at round ' + hadCircuit.round + '. View the report.' });
+      } else {
+        pushToast({ eyebrow: HARD_CAP_ROUNDS + ' rounds in',
+          title:'No one made it four times around',
+          body:'The strongest ledger decides. View the report.' });
       }
     }
     /* Opponent narration — verbose play-by-play with profile-flavored voice */
@@ -4805,21 +4865,19 @@ function buildLapRecap(lap) {
   const youCash = STATE.players[0].cash;
   const sentences = [];
   sentences.push('Round ' + lap + ' closes.');
-  /* Mandate status from round MANDATE.minRound onward */
-  if (lap >= MANDATE.minRound) {
-    const scored = STATE.players.map((p, idx) => ({ idx, name: p.name, total: scorePlayer(STATE, idx).total }));
-    const sorted = scored.slice().sort((a, b) => b.total - a.total);
-    const top = sorted[0], second = sorted[1];
-    if (top.total === second.total) {
-      sentences.push(top.name + ' and ' + second.name + ' are tied at ' + top.total + ' Influence — no mandate yet.');
-    } else if (top.total >= MANDATE.threshold && (top.total - second.total) >= MANDATE.lead) {
-      sentences.push(top.name + ' has ' + top.total + ' Influence and leads by ' + (top.total - second.total) + '. Final Accounting begins.');
+  /* v0.21 — circuit progress instead of mandate status */
+  const circuitLeader = STATE.players
+    .map((p, idx) => ({ idx, name: p.name, circuits: p.circuitsCompleted || 0 }))
+    .sort((a, b) => b.circuits - a.circuits)[0];
+  const T = CIRCUIT_VICTORY.target;
+  if (circuitLeader && circuitLeader.circuits > 0) {
+    const tied = STATE.players.filter(p => (p.circuitsCompleted || 0) === circuitLeader.circuits).length > 1;
+    if (circuitLeader.circuits === T - 1 && !tied) {
+      sentences.push(circuitLeader.name + ' is three deep — one more pass and the books close.');
+    } else if (tied) {
+      sentences.push('The leaders are tied at ' + circuitLeader.circuits + ' circuits each.');
     } else {
-      const lead = top.total - second.total;
-      const need = [];
-      if (top.total < MANDATE.threshold) need.push((MANDATE.threshold - top.total) + ' more Influence');
-      if (lead < MANDATE.lead) need.push((MANDATE.lead - lead) + ' more lead');
-      sentences.push(top.name + ' leads with ' + top.total + ' Influence, but ' + need.join(' and ') + ' — no mandate yet.');
+      sentences.push(circuitLeader.name + ' leads with ' + circuitLeader.circuits + ' circuits.');
     }
   }
   if (passed.length > 0) {
@@ -4845,7 +4903,7 @@ function showLapRecap(lapEnded) {
   if (!STATE || STATE.status === 'gameOver') return;
   const overlay = document.getElementById('lapRecapOverlay');
   if (!overlay) return;
-  const title = 'Round ' + lapEnded + ' of ' + TOTAL_ROUNDS;
+  const title = 'Round ' + lapEnded + (lapEnded >= LATE_REPUBLIC_START ? ' · Late Republic' : '');
   const sub = 'A federalist accounting';
   const body = buildLapRecap(lapEnded);
   document.getElementById('lapRecapTitle').textContent = title;
@@ -5023,7 +5081,10 @@ function buildRepublicSummary(state) {
 
   const paras = [];
   /* Para 1 — verdict + headline numbers */
-  let p1 = 'After twelve rounds the republic’s books close. ';
+  const _ct = state.circuitTrigger;
+  let p1 = _ct
+    ? ('At round ' + _ct.round + ', ' + _ct.playerName + ' carried the Republic around for the fourth time, and the books closed. ')
+    : ('After ' + state.lap + ' rounds, none of you had carried the Republic around four times. The books closed anyway, and the strongest ledger took the day. ');
   if (won) {
     p1 += 'You hold the largest Influence position, with ' + score.total + ' points against ' + state.finalScores[1].total + ' for Hamilton and ' + state.finalScores[2].total + ' for Morris. ';
   } else {
@@ -5141,11 +5202,15 @@ function hideResumePill() { document.getElementById('resumePill').classList.add(
 
 function loadFromPayload(payload) {
   if (payload && payload.version === 'v0.18-candidate') {
-    showIoPill('This save is from an earlier game length and cannot be loaded. Start a new game to play the 12-round model.', true);
+    showIoPill('This save is from an earlier game length and cannot be loaded. Start a new game to play the circuit-victory model.', true);
     return false;
   }
   if (payload && payload.version === 'v0.19-pacing-candidate') {
-    showIoPill('This save is from before the mandate model and cannot be loaded. Start a new game to play the mandate victory candidate.', true);
+    showIoPill('This save is from before the circuit-victory model and cannot be loaded. Start a new game.', true);
+    return false;
+  }
+  if (payload && payload.version === 'v0.20-mandate-candidate') {
+    showIoPill('This save is from the withdrawn mandate-victory model and cannot be loaded. Start a new game to play the circuit-victory candidate.', true);
     return false;
   }
   if (!payload || (payload.version !== SAVE_VERSION && payload.version !== 'v0.10' && payload.version !== 'v0.11-candidate' && payload.version !== 'v0.12-candidate' && payload.version !== 'v0.13-candidate' && payload.version !== 'v0.14-candidate' && payload.version !== 'v0.15-candidate' && payload.version !== 'v0.16-candidate' && payload.version !== 'v0.17-candidate')) {

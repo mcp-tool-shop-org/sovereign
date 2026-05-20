@@ -5,6 +5,66 @@
 
 ---
 
+## v1.1.2 — Circuit victory + human voice — 2026-05-20
+
+**Beta.** Same day as v1.1.1, but a meaningfully different shape. After the v1.1.1 cold playthrough the game still felt too short and the ending too arbitrary — it ended because the clock ran out, not because someone won the Republic. v1.1.2 replaces the round-cap-with-mandate end condition with a **circuit-based** end condition tied to physical movement around the board.
+
+**The new end condition:**
+
+The game ends when one player has carried their faction around the Republic four times — i.e., completed their fourth crossing of Treasury Opens. At that moment, Final Accounting fires and the highest-Influence player wins, *not necessarily the player who got around first*. Hard cap stays at round 30 (a safety; essentially never fires — diagnostic showed 100 / 100 CANONICAL × 100 games complete by round 28).
+
+**Why this is structurally different from v1.1.1:**
+
+- v1.1.1: 12-round cap with mandate (15 IP + 5 lead) as early-trigger. Median 9 rounds, 36 turns. Ended by clock.
+- v1.1.2: no round cap that anyone hits in practice. Median **23 rounds / 67 turns** — about 1.9× the previous game length. Ends when somebody physically rounds the board for the fourth time.
+
+**CANONICAL × 100 (in-HTML batch sim):**
+
+| Metric | v1.1.1 (mandate) | v1.1.2 (circuit) |
+|---|---:|---:|
+| Triggered | 62 / 100 | 100 / 100 |
+| Median rounds | 9 | 23 |
+| Median turns | ~27 | 67 |
+| Treasury wins | 52 % | 56 % |
+| Merchant wins | 32 % | 19 % |
+| Manufacturer wins | 16 % | 25 % |
+| Avg winning IP | ~16 | 28.7 |
+| Avg lead margin | 5 | 7.9 |
+| Bankruptcy events | 7 | observed |
+| Safety-cap fires | n/a | 0 / 100 |
+
+Trade-off worth naming: Merchant share drops (32 → 19) while Manufacturer rises (16 → 25). Longer games give Treasury and Manufacturer time to compound industrial / financial scoring, where Merchant's route-rent advantage matures faster in shorter games. Treasury still doesn't run away — share stays in the band.
+
+**Trigger ≠ winner.** The player who completes the fourth circuit wins by Influence only 33 / 100 games. The other 67, somebody else holds the heavier ledger at termination. This is intentional — it preserves the "carry it across the line" feel while still rewarding economic depth. Endgame copy makes this explicit in both branches.
+
+**Human voice copy pass.** All circuit / endgame narration rewritten away from gameplay-jargon ("Circuit Victory", "trigger player", "claimed the Republic") toward narrative-voice ("Hamilton has been around four times. The books close.", "Hamilton rounded the Republic four times — but the heaviest ledger belonged to Morris."). Per-circuit ledger entries vary by circuit number — first lap, two circuits in, three deep, books close.
+
+**What's preserved from v1.1.1:**
+
+- All Pass 1 / Pass 2 chrome (action rail above board, positions strip, portfolio strip, collapsed sidebar, 26 px tokens, designer gate, dice overlay)
+- Pass 3 rent surfacing band
+- All v0.18 mechanics: card effects, Acts (still firing rounds 1-7), scoring math, rent math, profile decision functions, RNG, deck order, Credit Crisis / Default / Rebellion triggers
+- Designer URL flag: `?designer=1&circuit_target=N` for tuning the circuit threshold
+
+**What changed:**
+
+- `SAVE_VERSION = 'v0.21-circuit-candidate'`. v0.20 (v1.1.1) saves refuse to load with a friendly non-crash message.
+- Mandate threshold removed. No more 15-IP + 5-lead trigger; the game ends on the fourth circuit only.
+- Round counter on the chrome no longer reads "Round N of 12" — just "Round N" (and "· Late Republic" after round 7).
+- Acts still fire in rounds 1-7; rounds 8-onward are Late Republic with no new political shocks. **Open risk**: median play has ~16 rounds of Late Republic with no Acts firing. If cold play finds this stretch feels empty, the v1.1.3 fix is an Acts redistribution pass, not a return to mandate.
+
+**Beta caveats:**
+
+- Not yet cold-walked end-to-end by a fresh human player. Beta tag is the safety net.
+- Behavioral adaptation unmeasured: AI profiles still play current decision functions, not circuit-aware ones (e.g., Treasury doesn't yet race to hit the fourth circuit).
+- The Late Republic stretch (~16 rounds in median play with no Acts firing) is a known open risk. Worth flagging in any playtest notes.
+
+**npm history note:**
+
+v1.1.0 remains on npm as the historical withdrawn version. v1.1.1 (mandate beta) and v1.1.2 (circuit beta) are both published. `npm install @mcptoolshop/sovereign` resolves to v1.1.2 (`latest`).
+
+---
+
 ## v1.1.1 — Digital mode beta: human playability rebuild + 12-round pacing + mandate victory — 2026-05-20
 
 **Beta release.** Second attempt at the digital mode after v1.1.0 was withdrawn the same day it shipped (2026-05-20). v1.1.0 simulation-verified but failed first cold human play; v1.1.1 fixes the structural human-playability gaps that audit could not catch. Not fully cold-validated end-to-end; shipping as beta so anyone who wants the digital mode can opt in while the player experience continues to settle.
