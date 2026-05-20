@@ -30,9 +30,7 @@ Sovereign is a **Hamilton-system Monopoly-grammar board game** about the foundin
 
 ---
 
-## What's new in v1.1.0 (release candidate)
-
-> v1.1.0 is staged as a release candidate. No npm publish, no tag, no GitHub Release yet — the release train ships separately.
+## What's new in v1.1.0
 
 ### Failure-system foundation
 

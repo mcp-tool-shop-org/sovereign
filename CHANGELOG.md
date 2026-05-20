@@ -5,7 +5,7 @@
 
 ---
 
-## v1.1.0 (release candidate) — Failure-system foundation + whole-game visual polish — 2026-05-20
+## v1.1.0 — Failure-system foundation + whole-game visual polish — 2026-05-20
 
 Promotes the v0.18 failure-pressure foundation and the whole-game visual polish pass to the canonical Sovereign Solo / Digital Mode release surface. The digital artifact ships at `release/digital-mode/sovereign-solo.html`; the prior v0.10 canonical is archived alongside it as `sovereign-solo-v0.10-baseline.html` for historical reference and save-compatibility verification. The v0.18 in-HTML `SAVE_VERSION` remains `'v0.18-candidate'` — no mechanic changed across the polish pass, and that string is the canonical save-format identifier.
 
@@ -41,7 +41,7 @@ All 16 player-facing surfaces art-directed as one Federalist Treasury system: to
 
 v0.18 mechanics are simulation-verified across the canonical T/M/Mfg triplet (400 seeds) and the MFG-MIRROR variant (100 seeds). They are not yet human-playtested.
 
-**This entry covers Stage A only.** v1.1.0 is a release candidate; no npm publish, no tag, no GitHub release. The release train (translations, shipcheck, version bump in `package.json`, tag, npm publish, GH release, Pages verification) is a separate kickoff.
+Translation re-run required (README.md changed). Translations run locally via TranslateGemma before tag push, per the polyglot release ordering convention.
 
 ---
 
