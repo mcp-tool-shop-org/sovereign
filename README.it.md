@@ -15,7 +15,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Landing Page](https://img.shields.io/badge/landing-page-1F2D52?style=flat)](https://mcp-tool-shop-org.github.io/sovereign/)
 
-</div
+</div>
 
 ---
 
@@ -23,54 +23,9 @@
 
 Sovereign è un **gioco da tavolo "Hamilton System" ispirato a Monopoly**, incentrato sulla nascita del credito pubblico statunitense, e include un **adattamento completo per giocatore singolo / digitale** che esegue le stesse regole localmente in un browser, contro due avversari simulati e deterministici.
 
-- **Gioco da tavolo** — edizione stampabile in 34 pagine. Tabellone con 40 caselle, 22 proprietà + 4 percorsi + 2 istituzioni, 8 sistemi di colori, 7 Atti del Congresso in ordine storico fisso, 4 ruoli per giocatore, 3 tracciati condivisi (Credito Pubblico · Resistenza Pubblica · Capacità Industriale), 12+12 carte evento. Due percorsi economici validi oltre al Tesoro: Mercante e Produttore.
-- **Modalità digitale** — singolo file HTML autonomo. Macchina a stati completa, generatore di numeri casuali mulberry32 deterministico, avversari controllati dall'IA (Tesoro / Finanza, Mercante / Infrastrutture, Produttore / Industria), salvataggio / caricamento con controllo di integrità tramite hash, strumento di replay, strumento di simulazione batch, telemetria locale dell'equilibrio.
-- **Equilibrio di base** — l'equilibrio principale della versione 0.10 è stato mantenuto fino alla versione 1.1.0. Tesoro 60,0% · Mercante 23,5% · Produttore 16,5% (valori CANONICAL × 400 nella versione 0.18, con obiettivi di equilibrio raggiunti per tutti e tre i profili).
-- **Sistema di fallimento** — tre livelli: **Crisi del Credito** (Credito Pubblico ≤ 4, avviso), **Ribellione** (Resistenza Pubblica 12, catastrofe), **Default** (Credito Pubblico 0, catastrofe). Introdotto con la versione 1.1.0; i punti finali catastrofici sono invariati rispetto alla versione 0.10.
-
----
-
-## Novità nella versione 1.1.0
-
-### Fondamenta del sistema di fallimento
-
-La versione 1.1.0 introduce una gerarchia di fallimento a tre livelli. Il "Default" a Credito Pubblico 0 rimane la condizione di collasso finanziario catastrofico (si perdono il 50% della liquidità e 1 aggiornamento per giocatore). La "Ribellione" a Resistenza Pubblica 12 rimane il collasso politico catastrofico (gli aggiornamenti delle entrate vengono distrutti). Tra questi, un nuovo evento intermedio — **Crisi del Credito** — si attiva la prima volta che il Credito Pubblico scende a 4 o meno, aumenta la Resistenza di +1 e registra una riga nel registro. Non reimposta il Credito, non distrugge le risorse e non termina il gioco.
-
-Per rendere visibile il sistema di fallimento durante il gioco, quattro carte "pressione" ora riducono il Credito:
-
-| Carta | Effetto |
-|---|---|
-| Corsa agli sportelli | Credito Pubblico -1, Capacità Industriale -1 |
-| Febbre Speculativa (Credito ≥ 7) | Credito Pubblico -1, Resistenza +1, asta per entrate/debiti statali non posseduti |
-| Febbre Speculativa (Credito ≤ 6) | Credito Pubblico -2, Resistenza +1, asta per entrate/debiti statali non posseduti |
-| Pamphlet Anti-Federalista | Credito Pubblico -1, Resistenza +1, 30 TN per proprietà del sistema di entrate |
-
-L'Atto di Finanziamento al primo turno aggiunge ancora +2 Credito. Il punto finale catastrofico del "Default" rimane un limite drammatico, non un obiettivo di equilibrio; la "Crisi del Credito" fornisce il segnale attivo.
-
-Dati CANONICAL-400 (semi 2026 – 2425): Tesoro 60,0% · Mercante 23,5% · Produttore 16,5%. La "Crisi del Credito" si attiva 2 / 400 volte. Il "Default" si attiva 0 / 400 volte. La "Ribellione" si attiva 0 / 400 volte. La Resistenza ≥ 8 si mantiene a 0 / 400. Determinismo PASSATO. Dati completi in `experiments/v0.18-failure-pressure-candidate/sovereign-v0.18-evidence-sweep.html`.
-
-### Rifiniture visive generali
-
-Ogni elemento visibile al giocatore è stato progettato per essere coerente con il prodotto "Federalist Treasury":
-
-- Logo nella barra superiore + indicatore della modalità + una versione discreta (non più un'intestazione del dashboard di telemetria)
-- Overlay di presentazione iniziale che introduce i tre tracciati e i tre livelli di fallimento
-- Tessere del tabellone con fregi agli angoli, bande colorate del sistema, trattamenti distinti per istituzioni, percorsi, tasse e caselle evento
-- Le righe del registro per `CREDIT_CRISIS` / `DEFAULT` / `REBELLION` hanno trattamenti di gravità distinti (colore + bordo + etichetta — accessibili)
-- Il pannello dei tracciati indica la banda di avviso della "Crisi del Credito" (1–4) e i punti finali di "Default" e "Ribellione"
-- Il rapporto finale mostra i "chip di postura" (postura del credito / stato di crisi / stato di ribellione) sopra le colonne dei punteggi, con una narrazione che menziona esplicitamente gli esiti di "Crisi" / "Default" / "Ribellione"
-- La finestra di simulazione batch è stata rinominata "Esecuzione della prova dell'equilibrio"
-- Punto di interruzione reattivo ≤ 768 px e un foglio di stile per la stampa
-
-Il riferimento al sistema di progettazione e la verifica visiva dello stato dell'interfaccia, composta da quindici schermate, sono disponibili nella directory `release/design-system/`: questi elementi costituiscono la documentazione ufficiale di come appare l'interfaccia della versione 1.1.0.
-
-### Funzionalità preservate
-
-La verifica della promozione della versione 0.18 ha superato tutti i 44 controlli relativi all'origine, all'implementazione, alla regressione, alle prove di equilibrio/fallimento e alla preparazione della documentazione. L'hash dello stato di gioco canonico, generato con 100 "semi", è identico a livello di byte tra la simulazione Node della versione 0.18 e la versione HTML ottimizzata (`3189375454`). La variabile `SAVE_VERSION` rimane impostata su `'v0.18-candidate'` perché nessuna funzionalità è stata modificata durante il processo di ottimizzazione.
-
-### Avvertenza
-
-Le funzionalità della versione 1.1.0 sono state verificate tramite simulazione, utilizzando la tripla canonica T/M/Mfg (400 "semi") e la variante MFG-MIRROR (100 "semi"). Non sono ancora state testate da utenti umani.
+- **Gioco da tavolo** — prototipo stampabile in 34 pagine. Tabellone con 40 caselle, 22 proprietà + 4 tratte + 2 istituzioni, 8 sistemi di colori, 7 atti del Congresso in ordine storico fisso, 4 ruoli per giocatore, 3 percorsi condivisi (Credito Pubblico · Resistenza Pubblica · Capacità Industriale), 12+12 carte evento. Due percorsi economici validi oltre al Tesoro: Mercante e Produttore.
+- **Modalità digitale** — un singolo file HTML autonomo. Macchina a stati completa, generatore di numeri casuali deterministico mulberry32, avversari AI simulati (Tesoro / Finanza, Mercante / Infrastrutture, Produttore / Industria), salvataggio / caricamento con controllo dell'integrità tramite hash, strumento di riproduzione, strumento di simulazione batch, telemetria locale sull'equilibrio.
+- **Equilibrio di base** — v0.10, bloccato dopo un ciclo di nove versioni guidato da oltre 1000 simulazioni deterministiche. Tesoro 59% · Mercante 25% · Produttore 16% (CANONICAL × 100, intervallo target raggiunto per tutti e tre i profili).
 
 ---
 
@@ -99,7 +54,7 @@ Apri la pagina di destinazione ospitata all'indirizzo **<https://mcp-tool-shop-o
 
 ### Stampa e gioca
 
-Il prototipo del gioco da tavolo è un documento HTML autonomo in 34 pagine. Apri `release/board-game/sovereign-prototype.html` dal pacchetto (o da un download), quindi `Cmd/Ctrl-P → Salva come PDF → Formato US Letter → 100% di scala`. Ritaglia e gioca.
+Il prototipo del gioco da tavolo è un documento HTML autonomo in 34 pagine. Apri `release/board-game/sovereign-board-game.html` dal pacchetto (o da un download), quindi `Cmd/Ctrl-P → Salva come PDF → Formato US Letter → 100% di scala`. Ritaglia e gioca.
 
 ### Pacchetto di rilascio offline
 
@@ -200,4 +155,4 @@ MIT © mcp-tool-shop. Consultare il file [`LICENSE`](./LICENSE).
 
 Creato da <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
 
-</div
+</div>

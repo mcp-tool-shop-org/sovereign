@@ -15,7 +15,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Landing Page](https://img.shields.io/badge/landing-page-1F2D52?style=flat)](https://mcp-tool-shop-org.github.io/sovereign/)
 
-</div
+</div>
 
 ---
 
@@ -23,54 +23,9 @@
 
 Sovereign est un **jeu de société du type Monopoly, basé sur le système Hamilton**, qui traite de la création du crédit public américain, ainsi qu'une **adaptation complète pour un mode solo / numérique** qui exécute les mêmes règles localement dans un navigateur, contre deux adversaires simulés et déterministes.
 
-- **Jeu de société** — édition imprimable de 34 feuilles. Plateau de 40 cases, 22 propriétés + 4 routes + 2 institutions, 8 systèmes de couleurs, 7 actes du Congrès dans un ordre historique fixe, 4 rôles de joueurs, 3 pistes communes (Crédit public · Résistance publique · Capacité industrielle), 12 cartes d'événements + 12 cartes supplémentaires. Deux voies économiques viables en dehors du Trésor : le commerçant et le fabricant.
-- **Mode numérique** — un seul fichier HTML autonome. Machine d'état complète, générateur de nombres aléatoires mulberry32 déterministe, adversaires IA scriptés (Trésor / Finances, Commerçant / Infrastructures, Fabricant / Industrie), sauvegarde / chargement avec intégrité par hachage, outil de relecture, outil de simulation en lot, télémétrie locale de l'équilibre.
-- **Équilibre de base** — l'équilibre de base de la version 0.10 est conservé jusqu'à la version 1.1.0. Trésor : 60,0 % · Commerçant : 23,5 % · Fabricant : 16,5 % (valeurs canoniques × 400 à la base raffinée de la version 0.18 ; la plage cible est atteinte pour les trois profils).
-- **Système de défaillance** — trois niveaux : **Crise de crédit** (Crédit public ≤ 4, avertissement), **Rébellion** (Résistance publique à 12, catastrophe), **Défaut** (Crédit public à 0, catastrophe). Nouveau dans la version 1.1.0 ; les points de terminaison catastrophiques sont inchangés par rapport à la version 0.10.
-
----
-
-## Nouveautés dans la version 1.1.0
-
-### Fondation du système de défaillance
-
-La version 1.1.0 introduit une hiérarchie de défaillance en trois niveaux. Le défaut à Crédit public à 0 reste la condition d'effondrement financier catastrophique (perte de 50 % des liquidités + 1 amélioration par joueur). La rébellion à Résistance publique à 12 reste l'effondrement politique catastrophique (améliorations des revenus détruites). Entre les deux, un nouvel événement intermédiaire — **Crise de crédit** — se déclenche la première fois que le Crédit public tombe à 4 ou moins, augmente la Résistance de +1 et enregistre une ligne "Système" dans le registre. Il ne réinitialise pas le Crédit, ne détruit pas les actifs et ne met pas fin au jeu.
-
-Pour rendre la couche de défaillance réellement visible en jeu, quatre cartes de pression font maintenant baisser le Crédit :
-
-| Carte | Effet |
-|---|---|
-| Ruée bancaire | Crédit public −1, Capacité industrielle −1 |
-| Fièvre spéculative (Crédit ≥ 7) | Crédit public −1, Résistance +1, vente aux enchères des revenus/dettes de l'État non attribués |
-| Fièvre spéculative (Crédit ≤ 6) | Crédit public −2, Résistance +1, vente aux enchères des revenus/dettes de l'État non attribués |
-| Pamphlet anti-fédéraliste | Crédit public −1, Résistance +1, 30 TN par propriété du système de revenus |
-
-L'acte de financement au tour 1 ajoute toujours +2 Crédit. Le point de terminaison catastrophique du défaut est conservé comme une limite dramatique, et non comme un objectif d'équilibre ; la Crise de crédit indique l'état actuel.
-
-Preuves CANONICAL-400 (ensemences 2026 – 2425) : Trésor : 60,0 % · Commerçant : 23,5 % · Fabricant : 16,5 %. La Crise de crédit se déclenche 2 / 400 fois. Le défaut se déclenche 0 / 400 fois. La rébellion se déclenche 0 / 400 fois. La Résistance ≥ 8 se maintient à 0 / 400. Déterminisme : PASSÉ. Toutes les preuves sont disponibles à l'adresse `experiments/v0.18-failure-pressure-candidate/sovereign-v0.18-evidence-sweep.html`.
-
-### Améliorations visuelles générales
-
-Chaque élément visible par le joueur a été conçu avec soin pour créer un produit cohérent du Trésor fédéraliste :
-
-- Logo en haut de l'écran + indicateur de mode + version discrète (n'est plus un en-tête du tableau de bord de télémétrie)
-- Superposition d'introduction lors du premier chargement, présentant les trois pistes et les trois niveaux de défaillance
-- Tuiles du plateau avec des ornements d'angle, des bandes de couleurs du système, des traitements distincts pour les institutions, les routes, les impôts et les espaces d'événements
-- Les lignes du registre pour `CREDIT_CRISIS` / `DEFAULT` / `REBELLION` ont des traitements de gravité distincts (couleur + bordure + étiquette - adaptés à l'accessibilité)
-- Le panneau des pistes indique la bande d'avertissement de la Crise de crédit (1 à 4) et les points de terminaison du défaut et de la rébellion
-- Le rapport de fin de partie affiche des jetons de posture (posture du crédit / état de crise / état de rébellion) au-dessus des colonnes de score, avec une narration qui mentionne explicitement les résultats de la crise / du défaut / de la rébellion
-- La fenêtre de simulation en lot a été redéfinie sous le nom de "Exécution de la preuve de l'équilibre"
-- Point d'arrêt réactif ≤ 768 px et feuille de style pour l'impression
-
-La documentation de référence du système de conception et un audit visuel de quinze états sont disponibles dans le répertoire `release/design-system/` ; ce sont les éléments qui constituent l'enregistrement permanent de l'apparence de la version v1.1.0.
-
-### Fonctionnalités préservées
-
-L'audit de promotion de la version v0.18 a réussi les 44 vérifications concernant l'origine, l'implémentation, la régression, les preuves d'équilibre/d'échec et la préparation de la documentation. La valeur de hachage de l'état de jeu canonique (100 graines) est identique en termes de bytes entre la simulation Node de la version v0.18 et le code HTML optimisé (`3189375454`). La variable `SAVE_VERSION` reste `'v0.18-candidate'` car aucune fonctionnalité n'a été modifiée lors de l'optimisation.
-
-### Avertissement
-
-Les fonctionnalités de la version v1.1.0 ont été vérifiées par simulation sur le triplet canonique T/M/Mfg (400 graines) et sur la variante MFG-MIRROR (100 graines). Elles n'ont pas encore été testées par des utilisateurs humains.
+- **Jeu de société** — prototype imprimable en 34 feuilles. Plateau de 40 cases, 22 propriétés + 4 routes + 2 institutions, 8 systèmes de couleurs, 7 actes du Congrès dans un ordre historique fixe, 4 rôles de joueurs, 3 pistes communes (Crédit public · Résistance publique · Capacité industrielle), 12+12 cartes d'événements. Deux voies économiques viables en dehors du Trésor : le commerce et l'industrie.
+- **Mode numérique** — un seul fichier HTML autonome. Machine d'état complète, générateur de nombres aléatoires déterministe mulberry32, adversaires simulés (Trésor / Finance, Commerce / Infrastructure, Industrie / Production), sauvegarde / chargement avec intégrité de la somme de contrôle, outil de relecture, outil de simulation par lots, télémétrie locale de l'équilibre.
+- **Équilibre de base** — v0.10, figé après une série de neuf versions, basée sur plus de 1000 simulations de jeux déterministes. Trésor : 59 % · Commerce : 25 % · Industrie : 16 % (valeur canonique × 100, la plage cible est atteinte pour les trois profils).
 
 ---
 
@@ -99,7 +54,7 @@ Ouvrez la page d'accueil hébergée à l'adresse **<https://mcp-tool-shop-org.gi
 
 ### Imprimer et jouer
 
-Le prototype du jeu de société est un document HTML autonome en 34 feuilles. Ouvrez `release/board-game/sovereign-prototype.html` depuis le paquet (ou depuis un téléchargement), puis `Cmd/Ctrl-P → Enregistrer sous PDF → Format US Letter → 100 % de l'échelle`. Découpez et jouez.
+Le prototype du jeu de société est un document HTML autonome en 34 feuilles. Ouvrez `release/board-game/sovereign-board-game.html` depuis le paquet (ou depuis un téléchargement), puis `Cmd/Ctrl-P → Enregistrer sous PDF → Format US Letter → 100 % de l'échelle`. Découpez et jouez.
 
 ### Paquet de publication hors ligne
 
@@ -200,4 +155,4 @@ MIT © mcp-tool-shop. Voir le fichier [`LICENSE`](./LICENSE).
 
 Créé par <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
 
-</div
+</div>
