@@ -24,15 +24,22 @@ jobs:
         with:
           node-version: 22
 
-      - name: Upgrade npm to >=11.5 for OIDC trusted-publishing auth
+      - name: Install npm >=11.5 in sandbox for OIDC trusted-publishing auth
         run: |
-          # Double-install workaround for the in-place npm self-upgrade race
-          # (first attempt may fail with MODULE_NOT_FOUND on promise-retry as
-          # the running npm process replaces its own files mid-rebuild; the
-          # second attempt runs against the freshly-installed npm and completes).
-          npm install -g npm@latest || true
-          npm install -g npm@latest
-          echo "npm version after upgrade: $(npm --version)"
+          # The in-place 'npm install -g npm@latest' on Node 22's bundled npm
+          # 10.9 races on its own arborist rebuild and breaks irrecoverably
+          # (MODULE_NOT_FOUND: promise-retry). Workaround: install npm@latest
+          # as a regular dependency into a sandbox directory and prepend its
+          # bin to PATH. The system npm is left untouched; we just shadow it.
+          SANDBOX="$HOME/.npm-cli-sandbox"
+          mkdir -p "$SANDBOX"
+          pushd "$SANDBOX" >/dev/null
+          echo '{"name":"npm-cli-sandbox","version":"0.0.0","private":true}' > package.json
+          npm install --no-save --no-audit --no-fund --silent npm@latest
+          popd >/dev/null
+          echo "$SANDBOX/node_modules/.bin" >> "$GITHUB_PATH"
+          # Smoke-test the sandboxed npm
+          "$SANDBOX/node_modules/.bin/npm" --version
 
       - name: Verify tag matches package.json version
         run: |
