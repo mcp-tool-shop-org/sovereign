@@ -5,6 +5,117 @@
 
 ---
 
+## v1.4.0 — Strategic Depth + Federal Era + Chronicler — 2026-05-21
+
+**Beta.** First substantive feature release since v1.1.2 (circuit-victory). Adds three vertical slices on top of the circuit-victory base — strategic depth, strategic arc, and the Chronicler historical voice — without changing any reducer mechanics or scoring math. The v1.2, v1.2.1, and v1.3 internal candidates that drove this work were never published to npm; v1.4.0 consolidates all of them plus the Chronicler.
+
+### What's new vs v1.1.2
+
+**Strategic Depth** (internal codename v1.2 + v1.2.1 tuning)
+
+- Three **profile-locked Special Actions** (1/round per player):
+  - **Treasury**: *Issue Federal Bond* — pay TN to gain Credit +1 (gated to Credit ≤ 6) OR place a Bond marker that pays recurring income.
+  - **Merchant**: *Broker Route Contract* — mark a route or commerce asset; next auction/rent involving it pays Merchant a broker fee.
+  - **Manufacturer**: *Charter Workshop* — discount or accelerate upgrade on a Mfg / Strategic Industry asset (75 TN cost; may grant Capacity +1).
+- **6 HAND cards** with timing windows (hand cap 2, visible hand strip): Foreign Loan Secured, Bond Auction, Treaty Renegotiation, Credit Restored, Cabinet Bargain, Federalist Victory.
+- **Reform recovery action**: at Credit ≤ 4 OR Resistance ≥ 8, spend 2 IP (Influence debit) for Credit +1 OR Resistance −2. Real cost — IP is the win condition.
+- **Multi-stage Public Credit pressure**, *wrapping* v0.18's hierarchy (does not replace):
+  - Credit ≤ 6: **Public Doubt** (warning chrome + action-cost pressure)
+  - Credit ≤ 4: **Credit Crisis** (preserved v0.18 effect — Resistance +1 to all)
+  - Credit ≤ 2: **Panic** (30 TN levy + Resistance +1)
+  - Credit = 0: **Default** (preserved v0.18 effect — 50% cash loss + random upgrade loss)
+- **Per-profile reaction library** — deterministic, state-keyed snippets (~33 reactions per game) that give Hamilton, Morris, and Slater character voice on their own action moments.
+
+**Strategic Arc** (internal codename v1.3 — Federal Era + Profile Visions)
+
+- **8 Federal Era Events** firing every round from round 8 onward:
+  - 5 choice events: *Creditors Demand Payment*, *Public Works Petition*, *Route Monopoly Inquiry*, *Workshop Shortage*, *Speculation Inquiry*
+  - 3 auto-resolve events: *Bondholder Demand*, *Local Resistance Organizes*, *Final Republic Reckoning*
+- **3 Profile Visions** with +3 IP endgame bonus:
+  - **Federal Credit Architect** (Treasury): Public Credit ≥ 8 + Bank chartered or BUS owned + finance diversity (1+ Rev-Debt, 1+ State-Debt, 1+ National Finance)
+  - **Commerce Sovereign** (Merchant): 2+ routes + 1+ Commercial Infrastructure + 5+ broker/route income
+  - **Industrial Founder** (Manufacturer): Capacity ≥ 7 + 3+ Mfg/Strategic + 1+ Mfg/Strategic upgrade
+- **Vision progress strip** below the depth strip. **Late Republic emptiness** reduced from 8/100 → 2/100 (4-round empty windows in median play).
+- **Player-facing terminology corrected**: "Late Republic" → "Federal Era" (the historically accurate period name; "Late Republic" carries Roman-decline connotations that mis-frame the constructive Federalist project).
+
+**The Chronicler** (v1.4 — historical voice)
+
+- **Named third-person Chronicler** as the game's historical narrator. Period-flavored but readable register: Federalist-era diction (consequence, calibration, the Republic, manufactories) + semicolon-balanced parallels + present-tense historical framing. No faux-archaic Renaissance gibberish.
+- **14 event-bound Chronicler banners** firing on priority triggers (max 1 per round, ~6-8 per typical game):
+  - Founding Acts (7): Funding / Assumption / Bank Charter / Tariff Schedule / Coinage / Manufactures / Excise — both pass and fail outcomes
+  - Federal Era opening (round 8)
+  - Credit tier escalation: Public Doubt / Credit Crisis / Panic / Default
+  - Rebellion
+  - Reform first use
+  - Vision achievement
+  - Final Accounting trigger
+- **7 failed-Act Chronicler entries** with explicit **counterfactual framing**: "In our history Hamilton's Funding Act carried 32 to 29 in July of 1790; in your Republic, the soldier's discrimination found enough votes to bar the door." Cites real history (real vote tallies, real opposition figures) while acknowledging the game went differently.
+- **8 event-specific Federal Era Event captions** as always-visible italic lines on each Event banner — sourced from documented real-history anchors (Bank of the United States subscription July 4, 1791; Panic of 1792 / William Duer collapse March 9, 1792; Whiskey Rebellion Mingo Creek 1794; Robert Morris in Prune Street prison February 1798; etc.).
+- **Profile-reaction suppression** on shared events — when the Chronicler fires on a Crisis, the per-profile reactions for that Crisis are silenced. Chronicler is the table-voice; profile reactions are individual voices and don't duplicate the table-voice.
+- **Foil-bordered persistent Chronicler toast** with × dismiss button (other toasts auto-dismiss at ~3.8s). Allows players time to read the historical content. Respects the existing narration On / Minimal / Off setting (Off silences Chronicler too).
+- **Verified Historical Source Pack** governing all attributed quotes — 27 real quotes from Hamilton, Madison, Jefferson, Adams, Gallatin, Maclay, Freneau. Every quote traceable to founders.archives.gov, Wikisource, or Library of Congress URLs. **Zero fabricated attributions.** When an attributed quote is unavailable for a moment, the Chronicler narrates in unattributed period prose.
+
+### What's preserved from v1.1.2
+
+- **Circuit-triggered Final Accounting** — game ends when one player completes their 4th board circuit (crossing Treasury Opens). Median ~23 rounds / 67 turns. Hard cap at round 30 (safety; essentially never fires).
+- **Trigger ≠ winner** — the player who completes the 4th circuit wins by Influence only ~33% of games. Endgame copy has four branches (trigger wins / trigger achieved Vision but lost on IP / trigger wins but no Vision / hard cap).
+- **Pass 3 rent surfacing band**, Pass 1/2 chrome (action rail above board, positions strip, portfolio strip, sidebar collapsed by default, 26px tokens, designer gate, dice overlay, board tooltips).
+- **Per-circuit human-voice ledger narration** ("Hamilton finishes their first lap around the Republic" / "is two circuits in" / "is three deep. One more pass and the books close." / "has been around four times. The books close.").
+- **Round language** throughout (no player-facing "Lap").
+
+### Hard invariants (mechanics preserved byte-identical from v0.18)
+
+- All card effects (Market Shock + Republic Debate), all Act effects
+- Scoring math: cash IP 1 per 400 TN, NF Credit endgame bonus, Capacity bonuses, set completion, route counts, institution payments
+- Rent math (Pass 3 surfaces the existing values; does not change them)
+- Profile decision functions (Treasury / Merchant / Manufacturer / Industry) — opponents still pick optimally per their profile, not yet adapted for v1.4 mechanics
+- mulberry32 RNG, deck order, save/load/replay
+- Credit Crisis (Credit ≤ 4 once-only), Default (Credit = 0), Rebellion (Resistance = 12) trigger thresholds and effects — all preserved
+- No v0.14/v0.15 recovery gates ("panic conditions persist" string confirmed absent)
+
+### CANONICAL × 100 (v1.4 vs v1.1.2 baseline)
+
+| Metric | v1.1.2 | v1.4.0 | Tolerance |
+|---|---:|---:|---|
+| Triggered | 100/100 | 100/100 | ✓ |
+| Median turns | 67 | ~67 | ✓ |
+| Median rounds | 23 | ~23 | ✓ |
+| Treasury wins | 56% | 59% | within ±5 |
+| Merchant wins | 19% | 20% | within ±5 |
+| Manufacturer wins | 25% | 21% | within ±5 |
+| Bankruptcy events | 72 | 70 | within tolerance |
+| Empty 4-round windows | — | 2/100 | new metric (target <5) |
+| Chronicler banners / game | — | 6-8 | new |
+| Federal Era events / game | — | 15.7 | new |
+| Public Doubt fires | — | 132 | new |
+| Reform uses | — | 51 | new |
+| Vision achievement (Treasury) | — | 54% | target 25-50% (+4 over) |
+| Vision achievement (Merchant) | — | 39% | within band |
+| Vision achievement (Manufacturer) | — | 29% | within band |
+| Trigger-player win rate | 33% | 38% | within tolerance |
+| Reactions / game | — | ~33 | new |
+
+### Save format
+
+`SAVE_VERSION = 'v0.23-strategic-arc'` (the internal codename for the v1.3 work that v1.4 builds on; chrome-only Chronicler additions do not bump the save format). Saves from v0.18 / v0.19 / v0.20 (mandate-candidate) / v0.21 (circuit-candidate) / v0.22 refuse to load with friendly non-crash messages.
+
+### Beta caveats
+
+- **Cold-walked at slice level, not end-to-end across all four layers.** Each vertical slice was structurally audited and validated against simulation diagnostics; the v1.4 Chronicler was cold-walked specifically for the failed-Funding-Act counterfactual case after the trigger-coverage bug was found and fixed during the v1.4 patch cycle. Full end-to-end cold play remains a beta-tag responsibility, not a release-blocking gate.
+- **AI profile decisions do not yet adapt to v1.2-v1.4 mechanics.** Opponents run v0.18-style decision functions — they don't yet "race for the Vision" or "spend HAND cards strategically" in the way a human player would. Real human behavior in cold play will diverge from CANONICAL × 100 measurements.
+- **Treasury Vision achievement at 54%** is slightly above the 25-50% target band but acceptable (the band was advisory). Treasury still doesn't run away — Treasury wins 59% which is within +5 of the v1.1.2 baseline.
+- **Trigger-player win rate at 38%** (vs v1.1.2 baseline 33%) is within tolerance but worth watching in cold play. The trigger ≠ winner narrative remains intact.
+
+### npm history note
+
+- v1.1.0 remains on npm as the historical withdrawn version
+- v1.1.1 remains as the historical mandate-model beta
+- v1.1.2 remains as the historical circuit-only beta (no strategic depth, no Federal Era, no Chronicler)
+- **v1.4.0 becomes `latest`** — the recommended digital-mode beta
+- No npm publish exists for v1.2.x or v1.3.x — those were internal candidate codenames; v1.4.0 consolidates all of that work plus the Chronicler
+
+---
+
 ## v1.1.2 — Circuit victory + human voice — 2026-05-20
 
 **Beta.** Same day as v1.1.1, but a meaningfully different shape. After the v1.1.1 cold playthrough the game still felt too short and the ending too arbitrary — it ended because the clock ran out, not because someone won the Republic. v1.1.2 replaces the round-cap-with-mandate end condition with a **circuit-based** end condition tied to physical movement around the board.

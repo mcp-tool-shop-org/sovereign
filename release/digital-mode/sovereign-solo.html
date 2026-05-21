@@ -1157,17 +1157,22 @@ html, body { font-size:15px; }
 /* Positions status line — printed above the action rail so you always know
    where everyone is, even when the board is tight */
 .positions-strip {
-  display:flex; gap:18px; flex-wrap:wrap;
-  padding:8px 14px;
+  display:flex; gap:24px; flex-wrap:wrap; justify-content:space-between;
+  padding:10px 18px;
   background:var(--parchment-2);
   border:1px solid var(--ink);
   margin:0 0 6px;
   font-family:var(--ui); font-size:11px;
 }
-.positions-strip .pos-row { display:flex; align-items:center; gap:8px; }
+.positions-strip .pos-row { display:flex; align-items:center; gap:12px; flex:1 1 0; min-width:180px; justify-content:flex-start; padding:0 6px; }
 .positions-strip .pos-tok {
-  width:22px; height:22px; border:2px solid var(--ink);
+  width:34px; height:34px; border:2px solid var(--ink);
   display:flex; align-items:center; justify-content:center;
+  font-family:var(--display); font-weight:700; font-size:15px;
+  background:radial-gradient(circle at 30% 25%, rgba(255,255,255,.4), rgba(0,0,0,.1) 70%);
+  box-shadow:0 2px 3px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.25);
+  flex-shrink:0;
+}
   font-family:var(--display); color:#fff; font-weight:800;
   font-size:12px; line-height:1;
   box-shadow:0 1px 2px rgba(0,0,0,.35);
@@ -1441,6 +1446,38 @@ html, body { font-size:15px; }
   font-family:var(--body); font-size:13.5px; line-height:1.45; opacity:.85;
   max-width:60ch; margin-top:4px;
 }
+.late-event-banner .le-caption {
+  font-family:var(--display); font-size:12.5px; line-height:1.45;
+  color:var(--neutral); margin-top:8px; padding-top:8px;
+  border-top:0.5px solid var(--rule-soft); max-width:62ch;
+}
+.late-event-banner .le-caption em { font-style:italic; }
+
+/* v1.4 Chronicler toast styling */
+.event-toast.chronicler {
+  background:var(--parchment); border:1.5px solid var(--foil);
+  box-shadow:0 4px 0 rgba(26,22,18,.22), inset 0 0 0 1px var(--foil-soft);
+  max-width:520px;
+}
+.event-toast.chronicler .toast-eyebrow {
+  color:var(--foil); font-family:var(--ui); letter-spacing:.28em;
+}
+.event-toast.chronicler .toast-title {
+  font-family:var(--display); font-weight:700; font-size:16px;
+  letter-spacing:-.005em; line-height:1.2; color:var(--ink);
+}
+.event-toast.chronicler .toast-body {
+  font-family:var(--display); font-size:13.5px; line-height:1.55;
+  color:var(--ink); margin-top:6px;
+}
+.event-toast.chronicler .chron-quote {
+  margin-top:8px; padding-left:10px; border-left:2px solid var(--foil);
+  font-style:italic; font-size:12.5px; color:var(--neutral);
+}
+.event-toast.chronicler .chron-attr {
+  font-style:normal; font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.02em; opacity:.8;
+}
 .late-event-banner .le-actions {
   display:flex; flex-direction:column; gap:6px; align-items:stretch; align-self:center;
 }
@@ -1525,6 +1562,57 @@ html, body { font-size:15px; }
    ACTION RAIL — primary interaction surface
    ===================================================================== */
 .controls-bar { padding:10px 0 4px; min-height:128px; align-items:stretch; flex-direction:column; }
+
+/* v1.3.1 — In-board action banner. The action prompt sits inside the board
+   interior (a Monopoly-grammar center card), not above the board. Compact,
+   centered, with breathing room above. */
+.bc-action-slot {
+  width:100%; margin-top:18px;
+  display:flex; justify-content:center;
+}
+.bc-action-slot:empty { display:none; }
+.action-banner.in-board {
+  display:flex; flex-direction:column; align-items:center;
+  gap:8px;
+  padding:12px 18px 14px;
+  min-height:0;
+  width:min(86%, 380px);
+  background:var(--parchment);
+  border:1px solid var(--ink);
+  box-shadow:0 2px 0 rgba(26,22,18,.18);
+  text-align:center;
+}
+.action-banner.in-board::before {
+  content:""; position:absolute; left:0; right:0; top:0; height:2px;
+  background:linear-gradient(90deg, var(--foil) 0%, #E5C36A 50%, var(--foil) 100%);
+}
+.action-banner.in-board { position:relative; }
+.action-banner.in-board .ab-text {
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  width:100%;
+}
+.action-banner.in-board .ab-eyebrow { font-size:9px; letter-spacing:.24em; }
+.action-banner.in-board .ab-prompt {
+  font-size:16px; line-height:1.2;
+}
+.action-banner.in-board .ab-hint {
+  font-size:11.5px; line-height:1.4; max-width:34ch; opacity:.78;
+}
+.action-banner.in-board .ab-actions {
+  display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-top:4px;
+}
+.action-banner.in-board .ab-actions button {
+  font-size:11px; padding:8px 14px;
+}
+.action-banner.in-board .ab-actions button.primary {
+  font-size:13px; padding:9px 18px;
+}
+.action-banner.in-board .ab-actions input[type="number"] {
+  font-size:12px; padding:7px 9px; width:84px;
+}
+.action-banner.in-board .first-lap-hint {
+  font-size:11px; padding:6px 12px; margin-top:6px; max-width:34ch;
+}
 .action-banner {
   display:grid;
   grid-template-columns:1fr auto;
@@ -1617,6 +1705,7 @@ body.decision-active .ledger-pane:hover { opacity:.92; }
 .orient-panel.welcome-step h2,
 .orient-panel.welcome-step .lede,
 .orient-panel.welcome-step .welcome-lede,
+.orient-panel.welcome-step .welcome-list,
 .orient-panel.welcome-step ol,
 .orient-panel.welcome-step .crisis-row,
 .orient-panel.welcome-step .default-row,
@@ -1637,8 +1726,27 @@ body.decision-active .ledger-pane:hover { opacity:.92; }
 .orient-panel[data-step="1"] .eyebrow,
 .orient-panel[data-step="1"] h2,
 .orient-panel[data-step="1"] .welcome-lede,
+.orient-panel[data-step="1"] .welcome-list,
 .orient-panel[data-step="1"] .footer-row { display:block; }
 .orient-panel[data-step="1"] .footer-row { display:flex; }
+.orient-panel[data-step="1"] .welcome-list {
+  list-style:none; padding:0; margin:14px auto 18px;
+  max-width:34ch; text-align:left;
+  font-family:var(--body); font-size:14.5px; line-height:1.55;
+}
+.orient-panel[data-step="1"] .welcome-list li {
+  padding:6px 0 6px 16px; position:relative; color:var(--ink);
+}
+.orient-panel[data-step="1"] .welcome-list li::before {
+  content:"§"; position:absolute; left:0; top:6px;
+  font-family:var(--display); color:var(--foil); font-weight:700;
+}
+.orient-panel[data-step="1"] .welcome-list strong {
+  font-family:var(--display); font-weight:700; color:var(--ink);
+}
+.orient-panel[data-step="1"] .welcome-lede + .welcome-list + .welcome-lede {
+  margin-top:14px;
+}
 .orient-panel[data-step="1"] h2 { font-size:38px; line-height:1; margin:8px 0 18px; letter-spacing:-.02em; }
 .orient-panel[data-step="1"] .welcome-lede {
   font-family:var(--display); font-style:italic;
@@ -1833,6 +1941,11 @@ body:not(.designer-mode) #seedPill { display:none; }
   animation-delay:0s, 3.4s;
   pointer-events:auto;
 }
+/* v1.4.1 — persistent toasts: no auto-fadeout. User must dismiss. */
+.event-toast.persistent {
+  animation:toastIn 220ms ease-out;
+  animation-delay:0s;
+}
 .event-toast::before {
   content:""; position:absolute; left:0; right:0; top:0; height:4px;
   background:linear-gradient(90deg, var(--foil) 0%, #E5C36A 50%, var(--foil) 100%);
@@ -1870,6 +1983,147 @@ body:not(.designer-mode) #seedPill { display:none; }
 .event-toast.rebellion { background:var(--revolutionary-debt); color:var(--parchment); border-color:var(--ink); }
 .event-toast.rebellion::before { background:var(--ink); }
 .event-toast.rebellion .toast-eyebrow { color:#F0E6CD; }
+
+/* v1.4.3 — Compact toolbar */
+.controls .hidden-old { display:none !important; }
+.controls .game-menu {
+  position:relative; display:inline-block; margin-left:4px;
+}
+.controls .game-menu summary {
+  list-style:none; cursor:pointer;
+  font-family:var(--ui); font-size:10px; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:800;
+  padding:5px 12px; border:1px solid var(--ink);
+  background:var(--parchment); color:var(--ink);
+}
+.controls .game-menu summary::-webkit-details-marker { display:none; }
+.controls .game-menu summary::marker { content:""; }
+.controls .game-menu summary:hover { background:var(--ink); color:var(--parchment); }
+.controls .game-menu[open] > summary { background:var(--ink); color:var(--parchment); }
+.controls .game-menu[open] > button {
+  display:block !important;
+  position:absolute; right:0; min-width:140px;
+  font-family:var(--ui); font-size:10.5px; letter-spacing:.12em;
+  text-transform:uppercase; font-weight:700;
+  padding:8px 14px; border:1px solid var(--ink); border-top:0;
+  background:var(--parchment); color:var(--ink); text-align:left;
+  z-index:50;
+}
+.controls .game-menu[open] > button:nth-of-type(1) { top:30px; }
+.controls .game-menu[open] > button:nth-of-type(2) { top:62px; }
+.controls .game-menu[open] > button:nth-of-type(3) { top:94px; }
+.controls .game-menu[open] > button:nth-of-type(4) { top:126px; }
+.controls .game-menu[open] > button:nth-of-type(5) { top:158px; }
+.controls .game-menu[open] > button:nth-of-type(6) { top:190px; }
+.controls .game-menu[open] > button:hover { background:var(--ink); color:var(--parchment); }
+
+.controls .narr-cycle {
+  font-family:var(--ui); font-size:10px; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:800;
+  padding:5px 12px; border:1px solid var(--ink);
+  background:var(--parchment); color:var(--ink); cursor:pointer;
+}
+.controls .narr-cycle:hover { background:var(--ink); color:var(--parchment); }
+
+.controls .dark-toggle {
+  font-size:14px !important; padding:4px 10px !important; min-width:34px;
+}
+
+/* v1.4.2 — Dark mode. Inverts parchment/ink while preserving foil + system
+   colors. Triggered by body.dark-mode. Persisted to localStorage. */
+body.dark-mode {
+  --parchment: #1F1B16;
+  --parchment-2: #2A2520;
+  --parchment-3: #34302A;
+  --ink: #E8DDC2;
+  --neutral: #B89D5A;
+  --rule: #B89D5A55;
+  --rule-soft: #B89D5A22;
+  --foil-soft: #8B7642;
+  --shadow-card: 0 4px 16px rgba(0,0,0,.6);
+  --shadow-deep: 0 12px 36px rgba(0,0,0,.7);
+  background: #0F0D0B;
+}
+body.dark-mode .app {
+  background: var(--parchment);
+  box-shadow: 0 0 0 1px var(--foil-soft), 0 12px 36px rgba(0,0,0,.6);
+}
+body.dark-mode .board-view {
+  background: linear-gradient(180deg, var(--parchment-2) 0%, var(--parchment-3) 100%);
+}
+body.dark-mode .board-cell {
+  background: var(--parchment);
+  color: var(--ink);
+}
+body.dark-mode .board-cell .nm { color: var(--ink); }
+body.dark-mode .panel { background: var(--parchment-2); color: var(--ink); }
+body.dark-mode .ledger { background: var(--parchment-2); color: var(--ink); }
+body.dark-mode .controls-bar,
+body.dark-mode .positions-strip,
+body.dark-mode .portfolio-strip,
+body.dark-mode .depth-strip,
+body.dark-mode .vision-strip { background: var(--parchment-2); color: var(--ink); }
+body.dark-mode .action-banner.in-board {
+  background: var(--parchment-2); border-color: var(--foil-soft);
+}
+body.dark-mode .event-toast { background: var(--parchment-2); color: var(--ink); }
+body.dark-mode button { background: var(--parchment-2); color: var(--ink); border-color: var(--foil-soft); }
+body.dark-mode button:hover:not([disabled]) { background: var(--parchment-3); }
+body.dark-mode .action-banner.in-board .ab-actions button.primary {
+  background: var(--foil); color: var(--parchment);
+}
+
+/* Dark mode toggle button */
+.dark-toggle {
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--parchment-2); color:var(--ink);
+  border:1px solid var(--ink);
+  font-family:var(--ui); font-size:10px; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:800;
+  padding:5px 10px; cursor:pointer; margin-left:4px;
+}
+.dark-toggle:hover { background:var(--ink); color:var(--parchment); }
+body.dark-mode .dark-toggle::before { content:"☼ "; }
+body:not(.dark-mode) .dark-toggle::before { content:"☾ "; }
+
+/* v1.4.1 — Dismiss button on persistent toasts */
+.event-toast.persistent { position:relative; padding-right:34px; }
+.event-toast .toast-dismiss {
+  position:absolute; top:6px; right:8px;
+  background:transparent; border:0; cursor:pointer;
+  font-family:var(--ui); font-size:18px; line-height:1; padding:4px 6px;
+  color:var(--neutral); opacity:.6;
+  transition:opacity 80ms ease, color 80ms ease;
+}
+.event-toast .toast-dismiss:hover { opacity:1; color:var(--ink); }
+.event-toast.default .toast-dismiss { color:#F0E6CD; opacity:.7; }
+.event-toast.default .toast-dismiss:hover { color:var(--parchment); opacity:1; }
+.event-toast.rebellion .toast-dismiss { color:#F0E6CD; opacity:.7; }
+.event-toast.rebellion .toast-dismiss:hover { color:var(--parchment); opacity:1; }
+
+/* v1.4.1 — Narration verbosity selector in toolbar */
+.narration-level {
+  display:inline-flex; align-items:stretch; gap:0;
+  border:1px solid var(--ink); background:var(--parchment);
+  font-family:var(--ui); font-size:10px; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:800;
+  margin-left:4px;
+}
+.narration-level button {
+  background:transparent; border:0; color:var(--ink);
+  padding:5px 10px; cursor:pointer; border-left:1px solid var(--rule-soft);
+  font-family:var(--ui); font-size:10px; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:800;
+}
+.narration-level button:first-child { border-left:0; }
+.narration-level button[aria-pressed="true"] {
+  background:var(--ink); color:var(--parchment);
+}
+.narration-level::before {
+  content:"Narration"; padding:5px 10px;
+  background:var(--parchment-2); color:var(--neutral);
+  border-right:1px solid var(--rule-soft);
+}
 
 /* =====================================================================
    LAP RECAP CARD — story beat between laps
@@ -2026,12 +2280,23 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
       <span class="phase-pill" id="phasePill">phase: setup</span>
       <span class="active-pill" id="activePill">Active: You</span>
       <button id="btnHelp" title="Orientation panel for new players">How to play</button>
-      <button id="btnSave" title="Save your game (download a file + write to browser storage)">Save game</button>
-      <button id="btnLoad" title="Load a saved game from file or browser storage">Load game</button>
-      <button id="btnReplay" class="hidden" title="Step through this finished game turn by turn">Replay this game</button>
-      <button id="btnBatch" title="Run a scripted batch of 10 / 50 / 100 games">Balance Sweep</button>
-      <button id="btnNewSeed">New game</button>
-      <button id="btnReset">Restart this game</button>
+      <button id="btnDarkMode" class="dark-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">☾</button>
+      <button id="btnNarrCycle" class="narr-cycle" title="Cycle narration: On → Minimal → Off">Narr: On</button>
+      <details class="game-menu">
+        <summary title="Game options">Game ▾</summary>
+        <button id="btnSave" title="Save your game">Save</button>
+        <button id="btnLoad" title="Load a saved game">Load</button>
+        <button id="btnReplay" class="hidden" title="Replay this game">Replay</button>
+        <button id="btnBatch" title="Balance Sweep">Balance Sweep</button>
+        <button id="btnNewSeed">New game</button>
+        <button id="btnReset">Restart</button>
+      </details>
+      <button id="btnSave" title="Save your game (download a file + write to browser storage)" class="hidden-old">Save game</button>
+      <button id="btnLoad" title="Load a saved game from file or browser storage" class="hidden-old">Load game</button>
+      <button id="btnReplay" class="hidden hidden-old" title="Step through this finished game turn by turn">Replay this game</button>
+      <button id="btnBatch" title="Run a scripted batch of 10 / 50 / 100 games" class="hidden-old">Balance Sweep</button>
+      <button id="btnNewSeed" class="hidden-old">New game</button>
+      <button id="btnReset" class="hidden-old">Restart this game</button>
       <span class="version-pill" title="Build provenance · circuit-victory candidate · v0.21">v0.21 · circuit-victory · target <span id="circuitTargetPill">4</span></span>
     </div>
   </header>
@@ -2143,7 +2408,13 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
     <h2 id="orientTitle">Sovereign</h2>
 
     <!-- Step 1: Welcome -->
-    <p class="welcome-lede">You are trying to build a durable republic. Public Credit is trust, Public Resistance is political strain, Industrial Capacity is productive power. Each turn you roll, land, and choose. The game will guide you. The ledger will record everything.</p>
+    <p class="welcome-lede">You are trying to build a durable republic. Three shared tracks measure how it is doing:</p>
+    <ul class="welcome-list">
+      <li><strong>Public Credit</strong> — the trust that holds the bond market together.</li>
+      <li><strong>Public Resistance</strong> — the political strain in the western counties.</li>
+      <li><strong>Industrial Capacity</strong> — the productive power of the new nation's workshops.</li>
+    </ul>
+    <p class="welcome-lede">Each turn you roll, you land, and you choose. The game will guide you. The ledger will record everything.</p>
 
     <!-- Step 2: Delegate picker -->
     <div class="pick-section">
@@ -3430,7 +3701,213 @@ function fireReaction(profile, kind, opts) {
   if (!line) return;
   pushToast({ eyebrow: (opts && opts.eyebrow) || 'Reaction', title: line, body: '' });
 }
-function resetReactionMemory() { __REACTION_FIRED = new Set(); }
+function resetReactionMemory() { __REACTION_FIRED = new Set(); __CHRONICLER_FIRED_GAME = new Set(); __CHRONICLER_FIRED_LAP = -1; __CHRONICLER_SUPPRESSES_LAP = -1; }
+
+/* =====================================================================
+   v1.4 CHRONICLER — historical witness voice
+   Banners are event-bound (no timer narration). Caps per round and per
+   game; suppresses overlapping profile reactions on the SAME triggering
+   event. All direct quotes are sourced from the v1.4 Historical Source
+   Pack (Section 1, founders.archives.gov + Wikisource verified).
+   ===================================================================== */
+const CHRONICLER = {
+  fundingPass: {
+    priority: 6, oncePerGame: true,
+    title: 'Funding Act · The Republic\u2019s debt is its own',
+    body: 'The Funding Act carries the floor on August 4, 1790. Madison\u2019s motion of discrimination — that the soldier and the speculator be paid on different scales — falls 36 to 13 in February; the bonds will be redeemed at par to whomever holds them. The Republic\u2019s debt is now its own; the credit of the Treasury begins to find a price in Amsterdam and London.',
+    quote: { text:'A national debt, if it is not excessive, will be to us a national blessing; it will be powerfull cement of our union.', who:'Hamilton', source:'Letter to Robert Morris, 1781' },
+  },
+  fundingFail: {
+    priority: 6, oncePerGame: true,
+    title: 'Funding Act · Defeated on the floor',
+    body: 'In our history the Funding Act carried 32 to 29 on July 26, 1790, and Madison\u2019s motion of discrimination — that the soldier and the speculator not be paid on the same scale — fell 36 to 13. In your Republic, Madison\u2019s argument found the room. The bonds remain a question of confidence; the Compromise of the dinner table never happens, and the price of liberty stays unpaid.',
+  },
+  assumptionFail: {
+    priority: 6, oncePerGame: true,
+    title: 'Assumption · The states retain their debts',
+    body: 'In our history Assumption was defeated twice in the spring of 1790 before the Compromise of June carried it 34 to 28. In your Republic, the second defeat holds. The Potomac does not yet receive the capital; the states keep their Revolutionary obligations; Patrick Henry of Virginia carries the day Madison would not.',
+  },
+  bankCharterFail: {
+    priority: 6, oncePerGame: true,
+    title: 'Bank Charter · The Tenth Amendment holds',
+    body: 'In our history the Bank Bill carried the House 39 to 20 on February 8, 1791; Madison invoked the Tenth Amendment from the floor, Jefferson and Randolph counseled veto, and Hamilton answered in seventeen thousand words on implied powers. In your Republic, the constitutional objection prevails. Washington withholds his hand. The doctrine that the means may be inferred from the ends waits another Congress.',
+  },
+  tariffFail: {
+    priority: 6, oncePerGame: true,
+    title: 'Tariff · The customhouse waits',
+    body: 'In our history the Tariff of 1789 carried 31 to 19 on July 4, after the Senate struck Madison\u2019s anti-British tonnage discrimination. In your Republic, the schedule is set aside. Northern merchants resist the discrimination; Southern planters object to protective rates; the federal purse will be filled, but not on this Independence Day.',
+  },
+  coinageFail: {
+    priority: 6, oncePerGame: true,
+    title: 'Mint Act · The dollar deferred',
+    body: 'In our history the Mint Act received the President\u2019s hand on April 2, 1792, with the dollar fixed at 371 and one quarter grains of pure silver. In your Republic, the bill is set aside. The Spanish milled dollar remains the daily coin of trade; Rittenhouse\u2019s appointment as Director of the Mint waits.',
+  },
+  manufacturesFail: {
+    priority: 6, oncePerGame: true,
+    title: 'Report on Manufactures · Set aside',
+    body: 'In our history Hamilton\u2019s Report on Manufactures was laid before the House on December 5, 1791; the tariff schedules carried in 1792, the bounties never did. In your Republic, even the tariff portion is set aside. Jefferson reads corruption in every subsidy; Madison reads a General Welfare Clause grown beyond its hinges; the Report becomes argument without becoming law.',
+  },
+  exciseFail: {
+    priority: 6, oncePerGame: true,
+    title: 'Excise · The frontier wins this round',
+    body: 'In our history the Excise on distilled spirits carried 35 to 21 on January 27, 1791, and the Whiskey Rebellion answered three years later. In your Republic, the duty fails the floor. The Mingo Creek committees go home with their resolutions in hand; the federal authority to tax inland production waits another session.',
+  },
+  assumptionPass: {
+    priority: 6, oncePerGame: true,
+    title: 'Assumption · The Maiden Lane dinner',
+    body: 'Assumption carries 34 to 28 on July 26, 1790 — twice defeated in the spring, now redeemed by the Maiden Lane dinner. Madison stands aside; Jefferson holds the chair; Hamilton secures the state debts. The Potomac receives the capital; the Treasury receives the states\u2019 Revolutionary obligations. Jefferson will later call his concurrence the greatest political error of his life.',
+    quote: { text:'It was the price of liberty. The faith of America has been repeatedly pledged for it, and with solemnities, that give peculiar force to the obligation.', who:'Hamilton', source:'First Report on Public Credit, 1790' },
+  },
+  bankCharterPass: {
+    priority: 6, oncePerGame: true,
+    title: 'Bank Charter · Implied powers enter the record',
+    body: 'The Bank Bill clears the House 39 to 20 on February 8, 1791 — North for, South against, the division now plain. Madison invokes the Tenth Amendment; Jefferson and Randolph counsel veto; Hamilton answers in seventeen thousand words on implied powers. Washington signs on February 25. The doctrine that the means may be inferred from the ends has entered the constitutional record.',
+    quote: { text:'Mr. Hamilton is all-powerful, and fails in nothing he attempts.', who:'Senator William Maclay', source:'Journal, January 1791' },
+  },
+  tariffPass: {
+    priority: 6, oncePerGame: true,
+    title: 'Tariff Schedule · Independence Day made fiscal',
+    body: 'The Tariff carries 31 to 19 on July 4, 1789 — Independence Day made fiscal. Madison sponsors the schedule; the Senate strikes his discrimination against British bottoms; the House concurs to clear the bill by sundown. Five per centum ad valorem on most goods, six cents the ton on American keels — the customhouse is the Republic\u2019s first reliable purse.',
+    quote: { text:'The prosperity of commerce is now perceived and acknowledged, by all enlightened statesmen, to be the most useful, as well as the most productive source of national wealth.', who:'Hamilton', source:'Federalist No. 12' },
+  },
+  coinagePass: {
+    priority: 6, oncePerGame: true,
+    title: 'Coinage Act · Liberty faces the obverse',
+    body: 'The Mint Act receives the President\u2019s hand on April 2, 1792. Hamilton fixes the dollar at 371 and one quarter grains of pure silver — the Spanish milled dollar made native; the bimetallic ratio set at fifteen to one. Liberty, not Washington, shall face the obverse: the Senate\u2019s amendment, the House concurs. The Republic begins to strike its own coin.',
+    quote: { text:'All the perplexities, confusion and distress in America arise, not from defects in their Constitution or Confederation, not from want of honor or virtue, so much as from the downright ignorance of the nature of coin, credit and circulation.', who:'John Adams', source:'Letter to Jefferson, 1787' },
+  },
+  manufacturesPass: {
+    priority: 6, oncePerGame: true,
+    title: 'Report on Manufactures · Doctrine without statute',
+    body: 'On December 5, 1791, Hamilton lays the Report on Manufactures before the House — the longest of his state papers, drafted in part by Tench Coxe. The tariff schedules will carry; the bounties will not. Jefferson reads corruption in every subsidy; Madison reads a General Welfare Clause grown beyond its hinges. The Report becomes doctrine without ever becoming statute.',
+    quote: { text:'To cherish and stimulate the activity of the human mind, by multiplying the objects of enterprise, is not among the least considerable of the expedients, by which the wealth of a nation may be promoted.', who:'Hamilton', source:'Report on Manufactures, 1791' },
+  },
+  excisePass: {
+    priority: 6, oncePerGame: true,
+    title: 'Excise · The federal authority to tax inland production',
+    body: 'The Excise carries the House 35 to 21 on January 27, 1791; Washington signs on March 3. The frontier answers in 1794 — Bradford at Mingo Creek, McFarlane fallen at Bower Hill. Hamilton counsels force; Washington proclaims; near thirteen thousand militia march west of the mountains. No battle is given. The federal authority to tax inland production stands proven; Jefferson will repeal the duty in 1802.',
+    quote: { text:'Imposts, excises, and, in general, all duties upon articles of consumption, may be compared to a fluid, which will, in time, find its level with the means of paying them.', who:'Hamilton', source:'Federalist No. 21' },
+  },
+  federalEraOpen: {
+    priority: 5, oncePerGame: true,
+    title: 'The Federal Era begins',
+    body: 'The Federal Era begins. The Bank is chartered, the funded debt holds, and Washington has signed the excise on distilled spirits — the Republic\u2019s first internal tax. In Paterson, L\u2019Enfant lays out raceways for the Society\u2019s mills; in Pawtucket, Slater\u2019s spindles turn. But on Wall Street, William Duer is cornering Sixes on borrowed money, and in the western counties, the whiskey men are sharpening grievances into pikes. Hamilton\u2019s architecture is built; now the long stretch begins, and the Republic learns what it costs to keep what has been built.',
+    quote: { text:'It has been frequently remarked, that it seems to have been reserved to the people of this country, by their conduct and example, to decide the important question, whether societies of men are really capable or not, of establishing good government from reflection and choice, or whether they are forever destined to depend, for their political constitutions, on accident and force.', who:'Hamilton', source:'Federalist No. 1' },
+  },
+  publicDoubt: {
+    priority: 8, oncePerGame: true,
+    title: 'Public Doubt · The Republic\u2019s word on the auction block',
+    body: 'The market shows its first tremor. Continental scrip changes hands at a fraction of face; the old soldiers\u2019 certificates pass to speculators for pennies on the dollar. The city\u2019s coffee houses trade rumor as if it were specie. The Republic\u2019s word is on the auction block, and the auctioneers know it.',
+  },
+  creditCrisis: {
+    priority: 3, oncePerGame: true,
+    title: 'Credit Crisis · Lender of last resort',
+    body: 'March, 1792. William Duer\u2019s house of paper collapses overnight; Sixes plunge twenty percent in a fortnight, and every coffee-house clerk on Wall Street is a creditor with nothing to show. Hamilton writes William Seton at the Bank of New York with the first lender-of-last-resort instruction ever drafted in this Republic: buy on government account, at penalty rate, against any good collateral. The credit holds — barely.',
+    quote: { text:'While the observance of that good faith which is the basis of public credit is recommended by the strongest inducements of political expediency, it is enforced by considerations of still greater authority.', who:'Hamilton', source:'First Report on Public Credit, 1790' },
+  },
+  panic: {
+    priority: 3, oncePerGame: true,
+    title: 'Panic · What a frozen credit market costs',
+    body: 'The financier of the Revolution sits in Prune Street, owing three millions he cannot pay. Robert Morris — who once pledged his own credit for Washington\u2019s army — has dragged the land market down behind him, and no broker on Chestnut Street will write a bond against any collateral. The Bank\u2019s directors have shut the discount window. There is no loan to be had at any rate. The Republic learns what a frozen credit market costs.',
+  },
+  default_: {
+    priority: 1, oncePerGame: true,
+    title: 'Default · What never happened, and what was feared',
+    body: 'What never happened — and what the architects feared above all. Shays\u2019s men marched on Springfield in \u201987 because a state could not pay its veterans, and a Confederation could not raise a regiment to stop them. Hamilton built the funded debt, the Bank, and the excise as a wall against this hour: the day the Republic\u2019s word would be worth nothing, and every holder of a federal Six would learn that paper is only as good as the power behind it.',
+  },
+  rebellion: {
+    priority: 1, oncePerGame: true,
+    title: 'Rebellion · The militia marches west',
+    body: 'Through the summer of 1794 the Mingo Creek committees met in the western counties; the excise on whiskey had passed in 1791, and the back-country signed its resolutions before the militia marched. Washington proclaims; near thirteen thousand march west of the mountains. No battle is given. The federal authority to enforce the duty stands proven.',
+    quote: { text:'A monarchy is a government of force; a republic is a government of laws.', who:'Philip Freneau', source:'National Gazette, December 1792' },
+  },
+  reform: {
+    priority: 7, oncePerGame: true,
+    title: 'Reform · Influence spent against pressure',
+    body: 'A founder pays in Influence to mend the Republic. In the 1790s such trades were made every session — credit defended against faction, the back-country quieted against the customhouse, the manufactories against the planters. The ledger records both what was earned and what was given up to hold the line.',
+  },
+  visionAchieved: {
+    priority: 4, oncePerGame: true,
+    title: 'Vision achieved · The architect signs the ledger',
+    body: 'A founder closes the work they set out to do. By 1795 federal six-percents trade near par in Amsterdam and London; the Bank holds its twenty-year charter; the Mint strikes coin in the Republic\u2019s own name; the mills at the Great Falls of the Passaic spin Hamilton\u2019s Report into thread. Visions, when they hold, become the bones of the country.',
+  },
+  finalAccounting: {
+    priority: 2, oncePerGame: true,
+    title: 'Final Accounting · The books close',
+    body: 'The Republic\u2019s books close. Whoever carried it across the fourth line carried it whether or not the ledger affirms them. Final Accounting now decides by Influence what the circuit decided by motion.',
+  },
+};
+
+/* Federal Era Event captions — event-specific, period-flavored, sourced
+   from Section 2 of the v1.4 Historical Source Pack. Indexed by event id. */
+const FED_ERA_EVENT_CAPTIONS = {
+  1: 'In July 1791 the Bank of the United States opened subscriptions in Philadelphia; demand exceeded supply within an hour, and small bondholders found themselves shut out at the door.',
+  2: 'In 1796 Congress debated Albert Gallatin\u2019s call for federal roads and canals; the petitions piled at the Speaker\u2019s table while the appropriation languished in committee.',
+  3: 'The Postal Service Act of 1792 placed every post road under congressional charter; private carriers who had run the mail by handshake found their routes opened to inquiry.',
+  4: 'Hamilton\u2019s Report on Manufactures of December 1791 catalogued the want of skilled hands; the mills at Paterson stood half-finished while workmen were sought from Britain in violation of her emigration laws.',
+  5: 'In March 1792 William Duer\u2019s paper failed in New York; the panic ran from Wall Street to State Street within the fortnight, and Hamilton bought into the market with Treasury funds to arrest the fall.',
+  6: 'Under the Funding Act of 1790 the coupons fell due each quarter; the Treasury counted its specie against the warrants and the bondholders counted theirs against the calendar.',
+  7: 'Through the summer of 1794 the Mingo Creek committees met in the western counties; the excise on whiskey had passed in 1791, and the back-country signed its resolutions before the militia marched.',
+  8: 'By February 1798 Robert Morris sat in the Prune Street debtors\u2019 apartment in Philadelphia; the financier of the Revolution had outrun his last note, and the Federal Era closed its accounts upon him.',
+};
+
+let __CHRONICLER_FIRED_GAME = new Set();
+let __CHRONICLER_FIRED_LAP = -1;        /* round in which the last chron banner fired */
+let __CHRONICLER_SUPPRESSES_LAP = -1;   /* round in which chron banner suppresses profile reactions */
+let __CHRONICLER_SUPPRESS_KINDS = new Set(); /* event kinds suppressed this round */
+
+/* Map a v1.4 trigger key → (kinds, profile-keys) that should be suppressed
+   when the Chronicler banner fires on that key. Profile reactions for the
+   same event do not surface alongside the Chronicler. */
+const CHRONICLER_SUPPRESSES = {
+  publicDoubt: { ledgerKinds: ['PUBLIC_DOUBT'], reactionKinds: ['creditDoubt'] },
+  creditCrisis: { ledgerKinds: ['CREDIT_CRISIS'], reactionKinds: ['creditCrisis'] },
+  panic: { ledgerKinds: ['PANIC'], reactionKinds: ['panic'] },
+  rebellion: { ledgerKinds: ['REBELLION'], reactionKinds: [] },
+  default_: { ledgerKinds: ['DEFAULT'], reactionKinds: [] },
+  finalAccounting: { ledgerKinds: ['MANDATE'], reactionKinds: ['fourthCircuit'] },
+  visionAchieved: { ledgerKinds: ['VISION'], reactionKinds: [] },
+};
+
+function fireChronicler(key, opts) {
+  const entry = CHRONICLER[key];
+  if (!entry) return false;
+  if (entry.oncePerGame && __CHRONICLER_FIRED_GAME.has(key)) return false;
+  /* Max one Chronicler per round */
+  const lap = (STATE && STATE.lap) || 1;
+  if (__CHRONICLER_FIRED_LAP === lap) return false;
+  __CHRONICLER_FIRED_GAME.add(key);
+  __CHRONICLER_FIRED_LAP = lap;
+  /* Mark reaction-kinds for suppression this round */
+  const sup = CHRONICLER_SUPPRESSES[key];
+  if (sup) {
+    __CHRONICLER_SUPPRESSES_LAP = lap;
+    (sup.reactionKinds || []).forEach(k => __CHRONICLER_SUPPRESS_KINDS.add(k));
+  }
+  /* Surface as a toast with extended styling. Body is full prose; quote
+     appended on its own line if present. */
+  const bodyHtml = entry.body + (entry.quote
+    ? '<div class="chron-quote">&ldquo;' + entry.quote.text + '&rdquo; <span class="chron-attr">— ' + entry.quote.who + ', <em>' + entry.quote.source + '</em></span></div>'
+    : '');
+  pushToast({ cls:'chronicler', eyebrow:'The Chronicler', title: entry.title, body: bodyHtml });
+  /* Also stamp the ledger for the replay record */
+  if (STATE && STATE.ledger) {
+    STATE.ledger.push({ actor:'Chronicler', event:'CHRONICLER', detail: entry.title, cls:'event', lap, turn: STATE.turnIndex });
+  }
+  return true;
+}
+
+/* Should a profile reaction be suppressed because the Chronicler is taking
+   the same event this round? */
+function chroniclerSuppresses(kind) {
+  if (!STATE) return false;
+  if (__CHRONICLER_SUPPRESSES_LAP !== STATE.lap) {
+    /* Round rolled over; clear */
+    __CHRONICLER_SUPPRESS_KINDS = new Set();
+    __CHRONICLER_SUPPRESSES_LAP = STATE.lap;
+  }
+  return __CHRONICLER_SUPPRESS_KINDS.has(kind);
+}
 
 /* =====================================================================
    REDUCER · 17 actions (16 from Phase 3 + AUCTION_BID) + v1.2 actions
@@ -3440,8 +3917,19 @@ let DECISION_LOG = [];
 let TURN_SNAPSHOTS = [];
 let NARRATION_LOG = [];
 let NARRATION_ENABLED = true;
+/* v1.4.1 — narration verbosity. 'off' | 'minimal' | 'on'.
+   - off: no toasts surface (ledger / sidebar still records)
+   - minimal: only Chronicler banners + catastrophic events (Crisis/Default/Rebellion/Final Accounting/Vision)
+   - on (default): full toast stream
+   Persisted to localStorage; user can toggle via toolbar control. */
+let NARRATION_LEVEL = (function() {
+  try { const v = localStorage.getItem('sovereign.narrationLevel'); if (v === 'off' || v === 'minimal' || v === 'on') return v; } catch (e) {}
+  return 'on';
+})();
+/* Set of toast classes considered "important" for minimal mode. */
+const NARRATION_MINIMAL_CLASSES = new Set(['chronicler','crisis','default','rebellion','pass','fail']);
 const AUTOSAVE_KEY = 'sovereign.autosave';
-const SAVE_VERSION = 'v0.23-strategic-arc';
+const SAVE_VERSION = 'v0.24-chronicler-candidate';
 /* HARD_CAP_ROUNDS is a safety net for pathological games; the diagnostic
    showed 100 % of CANONICAL games complete Race N=4 by round 28. The game
    ends by state (first to N circuits), not by clock. */
@@ -4748,6 +5236,7 @@ function renderBoard() {
     </div>
     <div class="bc-acts" id="bcActs">Acts passed: —</div>
     <div class="bc-active" id="bcActive">Active: You</div>
+    <div class="bc-action-slot" id="boardActionSlot"></div>
   `;
   grid.appendChild(center);
 }
@@ -5335,10 +5824,15 @@ function renderControls() {
     renderVisionStrip(bar);
   }
 
+  /* v1.3.1 — in-board action banner. Clear the board's action slot at the
+     start of each render so banners don't accumulate. */
+  const boardActionSlot = document.getElementById('boardActionSlot');
+  if (boardActionSlot) boardActionSlot.innerHTML = '';
+
   /* v0.18 playtest fix — always show an action banner so the user knows what to do next */
   function addBanner(eyebrow, prompt, hint, actions, opts) {
     opts = opts || {};
-    const banner = el('div', 'action-banner' + (opts.opponent ? ' opponent-turn' : '') + (opts.crisis ? ' crisis-rail' : '') + (opts.endgame ? ' endgame-rail' : ''));
+    const banner = el('div', 'action-banner in-board' + (opts.opponent ? ' opponent-turn' : '') + (opts.crisis ? ' crisis-rail' : '') + (opts.endgame ? ' endgame-rail' : ''));
     const textBox = el('div', 'ab-text');
     let inner = '';
     if (eyebrow) inner += '<div class="ab-eyebrow">' + eyebrow + '</div>';
@@ -5379,7 +5873,7 @@ function renderControls() {
       hintEl.innerHTML = opts.firstLapHint;
       banner.appendChild(hintEl);
     }
-    bar.appendChild(banner);
+    (boardActionSlot || bar).appendChild(banner);
   }
 
   /* v1.3 — Late Republic Event choice banner */
@@ -5392,7 +5886,8 @@ function renderControls() {
     const text = el('div');
     text.innerHTML = '<div class="le-eyebrow">Federal Era · Round ' + STATE.lap + '</div>' +
                     '<div class="le-title">' + ev.name + '</div>' +
-                    '<div class="le-text">' + ev.text + '</div>';
+                    '<div class="le-text">' + ev.text + '</div>' +
+                    '<div class="le-caption" data-event-id="' + ev.id + '"><em>' + (FED_ERA_EVENT_CAPTIONS[ev.id] || '') + '</em></div>';
     banner.appendChild(text);
     const actions = el('div', 'le-actions');
     if (humanIsEligible) {
@@ -5411,7 +5906,7 @@ function renderControls() {
       actions.appendChild(note);
     }
     banner.appendChild(actions);
-    bar.appendChild(banner);
+    (boardActionSlot || bar).appendChild(banner);
   }
 
   if (phase === 'hand-full-choice' && isHumanTurn && STATE.pendingHandFull) {
@@ -6079,15 +6574,29 @@ function flavorFor(playerName) {
   return __PROFILE_FLAVOR[p.profile] || null;
 }
 function pushToast({ cls, eyebrow, title, body }) {
+  /* v1.4.1 — narration verbosity gate. ALL toasts including Chronicler
+     respect the user's Off / Minimal / On setting. Chronicler is in the
+     "minimal" allowlist so it surfaces in Minimal and On modes. */
+  if (NARRATION_LEVEL === 'off') return;
+  if (NARRATION_LEVEL === 'minimal' && !NARRATION_MINIMAL_CLASSES.has(cls || '')) return;
   const stack = document.getElementById('toastStack');
   if (!stack) return;
+  /* v1.4.4 — only Chronicler toasts are persistent (user-dismissed).
+     All other toasts use the original auto-fade timer (~3.8s). */
+  const isChron = cls === 'chronicler';
   const t = document.createElement('div');
-  t.className = 'event-toast' + (cls ? ' ' + cls : '');
-  t.innerHTML = '<div class="toast-eyebrow">' + eyebrow + '</div>' +
+  t.className = 'event-toast' + (isChron ? ' persistent' : '') + (cls ? ' ' + cls : '');
+  const dismissBtn = isChron ? '<button class="toast-dismiss" type="button" aria-label="Dismiss">×</button>' : '';
+  t.innerHTML = dismissBtn +
+                '<div class="toast-eyebrow">' + eyebrow + '</div>' +
                 '<div class="toast-title">' + title + '</div>' +
                 (body ? '<div class="toast-body">' + body + '</div>' : '');
+  if (isChron) {
+    t.querySelector('.toast-dismiss').addEventListener('click', () => t.remove());
+  } else {
+    setTimeout(() => t.remove(), 3800);
+  }
   stack.appendChild(t);
-  setTimeout(() => t.remove(), 3800);
 }
 function scanLedgerForToasts() {
   if (!STATE || !STATE.ledger) return;
@@ -6100,23 +6609,51 @@ function scanLedgerForToasts() {
 
     if (row.event === 'PASS' && /Act passes/i.test(row.detail || '')) {
       const actName = (row.detail || '').split(' passes')[0];
-      pushToast({ cls:'pass', eyebrow:'Congress · Act passed', title: actName, body: 'Congress carries the measure. Its effects take hold immediately.' });
+      /* v1.4 — fire Chronicler banner per Act if mapped, else fall through to original toast */
+      const actKey = { 'Funding Act':'fundingPass', 'Assumption Act':'assumptionPass', 'Bank Charter':'bankCharterPass', 'Tariff Schedule':'tariffPass', 'Coinage Act':'coinagePass', 'Report on Manufactures':'manufacturesPass', 'Excise Enforcement':'excisePass' }[actName];
+      if (!(actKey && fireChronicler(actKey))) {
+        pushToast({ cls:'pass', eyebrow:'Congress · Act passed', title: actName, body: 'Congress carries the measure. Its effects take hold immediately.' });
+      }
+    } else if (row.event === 'FAIL' && /Act fails/i.test(row.detail || '')) {
+      /* v1.4.5 — Acts that FAIL the floor vote also fire a Chronicler banner.
+         Same key as the pass version, with a "failed" variant in the title. */
+      const actName = (row.detail || '').split(' fails')[0];
+      const actKey = { 'Funding Act':'fundingFail', 'Assumption Act':'assumptionFail', 'Bank Charter':'bankCharterFail', 'Tariff Schedule':'tariffFail', 'Coinage Act':'coinageFail', 'Report on Manufactures':'manufacturesFail', 'Excise Enforcement':'exciseFail' }[actName];
+      if (!(actKey && fireChronicler(actKey))) {
+        pushToast({ cls:'fail', eyebrow:'Congress · Act failed', title: actName, body: 'The floor vote did not carry. The measure is set aside.' });
+      }
     } else if (row.event === 'PASS' && /Act fails/i.test(row.detail || '')) {
       const actName = (row.detail || '').split(' fails')[0];
       pushToast({ cls:'fail', eyebrow:'Congress · Act failed', title: actName, body: 'The floor vote did not carry. The measure is set aside.' });
     } else if (row.event === 'CREDIT_CRISIS') {
-      pushToast({ cls:'crisis', eyebrow:'Public Credit', title:'Credit Crisis', body: row.detail || 'Public Credit collapses to 4 or below. Financial panic spreads.' });
-      STATE.players.forEach(p => { if (p.profile !== 'human') fireReaction(p.profile, 'creditCrisis', { eyebrow: p.name }); });
+      if (!fireChronicler('creditCrisis')) {
+        pushToast({ cls:'crisis', eyebrow:'Public Credit', title:'Credit Crisis', body: row.detail || 'Public Credit collapses to 4 or below. Financial panic spreads.' });
+      }
+      if (!chroniclerSuppresses('creditCrisis')) STATE.players.forEach(p => { if (p.profile !== 'human') fireReaction(p.profile, 'creditCrisis', { eyebrow: p.name }); });
     } else if (row.event === 'DEFAULT') {
-      pushToast({ cls:'default', eyebrow:'Catastrophe', title:'Default', body:'Public Credit reaches zero. Every player loses 50 % cash and one upgrade; Credit resets to 3.' });
+      if (!fireChronicler('default_')) {
+        pushToast({ cls:'default', eyebrow:'Catastrophe', title:'Default', body:'Public Credit reaches zero. Every player loses 50 % cash and one upgrade; Credit resets to 3.' });
+      }
     } else if (row.event === 'REBELLION') {
-      pushToast({ cls:'rebellion', eyebrow:'Catastrophe', title:'Rebellion', body:'Public Resistance reaches twelve. Revenue upgrades destroyed; Resistance resets to 6.' });
+      if (!fireChronicler('rebellion')) {
+        pushToast({ cls:'rebellion', eyebrow:'Catastrophe', title:'Rebellion', body:'Public Resistance reaches twelve. Revenue upgrades destroyed; Resistance resets to 6.' });
+      }
     } else if (row.event === 'PUBLIC_DOUBT') {
-      pushToast({ eyebrow:'Public Doubt · Credit ' + STATE.tracks.credit.value, title:'The bond market is watching', body:'Public Credit slips below 7. Spread tightens; no catastrophic effect yet.' });
-      STATE.players.forEach(p => { if (p.profile !== 'human') fireReaction(p.profile, 'creditDoubt', { eyebrow: p.name }); });
+      if (!fireChronicler('publicDoubt')) {
+        pushToast({ eyebrow:'Public Doubt · Credit ' + STATE.tracks.credit.value, title:'The bond market is watching', body:'Public Credit slips below 7. Spread tightens; no catastrophic effect yet.' });
+      }
+      if (!chroniclerSuppresses('creditDoubt')) STATE.players.forEach(p => { if (p.profile !== 'human') fireReaction(p.profile, 'creditDoubt', { eyebrow: p.name }); });
     } else if (row.event === 'PANIC') {
-      pushToast({ cls:'crisis', eyebrow:'Panic in the streets · Credit ' + STATE.tracks.credit.value, title:'The Treasury sees no floor', body:'30 TN levy on every player. Public Resistance +1. Default is one step away.' });
-      STATE.players.forEach(p => { if (p.profile !== 'human') fireReaction(p.profile, 'panic', { eyebrow: p.name }); });
+      if (!fireChronicler('panic')) {
+        pushToast({ cls:'crisis', eyebrow:'Panic in the streets · Credit ' + STATE.tracks.credit.value, title:'The Treasury sees no floor', body:'30 TN levy on every player. Public Resistance +1. Default is one step away.' });
+      }
+      if (!chroniclerSuppresses('panic')) STATE.players.forEach(p => { if (p.profile !== 'human') fireReaction(p.profile, 'panic', { eyebrow: p.name }); });
+    } else if (row.event === 'VISION') {
+      fireChronicler('visionAchieved');
+    } else if (row.event === 'MANDATE') {
+      fireChronicler('finalAccounting');
+    } else if (row.event === 'REFORM') {
+      fireChronicler('reform');
     } else if (row.event === 'SPECIAL') {
       const m = (row.detail || '').match(/^(\w+)\s+(issues|brokers|charters)/);
       if (m) {
@@ -6768,6 +7305,60 @@ document.getElementById('narrPref').addEventListener('click', (e) => {
   e.target.textContent = NARRATION_ENABLED ? 'Drawer on' : 'Drawer off';
   renderNarrationPanel();
 });
+
+/* v1.4.1 — Narration verbosity toolbar control */
+(function wireNarrationLevel() {
+  const grp = document.getElementById('narrationLevel');
+  if (!grp) return;
+  function syncButtons() {
+    grp.querySelectorAll('button').forEach(b => {
+      b.setAttribute('aria-pressed', b.dataset.level === NARRATION_LEVEL ? 'true' : 'false');
+    });
+  }
+  syncButtons();
+  grp.addEventListener('click', (e) => {
+    const lvl = e.target.dataset && e.target.dataset.level;
+    if (!lvl) return;
+    NARRATION_LEVEL = lvl;
+    try { localStorage.setItem('sovereign.narrationLevel', lvl); } catch (e) {}
+    syncButtons();
+  });
+})();
+
+/* v1.4.3 — Narration cycle button (replaces 3-segment) */
+(function wireNarrCycle() {
+  const btn = document.getElementById('btnNarrCycle');
+  if (!btn) return;
+  const label = { on:'Narr: On', minimal:'Narr: Min', off:'Narr: Off' };
+  function sync() { btn.textContent = label[NARRATION_LEVEL] || 'Narr: On'; }
+  sync();
+  btn.addEventListener('click', () => {
+    NARRATION_LEVEL = NARRATION_LEVEL === 'on' ? 'minimal' : NARRATION_LEVEL === 'minimal' ? 'off' : 'on';
+    try { localStorage.setItem('sovereign.narrationLevel', NARRATION_LEVEL); } catch (e) {}
+    sync();
+  });
+})();
+
+/* v1.4.2 — Dark mode toggle */
+(function wireDarkMode() {
+  const btn = document.getElementById('btnDarkMode');
+  if (!btn) return;
+  function apply(dark) {
+    document.body.classList.toggle('dark-mode', dark);
+    btn.textContent = dark ? '☼' : '☾';
+    btn.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    try { localStorage.setItem('sovereign.darkMode', dark ? '1' : '0'); } catch (e) {}
+  }
+  let initial = true;
+  try {
+    const stored = localStorage.getItem('sovereign.darkMode');
+    if (stored === '0') initial = false;
+    else if (stored === '1') initial = true;
+    /* else: no stored preference → default dark */
+  } catch (e) {}
+  apply(initial);
+  btn.addEventListener('click', () => apply(!document.body.classList.contains('dark-mode')));
+})();
 
 /* ---- Replay engine ---- */
 function openReplay() {

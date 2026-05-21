@@ -4,7 +4,7 @@ export const config: SiteConfig = {
   title: 'Sovereign · The Hamilton System Board Game',
   description:
     'A Hamilton-system economic board game and its solo / digital adaptation. ' +
-    'Digital mode is v1.1.2 beta: ends when a player carries their faction around the Republic four times.',
+    'Digital mode is v1.4.0 beta: circuit-victory + strategic depth + Federal Era + Chronicler narration with real Federalist-era quotes.',
   logoBadge: 'S',
   brandName: 'Sovereign',
   repoUrl: 'https://github.com/mcp-tool-shop-org/sovereign',
@@ -13,14 +13,16 @@ export const config: SiteConfig = {
     'MIT Licensed — built by <a href="https://mcp-tool-shop.github.io/" style="color:var(--color-muted);text-decoration:underline">MCP Tool Shop</a>',
 
   hero: {
-    badge: 'v1.1.2 · Digital mode beta',
+    badge: 'v1.4.0 · Digital mode beta',
     headline: 'Sovereign',
     headlineAccent: 'Founding Credit.',
     description:
       'A Hamilton-system Monopoly-grammar board game and its solo / digital adaptation. ' +
-      'The game ends when one player carries their faction around the Republic four times. ' +
-      'Whoever holds the strongest ledger at that moment wins — not necessarily the one who got there first. ' +
-      'Opt-in beta — meaningfully better than v1.1.0, but not yet cold-walked end-to-end.',
+      'Circuit-victory ends the game when one player carries their faction around the Republic four times. ' +
+      'Strategic depth: profile-locked Special Actions, HAND cards, Reform recovery, multi-stage Credit pressure. ' +
+      'Federal Era: eight events per game, three Profile Visions. ' +
+      'The Chronicler narrates with real Federalist-era quotes sourced from founders.archives.gov and the Federalist Papers. ' +
+      'Opt-in beta.',
     primaryCta: { href: 'release/digital-mode/sovereign-solo.html', label: 'Play the digital mode (beta)' },
     secondaryCta: { href: 'handbook/', label: 'Read the Handbook' },
     previews: [],
@@ -39,19 +41,25 @@ export const config: SiteConfig = {
           title: 'Treasury / Finance',
           desc:
             'Public Credit ramp, federal debt, the Bank of the United States. ' +
-            'The historically dominant path — 56% wins at v1.1.2 (circuit-victory model).',
+            'Issue Federal Bond as a profile-locked Special Action. ' +
+            'Federal Credit Architect Vision: Credit ≥ 8 + Bank chartered + finance diversity. ' +
+            'The historically dominant path — 59% wins at v1.4.0.',
         },
         {
           title: 'Merchant / Infrastructure',
           desc:
             'Routes, ports, internal improvements, the commerce of the republic. ' +
-            'Strong mid-game economy. 19% wins at v1.1.2 — Merchant peaks faster than the longer arc rewards.',
+            'Broker Route Contract for fee income on opponent landings. ' +
+            'Commerce Sovereign Vision: 2+ routes + Commercial Infrastructure + 5+ broker income. ' +
+            '20% wins at v1.4.0.',
         },
         {
           title: 'Manufacturer / Industry',
           desc:
             'Manufactures, Strategic Industry, Industrial Capacity scoring. ' +
-            'Longer games let industrial sets mature — 25% wins at v1.1.2, the strongest Manufacturer share yet.',
+            'Charter Workshop for discounted upgrades. ' +
+            'Industrial Founder Vision: Capacity ≥ 7 + 3 industrial assets + 1 upgrade. ' +
+            '21% wins at v1.4.0.',
         },
       ],
     },
