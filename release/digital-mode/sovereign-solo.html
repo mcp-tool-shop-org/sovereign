@@ -1288,6 +1288,186 @@ html, body { font-size:15px; }
 .portfolio-strip .pf-open:focus-visible { outline:2.5px solid var(--foil); outline-offset:2px; }
 
 /* =====================================================================
+   v1.2 STRATEGIC DEPTH — Hand strip, special-action, reform, credit tiers
+   ===================================================================== */
+.depth-strip {
+  display:grid;
+  grid-template-columns:minmax(160px, 240px) 1fr minmax(140px, auto);
+  gap:14px; align-items:stretch;
+  padding:11px 14px;
+  background:var(--parchment-2);
+  box-shadow:inset 0 0 0 1px var(--rule-soft);
+  margin:0 0 6px;
+}
+.depth-strip .ds-head {
+  display:flex; flex-direction:column; gap:2px;
+}
+.depth-strip .ds-eyebrow {
+  font-family:var(--ui); font-size:9px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--foil); font-weight:800;
+}
+.depth-strip .ds-eyebrow::before { content:"§ "; }
+.depth-strip .ds-line {
+  font-family:var(--display); font-size:14px; line-height:1.15;
+  letter-spacing:-.005em; font-weight:400;
+}
+.depth-strip .ds-meta {
+  font-family:var(--mono); font-size:10.5px; color:var(--neutral); margin-top:2px;
+}
+.depth-strip .ds-hand {
+  display:flex; gap:8px; flex-wrap:wrap; align-items:stretch;
+}
+.depth-strip .hand-card {
+  display:flex; flex-direction:column; gap:3px;
+  min-width:148px; max-width:200px;
+  padding:7px 10px 9px;
+  background:var(--parchment);
+  border:1.5px solid var(--ink);
+  box-shadow:0 2px 0 rgba(26,22,18,.18);
+  cursor:pointer;
+  transition:transform 80ms ease, box-shadow 80ms ease;
+}
+.depth-strip .hand-card:hover { transform:translateY(-1px); box-shadow:0 3px 0 rgba(26,22,18,.24); }
+.depth-strip .hand-card:active { transform:translateY(1px); box-shadow:0 1px 0 rgba(26,22,18,.15); }
+.depth-strip .hand-card[data-deck="market"]  { box-shadow:0 2px 0 rgba(26,22,18,.18), inset 3px 0 0 #B14530; }
+.depth-strip .hand-card[data-deck="debate"]  { box-shadow:0 2px 0 rgba(26,22,18,.18), inset 3px 0 0 var(--national-finance); }
+.depth-strip .hand-card .hc-deck {
+  font-family:var(--ui); font-size:8.5px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--foil); font-weight:800;
+}
+.depth-strip .hand-card .hc-name {
+  font-family:var(--display); font-size:13.5px; line-height:1.2;
+  font-weight:600; letter-spacing:-.005em;
+}
+.depth-strip .hand-card .hc-effect {
+  font-family:var(--body); font-size:11px; line-height:1.4; opacity:.78;
+}
+.depth-strip .hand-empty {
+  font-family:var(--display); font-style:italic; font-size:13px;
+  opacity:.7; align-self:center;
+}
+.depth-strip .ds-actions {
+  display:flex; flex-direction:column; gap:6px; align-items:stretch;
+}
+.depth-strip .ds-actions button {
+  font-family:var(--ui); font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:800;
+  padding:8px 12px;
+  background:var(--parchment); color:var(--ink);
+  border:1.5px solid var(--ink);
+  box-shadow:0 2px 0 rgba(26,22,18,.18);
+  cursor:pointer;
+  transition:transform 80ms ease, box-shadow 80ms ease, background-color 80ms ease;
+  white-space:nowrap;
+}
+.depth-strip .ds-actions button:hover:not([disabled]) { transform:translateY(-1px); box-shadow:0 3px 0 rgba(26,22,18,.24); background:var(--parchment-2); }
+.depth-strip .ds-actions button[disabled] { opacity:.4; cursor:not-allowed; box-shadow:none; }
+.depth-strip .ds-actions button.foil { border-color:var(--foil); }
+.depth-strip .ds-actions button.foil:hover:not([disabled]) { background:var(--foil); color:var(--ink); }
+.depth-strip .ds-actions .ds-spent {
+  font-family:var(--mono); font-size:9.5px; color:var(--neutral); text-align:center; opacity:.75;
+}
+
+/* Credit tier chrome — Doubt / Crisis / Panic / Default bands on the tracks panel */
+.credit-tier-band {
+  font-family:var(--ui); font-size:9.5px; letter-spacing:.18em;
+  text-transform:uppercase; font-weight:800;
+  padding:3px 8px; margin-top:6px;
+  display:inline-block;
+  background:var(--parchment-2);
+  border:1px solid var(--rule);
+}
+.credit-tier-band.tier-doubt  { border-color:var(--foil); color:var(--foil); }
+.credit-tier-band.tier-crisis { border-color:var(--severity-warning); color:var(--severity-warning); }
+.credit-tier-band.tier-panic  { background:var(--severity-warning); border-color:var(--severity-warning); color:var(--parchment); }
+.credit-tier-band.tier-default{ background:var(--ink); color:var(--parchment); border-color:var(--ink); }
+
+/* =====================================================================
+   v1.3 STRATEGIC ARC — Vision strip + Late Republic Event banner
+   ===================================================================== */
+.vision-strip {
+  display:flex; gap:14px; align-items:center;
+  padding:8px 14px; background:var(--parchment-2);
+  box-shadow:inset 0 0 0 1px var(--foil-soft);
+  margin:0 0 6px;
+  font-family:var(--ui); font-size:11.5px;
+}
+.vision-strip .vs-eyebrow {
+  font-family:var(--ui); font-size:9.5px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--foil); font-weight:800;
+}
+.vision-strip .vs-eyebrow::before { content:"§ "; }
+.vision-strip .vs-label {
+  font-family:var(--display); font-size:15px; font-weight:600; letter-spacing:-.005em;
+}
+.vision-strip .vs-progress {
+  font-family:var(--mono); font-size:11px; color:var(--ink); letter-spacing:.02em;
+}
+.vision-strip .vs-progress .met { color:var(--severity-pass); font-weight:700; }
+.vision-strip .vs-progress .unmet { color:var(--neutral); opacity:.78; }
+.vision-strip .vs-progress .sep { color:var(--rule); padding:0 5px; }
+.vision-strip.achieved {
+  background:linear-gradient(90deg, var(--foil) 0%, var(--parchment-2) 12%);
+  box-shadow:inset 0 0 0 1px var(--foil);
+}
+.vision-strip.achieved .vs-label::after {
+  content:" · achieved"; font-family:var(--ui); font-size:10px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--foil); font-weight:800; margin-left:8px;
+}
+
+/* Late Republic Event banner — slotted into the action rail when a choice fires */
+.late-event-banner {
+  display:grid; grid-template-columns:1fr auto; gap:16px;
+  padding:14px 18px;
+  background:linear-gradient(180deg, var(--parchment-2) 0%, var(--parchment-3) 100%);
+  border:1.5px solid var(--ink);
+  box-shadow:0 3px 0 rgba(26,22,18,.25);
+  margin:0 0 6px;
+  position:relative;
+}
+.late-event-banner::before {
+  content:""; position:absolute; left:0; right:0; top:0; height:3px;
+  background:linear-gradient(90deg, var(--foil) 0%, var(--severity-warning) 50%, var(--foil) 100%);
+}
+.late-event-banner .le-eyebrow {
+  font-family:var(--ui); font-size:10px; letter-spacing:.26em; text-transform:uppercase;
+  color:var(--severity-warning); font-weight:800; margin-bottom:4px;
+}
+.late-event-banner .le-title {
+  font-family:var(--display); font-size:22px; line-height:1.15;
+  letter-spacing:-.005em; font-weight:600;
+}
+.late-event-banner .le-text {
+  font-family:var(--body); font-size:13.5px; line-height:1.45; opacity:.85;
+  max-width:60ch; margin-top:4px;
+}
+.late-event-banner .le-actions {
+  display:flex; flex-direction:column; gap:6px; align-items:stretch; align-self:center;
+}
+.late-event-banner .le-actions button {
+  font-family:var(--ui); font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:800;
+  padding:10px 16px;
+  background:var(--parchment); color:var(--ink);
+  border:1.5px solid var(--ink);
+  box-shadow:0 2px 0 rgba(26,22,18,.22);
+  cursor:pointer;
+  transition:transform 80ms ease, box-shadow 80ms ease, background-color 80ms ease;
+  white-space:nowrap;
+}
+.late-event-banner .le-actions button.primary {
+  background:var(--ink); color:var(--parchment);
+  font-family:var(--display); font-weight:700; letter-spacing:.06em; text-transform:none; font-size:14px;
+  padding:12px 20px;
+}
+.late-event-banner .le-actions button:hover:not([disabled]) { transform:translateY(-1px); box-shadow:0 3px 0 rgba(26,22,18,.3); }
+.late-event-banner .le-actions button[disabled] { opacity:.4; cursor:not-allowed; box-shadow:none; }
+
+/* =====================================================================
+   PORTFOLIO STRIP (legacy block continues)
+   ===================================================================== */
+
+/* =====================================================================
    LANDING OUTCOME BAND — explains what just happened on your roll
    ===================================================================== */
 .landing-band {
@@ -2772,6 +2952,55 @@ function adjustTrack(s, key, delta, reason) {
   if (key === 'credit' && before > 0 && next === 0) s.pendingDefault = true;
   if (key === 'resistance' && next === 12) s.pendingRebellion = true;
   if (key === 'credit' && next <= 4 && next > 0 && !s.flags.creditCrisisFired) s.pendingCreditCrisis = true;
+  /* v1.3 — latch Vision-eligibility flags on the upward crossings. Sticky:
+     once a track reaches the threshold during play, every player is credited
+     toward their Vision regardless of later movement. */
+  if (key === 'credit' && next >= 8) {
+    s.flags.visionTreasuryCredit8 = s.flags.visionTreasuryCredit8 || {};
+    for (let i = 0; i < s.players.length; i++) s.flags.visionTreasuryCredit8[i] = true;
+  }
+  if (key === 'capacity' && next >= 7) {
+    s.flags.visionMfgCapacity7 = s.flags.visionMfgCapacity7 || {};
+    for (let i = 0; i < s.players.length; i++) s.flags.visionMfgCapacity7[i] = true;
+  }
+  /* v1.2 — Multi-stage Public Credit pressure. Doubt (≤6) and Panic (≤2) wrap
+     around the existing Credit Crisis (≤4) and Default (0) hierarchy. Doubt
+     fires once when the band is first crossed; Panic fires once when the band
+     is first crossed AND applies a 30 TN panic levy + 1 Resistance to all
+     players (a real but recoverable cost). Crossing back UP clears the
+     once-per-game flag so the pressure can re-fire if Credit collapses again. */
+  if (key === 'credit') {
+    const beforeTier = creditTier(before);
+    const nextTier   = creditTier(next);
+    if (nextTier === 'doubt' && beforeTier === 'stable' && !s.flags.publicDoubtFired) {
+      s.flags.publicDoubtFired = true;
+      s = logRow(s, { actor:'System', event:'PUBLIC_DOUBT',
+        detail:'Public Doubt · Credit ' + next + ' · the bond market is watching the Treasury', cls:'event' });
+    }
+    if (nextTier === 'panic' && (beforeTier === 'crisis' || beforeTier === 'doubt' || beforeTier === 'stable') && !s.flags.panicFired) {
+      s.flags.panicFired = true;
+      /* Panic levy — 30 TN from every player + Resistance +1. Conservative
+         mechanical effect (not unwinnable) but real. */
+      for (let i = 0; i < s.players.length; i++) {
+        const cost = Math.min(s.players[i].cash, 30);
+        if (cost > 0) s = adjustCash(s, -cost, 'Panic levy · Credit ≤ 2', i);
+      }
+      s = logRow(s, { actor:'System', event:'PANIC',
+        detail:'Panic in the streets · Credit ' + next + ' · 30 TN levy + Resistance +1', cls:'event' });
+      const resBefore = s.tracks.resistance.value;
+      if (resBefore < 12) {
+        s.tracks.resistance.value = Math.min(12, resBefore + 1);
+        s.tracks.resistance.lastReason = 'Panic';
+        s = logRow(s, { actor:'Track', event:'RESISTANCE', detail:'Panic · ' + resBefore + ' → ' + s.tracks.resistance.value + ' (+1)', cls:'track' });
+        if (s.tracks.resistance.value === 12) s.pendingRebellion = true;
+      }
+    }
+    /* Clear once-per-game flags on full recovery so a second collapse re-fires */
+    if (nextTier === 'stable') {
+      s.flags.publicDoubtFired = false;
+      s.flags.panicFired = false;
+    }
+  }
   return s;
 }
 function logRow(s, row) {
@@ -2828,11 +3057,14 @@ function initialState(seed) {
   const rng = makeRng(seed);
   const players = [
     { idx:0, name:'You',      profile:'human',                  role:'Treasury Architect',
-      cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false, circuitsCompleted:0 },
+      cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false, circuitsCompleted:0,
+      hand:[], specialActionUsedRound:0, reformUsedRound:0, reformIPSpent:0, federalBondsHeld:0 },
     { idx:1, name:'Hamilton', profile:'treasury-finance',       role:'Treasury / Finance',
-      cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false, circuitsCompleted:0 },
+      cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false, circuitsCompleted:0,
+      hand:[], specialActionUsedRound:0, reformUsedRound:0, reformIPSpent:0, federalBondsHeld:0 },
     { idx:2, name:'Morris',   profile:'merchant-infrastructure', role:'Merchant / Infrastructure',
-      cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false, circuitsCompleted:0 },
+      cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false, circuitsCompleted:0,
+      hand:[], specialActionUsedRound:0, reformUsedRound:0, reformIPSpent:0, federalBondsHeld:0 },
   ];
   return {
     rngSeed: seed, rng, lap: 1, turnIndex: 0, activePlayerIndex: 0,
@@ -2852,6 +3084,12 @@ function initialState(seed) {
     flags: {},
     pendingCard: null, pendingLanding: null, pendingAuction: null, pendingResolveLanding: false,
     pendingDefault: false, pendingRebellion: false, pendingCreditCrisis: false,
+    /* v1.3 — Late Republic deck + Vision tracking */
+    lateRepublicDeck: shuffleDeck(rng, LATE_REPUBLIC_EVENTS.map(e => e.id)),
+    lateRepublicDiscard: [],
+    lastLateEventRound: 0,
+    pendingLateEvent: null,
+    visionAchievedRound: {}, /* pIdx -> round when first achieved */
     ledger: [{ actor:'System', event:'INIT', detail:'3-player game · seed ' + seed + ' · You + Hamilton + Morris', cls:'event', lap:1, turn:0 }],
   };
 }
@@ -2887,7 +3125,315 @@ function applyStartingCharter(s) {
 
 
 /* =====================================================================
-   REDUCER · 17 actions (16 from Phase 3 + AUCTION_BID)
+   v1.2 STRATEGIC DEPTH — helpers
+   ===================================================================== */
+
+/* The human player's seat is 'You' / profile 'human'; the role string they
+   chose at onboarding determines which special action they can use. The
+   role label is 'Treasury / Finance' | 'Merchant / Infrastructure' | 'Manufacturer / Industry'. */
+function deriveHumanProfile(p) {
+  if (p.profile !== 'human') return p.profile;
+  if (p.role === 'Treasury / Finance' || p.role === 'Treasury Architect') return 'treasury-finance';
+  if (p.role === 'Merchant / Infrastructure') return 'merchant-infrastructure';
+  if (p.role === 'Manufacturer / Industry') return 'manufacturer-industry';
+  return 'treasury-finance';
+}
+
+/* handCardPriority — deterministic 0..10 score used by opponent AI to decide
+   whether to play a held card NOW and whether to discard an existing hand
+   slot when the hand is full. Higher = play / hold preferentially. */
+function handCardPriority(s, pIdx, deck, cardId) {
+  const p = s.players[pIdx];
+  if (deck === 'market' && cardId === 6)  return 7;   /* Foreign Loan: cash + Credit */
+  if (deck === 'market' && cardId === 9)  return (countOwnedSys(s, pIdx, 'revolutionary-debt') + countOwnedSys(s, pIdx, 'national-finance') >= 2 ? 8 : 4);  /* Bond Auction */
+  if (deck === 'market' && cardId === 12) return (countOwnedSys(s, pIdx, 'revolutionary-debt') + countOwnedSys(s, pIdx, 'state-debt') >= 2 ? 9 : 5); /* Treaty Renegotiation */
+  if (deck === 'debate' && cardId === 3)  return (s.tracks.credit.value <= 6 ? 9 : 5); /* Credit Restored */
+  if (deck === 'debate' && cardId === 5)  return 7; /* Cabinet Bargain — IP source */
+  if (deck === 'debate' && cardId === 7)  return (countOwnedSys(s, pIdx, 'national-finance') > 0 ? 9 : 5); /* Federalist Victory */
+  return 5;
+}
+
+/* Should the opponent play a card from hand NOW? Profile-tuned rules:
+   - Treasury/Finance: play Credit-positive cards when Credit ≤ 7, banking cards always
+   - Merchant/Infrastructure: play if priority ≥ 7 and game is past round 4
+   - Manufacturer/Industry: hold longer, play only when priority ≥ 8 OR Credit ≤ 4
+   Returns { play: bool, handIdx: int } */
+function opponentDecideHandPlay(s, pIdx) {
+  const p = s.players[pIdx];
+  if (!p.hand || p.hand.length === 0) return { play: false };
+  const profile = p.profile;
+  let bestIdx = -1, bestPri = 0;
+  for (let i = 0; i < p.hand.length; i++) {
+    const pri = handCardPriority(s, pIdx, p.hand[i].deck, p.hand[i].cardId);
+    if (pri > bestPri) { bestPri = pri; bestIdx = i; }
+  }
+  if (bestIdx < 0) return { play: false };
+  if (profile === 'treasury-finance') {
+    if (bestPri >= 5) return { play: true, handIdx: bestIdx };
+  } else if (profile === 'merchant-infrastructure') {
+    if (s.lap >= 3 && bestPri >= 6) return { play: true, handIdx: bestIdx };
+  } else if (profile === 'manufacturer-industry') {
+    if (bestPri >= 7) return { play: true, handIdx: bestIdx };
+    if (s.tracks.credit.value <= 5 && bestPri >= 5) return { play: true, handIdx: bestIdx };
+  }
+  return { play: false };
+}
+
+/* Should the opponent use their special action this round? Profile rules:
+   - Treasury/Finance: federal-bond when cash ≥ 300 AND Credit ≤ 8 AND bonds < 3
+   - Merchant/Infrastructure: broker-route when own ≥ 1 route AND opponents likely to land (post round 3)
+   - Manufacturer/Industry: charter-workshop when own a Mfg/Strat with a tier ready to upgrade
+   Returns { use: bool, subtype, spaceNum? } */
+function opponentDecideSpecial(s, pIdx) {
+  const p = s.players[pIdx];
+  if (p.specialActionUsedRound === s.lap) return { use: false };
+  if (p.profile === 'treasury-finance') {
+    if (p.cash < 300) return { use: false };
+    if (p.federalBondsHeld >= 3) return { use: false };
+    if (s.tracks.credit.value >= 11) return { use: false }; /* no room to gain */
+    return { use: true, subtype: 'federal-bond' };
+  }
+  if (p.profile === 'merchant-infrastructure') {
+    if (p.cash < 200) return { use: false };
+    if (s.lap < 4) return { use: false };
+    /* v1.3 — broker office can be suspended by the Route Monopoly Inquiry */
+    if (s.flags.brokerSuspendedUntilRound && s.lap < s.flags.brokerSuspendedUntilRound) return { use: false };
+    /* v1.2.1 — fire only every other round to avoid net-negative spam. */
+    if ((s.lap - p.specialActionUsedRound) < 2 && p.specialActionUsedRound > 0) return { use: false };
+    const myRoutes = p.ownedAssets.filter(a => SPACES[a.spaceNum].kind === 'route');
+    if (myRoutes.length === 0) return { use: false };
+    /* Only fire when an opponent is within 6 spaces of one of our routes.
+       v1.2.1 — threshold raised to 5 (was 3) so we fire only on strong setups. */
+    let best = null, bestScore = -1;
+    for (const a of myRoutes) {
+      let score = 0;
+      for (let i = 0; i < s.players.length; i++) {
+        if (i === pIdx) continue;
+        const dist = (a.spaceNum - s.players[i].position + 40) % 40;
+        if (dist > 0 && dist <= 6) score += (7 - dist);
+      }
+      if (score > bestScore) { bestScore = score; best = a; }
+    }
+    if (!best || bestScore < 5) return { use: false };
+    return { use: true, subtype: 'broker-route', spaceNum: best.spaceNum };
+  }
+  if (p.profile === 'manufacturer-industry') {
+    if (p.cash < 200) return { use: false };
+    const targets = p.ownedAssets.filter(a => {
+      const sys = ASSETS[a.spaceNum]?.sys;
+      return (sys === 'manufactures' || sys === 'strategic-industry') && a.tier < 3 && ownsFullSet(s, pIdx, sys);
+    });
+    if (targets.length === 0) return { use: false };
+    targets.sort((a, b) => (ASSETS[a.spaceNum].up || 0) - (ASSETS[b.spaceNum].up || 0));
+    return { use: true, subtype: 'charter-workshop', spaceNum: targets[0].spaceNum };
+  }
+  return { use: false };
+}
+
+/* Should the opponent use Reform this round? Eligible only when Credit ≤ 4
+   or Resistance ≥ 8. They spend IP only if their current score is comfortably
+   positive AND the leader is not running away. */
+function opponentDecideReform(s, pIdx) {
+  const p = s.players[pIdx];
+  if (p.reformUsedRound === s.lap) return { use: false };
+  const eligible = s.tracks.credit.value <= 4 || s.tracks.resistance.value >= 8;
+  if (!eligible) return { use: false };
+  const my = scorePlayer(s, pIdx).total;
+  if (my < 4) return { use: false }; /* can't afford to lose IP if behind */
+  /* Only the highest-Influence opponent uses Reform, to keep the cost honest */
+  const others = s.players.map((q, i) => ({ i, t: scorePlayer(s, i).total })).filter(x => x.i !== pIdx);
+  const topOther = others.reduce((m, x) => x.t > m.t ? x : m, others[0]);
+  if (my < topOther.t) return { use: false };
+  /* Choose whichever track is more critical */
+  if (s.tracks.credit.value <= 2) return { use: true, choice: 'credit' };
+  if (s.tracks.resistance.value >= 10) return { use: true, choice: 'resistance' };
+  if (s.tracks.credit.value <= 4) return { use: true, choice: 'credit' };
+  if (s.tracks.resistance.value >= 8) return { use: true, choice: 'resistance' };
+  return { use: false };
+}
+
+/* v1.3 — Should an opponent pay for a Late Republic Event choice?
+   Deterministic per profile + event id. Conservative: pay if it directly
+   advances Vision, or if the refusal cost (Credit / Resistance / Capacity)
+   would push the player into Doubt/Crisis. */
+function opponentDecideLateEvent(s, ple) {
+  if (!ple) return { choice: 'refuse', playerIndex: -1 };
+  const ev = LATE_REPUBLIC_EVENTS.find(e => e.id === ple.eventId);
+  if (!ev) return { choice: 'refuse', playerIndex: -1 };
+  /* Among eligible players, decide who pays. Default: first eligible declines
+     unless paying preempts a Vision-relevant penalty for that profile. */
+  for (const idx of ple.eligibleIdx) {
+    const p = s.players[idx];
+    const cash = p.cash;
+    /* Vision-aligned auto-pay rules */
+    if (ev.id === 1 /* Creditors Demand · Credit −1 if refused */) {
+      if (cash >= 200 && s.tracks.credit.value <= 8) return { choice: 'pay', playerIndex: idx };
+    }
+    if (ev.id === 2 /* Public Works · Resistance −2 if 2 IP */) {
+      const sc = scorePlayer(s, idx).total;
+      if (sc >= 8 && s.tracks.resistance.value >= 8) return { choice: 'pay', playerIndex: idx };
+    }
+    if (ev.id === 3 /* Route Monopoly · broker suspended if refused */) {
+      if (p.profile === 'merchant-infrastructure' && cash >= 200) return { choice: 'pay', playerIndex: idx };
+    }
+    if (ev.id === 4 /* Workshop Shortage · Capacity ±1 */) {
+      if (p.profile === 'manufacturer-industry' && cash >= 150) return { choice: 'pay', playerIndex: idx };
+    }
+    if (ev.id === 5 /* Speculation · Credit −1 if refused */) {
+      if (p.profile === 'treasury-finance' && cash >= 250) return { choice: 'pay', playerIndex: idx };
+    }
+  }
+  return { choice: 'refuse', playerIndex: ple.eligibleIdx[0] };
+}
+
+/* =====================================================================
+   v1.2 REACTION LIBRARY — deterministic, profile-flavored opponent voice
+   Fires on event hooks, NOT on every ledger row. Selection is by hash of
+   (round, turn, profile, event-kind) so the same seed produces the same
+   reactions every replay. Max one reaction per event cluster.
+   ===================================================================== */
+const REACTIONS = {
+  'treasury-finance': {
+    firstBuy: [
+      'Hamilton: "The fund must hold land. Land holds the fund."',
+      'Hamilton: "An honest acquisition. The books will note it."',
+    ],
+    firstRentIn: [
+      'Hamilton: "Revenue arrives. Credit rests on it."',
+      'Hamilton: "The Treasury thanks you for your custom."',
+    ],
+    firstRentOut: [
+      'Hamilton: "A debt honored is a debt the Republic remembers."',
+      'Hamilton: "Pay it. Public credit demands punctuality."',
+    ],
+    voteYes: [
+      'Hamilton votes YES: "The measure serves the Treasury."',
+      'Hamilton votes YES: "An obligation of office."',
+    ],
+    voteNo: [
+      'Hamilton votes NO: "The bond market will not bear it."',
+      'Hamilton votes NO: "Imprudent. The reckoning would come."',
+    ],
+    creditDoubt: [
+      'Hamilton: "The bond market is murmuring. Credit must hold."',
+    ],
+    creditCrisis: [
+      'Hamilton: "A crisis of confidence. The system must answer."',
+    ],
+    panic: [
+      'Hamilton: "Panic. The Treasury sees no floor."',
+    ],
+    specialUsed: [
+      'Hamilton: "A federal bond. The faith of the United States is the security."',
+    ],
+    fourthCircuit: [
+      'Hamilton: "The Republic is solvent. That is the only verdict that matters."',
+    ],
+  },
+  'merchant-infrastructure': {
+    firstBuy: [
+      'Morris: "A route is just a contract drawn in dirt. Profitable, if you hold it."',
+      'Morris: "Bought. Now to see who walks past it."',
+    ],
+    firstRentIn: [
+      'Morris: "Custom paid. That is how the books close."',
+      'Morris: "Every traveler is revenue. Good morning, traveler."',
+    ],
+    firstRentOut: [
+      'Morris: "Tolls. The price of moving through someone else\'s map."',
+      'Morris: "Pay the man. He drew it first."',
+    ],
+    voteYes: [
+      'Morris votes YES: "Anything that moves goods. Anything."',
+      'Morris votes YES: "A merchant\'s endorsement. For the merchants."',
+    ],
+    voteNo: [
+      'Morris votes NO: "The cost falls on the wharf. I cannot agree."',
+      'Morris votes NO: "Not while the docks still settle the last bill."',
+    ],
+    creditDoubt: [
+      'Morris: "Bills of exchange are dragging. Watch the wharves."',
+    ],
+    creditCrisis: [
+      'Morris: "The banks have stopped clearing. Move quickly."',
+    ],
+    panic: [
+      'Morris: "Panic. Cash on hand or nothing at all."',
+    ],
+    specialUsed: [
+      'Morris: "I have brokered the contract. The route owes me a fee, whoever uses it."',
+    ],
+    fourthCircuit: [
+      'Morris: "The fourth crossing. The ledger settles whoever the trip belonged to."',
+    ],
+  },
+  'manufacturer-industry': {
+    firstBuy: [
+      'Slater: "The workshop is yours now. Make it produce."',
+      'Slater: "Land bought. Capital next."',
+    ],
+    firstRentIn: [
+      'Slater: "Output pays for itself. As it should."',
+      'Slater: "The mill earns its keep."',
+    ],
+    firstRentOut: [
+      'Slater: "An expense. Worth it if the workshop runs."',
+      'Slater: "Paid. The workshop accepts no excuse."',
+    ],
+    voteYes: [
+      'Slater votes YES: "Manufactures must be protected."',
+      'Slater votes YES: "For the workshops. Always for the workshops."',
+    ],
+    voteNo: [
+      'Slater votes NO: "It will starve the mills. I cannot vote for it."',
+      'Slater votes NO: "Capacity will not bear it. No."',
+    ],
+    creditDoubt: [
+      'Slater: "The investors are nervous. The mills are not."',
+    ],
+    creditCrisis: [
+      'Slater: "Credit panics. Production does not."',
+    ],
+    panic: [
+      'Slater: "If the bonds fall, the workshops will hold."',
+    ],
+    specialUsed: [
+      'Slater: "Chartered. The workshop expands. Production rises."',
+    ],
+    fourthCircuit: [
+      'Slater: "Four times around. The mills counted every one."',
+    ],
+  },
+};
+
+/* Pick a deterministic line from a roster using (round, turn, kind) as the
+   hash seed. Returns null if the roster is empty. */
+function pickReaction(profile, kind, round, turn) {
+  const roster = REACTIONS[profile] && REACTIONS[profile][kind];
+  if (!roster || roster.length === 0) return null;
+  /* Tiny string hash — same triple always picks the same line */
+  const h = (round * 2654435769 + turn * 40503 + kind.charCodeAt(0) * 911) >>> 0;
+  return roster[h % roster.length];
+}
+
+/* Reaction dispatcher — call when a meaningful event happens. Idempotent per
+   (profile, kind, lap) so duplicate ledger rows in the same cluster don't
+   spam the toast stream. */
+let __REACTION_FIRED = new Set();
+function fireReaction(profile, kind, opts) {
+  if (profile === 'human') return;
+  const lap = (STATE && STATE.lap) || 1;
+  const k = profile + '::' + kind + '::' + lap;
+  if (__REACTION_FIRED.has(k)) return;
+  __REACTION_FIRED.add(k);
+  const line = pickReaction(profile, kind, lap, STATE ? STATE.turnIndex : 0);
+  if (!line) return;
+  pushToast({ eyebrow: (opts && opts.eyebrow) || 'Reaction', title: line, body: '' });
+}
+function resetReactionMemory() { __REACTION_FIRED = new Set(); }
+
+/* =====================================================================
+   REDUCER · 17 actions (16 from Phase 3 + AUCTION_BID) + v1.2 actions
    ===================================================================== */
 let STATE;
 let DECISION_LOG = [];
@@ -2895,12 +3441,262 @@ let TURN_SNAPSHOTS = [];
 let NARRATION_LOG = [];
 let NARRATION_ENABLED = true;
 const AUTOSAVE_KEY = 'sovereign.autosave';
-const SAVE_VERSION = 'v0.21-circuit-candidate';
+const SAVE_VERSION = 'v0.23-strategic-arc';
 /* HARD_CAP_ROUNDS is a safety net for pathological games; the diagnostic
    showed 100 % of CANONICAL games complete Race N=4 by round 28. The game
    ends by state (first to N circuits), not by clock. */
 const HARD_CAP_ROUNDS = 30;
 const LATE_REPUBLIC_START = 8;
+
+/* v1.2 Strategic Depth — held-card IDs and special-action constants.
+   Held cards are chosen for timing decisions, NOT to amplify failure
+   pressure. Bank Run and Anti-Federalist Pamphlet are explicitly left
+   immediate so Credit Crisis trigger frequency is unaffected. */
+const HELD_CARD_IDS = {
+  market: new Set([6, 9, 12]),  /* Foreign Loan Secured, Successful Bond Auction, Treaty Renegotiation */
+  debate: new Set([3, 5, 7]),   /* Credit Restored, Cabinet Bargain, Federalist Victory */
+};
+const HAND_SIZE_CAP = 2;
+
+/* Public Credit tiers — wrap around the existing v0.18 failure hierarchy
+   without replacing any of it. Doubt (≤6) and Panic (≤2) are advisory
+   bands; Credit Crisis (≤4) and Default (0) keep their existing effects. */
+const CREDIT_TIERS = {
+  panic:    { name: 'Panic',         max: 2 },
+  crisis:   { name: 'Credit Crisis', max: 4 },
+  doubt:    { name: 'Public Doubt',  max: 6 },
+  stable:   { name: 'Stable',        max: Infinity },
+};
+function creditTier(value) {
+  if (value <= 0) return 'default';
+  if (value <= CREDIT_TIERS.panic.max) return 'panic';
+  if (value <= CREDIT_TIERS.crisis.max) return 'crisis';
+  if (value <= CREDIT_TIERS.doubt.max) return 'doubt';
+  return 'stable';
+}
+
+/* v1.3 Strategic Arc — Late Republic Events.
+   These fire at the START of even-numbered rounds beginning at round 8,
+   OR the first even-numbered round after all 7 founding Acts have resolved,
+   whichever is later. One per round max. Stop drawing after Final Accounting.
+   At least half offer a choice. Values are conservative. */
+const LATE_REPUBLIC_EVENTS = [
+  { id:1, name:'Creditors Demand Payment', tags:['Choice','Credit'],
+    text:'The wealthiest player may pay 100 TN to settle bondholder unrest. If nobody pays, Public Credit −1.',
+    auto: false,
+    eligible(s) {
+      const idx = s.players.map((p,i)=>({i,cash:p.cash})).sort((a,b)=>b.cash-a.cash)[0].i;
+      return s.players[idx].cash >= 100 ? [idx] : [];
+    },
+    choiceLabel: 'Pay 100 TN (avoid Credit −1)',
+    pay(s, idx) { s = adjustCash(s, -100, 'Late Event · Creditors Demand Payment', idx); return logRow(s, { actor:'Late Event', event:'EVENT', detail:s.players[idx].name + ' pays 100 TN · creditor unrest settled', cls:'event' }); },
+    refuse(s) { return adjustTrack(s, 'credit', -1, 'Creditors Demand Payment refused'); },
+  },
+  { id:2, name:'Public Works Petition', tags:['Choice','Resistance'],
+    text:'A player may spend 2 Influence (Reform debit) to lower Resistance by 2 and rally civic mood. Otherwise Resistance +1.',
+    auto: false,
+    eligible(s) {
+      const elig = [];
+      for (let i = 0; i < s.players.length; i++) {
+        const sc = scorePlayer(s, i).total;
+        if (sc >= 4) elig.push(i);
+      }
+      return elig;
+    },
+    choiceLabel: 'Spend 2 IP (Resistance −2)',
+    pay(s, idx) { s.players[idx].reformIPSpent = (s.players[idx].reformIPSpent || 0) + 2; s = adjustTrack(s, 'resistance', -2, s.players[idx].name + ' answers Public Works Petition'); return logRow(s, { actor:'Late Event', event:'EVENT', detail:s.players[idx].name + ' spends 2 IP on Public Works · Resistance −2', cls:'event' }); },
+    refuse(s) { return adjustTrack(s, 'resistance', 1, 'Public Works Petition ignored'); },
+  },
+  { id:3, name:'Route Monopoly Inquiry', tags:['Choice','Merchant'],
+    text:'The leading route holder may pay 100 TN to defuse the inquiry. Otherwise the broker office is closed next round.',
+    auto: false,
+    eligible(s) {
+      let topIdx = -1, topCount = 0;
+      for (let i = 0; i < s.players.length; i++) {
+        const n = countOwnedRoutesByIdx(s, i);
+        if (n > topCount) { topCount = n; topIdx = i; }
+      }
+      return topIdx >= 0 && topCount >= 1 && s.players[topIdx].cash >= 100 ? [topIdx] : [];
+    },
+    choiceLabel: 'Pay 100 TN (defuse inquiry)',
+    pay(s, idx) { s = adjustCash(s, -100, 'Late Event · Route Monopoly Inquiry', idx); return logRow(s, { actor:'Late Event', event:'EVENT', detail:s.players[idx].name + ' pays 100 TN · inquiry closed', cls:'event' }); },
+    refuse(s) { s.flags.brokerSuspendedUntilRound = s.lap + 2; return logRow(s, { actor:'Late Event', event:'EVENT', detail:'Inquiry stands · broker office closed next round', cls:'event' }); },
+  },
+  { id:4, name:'Workshop Shortage', tags:['Choice','Manufacturer'],
+    text:'Any Manufactures / Strategic Industry owner may pay 75 TN to relieve the shortage and gain Capacity +1. If nobody pays, Capacity −1.',
+    auto: false,
+    eligible(s) {
+      const elig = [];
+      for (let i = 0; i < s.players.length; i++) {
+        const owns = s.players[i].ownedAssets.some(a => {
+          const sys = ASSETS[a.spaceNum]?.sys;
+          return sys === 'manufactures' || sys === 'strategic-industry';
+        });
+        if (owns && s.players[i].cash >= 75) elig.push(i);
+      }
+      return elig;
+    },
+    choiceLabel: 'Pay 75 TN (Capacity +1)',
+    pay(s, idx) { s = adjustCash(s, -75, 'Late Event · Workshop Shortage', idx); s = adjustTrack(s, 'capacity', 1, s.players[idx].name + ' relieves Workshop Shortage'); return logRow(s, { actor:'Late Event', event:'EVENT', detail:s.players[idx].name + ' pays 75 TN · Capacity +1', cls:'event' }); },
+    refuse(s) { return adjustTrack(s, 'capacity', -1, 'Workshop Shortage neglected'); },
+  },
+  { id:5, name:'Speculation Inquiry', tags:['Choice','Treasury'],
+    text:'The National Finance leader may pay 150 TN to quell speculation. Otherwise Public Credit −1.',
+    auto: false,
+    eligible(s) {
+      let topIdx = -1, topCount = 0;
+      for (let i = 0; i < s.players.length; i++) {
+        const n = countOwnedSys(s, i, 'national-finance');
+        if (n > topCount) { topCount = n; topIdx = i; }
+      }
+      return topIdx >= 0 && topCount >= 1 && s.players[topIdx].cash >= 150 ? [topIdx] : [];
+    },
+    choiceLabel: 'Pay 150 TN (avoid Credit −1)',
+    pay(s, idx) { s = adjustCash(s, -150, 'Late Event · Speculation Inquiry', idx); return logRow(s, { actor:'Late Event', event:'EVENT', detail:s.players[idx].name + ' pays 150 TN · inquiry quieted', cls:'event' }); },
+    refuse(s) { return adjustTrack(s, 'credit', -1, 'Speculation Inquiry unanswered'); },
+  },
+  { id:6, name:'Bondholder Demand', tags:['Auto','Mixed'],
+    text:'Bond owners collect 50 TN per Rev-Debt / State-Debt / NF property. Public Credit −1 from coupon pressure.',
+    auto: true,
+    apply(s) {
+      for (let i = 0; i < s.players.length; i++) {
+        const n = countOwnedSys(s,i,'revolutionary-debt') + countOwnedSys(s,i,'state-debt') + countOwnedSys(s,i,'national-finance');
+        if (n > 0) s = adjustCash(s, 50 * n, 'Late Event · Bondholder Demand: ' + n + ' bonds × 50 TN', i);
+      }
+      return adjustTrack(s, 'credit', -1, 'Bondholder Demand · coupon pressure');
+    },
+  },
+  { id:7, name:'Local Resistance Organizes', tags:['Auto','Conditional'],
+    text:'If Resistance ≥ 6, every player pays 50 TN (or what they have) and Resistance −1. Otherwise Resistance +1.',
+    auto: true,
+    apply(s) {
+      if (s.tracks.resistance.value >= 6) {
+        for (let i = 0; i < s.players.length; i++) {
+          const cost = Math.min(50, Math.max(0, s.players[i].cash));
+          if (cost > 0) s = adjustCash(s, -cost, 'Late Event · Local Resistance · militia levy', i);
+        }
+        s = logRow(s, { actor:'Late Event', event:'EVENT', detail:'Counties organize · 50 TN militia levy on every player', cls:'event' });
+        return adjustTrack(s, 'resistance', -1, 'Counties dispersed');
+      } else {
+        return adjustTrack(s, 'resistance', 1, 'Local Resistance gathers steam');
+      }
+    },
+  },
+  { id:8, name:'Final Republic Reckoning', tags:['Auto','Reckoning'],
+    text:'Each player with bankrupt rounds on record pays a 50 TN reckoning per bankrupt lap. Plus, Public Credit +1 if no bankruptcies recorded.',
+    auto: true,
+    apply(s) {
+      let anyBankrupt = false;
+      for (let i = 0; i < s.players.length; i++) {
+        const n = s.players[i].bankruptLaps || 0;
+        if (n > 0) {
+          anyBankrupt = true;
+          const cost = Math.min(s.players[i].cash, 50 * n);
+          if (cost > 0) s = adjustCash(s, -cost, 'Late Event · Reckoning · ' + n + ' bankrupt lap(s)', i);
+        }
+      }
+      if (!anyBankrupt) {
+        s = logRow(s, { actor:'Late Event', event:'EVENT', detail:'No bankruptcies recorded · the Republic settles its books · Credit +1', cls:'event' });
+        return adjustTrack(s, 'credit', 1, 'Reckoning clean');
+      }
+      return s;
+    },
+  },
+];
+
+/* v1.3 Strategic Arc — Profile Visions.
+   Each Vision is a 3-condition strategic objective. Achieving all 3 grants +5 IP
+   at scoring (capped at ≤ 40 % of expected median winning IP ≈ 27). Each Vision
+   exists for one profile only; the player's role determines which Vision they
+   pursue. checkConditions returns { met:N, total:3, conditions:[...] }. */
+const VISIONS = {
+  'treasury-finance': {
+    label: 'Federal Credit Architect',
+    description: 'Build the credit system Hamilton dreamed of.',
+    conditions: [
+      { id:'credit8', label:'Public Credit reaches 8',
+        check(s, pIdx) { return !!s.flags.visionTreasuryCredit8?.[pIdx]; } },
+      { id:'bank', label:'Bank Charter Act passes OR Bank of the United States owned',
+        check(s, pIdx) {
+          if (s.flags.bankCharterPassed) return true;
+          /* Bank of the United States is space 12 (national-finance system).
+             Owning it satisfies the Vision regardless of whether the
+             Charter Act formally passed. */
+          return s.players[pIdx].ownedAssets.some(a => a.spaceNum === 12);
+        } },
+      { id:'financeDiverse', label:'Own at least 1 Rev-Debt, 1 State-Debt, and 1 NF',
+        check(s, pIdx) {
+          const r = countOwnedSys(s,pIdx,'revolutionary-debt');
+          const st = countOwnedSys(s,pIdx,'state-debt');
+          const nf = countOwnedSys(s,pIdx,'national-finance');
+          return r >= 1 && st >= 1 && nf >= 1;
+        }, progress(s, pIdx) {
+          const r = countOwnedSys(s,pIdx,'revolutionary-debt');
+          const st = countOwnedSys(s,pIdx,'state-debt');
+          const nf = countOwnedSys(s,pIdx,'national-finance');
+          return 'R' + (r>0?'✓':'·') + ' S' + (st>0?'✓':'·') + ' N' + (nf>0?'✓':'·');
+        } },
+    ],
+  },
+  'merchant-infrastructure': {
+    label: 'Commerce Sovereign',
+    description: 'Own the routes and the harbors that knit the Republic.',
+    conditions: [
+      { id:'routes2', label:'Own 2+ routes',
+        check(s, pIdx) { return countOwnedRoutesByIdx(s, pIdx) >= 2; },
+        progress(s, pIdx) { return countOwnedRoutesByIdx(s, pIdx) + '/2'; } },
+      { id:'commerce1', label:'Own a Commercial Infrastructure asset',
+        check(s, pIdx) { return countOwnedSys(s, pIdx, 'commercial-infrastructure') >= 1; } },
+      { id:'tolls5', label:'Collect route/broker income 5+ times',
+        check(s, pIdx) { return (s.flags.visionMerchantTolls?.[pIdx] || 0) >= 5; },
+        progress(s, pIdx) { return Math.min(5, s.flags.visionMerchantTolls?.[pIdx] || 0) + '/5'; } },
+    ],
+  },
+  'manufacturer-industry': {
+    label: 'Industrial Founder',
+    description: 'Raise the workshops and the capacity of the new nation.',
+    conditions: [
+      { id:'capacity7', label:'Capacity reaches 7',
+        check(s, pIdx) { return !!s.flags.visionMfgCapacity7?.[pIdx]; } },
+      { id:'industrial3', label:'Own 3+ Manufactures or Strategic Industry assets',
+        check(s, pIdx) {
+          const n = countOwnedSys(s,pIdx,'manufactures') + countOwnedSys(s,pIdx,'strategic-industry');
+          return n >= 3;
+        }, progress(s, pIdx) {
+          const n = countOwnedSys(s,pIdx,'manufactures') + countOwnedSys(s,pIdx,'strategic-industry');
+          return n + '/3';
+        } },
+      { id:'industrialUpgrade1', label:'Upgrade at least one Mfg/Strategic asset',
+        check(s, pIdx) {
+          return s.players[pIdx].ownedAssets.some(a => {
+            const sys = ASSETS[a.spaceNum]?.sys;
+            return (sys === 'manufactures' || sys === 'strategic-industry') && a.tier > 0;
+          });
+        } },
+    ],
+  },
+};
+function visionForProfile(p) {
+  /* Map a player to a Vision. Human seat derives from role. */
+  if (p.profile === 'human') {
+    const r = deriveHumanProfile(p);
+    return VISIONS[r] || null;
+  }
+  return VISIONS[p.profile] || null;
+}
+function checkVision(s, pIdx) {
+  const p = s.players[pIdx];
+  const vision = visionForProfile(p);
+  if (!vision) return { met:0, total:0, conditions:[], achieved:false };
+  const conditions = vision.conditions.map(c => ({
+    id: c.id, label: c.label,
+    met: c.check(s, pIdx),
+    progress: c.progress ? c.progress(s, pIdx) : null,
+  }));
+  const met = conditions.filter(c => c.met).length;
+  return { met, total: conditions.length, conditions, achieved: met === conditions.length, label: vision.label };
+}
+const VISION_BONUS_IP = 3;
 
 /* Circuit victory model — designer-overridable via URL in ?designer=1 mode.
    target = number of board circuits required to trigger Final Accounting.
@@ -2995,7 +3791,44 @@ function runOpponent() {
     return;
   }
 
+  if (STATE.phase === 'late-event-choice' && STATE.pendingLateEvent) {
+    const dec = opponentDecideLateEvent(STATE, STATE.pendingLateEvent);
+    dispatch({ type:'LATE_EVENT_DECIDE', choice: dec.choice, playerIndex: dec.playerIndex });
+    return;
+  }
+  if (STATE.phase === 'hand-full-choice' && STATE.pendingHandFull) {
+    const ph = STATE.pendingHandFull;
+    const newPri = handCardPriority(STATE, pIdx, ph.deck, ph.newCardId);
+    const handPris = p.hand.map((h, i) => ({ i, pri: handCardPriority(STATE, pIdx, h.deck, h.cardId) }));
+    const minPri = handPris.reduce((m, x) => x.pri < m.pri ? x : m, handPris[0]);
+    if (newPri > minPri.pri) dispatch({ type:'HAND_FULL_CHOICE', mode:'discard-held', heldIdx: minPri.i });
+    else dispatch({ type:'HAND_FULL_CHOICE', mode:'discard-new' });
+    return;
+  }
+
   if (STATE.phase === 'awaiting-roll') {
+    /* v1.2 — pre-roll opponent decisions: hand play, special, reform.
+       Independent of the roll; do not consume the turn. */
+    const handDec = opponentDecideHandPlay(STATE, pIdx);
+    if (handDec.play) {
+      const held = p.hand[handDec.handIdx];
+      const cards = held.deck === 'market' ? MARKET_SHOCK_CARDS : REPUBLIC_DEBATE_CARDS;
+      const card = cards.find(c => c.id === held.cardId);
+      fireReaction(p.profile, 'firstRentIn', { eyebrow: p.name + ' · plays a card' });
+      dispatch({ type:'HAND_PLAY_CARD', handIdx: handDec.handIdx });
+      return;
+    }
+    const specDec = opponentDecideSpecial(STATE, pIdx);
+    if (specDec.use) {
+      fireReaction(p.profile, 'specialUsed', { eyebrow: p.name + ' · special action' });
+      dispatch({ type:'USE_SPECIAL_ACTION', subtype: specDec.subtype, spaceNum: specDec.spaceNum });
+      return;
+    }
+    const refDec = opponentDecideReform(STATE, pIdx);
+    if (refDec.use) {
+      dispatch({ type:'USE_REFORM', choice: refDec.choice });
+      return;
+    }
     const up = profile.decideUpgrade(STATE, pIdx);
     if (up) { dispatch({ type:'UPGRADE_ASSET', playerIndex: pIdx, spaceNum: up.spaceNum, reason: up.reason }); return; }
     dispatch({ type:'ROLL_DICE' });
@@ -3008,11 +3841,99 @@ function reduce(s, action) {
     case 'BEGIN_LAP': {
       /* Reset per-lap flags for all players */
       s.players.forEach(p => p.bankruptThisLap = false);
+      /* v1.3 — Vision conditions that need an "anytime once-set" latch.
+         These flags persist once set so Vision-bonus eligibility is sticky.
+         v1.3 tune: dropped the "round 10+" restriction; Credit ≥ 8 / Capacity ≥ 7
+         at ANY point in the game qualifies, including the early-game window
+         when Acts are still firing. */
+      if (s.tracks.credit.value >= 8) {
+        s.flags.visionTreasuryCredit8 = s.flags.visionTreasuryCredit8 || {};
+        for (let i = 0; i < s.players.length; i++) s.flags.visionTreasuryCredit8[i] = true;
+      }
+      if (s.tracks.capacity.value >= 7) {
+        s.flags.visionMfgCapacity7 = s.flags.visionMfgCapacity7 || {};
+        for (let i = 0; i < s.players.length; i++) s.flags.visionMfgCapacity7[i] = true;
+      }
+      /* v1.3 — Vision achievement detection. Round-stamp first-time achievers
+         so the bonus locks in and the toast/reaction can fire once. */
+      for (let i = 0; i < s.players.length; i++) {
+        if (s.visionAchievedRound[i] != null) continue;
+        const v = checkVision(s, i);
+        if (v.achieved) {
+          s.visionAchievedRound[i] = s.lap;
+          s = logRow(s, { actor:'System', event:'VISION', detail: s.players[i].name + ' completes their Vision · ' + v.label, cls:'event' });
+        }
+      }
+      /* v1.3 — Late Republic Event draw. Fires at the START of even-numbered
+         rounds beginning at round 8 (or the first even round after all 7 Acts
+         have resolved). At most one event per round. Skipped if already drawn
+         this round (defensive) or after Final Accounting fires. */
+      const actsDone = s.acts.passed.length + (s.acts.current ? 0 : (7 - ACTS.filter(a => s.acts.passed.find(p => p.actId === a.id)).length));
+      const allActsResolved = s.lap > 7; /* Acts only fire rounds 1-7 */
+      /* v1.3 — Late Republic Events fire every round from round 8 onward
+         (v1.3.0 fired every other round; tightening to every round closes the
+         4-round empty-window gap). One event per round; deck reshuffles when
+         empty. */
+      if (allActsResolved && s.lap >= 8 && s.lastLateEventRound < s.lap && s.status !== 'gameOver') {
+        /* Draw an event */
+        if (s.lateRepublicDeck.length === 0) {
+          s.lateRepublicDeck = shuffleDeck(s.rng, s.lateRepublicDiscard);
+          s.lateRepublicDiscard = [];
+        }
+        const eventId = s.lateRepublicDeck.shift();
+        const ev = LATE_REPUBLIC_EVENTS.find(e => e.id === eventId);
+        s.lastLateEventRound = s.lap;
+        s = logRow(s, { actor:'Federal Era', event:'EVENT', detail:'Round ' + s.lap + ' Federal Era Event · ' + ev.name, cls:'event' });
+        if (ev.auto) {
+          s = ev.apply(s);
+          s.lateRepublicDiscard.push(eventId);
+        } else {
+          /* Choice event — queue for resolution. Find eligible players. */
+          const eligibleIdx = ev.eligible(s);
+          if (eligibleIdx.length === 0) {
+            /* No eligible player can pay — refusal path fires immediately */
+            s = ev.refuse(s);
+            s = logRow(s, { actor:'Late Event', event:'EVENT', detail:'No player eligible · auto-refusal · ' + ev.name, cls:'event' });
+            s.lateRepublicDiscard.push(eventId);
+          } else {
+            s.pendingLateEvent = { eventId, eligibleIdx: eligibleIdx.slice() };
+            s.phase = 'late-event-choice';
+            /* Active player among eligible decides first; if active player not
+               eligible, the first eligible takes the offer turn. */
+            return s;
+          }
+        }
+      }
       const act = ACTS.find(a => a.lap === s.lap);
       if (act) {
         s.acts.current = { actId: act.id, voting: true, votes: { 0:null, 1:null, 2:null } };
         s.phase = 'act-vote';
         s = logRow(s, { actor:'Acts', event:'REVEAL', detail:'Round ' + s.lap + ' begins · ' + act.name + ' revealed for vote', cls:'act' });
+      } else {
+        s.phase = 'awaiting-roll';
+      }
+      return s;
+    }
+
+    case 'LATE_EVENT_DECIDE': {
+      /* action.choice = 'pay' | 'refuse' · action.playerIndex = the eligible player making the choice */
+      const ple = s.pendingLateEvent;
+      if (!ple) return s;
+      const ev = LATE_REPUBLIC_EVENTS.find(e => e.id === ple.eventId);
+      const idx = action.playerIndex != null ? action.playerIndex : ple.eligibleIdx[0];
+      if (action.choice === 'pay') {
+        s = ev.pay(s, idx);
+      } else {
+        s = ev.refuse(s);
+        s = logRow(s, { actor:'Late Event', event:'EVENT', detail:s.players[idx].name + ' declines · ' + ev.name, cls:'event' });
+      }
+      s.lateRepublicDiscard.push(ple.eventId);
+      s.pendingLateEvent = null;
+      /* Continue with the round — proceed to Act / awaiting-roll */
+      const act = ACTS.find(a => a.lap === s.lap);
+      if (act) {
+        s.acts.current = { actId: act.id, voting: true, votes: { 0:null, 1:null, 2:null } };
+        s.phase = 'act-vote';
       } else {
         s.phase = 'awaiting-roll';
       }
@@ -3112,6 +4033,14 @@ function reduce(s, action) {
       const pIdx = s.activePlayerIndex;
       const amount = action.landed ? 400 : 200;
       s = adjustCash(s, amount, action.landed ? 'Treasury Opens: landed' : 'Treasury Opens: passed', pIdx);
+      /* v1.2 — Federal bond income. Each active bond pays 30 TN on every
+         pass through Treasury Opens. Bonds are placed by the Treasury
+         special action and persist for the rest of the game. */
+      const p0 = s.players[pIdx];
+      if (p0.federalBondsHeld > 0) {
+        const coupon = 30 * p0.federalBondsHeld;
+        s = adjustCash(s, coupon, 'Federal bond coupon · ' + p0.federalBondsHeld + ' bond(s) × 30 TN', pIdx);
+      }
       /* v0.21 circuit-victory model — every PASS_TREASURY_OPENS is one
          board circuit for the active player. The payday math above is
          unchanged from v0.20; circuit counting is layered on top. */
@@ -3165,8 +4094,33 @@ function reduce(s, action) {
           if (rent > 0) {
             s = adjustCash(s, -rent, 'Rent on ' + space.name + ' to ' + s.players[ownerIdx].name, pIdx);
             s = adjustCash(s, rent, 'Rent from ' + p.name + ' for ' + space.name, ownerIdx);
+            /* v1.3 — Merchant Vision · count route/commerce-toll income events */
+            if (space.kind === 'route' || ASSETS[space.num]?.sys === 'commercial-infrastructure') {
+              s.flags.visionMerchantTolls = s.flags.visionMerchantTolls || {};
+              s.flags.visionMerchantTolls[ownerIdx] = (s.flags.visionMerchantTolls[ownerIdx] || 0) + 1;
+            }
           } else {
             s = logRow(s, { actor:'Space', event:'NO RENT', detail: space.name + ': rent suspended or unowned-payment-condition', cls:'move' });
+          }
+          /* v1.2 — Broker route contract fee. Fires once per round when any
+             player lands on a brokered route. Pays Merchant 50 TN as a
+             broker fee in addition to the rent above. */
+          if (space.kind === 'route' && s.flags.brokeredRoute
+              && s.flags.brokeredRoute.spaceNum === space.num
+              && !s.flags.brokeredRoute.fired
+              && s.flags.brokeredRoute.openedRound === s.lap
+              && s.flags.brokeredRoute.playerIdx !== pIdx) {
+            const brokerIdx = s.flags.brokeredRoute.playerIdx;
+            const brokerCost = Math.min(50, s.players[pIdx].cash);
+            if (brokerCost > 0) {
+              s = adjustCash(s, -brokerCost, 'Broker fee on ' + space.name + ' to ' + s.players[brokerIdx].name, pIdx);
+              s = adjustCash(s, brokerCost, 'Broker fee from ' + p.name + ' for ' + space.name, brokerIdx);
+              s = logRow(s, { actor:'Space', event:'BROKER', detail: s.players[brokerIdx].name + ' collects ' + brokerCost + ' TN broker fee on ' + space.name, cls:'cash' });
+              /* v1.3 — broker fee also counts toward Merchant Vision toll progress */
+              s.flags.visionMerchantTolls = s.flags.visionMerchantTolls || {};
+              s.flags.visionMerchantTolls[brokerIdx] = (s.flags.visionMerchantTolls[brokerIdx] || 0) + 1;
+            }
+            s.flags.brokeredRoute.fired = true;
           }
           return finishLanding(s);
         }
@@ -3247,10 +4201,24 @@ function reduce(s, action) {
       if (!ownsFullSet(s, pIdx, props.sys)) return s;
       let cost = props.up;
       if ((props.sys === 'manufactures' || props.sys === 'strategic-industry') && s.flags.manufacturesLap === s.lap) cost = Math.floor(cost / 2);
+      /* v1.2 — Charter Workshop discount. If this exact asset is chartered
+         this round, halve the upgrade cost (stacks with Manufactures Act —
+         both halvings apply but floor 25 TN). Mark used so the same charter
+         can't discount two upgrades. */
+      let chartered = false;
+      if (s.flags.charteredAsset
+          && s.flags.charteredAsset.playerIdx === pIdx
+          && s.flags.charteredAsset.spaceNum === a.spaceNum
+          && s.flags.charteredAsset.round === s.lap
+          && !s.flags.charteredAsset.fired) {
+        cost = Math.max(25, Math.floor(cost / 2));
+        chartered = true;
+      }
       if (p.cash < cost) return s;
-      s = adjustCash(s, -cost, 'Upgrade ' + SPACES[a.spaceNum].name + ' → Tier ' + 'I'.repeat(a.tier + 1) + (action.reason ? ' · ' + action.reason : ''), pIdx);
+      s = adjustCash(s, -cost, 'Upgrade ' + SPACES[a.spaceNum].name + ' → Tier ' + 'I'.repeat(a.tier + 1) + (action.reason ? ' · ' + action.reason : '') + (chartered ? ' · chartered ½' : ''), pIdx);
       a.tier += 1;
-      return logRow(s, { actor: p.name, event:'UPGRADE', detail: SPACES[a.spaceNum].name + ' now Tier ' + 'I'.repeat(a.tier), cls:'cash' });
+      if (chartered) s.flags.charteredAsset.fired = true;
+      return logRow(s, { actor: p.name, event:'UPGRADE', detail: SPACES[a.spaceNum].name + ' now Tier ' + 'I'.repeat(a.tier) + (chartered ? ' (chartered)' : ''), cls:'cash' });
     }
 
     case 'DRAW_CARD': {
@@ -3266,6 +4234,43 @@ function reduce(s, action) {
       const cardId = s.decks[deckKey].shift();
       const card = cards.find(c => c.id === cardId);
       s = logRow(s, { actor:'Deck', event:'DRAW', detail: s.players[pIdx].name + ' drew ' + card.name, cls:'card' });
+
+      /* v1.2 — Held-card detection. If this card is in the held set, route to
+         the player's hand instead of resolving immediately. */
+      const isHeld = HELD_CARD_IDS[deckKey] && HELD_CARD_IDS[deckKey].has(cardId);
+      if (isHeld) {
+        const p = s.players[pIdx];
+        const cardRef = { deck: deckKey, cardId };
+        if (p.hand.length < HAND_SIZE_CAP) {
+          p.hand.push(cardRef);
+          s = logRow(s, { actor:'Card', event:'HELD', detail: p.name + ' holds ' + card.name + ' (' + p.hand.length + '/' + HAND_SIZE_CAP + ')', cls:'card' });
+          /* No phase change — the card is filed away; player keeps playing their turn */
+          return finishLanding(s);
+        }
+        /* Hand full — surface a forced play-or-discard decision */
+        s.pendingHandFull = { deck: deckKey, newCardId: cardId };
+        s.phase = 'hand-full-choice';
+        if (pIdx !== 0) {
+          /* Opponent: deterministic profile heuristic — keep the newer card if
+             its handPriority is higher, else discard newer. */
+          setTimeout(() => {
+            const cur = STATE.pendingHandFull;
+            if (!cur || STATE.activePlayerIndex !== pIdx) return;
+            const newPri = handCardPriority(STATE, pIdx, cur.deck, cur.newCardId);
+            const handPris = STATE.players[pIdx].hand.map((h, i) => ({ i, pri: handCardPriority(STATE, pIdx, h.deck, h.cardId) }));
+            const minPri = handPris.reduce((m, x) => x.pri < m.pri ? x : m, handPris[0]);
+            if (newPri > minPri.pri) {
+              /* swap: discard min-priority held, hold the new */
+              dispatch({ type:'HAND_FULL_CHOICE', mode:'discard-held', heldIdx: minPri.i });
+            } else {
+              /* discard the new draw */
+              dispatch({ type:'HAND_FULL_CHOICE', mode:'discard-new' });
+            }
+          }, 350);
+        }
+        return s;
+      }
+
       s.pendingCard = { deck: deckKey, cardId, hasChoices: !!card.choices, playerIndex: pIdx };
       s.phase = card.choices ? 'card-choice' : 'card-resolve';
       if (pIdx !== 0) {
@@ -3277,6 +4282,136 @@ function reduce(s, action) {
         } else {
           setTimeout(() => dispatch({ type:'RESOLVE_CARD' }), 250);
         }
+      }
+      return s;
+    }
+
+    case 'HAND_FULL_CHOICE': {
+      /* mode = 'discard-new' | 'discard-held' (with heldIdx) */
+      const pIdx = s.activePlayerIndex;
+      const p = s.players[pIdx];
+      const ph = s.pendingHandFull;
+      if (!ph) return s;
+      const cards = ph.deck === 'market' ? MARKET_SHOCK_CARDS : REPUBLIC_DEBATE_CARDS;
+      const newCard = cards.find(c => c.id === ph.newCardId);
+      if (action.mode === 'discard-new') {
+        s.decks[ph.deck + 'Discard'].push(ph.newCardId);
+        s = logRow(s, { actor: p.name, event:'HAND', detail:'Hand full · discarded ' + newCard.name, cls:'card' });
+      } else if (action.mode === 'discard-held' && Number.isFinite(action.heldIdx)) {
+        const held = p.hand[action.heldIdx];
+        const heldCards = held.deck === 'market' ? MARKET_SHOCK_CARDS : REPUBLIC_DEBATE_CARDS;
+        const heldCard = heldCards.find(c => c.id === held.cardId);
+        s.decks[held.deck + 'Discard'].push(held.cardId);
+        p.hand.splice(action.heldIdx, 1);
+        p.hand.push({ deck: ph.deck, cardId: ph.newCardId });
+        s = logRow(s, { actor: p.name, event:'HAND', detail:'Hand full · discarded ' + heldCard.name + ', held ' + newCard.name, cls:'card' });
+      }
+      s.pendingHandFull = null;
+      s.phase = 'awaiting-roll';
+      return finishLanding(s);
+    }
+
+    case 'HAND_PLAY_CARD': {
+      /* Play a card from the active player's hand. Card resolves with the
+         existing resolve function. No per-turn cap; hand size is the cap. */
+      const pIdx = s.activePlayerIndex;
+      const p = s.players[pIdx];
+      const handIdx = action.handIdx;
+      if (!Number.isFinite(handIdx) || handIdx < 0 || handIdx >= p.hand.length) return s;
+      const held = p.hand[handIdx];
+      const cards = held.deck === 'market' ? MARKET_SHOCK_CARDS : REPUBLIC_DEBATE_CARDS;
+      const card = cards.find(c => c.id === held.cardId);
+      if (!card) return s;
+      s = logRow(s, { actor: p.name, event:'HAND PLAY', detail: p.name + ' plays held ' + card.name + ' (' + (held.deck === 'market' ? 'Market Shock' : 'Republic Debate') + ')', cls:'card' });
+      s = card.resolve(s, pIdx);
+      s.decks[held.deck + 'Discard'].push(held.cardId);
+      p.hand.splice(handIdx, 1);
+      return s;
+    }
+
+    case 'USE_SPECIAL_ACTION': {
+      /* Profile-locked special action. Once per round per player.
+         subtype 'federal-bond' | 'broker-route' | 'charter-workshop'.
+         Cost is built into each branch; the special action runs IN ADDITION
+         to the normal turn structure (it doesn't consume the roll). */
+      const pIdx = s.activePlayerIndex;
+      const p = s.players[pIdx];
+      if (p.specialActionUsedRound === s.lap) return s;
+      const sub = action.subtype;
+      const role = p.profile === 'human' ? deriveHumanProfile(p) : p.profile;
+      if (sub === 'federal-bond') {
+        if (role !== 'treasury-finance') return s;
+        if (p.cash < 200) return s;
+        if (p.federalBondsHeld >= 3) return s;
+        s = adjustCash(s, -200, 'Special · Issue Federal Bond', pIdx);
+        p.federalBondsHeld += 1;
+        /* v1.2.1 — Credit +1 only when Public Credit is at or below the Doubt
+           band (≤ 6). Above that, the bond is purely a coupon-income engine.
+           This stops the bond pump from preemptively suppressing Doubt /
+           Crisis / Panic in healthy economies. */
+        let creditNote = '';
+        if (s.tracks.credit.value <= 6) {
+          s = adjustTrack(s, 'credit', 1, p.name + ' issues a federal bond');
+          creditNote = ' · Credit +1';
+        } else {
+          creditNote = ' · Credit unchanged (above Doubt band)';
+        }
+        s = logRow(s, { actor: p.name, event:'SPECIAL', detail: p.name + ' issues a federal bond · 200 TN paid' + creditNote + ' · bond ' + p.federalBondsHeld + '/3 active', cls:'event' });
+      } else if (sub === 'broker-route') {
+        if (role !== 'merchant-infrastructure') return s;
+        if (p.cash < 50) return s;
+        const spaceNum = action.spaceNum;
+        if (!Number.isFinite(spaceNum) || SPACES[spaceNum]?.kind !== 'route') return s;
+        s = adjustCash(s, -50, 'Special · Broker Route Contract', pIdx);
+        s.flags.brokeredRoute = { playerIdx: pIdx, spaceNum, openedRound: s.lap, fired: false };
+        s = logRow(s, { actor: p.name, event:'SPECIAL', detail: p.name + ' brokers ' + SPACES[spaceNum].name + ' · next landing pays 50 TN broker fee', cls:'event' });
+      } else if (sub === 'charter-workshop') {
+        if (role !== 'manufacturer-industry') return s;
+        const spaceNum = action.spaceNum;
+        const ownerIdx = findOwnerIndex(s, spaceNum);
+        if (ownerIdx !== pIdx) return s;
+        const sys = ASSETS[spaceNum]?.sys;
+        if (sys !== 'manufactures' && sys !== 'strategic-industry') return s;
+        if (p.cash < 75) return s;
+        /* v1.2.1 — cost lowered 100 → 75 TN. Charter’s discount overlaps
+           with the Manufactures Act half-cost discount in rounds 6+, so its
+           useful window was narrow; a lower cost lets Manufacturer fire it
+           earlier and keep more cash for upgrades. */
+        s = adjustCash(s, -75, 'Special · Charter Workshop', pIdx);
+        s.flags.charteredAsset = { playerIdx: pIdx, spaceNum, round: s.lap };
+        s = logRow(s, { actor: p.name, event:'SPECIAL', detail: p.name + ' charters ' + SPACES[spaceNum].name + ' · 75 TN paid · next upgrade ½ cost', cls:'event' });
+      } else {
+        return s;
+      }
+      p.specialActionUsedRound = s.lap;
+      return s;
+    }
+
+    case 'USE_REFORM': {
+      /* Reform — pay 2 IP, choose +1 Credit OR −2 Resistance. Eligible only
+         when Credit ≤ 4 OR Resistance ≥ 8. Once per round per player.
+         IP is spent via the reformIPSpent counter, which scorePlayer subtracts
+         from total. This is the ONLY place IP becomes a spendable resource. */
+      const pIdx = s.activePlayerIndex;
+      const p = s.players[pIdx];
+      if (p.reformUsedRound === s.lap) return s;
+      const eligible = s.tracks.credit.value <= 4 || s.tracks.resistance.value >= 8;
+      if (!eligible) return s;
+      const choice = action.choice; /* 'credit' | 'resistance' */
+      const currentScore = scorePlayer(s, pIdx).total;
+      if (currentScore - 2 < -10) return s; /* sanity bound */
+      p.reformIPSpent = (p.reformIPSpent || 0) + 2;
+      p.reformUsedRound = s.lap;
+      if (choice === 'credit') {
+        s = adjustTrack(s, 'credit', 1, p.name + ' reforms public finance');
+        s = logRow(s, { actor: p.name, event:'REFORM', detail: p.name + ' spends 2 Influence to raise Public Credit · Credit ' + s.tracks.credit.value, cls:'event' });
+      } else if (choice === 'resistance') {
+        s = adjustTrack(s, 'resistance', -2, p.name + ' negotiates with the counties');
+        s = logRow(s, { actor: p.name, event:'REFORM', detail: p.name + ' spends 2 Influence to calm Resistance · Resistance ' + s.tracks.resistance.value, cls:'event' });
+      } else {
+        p.reformIPSpent -= 2;
+        p.reformUsedRound = 0;
+        return s;
       }
       return s;
     }
@@ -3539,6 +4674,19 @@ function scorePlayer(s, pIdx) {
   }
   if (p.keptHamilton) add('"You Are Hamilton" kept', 'card retained', 1);
   if (p.bankruptLaps > 0) add('Bankrupt laps', p.bankruptLaps + ' laps', -p.bankruptLaps);
+  /* v1.2 — Reform IP debit. Reform is the ONLY transaction in Sovereign where
+     IP is spent (not just earned). Each Reform use costs 2 IP, deducted from
+     final scoring as a Reform debit. */
+  if (p.reformIPSpent > 0) add('Reform Influence spent', p.reformIPSpent + ' IP paid to recovery', -p.reformIPSpent);
+  /* v1.3 — Vision bonus. Awarded once per player at the moment all conditions
+     are satisfied (locked into visionAchievedRound). Re-checked at scoring so
+     a Vision achieved during the game stays awarded even if a condition later
+     reverses (e.g. Capacity slips below 6 again). */
+  const visionRes = checkVision(s, pIdx);
+  const visionAlreadyAchieved = s.visionAchievedRound && s.visionAchievedRound[pIdx] != null;
+  if (visionRes.achieved || visionAlreadyAchieved) {
+    add('Vision · ' + (visionRes.label || 'achieved'), 'strategic objective complete', VISION_BONUS_IP);
+  }
   return { breakdown, total };
 }
 
@@ -3650,7 +4798,7 @@ function applyOwnership() {
     /* Your own active space pulse */
     if (youCell) youCell.classList.add('active-space');
   }
-  document.getElementById('bcLap').textContent = 'Round ' + STATE.lap + (STATE.lap >= LATE_REPUBLIC_START ? ' · Late Republic' : '');
+  document.getElementById('bcLap').textContent = 'Round ' + STATE.lap + (STATE.lap >= LATE_REPUBLIC_START ? ' · Federal Era' : '');
   document.getElementById('bcCredit').textContent = STATE.tracks.credit.value;
   document.getElementById('bcResist').textContent = STATE.tracks.resistance.value;
   document.getElementById('bcIndust').textContent = STATE.tracks.capacity.value;
@@ -3942,6 +5090,157 @@ function renderLedger() {
   document.getElementById('ledgerCount').textContent = STATE.ledger.length + ' entries';
 }
 
+/* =====================================================================
+   v1.3 STRATEGIC ARC — Vision strip
+   ===================================================================== */
+function renderVisionStrip(bar) {
+  const you = STATE.players[0];
+  const v = checkVision(STATE, 0);
+  if (!v.total) return; /* no Vision (human without a clear role) */
+  const achieved = STATE.visionAchievedRound && STATE.visionAchievedRound[0] != null;
+  const strip = el('div', 'vision-strip' + (achieved ? ' achieved' : ''));
+  const cond = el('div');
+  cond.innerHTML = '<span class="vs-eyebrow">Vision</span> &nbsp; ' +
+    '<span class="vs-label">' + v.label + '</span> &nbsp; ' +
+    '<span class="vs-progress">' + v.conditions.map(c =>
+      '<span class="' + (c.met ? 'met' : 'unmet') + '">' +
+      (c.met ? '✓' : '·') + ' ' + (c.progress || c.label.replace(/^.*?·\s*/, '').substring(0, 28)) +
+      '</span>'
+    ).join('<span class="sep">·</span>') + '</span>';
+  strip.appendChild(cond);
+  bar.appendChild(strip);
+}
+
+/* =====================================================================
+   v1.2 STRATEGIC DEPTH — UI helpers
+   ===================================================================== */
+function renderDepthStrip(bar) {
+  const you = STATE.players[0];
+  const hand = you.hand || [];
+  const role = deriveHumanProfile(you);
+  const specialUsed = you.specialActionUsedRound === STATE.lap;
+  const reformUsed = you.reformUsedRound === STATE.lap;
+  const reformEligible = STATE.tracks.credit.value <= 4 || STATE.tracks.resistance.value >= 8;
+  const isHumanTurn = STATE.activePlayerIndex === 0;
+  const canAct = isHumanTurn && STATE.phase === 'awaiting-roll' && STATE.status !== 'gameOver';
+
+  const strip = el('div', 'depth-strip');
+
+  /* Head — hand summary */
+  const head = el('div', 'ds-head');
+  head.innerHTML = '<div class="ds-eyebrow">Your hand</div>' +
+                   '<div class="ds-line">' + (hand.length ? hand.length + ' / ' + HAND_SIZE_CAP + ' held' : 'no cards held') + '</div>' +
+                   '<div class="ds-meta">Held cards have timing windows. Play them on your turn.</div>';
+  strip.appendChild(head);
+
+  /* Hand cards */
+  const handBox = el('div', 'ds-hand');
+  if (hand.length === 0) {
+    handBox.innerHTML = '<span class="hand-empty">No held cards. Draw event cards to build your hand.</span>';
+  } else {
+    hand.forEach((h, i) => {
+      const cards = h.deck === 'market' ? MARKET_SHOCK_CARDS : REPUBLIC_DEBATE_CARDS;
+      const card = cards.find(c => c.id === h.cardId);
+      const cardEl = el('div', 'hand-card');
+      cardEl.setAttribute('data-deck', h.deck);
+      cardEl.innerHTML = '<div class="hc-deck">' + (h.deck === 'market' ? 'Market Shock' : 'Republic Debate') + '</div>' +
+                         '<div class="hc-name">' + card.name + '</div>' +
+                         '<div class="hc-effect">' + (card.effectText || '').replace(/<[^>]+>/g, '') + '</div>';
+      if (canAct) {
+        cardEl.title = 'Click to play ' + card.name;
+        cardEl.onclick = () => dispatch({ type:'HAND_PLAY_CARD', handIdx: i });
+      } else {
+        cardEl.style.opacity = '.55';
+        cardEl.style.cursor = 'default';
+        cardEl.onclick = null;
+      }
+      handBox.appendChild(cardEl);
+    });
+  }
+  strip.appendChild(handBox);
+
+  /* Action buttons — special, reform */
+  const actions = el('div', 'ds-actions');
+
+  /* Special action — profile-locked */
+  if (role === 'treasury-finance' || you.profile === 'human' && role === 'treasury-finance') {
+    const canIssue = canAct && !specialUsed && you.cash >= 200 && you.federalBondsHeld < 3 && STATE.tracks.credit.value < 12;
+    const btn = el('button', 'foil', 'Issue Federal Bond');
+    btn.title = '200 TN · Credit +1 · 30 TN coupon each circuit · max 3 active';
+    btn.disabled = !canIssue;
+    btn.onclick = () => dispatch({ type:'USE_SPECIAL_ACTION', subtype:'federal-bond' });
+    actions.appendChild(btn);
+    if (you.federalBondsHeld > 0) {
+      const meta = el('div', 'ds-spent', you.federalBondsHeld + ' bond' + (you.federalBondsHeld === 1 ? '' : 's') + ' active');
+      actions.appendChild(meta);
+    }
+  } else if (role === 'merchant-infrastructure') {
+    /* Merchant — needs a route selection. Simplify: pick best route (first owned) */
+    const myRoutes = you.ownedAssets.filter(a => SPACES[a.spaceNum].kind === 'route');
+    const targetRoute = myRoutes[0];
+    const canBroker = canAct && !specialUsed && you.cash >= 50 && targetRoute;
+    const btn = el('button', 'foil', targetRoute ? ('Broker ' + SPACES[targetRoute.spaceNum].name) : 'Broker Route (no route owned)');
+    btn.title = '50 TN · next landing on this route pays 50 TN broker fee';
+    btn.disabled = !canBroker;
+    btn.onclick = () => dispatch({ type:'USE_SPECIAL_ACTION', subtype:'broker-route', spaceNum: targetRoute.spaceNum });
+    actions.appendChild(btn);
+    if (STATE.flags.brokeredRoute && STATE.flags.brokeredRoute.playerIdx === 0 && STATE.flags.brokeredRoute.openedRound === STATE.lap) {
+      const meta = el('div', 'ds-spent', 'Brokered: ' + SPACES[STATE.flags.brokeredRoute.spaceNum].name);
+      actions.appendChild(meta);
+    }
+  } else if (role === 'manufacturer-industry') {
+    /* Manufacturer — pick first eligible Mfg/Strat with full set + tier < 3 */
+    const targets = you.ownedAssets.filter(a => {
+      const sys = ASSETS[a.spaceNum]?.sys;
+      return (sys === 'manufactures' || sys === 'strategic-industry') && a.tier < 3 && ownsFullSet(STATE, 0, sys);
+    });
+    const target = targets[0];
+    const canCharter = canAct && !specialUsed && you.cash >= 75 && target;
+    const btn = el('button', 'foil', target ? ('Charter ' + SPACES[target.spaceNum].name) : 'Charter Workshop (no eligible asset)');
+    btn.title = '75 TN · halve next upgrade cost on this asset';
+    btn.disabled = !canCharter;
+    btn.onclick = () => target && dispatch({ type:'USE_SPECIAL_ACTION', subtype:'charter-workshop', spaceNum: target.spaceNum });
+    actions.appendChild(btn);
+    if (STATE.flags.charteredAsset && STATE.flags.charteredAsset.playerIdx === 0 && STATE.flags.charteredAsset.round === STATE.lap) {
+      const meta = el('div', 'ds-spent', 'Chartered: ' + SPACES[STATE.flags.charteredAsset.spaceNum].name);
+      actions.appendChild(meta);
+    }
+  }
+
+  /* Reform — universal recovery action */
+  const reformBtn = el('button', '', reformEligible ? 'Reform (−2 IP)' : 'Reform (locked)');
+  reformBtn.title = reformEligible
+    ? 'Eligible · Credit ≤ 4 or Resistance ≥ 8 · costs 2 Influence at scoring'
+    : 'Eligible only when Credit ≤ 4 or Resistance ≥ 8';
+  reformBtn.disabled = !canAct || reformUsed || !reformEligible;
+  reformBtn.onclick = () => {
+    if (!reformEligible) return;
+    /* Auto-pick the more critical track */
+    const choice = (STATE.tracks.resistance.value >= 8 && STATE.tracks.credit.value > 2) ? 'resistance' : 'credit';
+    dispatch({ type:'USE_REFORM', choice });
+  };
+  actions.appendChild(reformBtn);
+  if ((you.reformIPSpent || 0) > 0) {
+    actions.appendChild(el('div', 'ds-spent', you.reformIPSpent + ' IP spent on Reform'));
+  }
+
+  strip.appendChild(actions);
+  bar.appendChild(strip);
+
+  /* Credit tier banner — only render when Credit is below stable */
+  const tier = creditTier(STATE.tracks.credit.value);
+  if (tier !== 'stable') {
+    const labels = {
+      doubt: 'Public Doubt · Credit ' + STATE.tracks.credit.value + ' · the bond market is watching',
+      crisis: 'Credit Crisis · Credit ' + STATE.tracks.credit.value + ' · panic spreads',
+      panic: 'Panic · Credit ' + STATE.tracks.credit.value + ' · the streets are restless',
+      default: 'Default · Credit 0 · the Republic has failed its bonds',
+    };
+    const band = el('div', 'credit-tier-band tier-' + tier, labels[tier]);
+    bar.appendChild(band);
+  }
+}
+
 function renderControls() {
   const bar = document.getElementById('controlsBar');
   bar.innerHTML = '';
@@ -4027,6 +5326,13 @@ function renderControls() {
     };
     pf.appendChild(openBtn);
     bar.appendChild(pf);
+
+    /* v1.2 Strategic Depth strip — hand, special action, reform.
+       Rendered between the portfolio strip and the action rail so the
+       player sees all their agency surfaces in one column. */
+    renderDepthStrip(bar);
+    /* v1.3 — Vision strip surfaces strategic objective progress for the human seat */
+    renderVisionStrip(bar);
   }
 
   /* v0.18 playtest fix — always show an action banner so the user knows what to do next */
@@ -4074,6 +5380,55 @@ function renderControls() {
       banner.appendChild(hintEl);
     }
     bar.appendChild(banner);
+  }
+
+  /* v1.3 — Late Republic Event choice banner */
+  if (phase === 'late-event-choice' && STATE.pendingLateEvent) {
+    const ple = STATE.pendingLateEvent;
+    const ev = LATE_REPUBLIC_EVENTS.find(e => e.id === ple.eventId);
+    const humanIsEligible = ple.eligibleIdx.includes(0);
+    if (humanIsEligible) humanDecisionPending = true;
+    const banner = el('div', 'late-event-banner');
+    const text = el('div');
+    text.innerHTML = '<div class="le-eyebrow">Federal Era · Round ' + STATE.lap + '</div>' +
+                    '<div class="le-title">' + ev.name + '</div>' +
+                    '<div class="le-text">' + ev.text + '</div>';
+    banner.appendChild(text);
+    const actions = el('div', 'le-actions');
+    if (humanIsEligible) {
+      const payBtn = el('button', 'primary', ev.choiceLabel);
+      payBtn.onclick = () => dispatch({ type:'LATE_EVENT_DECIDE', choice:'pay', playerIndex: 0 });
+      actions.appendChild(payBtn);
+      const refuseBtn = el('button', '', 'Decline · accept consequence');
+      refuseBtn.onclick = () => dispatch({ type:'LATE_EVENT_DECIDE', choice:'refuse', playerIndex: 0 });
+      actions.appendChild(refuseBtn);
+    } else {
+      const eligNames = ple.eligibleIdx.map(i => STATE.players[i].name).join(', ');
+      const note = el('div');
+      note.style.fontFamily = 'var(--display)'; note.style.fontStyle = 'italic';
+      note.style.fontSize = '13px'; note.style.opacity = '.7';
+      note.textContent = 'Eligible: ' + eligNames + ' · they will decide.';
+      actions.appendChild(note);
+    }
+    banner.appendChild(actions);
+    bar.appendChild(banner);
+  }
+
+  if (phase === 'hand-full-choice' && isHumanTurn && STATE.pendingHandFull) {
+    humanDecisionPending = true;
+    const ph = STATE.pendingHandFull;
+    const cards = ph.deck === 'market' ? MARKET_SHOCK_CARDS : REPUBLIC_DEBATE_CARDS;
+    const newCard = cards.find(c => c.id === ph.newCardId);
+    const handDesc = STATE.players[0].hand.map((h, i) => {
+      const c = (h.deck === 'market' ? MARKET_SHOCK_CARDS : REPUBLIC_DEBATE_CARDS).find(x => x.id === h.cardId);
+      return { i, label: c.name };
+    });
+    const buttons = [
+      { label:'Discard new draw (' + newCard.name + ')', onClick: () => dispatch({ type:'HAND_FULL_CHOICE', mode:'discard-new' }) },
+    ];
+    handDesc.forEach(h => buttons.push({ label:'Discard ' + h.label + ' (hold new)', primary:true, onClick: () => dispatch({ type:'HAND_FULL_CHOICE', mode:'discard-held', heldIdx: h.i }) }));
+    addBanner('Hand full', 'Drew <em>' + newCard.name + '</em> with a full hand.',
+      'Hand cap is ' + HAND_SIZE_CAP + '. Discard the new draw or swap it in.', buttons);
   }
 
   /* Human's vote outstanding on the current Act */
@@ -4239,10 +5594,27 @@ function renderEndgame() {
   const _endTitle = _ct ? 'Final Accounting' : 'Thirty rounds in';
   const _winnerName = STATE.players[winner.idx].name;
   const _triggerWon = _ct && _ct.playerIdx === winner.idx;
+  /* v1.3 — Vision-aware subtitle branches. The trigger player's Vision state
+     determines the framing; falls back to v1.1.2 human-voice copy if no
+     Vision branch applies. */
+  const _triggerVisionAchieved = _ct && STATE.visionAchievedRound && STATE.visionAchievedRound[_ct.playerIdx] != null;
+  const _triggerVision = _ct ? visionForProfile(STATE.players[_ct.playerIdx]) : null;
+  const _visionName = _triggerVision ? _triggerVision.label : '';
+  const _visionShortByProfile = {
+    'treasury-finance': 'the credit system he dreamed of',
+    'merchant-infrastructure': 'the commerce he wanted to own',
+    'manufacturer-industry': 'the workshops he set out to build',
+  };
+  const _triggerProfile = _ct ? (STATE.players[_ct.playerIdx].profile === 'human' ? deriveHumanProfile(STATE.players[_ct.playerIdx]) : STATE.players[_ct.playerIdx].profile) : null;
+  const _shortVision = _triggerProfile ? _visionShortByProfile[_triggerProfile] : 'their vision';
   const _endSub = _ct
     ? (_triggerWon
-        ? _ct.playerName + ' carried the Republic around four times — and the ledger agreed.'
-        : _ct.playerName + ' rounded the Republic four times — but the heaviest ledger belonged to ' + _winnerName + '.')
+        ? (_triggerVisionAchieved
+            ? _ct.playerName + ' built ' + _shortVision + ' — and the ledger affirmed it.'
+            : _ct.playerName + ' carried the Republic around four times — and the ledger agreed.')
+        : (_triggerVisionAchieved
+            ? _ct.playerName + ' built ' + _shortVision + ', but ' + _winnerName + '\u2019s ledger held the heavier mark.'
+            : _ct.playerName + ' rounded the Republic four times — but the heaviest ledger belonged to ' + _winnerName + '.'))
     : 'After ' + HARD_CAP_ROUNDS + ' rounds, none of you had carried the Republic around four times. The strongest ledger takes the day.';
   let html = `
     <h2>${_endTitle} <span class="surface-id">H</span></h2>
@@ -4284,6 +5656,7 @@ function render() {
 }
 
 function startNewGame(seed) {
+  resetReactionMemory();
   STATE = initialState(seed);
   DECISION_LOG = [];
   TURN_SNAPSHOTS = [];
@@ -4733,10 +6106,35 @@ function scanLedgerForToasts() {
       pushToast({ cls:'fail', eyebrow:'Congress · Act failed', title: actName, body: 'The floor vote did not carry. The measure is set aside.' });
     } else if (row.event === 'CREDIT_CRISIS') {
       pushToast({ cls:'crisis', eyebrow:'Public Credit', title:'Credit Crisis', body: row.detail || 'Public Credit collapses to 4 or below. Financial panic spreads.' });
+      STATE.players.forEach(p => { if (p.profile !== 'human') fireReaction(p.profile, 'creditCrisis', { eyebrow: p.name }); });
     } else if (row.event === 'DEFAULT') {
       pushToast({ cls:'default', eyebrow:'Catastrophe', title:'Default', body:'Public Credit reaches zero. Every player loses 50 % cash and one upgrade; Credit resets to 3.' });
     } else if (row.event === 'REBELLION') {
       pushToast({ cls:'rebellion', eyebrow:'Catastrophe', title:'Rebellion', body:'Public Resistance reaches twelve. Revenue upgrades destroyed; Resistance resets to 6.' });
+    } else if (row.event === 'PUBLIC_DOUBT') {
+      pushToast({ eyebrow:'Public Doubt · Credit ' + STATE.tracks.credit.value, title:'The bond market is watching', body:'Public Credit slips below 7. Spread tightens; no catastrophic effect yet.' });
+      STATE.players.forEach(p => { if (p.profile !== 'human') fireReaction(p.profile, 'creditDoubt', { eyebrow: p.name }); });
+    } else if (row.event === 'PANIC') {
+      pushToast({ cls:'crisis', eyebrow:'Panic in the streets · Credit ' + STATE.tracks.credit.value, title:'The Treasury sees no floor', body:'30 TN levy on every player. Public Resistance +1. Default is one step away.' });
+      STATE.players.forEach(p => { if (p.profile !== 'human') fireReaction(p.profile, 'panic', { eyebrow: p.name }); });
+    } else if (row.event === 'SPECIAL') {
+      const m = (row.detail || '').match(/^(\w+)\s+(issues|brokers|charters)/);
+      if (m) {
+        const subject = m[1];
+        const profileEntry = STATE.players.find(p => p.name === subject);
+        if (profileEntry && profileEntry.profile !== 'human') {
+          fireReaction(profileEntry.profile, 'specialUsed', { eyebrow: subject + ' · special action' });
+        }
+      }
+      pushToast({ eyebrow:'Special action', title: row.detail, body:'' });
+    } else if (row.event === 'REFORM') {
+      pushToast({ cls:'pass', eyebrow:'Reform', title: row.detail, body:'2 Influence spent at scoring as a Reform debit.' });
+    } else if (row.event === 'BROKER') {
+      pushToast({ eyebrow:'Broker fee', title: row.detail, body:'A brokered route paid out.' });
+    } else if (row.event === 'HAND PLAY') {
+      pushToast({ eyebrow:'Held card played', title: row.detail, body:'' });
+    } else if (row.event === 'HELD') {
+      pushToast({ eyebrow:'Card held', title: row.detail, body:'Play it on a future turn.' });
     } else if (row.event === 'AUCTION WIN' || (row.event === 'AUCTION' && /wins/i.test(row.detail || ''))) {
       pushToast({ eyebrow:'Auction settled', title: row.detail || 'Auction won', body:'' });
     } else if (row.event === 'CIRCUIT') {
@@ -4763,6 +6161,11 @@ function scanLedgerForToasts() {
         : row.detail;
       pushToast({ cls:'pass', eyebrow:'The books close', title,
         body:'Final Accounting decides the rest.' });
+      /* v1.2 — opponent reaction on their own fourth circuit. */
+      if (ct) {
+        const tp = STATE.players[ct.playerIdx];
+        if (tp && tp.profile !== 'human') fireReaction(tp.profile, 'fourthCircuit', { eyebrow: tp.name });
+      }
     } else if (row.event === 'GAME OVER') {
       const hadCircuit = STATE.circuitTrigger;
       if (hadCircuit) {
@@ -4775,7 +6178,18 @@ function scanLedgerForToasts() {
           body:'The strongest ledger decides. View the report.' });
       }
     }
-    /* Opponent narration — verbose play-by-play with profile-flavored voice */
+    /* v1.2 — opponent vote + buy reactions. One per round-actor-event cluster. */
+    else if (row.event === 'VOTE' && isOpponentActor) {
+      const p = STATE.players.find(pl => pl.name === row.actor);
+      if (p) {
+        const yes = / YES /.test(row.detail);
+        fireReaction(p.profile, yes ? 'voteYes' : 'voteNo', { eyebrow: p.name + ' · vote' });
+      }
+    }
+    else if (row.event === 'BUY' && isOpponentActor) {
+      const p = STATE.players.find(pl => pl.name === row.actor);
+      if (p) fireReaction(p.profile, 'firstBuy', { eyebrow: p.name + ' · acquisition' });
+    }
     else if (isOpponentActor && row.event === 'ROLL') {
       const f = flavorFor(row.actor);
       pushToast({ eyebrow: row.actor + ' \u00b7 ' + (f ? f.rollVerb : 'rolls'), title: row.detail, body:'' });
@@ -4823,9 +6237,9 @@ function scanLedgerForToasts() {
       if (lap === LATE_REPUBLIC_START && !__LATE_REPUBLIC_SHOWN) {
         __LATE_REPUBLIC_SHOWN = true;
         setTimeout(() => pushToast({
-          cls:'pass', eyebrow:'Late Republic',
-          title:'The Founding Acts are decided.',
-          body:'The Republic now plays out its consequences. Rounds 8\u201312 are the late stretch \u2014 no new Acts will be tabled.',
+          cls:'pass', eyebrow:'Federal Era',
+          title:'The Federal Era begins.',
+          body:'The founding Acts are in place. Now the Republic must prove whether credit, commerce, and industry can endure.',
         }), 1400);
       }
     }
@@ -4903,7 +6317,7 @@ function showLapRecap(lapEnded) {
   if (!STATE || STATE.status === 'gameOver') return;
   const overlay = document.getElementById('lapRecapOverlay');
   if (!overlay) return;
-  const title = 'Round ' + lapEnded + (lapEnded >= LATE_REPUBLIC_START ? ' · Late Republic' : '');
+  const title = 'Round ' + lapEnded + (lapEnded >= LATE_REPUBLIC_START ? ' · Federal Era' : '');
   const sub = 'A federalist accounting';
   const body = buildLapRecap(lapEnded);
   document.getElementById('lapRecapTitle').textContent = title;
@@ -5201,6 +6615,14 @@ function showResumePill() {
 function hideResumePill() { document.getElementById('resumePill').classList.add('hidden'); }
 
 function loadFromPayload(payload) {
+  if (payload && payload.version === 'v0.22.1-strategic-depth-tuned') {
+    showIoPill('This save is from the pre-arc v1.2.1 candidate; Federal Era Events and Visions would diverge. Start a new game to play the v1.3 candidate.', true);
+    return false;
+  }
+  if (payload && payload.version === 'v0.22-strategic-depth') {
+    showIoPill('This save is from the pre-tuning v1.2 candidate and replays would diverge. Start a new game to play the tuned candidate.', true);
+    return false;
+  }
   if (payload && payload.version === 'v0.18-candidate') {
     showIoPill('This save is from an earlier game length and cannot be loaded. Start a new game to play the circuit-victory model.', true);
     return false;
@@ -6113,10 +7535,34 @@ function runBatchGame(seed, profileTriplet, charterEnabled) {
     const pIdx = s.activePlayerIndex;
     const p = s.players[pIdx];
     const profile = PROFILES[p.profile];
+    if (s.phase === 'late-event-choice' && s.pendingLateEvent) {
+      const dec = opponentDecideLateEvent(s, s.pendingLateEvent);
+      step({ type:'LATE_EVENT_DECIDE', choice: dec.choice, playerIndex: dec.playerIndex });
+      continue;
+    }
     if (s.phase === 'awaiting-roll') {
+      /* v1.2 — pre-roll opponent decisions: play held card, use special, reform.
+         These are independent of the roll and do not consume the turn. */
+      const handDec = opponentDecideHandPlay(s, pIdx);
+      if (handDec.play) { step({ type:'HAND_PLAY_CARD', handIdx: handDec.handIdx }); continue; }
+      const specDec = opponentDecideSpecial(s, pIdx);
+      if (specDec.use) { step({ type:'USE_SPECIAL_ACTION', subtype: specDec.subtype, spaceNum: specDec.spaceNum }); continue; }
+      const refDec = opponentDecideReform(s, pIdx);
+      if (refDec.use) { step({ type:'USE_REFORM', choice: refDec.choice }); continue; }
       const up = profile.decideUpgrade(s, pIdx);
       if (up) { step({ type:'UPGRADE_ASSET', playerIndex: pIdx, spaceNum: up.spaceNum, reason: up.reason }); continue; }
       step({ type:'ROLL_DICE' }); continue;
+    }
+    if (s.phase === 'hand-full-choice' && s.pendingHandFull) {
+      /* Deterministic: prefer to swap the new card in if its priority exceeds
+         the lowest-priority held card; else discard the new draw. */
+      const ph = s.pendingHandFull;
+      const newPri = handCardPriority(s, pIdx, ph.deck, ph.newCardId);
+      const handPris = s.players[pIdx].hand.map((h, i) => ({ i, pri: handCardPriority(s, pIdx, h.deck, h.cardId) }));
+      const minPri = handPris.reduce((m, x) => x.pri < m.pri ? x : m, handPris[0]);
+      if (newPri > minPri.pri) step({ type:'HAND_FULL_CHOICE', mode:'discard-held', heldIdx: minPri.i });
+      else step({ type:'HAND_FULL_CHOICE', mode:'discard-new' });
+      continue;
     }
     if (s.phase === 'crisis-choice') { step({ type:'ROLL_DICE', crisisChoice:'pay' }); continue; }
     if (s.phase === 'asset-decision' && s.pendingLanding) {
