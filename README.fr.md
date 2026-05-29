@@ -6,42 +6,42 @@
 
 <img src="https://raw.githubusercontent.com/mcp-tool-shop-org/brand/main/logos/sovereign/readme.png" alt="Sovereign — The Hamilton System Board Game" width="400" />
 
-**Le jeu de société Hamilton · adaptation solo / numérique**
+**Le jeu de société Hamilton System · adaptation solo / numérique**
 
-*Crédit fondateur · Financez la dette. Construisez la banque. Industrialisez la république.*
+*Financement initial · Financez la dette. Construisez la banque. Industrialisez la République.*
 
 [![CI](https://github.com/mcp-tool-shop-org/sovereign/actions/workflows/ci.yml/badge.svg)](https://github.com/mcp-tool-shop-org/sovereign/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/@mcptoolshop/sovereign.svg)](https://www.npmjs.com/package/@mcptoolshop/sovereign)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Landing Page](https://img.shields.io/badge/landing-page-1F2D52?style=flat)](https://mcp-tool-shop-org.github.io/sovereign/)
 
-</div
+</div>
 
 ---
 
-**Statut — v1.4.0 (bêta).** Première version majeure depuis v1.1.2 (circuit-victory). Ajoute trois couches au-dessus de la base du circuit : **profondeur stratégique** (actions spéciales liées au profil, cartes HAND avec fenêtres temporelles, récupération de la réforme, pression publique sur le crédit en plusieurs étapes), **arc stratégique** (événements de l'ère fédérale déclenchés à chaque tour à partir du tour 8, trois visions de profil avec bonus de fin de partie) et **le Chroniqueur** (une voix historique à la troisième personne qui fait apparaître 14 bannières liées aux événements tout au long du jeu, issues d'une banque de citations historiques vérifiées — 27 citations réelles de Hamilton / Madison / Jefferson / Adams / Gallatin / Maclay / Freneau, avec des URL traçables vers founders.archives.gov, Wikisource et la Bibliothèque du Congrès ; aucune attribution fabriquée). La durée moyenne d'une partie reste d'environ 23 tours / 67 étapes ; le calcul final déclenché par le circuit reste inchangé. Trois voies de profil viables : Trésor 59 % / Marchand 20 % / Fabricant 21 % (CANONIQUE × 100). Le jeu de plateau imprimable reste stable à la version v0.2. Consultez le fichier `CHANGELOG.md` pour connaître les modifications complètes et les limitations de la version bêta.
+> **État — v1.5.0 (bêta).** La version « pour que l’on ressente l’expérience », qui s’appuie sur la base stratégique de la v1.4. Cinq éléments clés sont présents : **présence des adversaires** (classement d’influence visible + lignes de posture par adversaire qui mettent fin à la phase de jeu solitaire), **la spirale du crédit** (la pression en cas d’échec se fait désormais sentir, elle s’amplifie et est *réversible* — une taxe de remboursement de la dette, une accélération annoncée vers le défaut de paiement, une prévision et une bouée de sauvetage sous forme de réforme — et elle véhicule la thèse civique : vous ressentez *pourquoi* le crédit public est important), **effets visuels et sonores** (transition numérique avec asymétrie de gain/perte, audio procédural ZzFX sur 13 effets sonores, chorégraphie des actions, réglage de la vitesse : Cinématique / Normal / Instantané, accessibilité complète), **niveau Chronicler B** (15 fenêtres contextuelles « En savoir plus », l’encyclopédie Chronicler’s Ledger — 27 citations vérifiées plus des actes / événements / niveaux / visions — et 10 infobulles), et **tutoriel** (un tutoriel Swift-Start « Débat sur le financement de 1790 » + une présentation complète sans rien cacher). Deux éléments de jeu difficiles présents dans la v1.4.0 sont corrigés (enchères déclenchées par une carte ; achat avec des liquidités insuffisantes), et la fidélité de la sauvegarde / du chargement / de la relecture est restaurée (`SAVE_VERSION = v0.26-replay-fidelity-candidate`). La durée moyenne d’une partie est de **~22 tours (~66 tours)** ; la condition de fin basée sur un circuit reste inchangée. L’équilibre mesuré (CANONICAL × 100) est le suivant : Trésor **48 %** / Marchand **34 %** / Fabricant **18 %** — les trois profils gagnent de manière significative. **La v1.5.0 est une version bêta en attente d’une démonstration complète avec un joueur humain** (la validation de la jouabilité). Le jeu de société imprimable reste stable à la v0.2. Consultez le fichier `CHANGELOG.md` pour connaître l’ensemble des modifications et les mises en garde concernant la version bêta.
 
 ---
 
-## Qu'est-ce que c'est ?
+## Ce que c’est
 
-Sovereign est un **jeu de société du type Monopoly, basé sur le système Hamilton**, qui traite de la création du crédit public américain, ainsi qu'une **adaptation complète pour un mode solo / numérique** qui exécute les mêmes règles localement dans un navigateur, contre deux adversaires simulés et déterministes.
+Sovereign est un **jeu de société de type Hamilton System Monopoly** qui traite de la création du crédit public américain, ainsi qu’une **adaptation solo / numérique** qui applique les mêmes règles localement dans un navigateur contre deux adversaires scriptés et déterministes.
 
-- **Jeu de plateau** — édition imprimable de 34 feuilles. Plateau de 40 cases, 22 propriétés + 4 itinéraires + 2 institutions, 8 systèmes de couleurs, 7 actes du Congrès dans un ordre historique fixe, 4 rôles de joueurs, 3 pistes partagées (Crédit public · Résistance publique · Capacité industrielle), 12+12 cartes d'événements. Deux voies économiques viables en dehors du Trésor : Marchand et Fabricant. Équilibrage à la version v0.2, figé.
-- **Mode numérique** — un seul fichier HTML autonome. Condition de fin basée sur le circuit : le jeu se termine lorsque un joueur effectue sa quatrième traversée de "Trésor ouvert". La durée moyenne d'une partie est d'environ 23 tours (67 étapes). Lors du calcul final, le joueur avec la plus grande influence gagne, *pas nécessairement celui qui a fait le tour du plateau en premier*. Couche de profondeur stratégique : trois actions spéciales liées au profil, six cartes HAND avec fenêtres temporelles, action de récupération de la réforme, pression sur le crédit en plusieurs étapes (doute public / crise / panique / défaut de paiement). Couche d'arc stratégique : huit événements de l'ère fédérale déclenchés à chaque tour à partir du tour 8, trois visions de profil avec bonus de fin de partie. Couche de narration du Chroniqueur : 14 bannières historiques liées aux événements, citations réelles des Federalist Papers et Founders Online, notification persistante avec bouton de fermeture. Générateur de nombres aléatoires mulberry32 déterministe, adversaires IA programmés, sauvegarde / chargement avec intégrité du hachage, outil de suppression des répétitions, outil de simulation par lots réservé aux concepteurs.
-- **Base d'équilibre** — circuit + profondeur stratégique + arc stratégique + Chroniqueur (v1.4.0 bêta) : Trésor 59 % · Marchand 20 % · Fabricant 21 % (CANONIQUE × 100). Les trois profils ont des chances de gagner de manière significative. Taux de réussite des objectifs : Architecte du crédit fédéral 54 %, Souverain du commerce 39 %, Fondateur industriel 29 %. Les mécanismes sous-jacents de la version v0.18 (crise du crédit, notation des brevets en espèces, charte industrielle, bonus de complétion de séries) sont conservés de manière identique en octets, provenant de l'évolution de la conception de la version v0.3 → v0.10 → v0.18, basée sur plus de 1000 simulations de jeux déterministes.
+- **Jeu de société** — édition imprimable de 34 feuilles. Plateau de 40 cases, 22 propriétés + 4 itinéraires + 2 institutions, 8 systèmes de couleurs, 7 lois du Congrès dans un ordre historique fixe, 4 rôles de joueurs, 3 pistes partagées (Crédit public · Résistance publique · Capacité industrielle), 12 + 12 cartes d’événements. Deux voies économiques viables au-delà du Trésor : le Marchand et le Fabricant. Équilibre de la v0.2, figé.
+- **Mode numérique** — un seul fichier HTML autonome. Condition de fin basée sur un circuit : le jeu se termine lorsqu’un joueur effectue sa quatrième traversée de la case « Ouverture du Trésor ». Durée moyenne d’une partie : **~22 tours (~66 tours)**. Lors du décompte final, le joueur ayant le plus d’influence gagne, *pas nécessairement celui qui a fait le tour du plateau en premier*. Niveau de présence des adversaires : classement d’influence visible + lignes de posture par adversaire. Niveau de profondeur stratégique : trois actions spéciales verrouillées par profil, six cartes HAND avec des fenêtres de temps, action de redressement par le biais de la réforme, la spirale du crédit à plusieurs étapes (Doute public → Crise → Panique → Défaut de paiement) avec une taxe de remboursement de la dette, une accélération annoncée, une prévision et une bouée de sauvetage sous forme de réforme. Niveau d’arc stratégique : huit événements de l’ère fédérale qui se déclenchent à chaque tour à partir du tour 8, trois visions de profil avec des bonus de fin de partie. Niveau de narration du Chronicler : 14 bannières historiques liées aux événements, ainsi que le niveau B informatif (fenêtres contextuelles « En savoir plus », l’encyclopédie Chronicler’s Ledger, infobulles), des citations réelles tirées des Federalist Papers et de Founders Online, un message persistant avec un bouton de fermeture. Effets visuels et sonores : transition numérique, audio procédural ZzFX (13 effets sonores), réglage de la vitesse : Cinématique / Normal / Instantané. Générateur de nombres aléatoires déterministe mulberry32, adversaires IA scriptés, sauvegarde / chargement avec intégrité du hachage, barre de relecture, outil de simulation par lots contrôlé par le concepteur.
+- **Équilibre de base** — circuit + profondeur stratégique + arc stratégique + Chronicler + spirale du crédit (bêta v1.5.0) : Trésor **48 %** · Marchand **34 %** · Fabricant **18 %** (CANONICAL × 100, mesuré par rapport au moteur en direct via `test/measure-stats.mjs`). Les trois profils gagnent de manière significative, le Trésor étant le plus fort, conformément à la thèse historique. Les trois visions de profil (Architecte du crédit fédéral / Souverain du commerce / Fondateur industriel) sont réalisables et à peu près équilibrées — chacune se déclenche dans environ 41 à 43 % des parties. Les mécanismes sous-jacents de la v0.18 (crise du crédit, notation IP des liquidités, charte industrielle, bonus de complétion d’ensemble) sont préservés, identiques à ceux de l’arc de conception v0.3 → v0.10 → v0.18, qui a été basé sur plus de 1 000 parties de simulation déterministes.
 
 ---
 
 ## Démarrage rapide
 
-### Jouez dans votre navigateur (sans installation)
+### Jouez dans votre navigateur (zéro installation)
 
 ```bash
 npx @mcptoolshop/sovereign
 ```
 
-L'interface en ligne de commande ouvre le jeu dans votre navigateur par défaut. Pas d'installateur, pas de serveur, pas besoin de connexion Internet.
+La commande CLI ouvre le jeu dans votre navigateur par défaut. Pas d’installateur, pas de serveur, pas d’Internet requis.
 
 Autres modes :
 
@@ -52,94 +52,99 @@ npx @mcptoolshop/sovereign --path     # Print the playable HTML file path
 npx @mcptoolshop/sovereign --help     # All flags
 ```
 
-### Jouer en ligne
+### Jouez en ligne
 
-Ouvrez la page d'accueil hébergée à l'adresse **<https://mcp-tool-shop-org.github.io/sovereign/>** et cliquez sur le jeu numérique.
+Ouvrez la page d’accueil hébergée à l’adresse **<https://mcp-tool-shop-org.github.io/sovereign/>** et cliquez pour accéder au jeu numérique.
 
-### Imprimer et jouer
+### Imprimez et jouez
 
-Le prototype du jeu de société est un document HTML autonome en 34 feuilles. Ouvrez `release/board-game/sovereign-prototype.html` depuis le paquet (ou depuis un téléchargement), puis `Cmd/Ctrl-P → Enregistrer sous PDF → Format US Letter → 100 % de l'échelle`. Découpez et jouez.
+Le jeu de société imprimable est un document HTML autonome de 34 feuilles. Ouvrez `release/board-game/sovereign-board-game.html` à partir du package (ou après l’avoir téléchargé), puis `Cmd/Ctrl-P → Enregistrer au format PDF → US Letter → Échelle de 100 %. Coupez et jouez.
 
-### Paquet de publication hors ligne
+### Bundle de la version hors ligne
 
-Chaque publication avec tag attache un paquet `sovereign-vX.Y.Z-release.zip` à sa page de publication GitHub. Téléchargez-le, décompressez-le et ouvrez `00-START-HERE.html` pour le point d'entrée adapté au public. Tout fonctionne hors ligne.
+Chaque version publiée inclut un fichier compressé `sovereign-vX.Y.Z-release.zip` qui est ajouté à la page de publication sur GitHub. Téléchargez-le, décompressez-le et ouvrez `00-START-HERE.html` pour accéder au point d’entrée principal du jeu. Tout fonctionne hors ligne.
 
 ---
 
-## Pourquoi cela existe-t-il ?
+## Pourquoi ce jeu existe
 
-La thèse de Sovereign est que **le crédit public et la finance fédérale** étaient les principaux leviers économiques d'Alexander Hamilton, mais un jeu basé sur le système Hamilton doit permettre au **commerce** et à l'**industrie** d'être également des voies viables vers la victoire. La phase d'équilibre (v0.2 → v0.10) a été une série de neuf versions, axée sur des preuves, visant à maintenir le Trésor comme le profil le plus fort (conformément à l'histoire) sans que la conception ne se réduise à un seul type de stratégie.
+La thèse de Sovereign est que le **crédit public + les finances fédérales** étaient les principaux leviers économiques d’Alexander Hamilton, mais un jeu basé sur le système de Hamilton doit permettre au **commerce** et à l’**industrie** d’être également des voies viables vers la victoire. L’évolution du jeu (de la version v0.2 à la v0.10) a consisté en une série de neuf versions, axée sur les données, afin de maintenir le Trésor comme le profil le plus fort (en accord avec l’histoire) sans réduire le jeu à une stratégie unique.
 
-Consultez [`CHANGELOG.md`](./CHANGELOG.md) pour l'évolution complète de chaque version.
+Consultez le fichier [`CHANGELOG.md`](./CHANGELOG.md) pour connaître l’évolution complète du jeu, version par version.
 
 ---
 
 ## Déterminisme
 
-La même graine + les mêmes décisions humaines = un registre identique au niveau des octets entre les exécutions, les navigateurs et les systèmes d'exploitation.
+La même graine + les mêmes décisions humaines = un registre identique, quelle que soit l’exécution, le navigateur ou le système d’exploitation.
 
 - Générateur de nombres aléatoires unique : `mulberry32(state.rngSeed)`.
-- Décisions de l'adversaire : fonctions pures de l'état visible, chaque décision étant enregistrée dans le registre avec sa règle de déclenchement.
-- La sauvegarde / le chargement préservent une somme de contrôle de l'état.
-- La relecture reconstruit à partir de `initialState(seed) + decisionLog`.
-- Vérifié lors de plus de 1000 jeux déterministes pendant la phase d'équilibre v0.2 → v0.10.
+- Décisions de l’adversaire : fonctions pures de l’état visible, chaque décision étant enregistrée dans le registre avec la règle qui l’a déclenchée.
+- L’enregistrement et le chargement préservent un hachage d’état.
+- La relecture se reconstruit à partir de `initialState(seed) + decisionLog`.
+- Vérifié sur plus de 1 000 jeux déterministes pendant l’évolution du jeu (de la version v0.2 à la v0.10).
 
 ---
 
 ## Modèle de menace et gestion des données
 
-Sovereign est un jeu de société basé sur un navigateur, autonome. L'interface en ligne de commande (CLI) ouvre un fichier HTML local dans votre navigateur par défaut. Il n'y a pas de serveur, d'appel réseau, de compte, de synchronisation cloud.
+Sovereign est un jeu de société autonome basé sur un navigateur. L’interface en ligne de commande ouvre un fichier HTML local dans votre navigateur par défaut. Il n’y a pas de serveur, pas d’appel réseau, pas de compte, pas de synchronisation avec le cloud.
 
-- **Données concernées :** les fichiers HTML inclus dans le dossier `release/` (lecture seule) et le stockage local (`localStorage`) sous la clé `sovereign.autosave` (uniquement l'état de sauvegarde du jeu).
-- **Données NON concernées :** aucun accès au système de fichiers en dehors du répertoire du paquet, aucune requête réseau de quelque nature que ce soit, aucune télémétrie, aucune analyse, aucun identifiant.
-- **Autorisations requises :** capacité à lancer le navigateur par défaut du système d'exploitation, capacité à lire les fichiers du paquet, stockage local du navigateur (facultatif).
-- **Aucune télémétrie, jamais.** La fonctionnalité de "télémétrie" du simulateur fait référence à des rapports d'analyse du jeu locaux, dérivés du registre intégré ; ces rapports ne quittent jamais votre machine.
+- **Données utilisées :** les fichiers HTML inclus dans `release/` (en lecture seule) et `localStorage` sous la clé `sovereign.autosave` (uniquement l’état de sauvegarde du jeu).
+- **Données non utilisées :** aucun accès au système de fichiers en dehors du répertoire du package, aucune requête réseau de quelque sorte que ce soit, aucune télémétrie, aucune analyse, aucun identifiant.
+- **Autorisations requises :** possibilité de lancer le navigateur par défaut du système d’exploitation, possibilité de lire les fichiers du package, `localStorage` du navigateur (facultatif).
+- **Aucune télémétrie, jamais.** La fonctionnalité de « télémétrie » du simulateur fait référence aux rapports d’analyse de jeu locaux dérivés du registre dans le navigateur ; ces rapports ne quittent jamais votre ordinateur.
 
-Consultez le fichier [`SECURITY.md`](./SECURITY.md) pour signaler les vulnérabilités et consulter la politique de sécurité complète.
+Consultez le fichier [`SECURITY.md`](./SECURITY.md) pour signaler les vulnérabilités et connaître l’intégralité de la politique de sécurité.
 
 ---
 
 ## Fonctionnalités
 
-- **Jeu de victoire en mode solo** contre deux adversaires contrôlés par l'ordinateur (Trésor / Finances et Commerce / Infrastructures par défaut ; Fabricant / Industrie disponible pour le mode campagne). La partie se termine lorsque l'un des joueurs effectue sa quatrième traversée de "Trésor Ouvert". Durée moyenne : 23 tours / 67 actions. Le joueur ayant le plus d'influence au moment du décompte final remporte la partie.
-- **Profondeur stratégique (niveau v1.2)** : trois actions spéciales spécifiques à chaque profil (Émission d'obligation fédérale / Contrat de courtage / Charte d'atelier), 6 cartes à jouer avec des fenêtres de temps (limite de 2 cartes en main), action de récupération des réformes, pression financière en plusieurs étapes (Doute public / Crise / Panique / Défaut).
-- **Arc narratif (niveau v1.3)** : 8 événements de l'ère fédérale qui se déclenchent à chaque tour à partir du tour 8 (5 choix + 3 automatiques), 3 visions de profil (Architecte du crédit fédéral / Souverain du commerce / Fondateur industriel) avec un bonus de +3 points d'influence en fin de partie.
-- **Le Chroniqueur (niveau v1.4)** : narration historique à la troisième personne avec des noms de personnages. 14 bannières liées aux événements (Actes × 7 / Ouverture de l'ère fédérale / Doute / Crise / Panique / Défaut / Rébellion / Réforme / Vision / Décompte final). Toutes les citations sont vérifiées par rapport aux sources founders.archives.gov, Wikisource et Library of Congress. Les actes échoués sont narrés comme des alternatives à l'histoire réelle ("Dans notre histoire, la loi de financement de Hamilton a été adoptée par 32 voix contre 29 en juillet 1790 ; dans votre république, la discrimination à l'égard des soldats a trouvé suffisamment de votes pour bloquer l'accès."). Une bannière avec bordure en aluminium, avec une option pour la masquer ; respecte les paramètres de narration (On/Minimal/Off).
-- **Intelligence artificielle déterministe** : chaque décision de l'adversaire est une fonction pure de l'état visible, avec une justification enregistrée. Pas de modèle de langage, pas de magie opaque.
-- **8 interfaces de jeu** : Plateau, Panneau du Trésor, Inspecteur des actifs, Tiroir des événements, Actes du Congrès, Pistes partagées, Journal des tours / Registre, Rapport de fin de partie.
-- **Enchères** : les actifs non sélectionnés sont mis aux enchères entre plusieurs joueurs, avec des enchères programmées en fonction du profil.
-- **Sauvegarde / Chargement** : sauvegarde automatique dans `localStorage` à chaque tour, exportation / importation manuelle au format JSON, vérification de l'intégrité des données lors du chargement, version spécifique.
-- **Relecture** : relecture complète de toute partie terminée. Lecture seule. Reconstruit à partir de la graine et du journal des décisions, avec une indication verte de l'intégrité des données.
-- **Simulation en série** : exécute 10 / 50 / 100 parties déterministes contre n'importe quel trio de profils, exporte des rapports JSON et HTML pour l'analyse de l'équilibre.
-- **Narration historique** : bibliothèque de 25 entrées dérivée du registre (descriptions par défaut de 40 à 60 mots, extensions de 150 à 200 mots, résumé de la république en fin de partie d'environ 300 à 500 mots). Ne modifie jamais l'état du jeu.
-- **Accessibilité** : navigation complète au clavier, indicateurs de focus, étiquettes significatives pour les lecteurs d'écran, valeurs des éléments lisibles en texte et non seulement en marqueurs, taille minimale du corps de texte de 14px, respect des paramètres de réduction des animations.
+- **Partie en solo : victoire au tour** contre deux adversaires préprogrammés (Trésor/Finance et Commerce/Infrastructure par défaut ; Fabricant/Industrie disponible pour les parties en série). La partie se termine lorsqu'un joueur effectue sa quatrième traversée de la case « Trésor ouvert ». Nombre moyen de tours : ~22 / Nombre moyen de manches : ~66. Le joueur ayant la plus grande influence lors du décompte final gagne.
+- **Présence de l’adversaire (couche v1.5)** : affichage visible du classement de l’influence et des lignes indiquant l’attitude de chaque adversaire, qui définissent les actions de chaque adversaire en fonction de *votre* position dans la course (« Hamilton a 3 points d’influence d’avance et prend la Banque ; le bloc du Trésor se renforce. »). Met fin à la sensation de jeu en solo parallèle ; les adversaires sont perçus comme tels. Présentation uniquement ; les données ne sont jamais écrites dans le registre chiffré.
+- **La spirale du crédit (couche v1.5)** : l’échec du crédit public est désormais perceptible, cumulatif et réparable. Un prélèvement en espèces pour le service de la dette en cas de faible crédit, une accélération signalée vers le défaut de paiement, une prévision de la direction que prendra la situation et l’action de réforme en tant que véritable solution. Elle véhicule directement la thèse civique : vous comprenez *pourquoi* le crédit public fédéral était important. Elle englobe la hiérarchie de la version 0.18 (Doute public → Crise → Panique → Défaut) sans en modifier les seuils ; elle est appliquée à l’intérieur de `reduce()` afin de garantir sa compatibilité avec les parties répétées.
+- **Effets visuels et sonores (couche v1.5)** : nombre d’animations avec asymétrie de gain/perte, audio procédural ZzFX sur 13 effets sonores, chorégraphie des actions et réglage de la vitesse (Cinématique / Normal / Rapide-instantané ; Rapide-instantané saute toutes les animations pour une lecture rapide et une meilleure accessibilité). Prise en charge complète du clavier / réduction des mouvements / lecteur d’écran.
+- **Profondeur stratégique (couche v1.2)** : trois actions spéciales verrouillées par profil (Émettre des obligations fédérales / Négocier un contrat de route / Créer un atelier), 6 cartes HAND avec des fenêtres de temps (limite de 2 cartes en main), action de redressement de la réforme.
+- **Arc narratif stratégique (couche v1.3)** : 8 événements de l’ère fédérale qui se déclenchent à chaque tour à partir du tour 8 (5 choix + 3 automatiques), 3 visions de profil (Architecte du crédit fédéral / Souverain du commerce / Fondateur industriel) avec un bonus de +3 points d’influence en fin de partie. Les trois visions sont réalisables (~41 à 43 % des parties chacune, CANONIQUE × 100).
+- **Le chroniqueur (couche v1.4)** : voix historique à la troisième personne. 14 bannières liées à des événements (Actes × 7 / Ouverture de l’ère fédérale / Doute / Crise / Panique / Défaut / Rébellion / Réforme / Vision / Décompte final). Toutes les citations sont vérifiées par rapport aux sources de founders.archives.gov, Wikisource et de la Bibliothèque du Congrès. Les actes infructueux sont racontés comme des contre-faits de l’histoire réelle (« Dans notre histoire, l’acte de financement d’Hamilton a été adopté par 32 voix contre 29 en juillet 1790 ; dans votre République, la discrimination à l’égard des soldats a permis d’obtenir suffisamment de voix pour fermer la porte. »). Une bannière à bordure argentée persistante avec × pour la supprimer ; respecte le paramètre de narration Activé/Minimal/Désactivé.
+- **Chroniqueur, niveau B : la couche informative (v1.5)** : 15 fenêtres contextuelles *Pour en savoir plus* sur les mécanismes clés, **l’encyclopédie du chroniqueur** (27 citations historiques vérifiées, ainsi que les actes, les événements de l’ère fédérale, les niveaux de crédit et les visions dans une seule superposition de référence) et 10 infobulles de glossaire. Transforme l’atmosphère de l’époque en une véritable couche historique consultable.
+- **Prise en main (couche v1.5)** : un tutoriel guidé « Débat sur le financement de 1790 » qui présente les bases du jeu à un nouveau joueur, ainsi qu’une infobulle qui affiche le coût et les conséquences de chaque action avant que vous ne vous engagiez.
+- **IA déterministe** : chaque décision de l’adversaire est une fonction pure de l’état visible, avec une justification enregistrée. Pas de LLM, pas de magie opaque.
+- **8 surfaces de jeu** : plateau, panneau du Trésor, inspecteur d’actifs, tiroir d’événements, actes du Congrès, pistes partagées, journal des tours / registre, rapport de fin de partie.
+- **Enchères** : les actifs rejetés sont mis aux enchères entre plusieurs joueurs, avec des enchères préprogrammées basées sur le profil.
+- **Sauvegarde / chargement** : sauvegarde automatique dans `localStorage` à chaque tour, exportation / importation manuelle au format JSON, vérification de l’intégrité du hachage au chargement, version contrôlée.
+- **Relecture** : possibilité de revoir entièrement n’importe quelle partie terminée. En lecture seule. Reconstruit à partir de la graine + du journal des décisions avec un indicateur d’intégrité vert.
+- **Simulation en série** : exécute 10 / 50 / 100 parties déterministes contre n’importe quel triplet de profils, exporte des rapports JSON + HTML pour l’analyse de l’équilibre.
+- **Narration historique** : bibliothèque de 25 entrées dérivées du registre (40 à 60 mots par défaut, 150 à 200 mots pour les versions plus longues, ~300 à 500 mots pour le résumé de la fin de la partie). Ne modifie jamais l’état du jeu.
+- **Accessibilité** : navigation complète au clavier, indicateurs de focus, étiquettes significatives pour les lecteurs d’écran, valeurs des pistes lisibles sous forme de texte et non uniquement sous forme de marqueurs, taille de police minimale de 14 pixels, respect de la réduction des mouvements.
 
 ---
 
-## Liste des profils (v0.10)
+## Composition des profils (base de référence de l’équilibre v0.10)
 
 | Profil | Priorité des actifs | Force | Faiblesse |
 |--------------------------------|---------------------------------------------------------------|----------------------|-------------------------------------|
-| **Treasury / Finance**         | NF > Dette de l'État > Dette des impôts > Banque > Monnaie | Augmentation du crédit public | Pas de revenus d'infrastructure |
-| **Merchant / Infrastructure**  | Routes (les 4) > Commerce > Améliorations > Revenus | Échelle des routes | Pas de notation de la capacité industrielle |
+| **Treasury / Finance**         | Dette fédérale > Dette de l’État > Dette de la Banque > Monnaie | Augmentation du crédit public | Pas de revenus liés aux infrastructures |
+| **Merchant / Infrastructure**  | Routes (les 4) > Commerce > Améliorations > Revenus | Échelle des routes | Pas de bonus pour la capacité industrielle |
 | **Manufacturer / Industry**    | Fabrication > Industrie stratégique > Améliorations > Banque | Multiplicateurs de capacité | Début lent ; reçoit une charte de départ |
 
-Le quatrième profil conceptuel (Opportuniste / Trésorerie) est reporté. L'ensemble compétitif verrouillé de la v0.10 est de trois.
+Le quatrième profil du document de conception (Opportuniste / Liquidités) est reporté. L’ensemble compétitif verrouillé de la version 0.10 est composé de trois profils.
 
 ---
 
-## Limitations connues
+## Mises en garde connues
 
-- **La version 1.4.0 est une version bêta.** Chaque composant (profondeur stratégique, arc stratégique, Chronicler) a été examiné et validé en fonction des diagnostics de simulation. L'ensemble des quatre niveaux a été testé au niveau de chaque composant, mais pas de bout en bout par un joueur humain. Les données issues des tests CANONICAL × 100 indiquent : 100 % de déclencements, une durée médiane de 23 tours, une répartition des vainqueurs de 59 / 20 / 21, environ 6 à 8 bannières Chronicler par partie, et environ 33 réactions par partie. Considérez cette version comme une version d'accès anticipé jusqu'à ce que vous l'ayez testée vous-même.
-- **Les profils d'intelligence artificielle ne s'adaptent pas encore aux mécanismes des versions 1.2 à 1.4.** Ils utilisent les fonctions de décision de la version 0.18. Ils ne "cherchent pas à obtenir la Vision" ni ne "utilisent les cartes HAND de manière stratégique" comme le ferait un joueur humain. Le jeu réel des joueurs humains différera des mesures obtenues lors des tests CANONICAL × 100.
-- **Le déclenchement d'un événement n'implique pas la victoire.** Le joueur qui complète le quatrième circuit ne gagne que par Influence dans environ un tiers des parties. C'est intentionnel : Final Accounting récompense la profondeur économique, et non la rapidité sur le plateau de jeu. La copie de fin de partie rend cette distinction explicite.
-- **La phase de la République tardive est longue et ne comporte pas d'actions.** Les actions restent actives pendant les tours 1 à 7. La durée de jeu médiane est d'environ 23 tours, laissant environ 16 tours de la République tardive sans nouveaux événements politiques. Si cela vous semble vide lors des tests, la prochaine correction consistera à redistribuer les actions, et non à revenir au système des mandats.
-- **Le Trésor / les Finances restent intentionnellement les plus puissants**, dans la plage cible. Cela correspond à la thèse historique : le crédit public et les finances fédérales étaient les principaux leviers économiques de Hamilton.
-- **Les événements de défaillance (Défaut / Rébellion) restent principalement décoratifs.** La crise du crédit se déclenche occasionnellement ; le défaut et la rébellion se produisent presque jamais. Le système d'escalade a plus de temps pour s'accumuler, mais atteint rarement les niveaux supérieurs. Les versions futures pourraient revoir la pression exercée par les états de défaillance.
+- **La version 1.5.0 est une version bêta en attente d’une évaluation complète par un utilisateur réel.** Chaque couche a été soumise à un audit structurel et a été revalidée par rapport au moteur en fonctionnement via `test/measure-stats.mjs` et les outils de test de déterminisme et de jouabilité ; l’ensemble du système a été testé en profondeur au niveau de chaque segment, mais n’a pas encore été testé de bout en bout par un joueur humain. Cette évaluation complète constitue la condition préalable à la publication de la version publique. Les chiffres ci-dessous sont des valeurs de référence (multipliées par 100) par rapport au moteur en fonctionnement ; les résultats obtenus avec un joueur humain réel seront différents. Considérez cela comme une option jusqu’à ce que vous (ou une personne de confiance) ayez effectué cette évaluation.
+- **La pression exercée en cas d’échec est perceptible et peut être surmontée, ce n’est plus un simple élément décoratif.** La crise financière se déclenche désormais dans environ **29 / 100** parties et peut réellement être surmontée : parmi les parties où la crise se déclenche (Crédit ≤ 4), environ **41 %** permettent de remonter à un niveau de Crédit stable ≥ 7, et aucune ne conduit à la faillite. La panique est rare (environ 1 / 100). La faillite et la rébellion restent rares sous l’IA programmée de la version 0.18, qui se redresse avant de s’effondrer, mais les deux sont tout à fait possibles pour un joueur humain qui néglige le Crédit public. La spirale du Crédit rend la pente vers la faillite visible et perceptible, plutôt qu’une simple chute brutale.
+- **Les adversaires utilisent les systèmes des versions 1.2 à 1.4 ; seul le calcul des actions de base est basé sur la version 0.18.** Les adversaires programmés *utilisent* les actions spéciales, la possibilité de redressement, les choix de l’ère fédérale / de la fin de partie, les votes sur les actions et le moment opportun pour jouer les cartes HAND — la remarque précédente selon laquelle « l’IA ne s’adapte pas » était trop générale. Ce qui reste basé sur la version 0.18, c’est l’évaluation de base de l’**achat / de l’enchère / de l’amélioration / du vote** : ils choisissent de manière optimale en fonction de leur profil, mais n’essaient pas encore explicitement de « se lancer dans la course à la Vision » comme le ferait un optimiseur humain. Les mesures de référence (multipliées par 100) reflètent ce comportement programmé ; le jeu humain divergera.
+- **Le déclencheur n’est pas synonyme de victoire.** Le joueur qui termine le quatrième tour ne gagne que par l’influence dans environ un tiers des parties. C’est intentionnel : le décompte final récompense la profondeur économique, et non la rapidité sur le plateau. La copie de la fin de partie rend cette distinction explicite.
+- **La période de l’ère fédérale présente une pression légère sur les actions.** Les actions fondatrices se déclenchent aux tours 1 à 7 ; le jeu médian dure environ 22 tours, de sorte que l’ère fédérale se déroule sur ses propres événements (qui se déclenchent à chaque tour à partir du tour 8), ainsi que sur la spirale du Crédit et la course à la Vision. La réduction du nombre d’événements de l’ère fédérale à chaque tour dans la version 1.3 a permis de réduire les périodes de 4 tours sans événement à environ 2 / 100. Si une période semble encore trop courte lors d’une partie, la prochaine étape consiste à effectuer une redistribution des actions, et non à revenir à une règle contraignante.
+- **Le Trésor / les Finances restent intentionnellement les plus importants** (48 % des victoires), dans la fourchette cible. Cela correspond à la thèse historique : le crédit public et les finances fédérales étaient les principaux leviers économiques de Hamilton, sans pour autant réduire le jeu à une seule stratégie (Marchand 34 %, Fabricant 18 %).
 
 ---
 
-## Construction et contribution
+## Développement et contribution
 
 ```bash
 git clone https://github.com/mcp-tool-shop-org/sovereign
@@ -150,13 +155,13 @@ npm run verify     # full verify (smoke + pack-dry-run + CLI flag check)
 npm run play       # open the game locally
 ```
 
-Les versions sont publiées sur npm via GitHub Actions (`release.yml`) lors de chaque modification de la branche étiquetée `v*`, avec une attestation de provenance Sigstore. La source de vérité est la branche `main`.
+Les versions sont publiées sur npm via GitHub Actions (`release.yml`) lors de la validation d’une balise `v*`, avec une attestation de provenance Sigstore. La source de référence est la branche `main`.
 
 ---
 
 ## Licence
 
-MIT © mcp-tool-shop. Voir le fichier [`LICENSE`](./LICENSE).
+MIT © mcp-tool-shop. Voir [`LICENSE`](./LICENSE).
 
 ---
 
@@ -164,4 +169,4 @@ MIT © mcp-tool-shop. Voir le fichier [`LICENSE`](./LICENSE).
 
 Créé par <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
 
-</div
+</div>
