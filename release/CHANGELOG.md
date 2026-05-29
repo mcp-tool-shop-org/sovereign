@@ -5,6 +5,12 @@
 
 ---
 
+## v1.5.1 — Packaging hotfix: restore the full offline bundle to the npm tarball — 2026-05-29
+
+**Patch.** v1.5.0's `package.json` `files` field was over-trimmed: it correctly dropped the ~5 MB of regenerable `balance-evidence/raw-data/` JSON, but also excluded the design-history, balance-evidence HTML, board-game audits, and the digital-mode freeze-audit that `00-START-HERE.html` (the `--start` / offline-bundle router) links to — so those links 404'd in the npm package. The GitHub Release zip and the Pages site were always complete. v1.5.1 restores the full audience-routed bundle to the tarball, keeping only the regenerable raw-data JSON excluded. No gameplay, engine, or doc changes — `sovereign-solo.html` is byte-identical to v1.5.0.
+
+---
+
 ## v1.5.0 — Make it felt: rival presence · the Credit Spiral · juice + sound · Chronicler Tier B · onboarding — 2026-05-29
 
 **Beta.** A "make it felt" pass on top of the v1.4 strategic stack, plus two live-game hang fixes and a save/load/replay fidelity restoration. Five player-facing layers land here; no scoring math changed. The Credit Spiral wraps — does not replace — the v0.18 failure hierarchy and applies inside `reduce()` so determinism and replay hold. Stat figures below are measured against the **live shipping engine** via the new `test/measure-stats.mjs` over CANONICAL × 100 (seeds 2026–2125, triplet treasury / merchant / manufacturer); they supersede the prior v1.4.0 figures, which were copied forward and had drifted.
