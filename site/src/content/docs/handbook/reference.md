@@ -47,27 +47,40 @@ The header of the digital simulator exposes these controls:
 | **Seed pill** | The current RNG seed. Click to enter a different number; reseeds the game. |
 | **New seed** | Reseed with a fresh random value (uses the existing RNG, not Math.random). |
 | **Save** | Download the current game state as JSON. Autosave also writes to `localStorage`. |
-| **Load** | Import a JSON save. Hash integrity checked; pre-v0.10 saves rejected. |
+| **Load** | Import a JSON save. Hash integrity checked; saves from older `SAVE_VERSION`s are refused with a friendly non-crash message. |
 | **Replay** | Open the replay overlay for the most recent completed game. |
-| **Batch** | Open the batch simulation tool. |
+| **Batch** | Open the batch simulation tool (designer-gated). |
+| **Ledger** | Open the Chronicler's Ledger — a searchable encyclopedia of history, quotes, sources, mechanics, and glossary. Also at the corner book icon. |
+| **Game ▾** | Settings (the SPEED control + sound), replay the Swift-Start coach, and the Chronicler's Ledger. |
+
+### SPEED setting
+
+The **Game ▾ → Settings** panel exposes a SPEED control with three modes, persisted to `localStorage` under `sovereign.speed`:
+
+| Mode | Effect |
+|---|---|
+| **Cinematic** | Slower, fuller choreography (1.4× dwell). |
+| **Normal** | The default pace (1.0×). |
+| **Instant** | Bypasses all tweens and choreography — every action resolves immediately. Useful for fast play and for the test harness (overridable per load via the `?speed=` URL param). |
 
 ## Save / load format
 
 ```json
 {
-  "version": "v0.10",
+  "version": "v0.26-replay-fidelity-candidate",
   "seed": 2026,
   "decisionLog": [
     { "playerIdx": 0, "action": "BUY_ASSET",   "params": { "spaceNum": 5 },  "turn": 3, "lap": 1 },
     { "playerIdx": 0, "action": "CAST_VOTE",   "params": { "vote": "YES" }, "turn": 4, "lap": 1 },
     ...
   ],
-  "finalState": { "hash": "...", "winnerSlot": 0, "turnCount": 21 }
+  "finalState": { "hash": "...", "winnerSlot": 0, "turnCount": 67 }
 }
 ```
 
-- `version` is gated. Older saves (v0.3 through v0.8, plus pre-versioning "phase5") are refused with a visible message.
-- `decisionLog` is the input log. The full ledger is derived by replaying decisions through the reducer from `initialState(seed)`.
+- `version` (`SAVE_VERSION`) is gated. Saves from older versions are refused with a friendly, non-crashing message. The current value is `v0.26-replay-fidelity-candidate` — the internal codename for the build the v1.5.0 beta ships; chrome-only additions (the Chronicler's informative layer, juice / sound) do not bump it because they touch no reducer state.
+- `lap` in each entry is the round counter; `turnCount` reflects the full game length (median ~67).
+- `decisionLog` is the input log. The full ledger is derived by replaying decisions through the reducer from `initialState(seed)`. The Credit Spiral levy and acceleration are applied inside the reducer at the start of each round, so they are fully replay-safe.
 - `finalState.hash` is verified on load. Mismatch → "Replay integrity error".
 
 ## Batch simulation
@@ -147,8 +160,9 @@ If Public Credit ≤ 2, route rents are halved.
 | Industrial Capacity ≥ 10 | additional +2 IP per qualifying industrial system (stacks with ≥ 8, max +8 per player total) |
 | Full Manufactures set | +3 IP |
 | Full Strategic Industry set | +2 IP |
+| Profile Vision achieved | +3 IP |
 | "You Are Hamilton" card kept | +1 IP |
-| Each lap spent bankrupt | −1 IP per |
+| Each round spent bankrupt | −1 IP per |
 
 ## Determinism
 
