@@ -1703,8 +1703,148 @@ html, body { font-size:15px; }
   border:6px solid transparent; border-top-color:var(--ink);
 }
 
+/* =====================================================================
+   ACTION TELEGRAPH — "hide nothing": deterministic delta preview on
+   hover AND keyboard focus, BEFORE commit. Presentation-only; computed
+   directly from known effects (buy cost, computeRent, Act/Reform track
+   deltas). Mirrors the gloss-pop popover grammar. (Into the Breach /
+   Slay the Spire subway-legibility — civic-efficacy-onboarding B3.)
+   ===================================================================== */
+.tg-host { position:relative; }
+.tg-pop {
+  position:absolute; left:50%; transform:translateX(-50%);
+  bottom:calc(100% + 9px); z-index:95;
+  width:max-content; max-width:min(280px, 80vw); padding:9px 12px;
+  background:var(--ink); color:var(--parchment);
+  border:1px solid var(--foil); box-shadow:0 8px 24px -8px rgba(0,0,0,.6);
+  font-family:var(--body); font-size:12px; line-height:1.45; letter-spacing:0;
+  text-transform:none; text-align:left; white-space:normal;
+  opacity:0; visibility:hidden; transition:opacity 110ms ease;
+}
+/* Trigger on hover OR keyboard focus (a11y — focus-telegraph, not hover-only). */
+.tg-host:hover > .tg-pop,
+.tg-host:focus-within > .tg-pop { opacity:1; visibility:visible; }
+.tg-pop .tg-title {
+  font-family:var(--ui); font-size:9px; letter-spacing:.2em; text-transform:uppercase;
+  font-weight:800; color:var(--foil-soft); margin-bottom:5px;
+}
+.tg-pop .tg-row { display:flex; justify-content:space-between; gap:14px; margin:2px 0; }
+.tg-pop .tg-row .tg-k { opacity:.8; }
+.tg-pop .tg-row .tg-v { font-family:var(--mono); font-size:11px; white-space:nowrap; }
+/* Never color-alone: every signed value carries an explicit +/- glyph AND a
+   text class; the tint is a redundant secondary cue. */
+.tg-pop .tg-v.up   { color:#9FD9A6; }
+.tg-pop .tg-v.down { color:#E69B92; }
+.tg-pop .tg-v.flat { color:var(--parchment); opacity:.7; }
+.tg-pop .tg-note {
+  margin-top:6px; font-family:var(--display); font-style:italic; font-size:11.5px;
+  opacity:.82; line-height:1.4;
+}
+.tg-pop .tg-cond {
+  margin-top:5px; font-family:var(--mono); font-size:9px; letter-spacing:.04em;
+  opacity:.62; text-transform:uppercase;
+}
+.tg-pop::after {
+  content:""; position:absolute; left:50%; transform:translateX(-50%); top:100%;
+  border:6px solid transparent; border-top-color:var(--ink);
+}
+/* Reduce-motion: the popover is instant info anyway — kill the fade entirely. */
+@media (prefers-reduced-motion: reduce) {
+  .tg-pop { transition:none !important; }
+}
+
 @media (max-width:720px) {
   .ref-overlay.ref-side .ref-panel { width:100vw; border-left:none; }
+  /* On narrow screens the popover can overflow; clamp + left-align to the host. */
+  .tg-pop { left:0; transform:none; max-width:78vw; }
+  .tg-pop::after { left:18px; transform:none; }
+}
+
+/* =====================================================================
+   SWIFT-START COACH — guided "1790 Funding Debate" opening.
+   A NON-BLOCKING, dismissible coach card that walks a newcomer to their
+   first satisfying decision via progressive disclosure (one concept at a
+   time). It NEVER covers the action rail and NEVER traps — it guides, and
+   the game underneath is fully live the whole time. First-run gated;
+   replayable from the Game ▾ menu. (Wingspan Swift-Start · Cooper/Nielsen
+   progressive disclosure — civic-efficacy-onboarding B1/B2/B4.)
+   ===================================================================== */
+.swift-coach {
+  position:fixed; left:50%; transform:translateX(-50%);
+  bottom:18px; z-index:60; /* below the orient overlay (70), above the board */
+  width:min(560px, calc(100vw - 32px));
+  background:var(--ink); color:var(--parchment);
+  border:1px solid var(--foil); box-shadow:0 14px 40px -12px rgba(0,0,0,.7);
+  padding:15px 18px 14px; display:none;
+}
+.swift-coach.coach-show { display:block; animation:coach-rise .28s cubic-bezier(.2,.9,.3,1.1) both; }
+@keyframes coach-rise { from { opacity:0; transform:translate(-50%, 12px); } to { opacity:1; transform:translate(-50%, 0); } }
+.swift-coach::before {
+  content:""; position:absolute; inset:4px; border:0.5px solid var(--foil-soft); pointer-events:none;
+}
+.swift-coach .sc-progress { display:flex; gap:5px; margin-bottom:9px; }
+.swift-coach .sc-progress .dot {
+  width:7px; height:7px; border-radius:50%; border:1px solid var(--foil-soft); background:transparent;
+}
+.swift-coach .sc-progress .dot.done { background:var(--foil-soft); }
+.swift-coach .sc-progress .dot.cur { background:var(--foil); border-color:var(--foil); box-shadow:0 0 0 2px rgba(140,107,42,.35); }
+.swift-coach .sc-eyebrow {
+  font-family:var(--ui); font-size:9px; letter-spacing:.24em; text-transform:uppercase;
+  font-weight:800; color:var(--foil); margin-bottom:5px;
+}
+.swift-coach .sc-eyebrow::before { content:"§ "; }
+.swift-coach .sc-title {
+  font-family:var(--display); font-size:18px; line-height:1.18; font-weight:600; margin:0 0 6px;
+}
+.swift-coach .sc-body {
+  font-family:var(--body); font-size:13px; line-height:1.5; color:var(--parchment); opacity:.92; margin:0 0 6px;
+}
+.swift-coach .sc-body strong { color:var(--foil-soft); font-weight:700; }
+.swift-coach .sc-prompt {
+  font-family:var(--display); font-style:italic; font-size:13.5px; line-height:1.4;
+  color:#E5C36A; margin:8px 0 0;
+}
+.swift-coach .sc-prompt::before { content:"→ "; font-style:normal; }
+.swift-coach .sc-foot {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin-top:12px; padding-top:10px; border-top:1px solid rgba(240,230,205,.16);
+}
+.swift-coach .sc-links { display:flex; gap:6px; flex-wrap:wrap; }
+.swift-coach .sc-actions { display:flex; gap:7px; align-items:center; margin-left:auto; }
+.swift-coach button {
+  font-family:var(--ui); font-size:10px; letter-spacing:.1em; text-transform:uppercase; font-weight:700;
+  padding:7px 12px; border:1px solid var(--foil-soft); background:transparent; color:var(--parchment);
+  cursor:pointer; transition:background 120ms ease, color 120ms ease;
+}
+.swift-coach button:hover { background:var(--foil-soft); color:var(--ink); }
+.swift-coach button.primary { background:var(--foil); border-color:var(--foil); color:var(--ink); }
+.swift-coach button.primary:hover { background:#E5C36A; }
+.swift-coach button.sc-link {
+  font-family:var(--body); font-size:11px; letter-spacing:0; text-transform:none; font-weight:400;
+  padding:5px 9px; border-color:rgba(240,230,205,.3); opacity:.9;
+}
+.swift-coach button:focus-visible { outline:2.5px solid var(--foil); outline-offset:2px; }
+.swift-coach .sc-skip {
+  font-family:var(--ui); font-size:9px; letter-spacing:.08em; text-transform:uppercase;
+  background:transparent; border:0; color:var(--parchment); opacity:.6; padding:6px 4px; cursor:pointer;
+}
+.swift-coach .sc-skip:hover { opacity:1; text-decoration:underline; }
+/* When the coach is pointing at a live affordance, a quiet pulse cue on the
+   target rail draws the eye without blocking anything. Frequency-safe (loops
+   slowly; reduce-motion kills it). */
+.coach-cue { position:relative; }
+.coach-cue::after {
+  content:""; position:absolute; inset:-4px; border:2px solid var(--foil); pointer-events:none;
+  animation:coach-pulse 1.6s ease-in-out infinite;
+}
+@keyframes coach-pulse { 0%,100% { opacity:.25; } 50% { opacity:.9; } }
+@media (prefers-reduced-motion: reduce) {
+  .swift-coach.coach-show { animation:none !important; }
+  .coach-cue::after { animation:none !important; opacity:.7; }
+}
+@media (max-width:720px) {
+  .swift-coach { bottom:10px; padding:13px 14px 12px; }
+  .swift-coach .sc-title { font-size:16px; }
 }
 
 /* =====================================================================
@@ -2238,6 +2378,7 @@ body:not(.designer-mode) #seedPill { display:none; }
 .controls .game-menu[open] > button:nth-of-type(5) { top:158px; }
 .controls .game-menu[open] > button:nth-of-type(6) { top:190px; }
 .controls .game-menu[open] > button:nth-of-type(7) { top:222px; }
+.controls .game-menu[open] > button:nth-of-type(8) { top:254px; }
 .controls .game-menu[open] > button:hover { background:var(--ink); color:var(--parchment); }
 
 .controls .narr-cycle {
@@ -2668,6 +2809,7 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
       <button id="btnNarrCycle" class="narr-cycle" title="Cycle narration: On → Minimal → Off">Narr: On</button>
       <details class="game-menu">
         <summary title="Game options">Game ▾</summary>
+        <button id="btnSwiftStart" title="Replay the guided 1790 Funding Debate opening">Swift-Start tutorial</button>
         <button id="btnLedgerMenu" title="Open the Chronicler's Ledger">Chronicler’s Ledger</button>
         <button id="btnSave" title="Save your game">Save</button>
         <button id="btnLoad" title="Load a saved game">Load</button>
@@ -2901,6 +3043,24 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
     <div class="footer-row">
       <span class="meta" id="welcomeMeta">Step 1 of 3 · "How to play" recalls this any time.</span>
       <button class="primary" id="welcomeAdvance">Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- Swift-Start coach — non-blocking guided opening. Populated + shown by JS
+     on first run; replayable from Game ▾. role=complementary so AT users can
+     reach it but it never steals modal focus from the live board. -->
+<div class="swift-coach" id="swiftCoach" role="complementary" aria-label="Swift-Start coaching">
+  <div class="sc-progress" id="scProgress" aria-hidden="true"></div>
+  <div class="sc-eyebrow" id="scEyebrow">Swift-Start · 1790</div>
+  <h3 class="sc-title" id="scTitle"></h3>
+  <p class="sc-body" id="scBody"></p>
+  <p class="sc-prompt" id="scPrompt"></p>
+  <div class="sc-foot">
+    <div class="sc-links" id="scLinks"></div>
+    <div class="sc-actions">
+      <button type="button" class="sc-skip" id="scSkip">Skip · I’ve played before</button>
+      <button type="button" class="primary" id="scNext">Got it</button>
     </div>
   </div>
 </div>
@@ -6700,6 +6860,7 @@ function renderTreasury() {
     if (asset.up && ownsFullSet(STATE, 0, asset.sys) && a.tier < 3 && STATE.phase === 'awaiting-roll' && STATE.activePlayerIndex === 0) {
       const upBtn = el('button', 'up-btn', 'Upgrade $' + ((asset.sys === 'manufactures' || asset.sys === 'strategic-industry') && STATE.flags.manufacturesLap === STATE.lap ? Math.floor(asset.up/2) : asset.up));
       upBtn.onclick = () => dispatch({ type:'UPGRADE_ASSET', playerIndex: 0, spaceNum: a.spaceNum });
+      attachTelegraph(upBtn, 'upgrade', { spaceNum: a.spaceNum });
       row.appendChild(upBtn);
     }
     root.appendChild(row);
@@ -7055,6 +7216,7 @@ function renderDepthStrip(bar) {
     btn.title = '200 TN · Credit +1 · 30 TN coupon each circuit · max 3 active';
     btn.disabled = !canIssue;
     btn.onclick = () => dispatch({ type:'USE_SPECIAL_ACTION', subtype:'federal-bond' });
+    attachTelegraph(btn, 'federal-bond', {});
     actions.appendChild(btn);
     if (you.federalBondsHeld > 0) {
       const meta = el('div', 'ds-spent', you.federalBondsHeld + ' bond' + (you.federalBondsHeld === 1 ? '' : 's') + ' active');
@@ -7069,6 +7231,7 @@ function renderDepthStrip(bar) {
     btn.title = '50 TN · next landing on this route pays 50 TN broker fee';
     btn.disabled = !canBroker;
     btn.onclick = () => dispatch({ type:'USE_SPECIAL_ACTION', subtype:'broker-route', spaceNum: targetRoute.spaceNum });
+    if (targetRoute) attachTelegraph(btn, 'broker-route', { spaceNum: targetRoute.spaceNum });
     actions.appendChild(btn);
     if (STATE.flags.brokeredRoute && STATE.flags.brokeredRoute.playerIdx === 0 && STATE.flags.brokeredRoute.openedRound === STATE.lap) {
       const meta = el('div', 'ds-spent', 'Brokered: ' + SPACES[STATE.flags.brokeredRoute.spaceNum].name);
@@ -7086,6 +7249,7 @@ function renderDepthStrip(bar) {
     btn.title = '75 TN · halve next upgrade cost on this asset';
     btn.disabled = !canCharter;
     btn.onclick = () => target && dispatch({ type:'USE_SPECIAL_ACTION', subtype:'charter-workshop', spaceNum: target.spaceNum });
+    if (target) attachTelegraph(btn, 'charter-workshop', { spaceNum: target.spaceNum });
     actions.appendChild(btn);
     if (STATE.flags.charteredAsset && STATE.flags.charteredAsset.playerIdx === 0 && STATE.flags.charteredAsset.round === STATE.lap) {
       const meta = el('div', 'ds-spent', 'Chartered: ' + SPACES[STATE.flags.charteredAsset.spaceNum].name);
@@ -7105,6 +7269,7 @@ function renderDepthStrip(bar) {
     const choice = (STATE.tracks.resistance.value >= 8 && STATE.tracks.credit.value > 2) ? 'resistance' : 'credit';
     dispatch({ type:'USE_REFORM', choice });
   };
+  if (reformEligible) attachTelegraph(reformBtn, 'reform', {});
   actions.appendChild(reformBtn);
   if ((you.reformIPSpent || 0) > 0) {
     actions.appendChild(el('div', 'ds-spent', you.reformIPSpent + ' IP spent on Reform'));
@@ -7125,6 +7290,286 @@ function renderDepthStrip(bar) {
     const band = el('div', 'credit-tier-band tier-' + tier, labels[tier]);
     bar.appendChild(band);
   }
+}
+
+/* =====================================================================
+   v1.5 ACTION TELEGRAPH — "hide nothing" deterministic delta preview
+   ---------------------------------------------------------------------
+   Determinism is the teacher: show the player the exact cause -> effect
+   chain BEFORE they commit. EVERY delta below is computed DIRECTLY from
+   the same known effects the reducer applies (buy cost, upgrade cost,
+   computeRent, Act track deltas, Reform = +1 Credit / -2 Resistance, the
+   special-action costs). NOTHING here mutates STATE, the RNG, the
+   decisionLog, or the snapshot hash. computeRent() is a pure read; the
+   one place that needs a hypothetical (rent at tier+1) runs on a SHALLOW
+   per-asset copy that is read and discarded — the live STATE is untouched
+   and the shared RNG is never advanced. (civic-efficacy-onboarding B3.)
+   ===================================================================== */
+
+/* Format a signed integer with an explicit glyph so the sign is never
+   conveyed by color alone (a11y — never color-alone). */
+function tgSigned(n) { return (n > 0 ? '+' : n < 0 ? '−' : '±') + Math.abs(n); }
+function tgDir(n) { return n > 0 ? 'up' : n < 0 ? 'down' : 'flat'; }
+/* A "track" row: name, signed delta, current -> next preview. */
+function tgTrackRow(label, cur, delta, cap) {
+  let next = cur + delta;
+  if (cap != null) next = Math.max(0, Math.min(cap, next));
+  const applied = next - cur; /* the real change after clamping */
+  return { k: label, v: tgSigned(applied) + (applied !== 0 ? '  (' + cur + '→' + next + ')' : ''), dir: tgDir(applied) };
+}
+
+/* Estimate the human's current Influence (read-only) and the delta a buy /
+   upgrade would produce, using the SAME scorePlayer rules. We score the
+   live state, then score a minimally-cloned state with the prospective
+   asset applied, and report the difference. The clone is local and never
+   assigned to STATE. */
+function tgInfluenceDeltaForBuy(spaceNum) {
+  try {
+    const before = scorePlayer(STATE, 0).total;
+    const clone = tgCloneForScore();
+    const sp = SPACES[spaceNum];
+    clone.players[0].ownedAssets = clone.players[0].ownedAssets.concat([{ spaceNum, tier: 0 }]);
+    /* First industrial purchase bumps Capacity +1 (capped 12) — mirror it so the
+       Influence estimate reflects capacity-tier scoring bonuses. */
+    if (INDUSTRIAL_FIRST_PURCHASE_SPACES.has(spaceNum) && clone.tracks.capacity.value < 12) {
+      clone.tracks.capacity.value += 1;
+    }
+    const after = scorePlayer(clone, 0).total;
+    return after - before;
+  } catch (e) { return 0; }
+}
+function tgInfluenceDeltaForUpgrade(spaceNum) {
+  try {
+    const before = scorePlayer(STATE, 0).total;
+    const clone = tgCloneForScore();
+    const a = clone.players[0].ownedAssets.find(x => x.spaceNum === spaceNum);
+    if (a) a.tier = Math.min(3, a.tier + 1);
+    const after = scorePlayer(clone, 0).total;
+    return after - before;
+  } catch (e) { return 0; }
+}
+/* Minimal structural clone sufficient for scorePlayer + computeRent reads.
+   scorePlayer touches players[].ownedAssets/cash/tier/reformIPSpent + tracks +
+   flags + visionAchievedRound; we clone those defensively. No RNG, no functions. */
+function tgCloneForScore() {
+  return {
+    players: STATE.players.map(p => ({
+      ...p, ownedAssets: p.ownedAssets.map(a => ({ ...a })),
+    })),
+    tracks: {
+      credit: { ...STATE.tracks.credit },
+      resistance: { ...STATE.tracks.resistance },
+      capacity: { ...STATE.tracks.capacity },
+    },
+    flags: { ...STATE.flags },
+    visionAchievedRound: STATE.visionAchievedRound ? { ...STATE.visionAchievedRound } : {},
+    lap: STATE.lap, turnIndex: STATE.turnIndex, lastRoll: STATE.lastRoll,
+  };
+}
+
+/* Track caps mirror the engine (tracks clamp 0..12 for credit/capacity,
+   0..12 for resistance per adjustTrack). Used only for preview clamping. */
+const TG_TRACK_CAP = 12;
+
+/* The known per-Act track deltas (read straight from ACTS[].apply, declared
+   here so the telegraph never executes apply()). Keyed by act id. */
+const ACT_VOTE_DELTAS = {
+  1: { credit: +2 },                 /* Funding Act */
+  2: { credit: +2, resistance: +1 }, /* Assumption Act */
+  3: {},                             /* Bank Charter — rule change, no track move */
+  4: { resistance: +1 },             /* Tariff Schedule */
+  5: { credit: +1, capacity: +1 },   /* Coinage Act */
+  6: { capacity: +2 },               /* Report on Manufactures */
+  7: { resistance: +2 },             /* Excise Enforcement */
+};
+
+/* Build a telegraph descriptor for a given action kind. Returns null when no
+   meaningful preview applies (so the caller skips attaching a popover). */
+function computeTelegraph(kind, p) {
+  const you = STATE.players[0];
+  if (kind === 'buy') {
+    const num = p.spaceNum;
+    const asset = ASSETS[num];
+    if (!asset) return null;
+    const cost = asset.cost;
+    const rows = [{ k: 'Cash', v: tgSigned(-cost), dir: 'down' }];
+    /* Capacity bump on first industrial purchase. */
+    if (INDUSTRIAL_FIRST_PURCHASE_SPACES.has(num)) {
+      rows.push(tgTrackRow('Industrial Capacity', STATE.tracks.capacity.value, +1, TG_TRACK_CAP));
+    }
+    /* Rent this asset would pay an owner who lands a 7 (illustrative), under
+       current Acts/tracks — computeRent is a pure read on the live state with a
+       hypothetical owner row spliced into a clone. */
+    const previewRent = tgRentIfOwned(num, 0);
+    if (previewRent > 0) rows.push({ k: 'Rent it earns', v: '≈ ' + previewRent + ' TN', dir: 'up' });
+    const infD = tgInfluenceDeltaForBuy(num);
+    if (infD !== 0) rows.push({ k: 'Influence (est.)', v: tgSigned(infD), dir: tgDir(infD) });
+    const willComplete = asset.sys && !ownsFullSet(STATE, 0, asset.sys) &&
+      (countOwnedSys(STATE, 0, asset.sys) + 1) === Object.entries(ASSETS).filter(([n, a]) => a.sys === asset.sys).length;
+    return {
+      title: 'If you buy',
+      rows,
+      note: willComplete ? 'Completes your ' + (SYS_LABEL[asset.sys] || asset.sys) + ' set — sets pay double and score +3.' : null,
+      cond: you.cash >= cost ? null : 'Cannot afford — you must decline',
+    };
+  }
+  if (kind === 'decline') {
+    return {
+      title: 'If you decline',
+      rows: [{ k: 'Cash now', v: tgSigned(0), dir: 'flat' }],
+      note: 'No immediate cost. The space goes to forced auction — an opponent may take it, or you can still bid.',
+      cond: null,
+    };
+  }
+  if (kind === 'upgrade') {
+    const num = p.spaceNum;
+    const asset = ASSETS[num];
+    const a = you.ownedAssets.find(x => x.spaceNum === num);
+    if (!asset || !a) return null;
+    let cost = asset.up;
+    if ((asset.sys === 'manufactures' || asset.sys === 'strategic-industry') && STATE.flags.manufacturesLap === STATE.lap) cost = Math.floor(cost / 2);
+    /* Charter discount preview (matches the reducer's floor-25 rule). */
+    if (STATE.flags.charteredAsset && STATE.flags.charteredAsset.playerIdx === 0 &&
+        STATE.flags.charteredAsset.spaceNum === num && STATE.flags.charteredAsset.round === STATE.lap &&
+        !STATE.flags.charteredAsset.fired) {
+      cost = Math.max(25, Math.floor(cost / 2));
+    }
+    const rentNow = tgRentIfOwned(num, 0);
+    const rentNext = tgRentIfOwnedAtTier(num, 0, Math.min(3, a.tier + 1));
+    const rows = [{ k: 'Cash', v: tgSigned(-cost), dir: 'down' }];
+    if (rentNext > rentNow) rows.push({ k: 'Rent', v: rentNow + ' → ' + rentNext + ' TN', dir: 'up' });
+    const infD = tgInfluenceDeltaForUpgrade(num);
+    if (infD !== 0) rows.push({ k: 'Influence (est.)', v: tgSigned(infD), dir: tgDir(infD) });
+    return {
+      title: 'If you upgrade to Tier ' + 'I'.repeat(Math.min(3, a.tier + 1)),
+      rows,
+      note: null,
+      cond: you.cash >= cost ? null : 'Cannot afford this upgrade',
+    };
+  }
+  if (kind === 'vote') {
+    const act = p.act;
+    if (!act) return null;
+    const d = ACT_VOTE_DELTAS[act.id] || {};
+    const rows = [];
+    if (p.vote === 'yes') {
+      if (d.credit) rows.push(tgTrackRow('Public Credit', STATE.tracks.credit.value, d.credit, TG_TRACK_CAP));
+      if (d.resistance) rows.push(tgTrackRow('Public Resistance', STATE.tracks.resistance.value, d.resistance, TG_TRACK_CAP));
+      if (d.capacity) rows.push(tgTrackRow('Industrial Capacity', STATE.tracks.capacity.value, d.capacity, TG_TRACK_CAP));
+      if (!rows.length) rows.push({ k: 'Tracks', v: 'no change', dir: 'flat' });
+      return { title: 'If it PASSES', rows, note: act.summary ? act.summary.replace(/<[^>]+>/g, '') : null, cond: 'Pass needs a majority' };
+    }
+    return {
+      title: 'If you vote NO',
+      rows: [{ k: 'Tracks', v: 'no change if blocked', dir: 'flat' }],
+      note: 'Blocks the Act’s permanent effect. ' + (act.summary ? act.summary.replace(/<[^>]+>/g, '') : ''),
+      cond: 'Needs a majority either way',
+    };
+  }
+  if (kind === 'reform') {
+    /* Mirror the auto-pick in renderDepthStrip: resistance if R>=8 & C>2, else credit. */
+    const choice = (STATE.tracks.resistance.value >= 8 && STATE.tracks.credit.value > 2) ? 'resistance' : 'credit';
+    const rows = [{ k: 'Influence (at scoring)', v: tgSigned(-2), dir: 'down' }];
+    if (choice === 'credit') rows.push(tgTrackRow('Public Credit', STATE.tracks.credit.value, +1, TG_TRACK_CAP));
+    else rows.push(tgTrackRow('Public Resistance', STATE.tracks.resistance.value, -2, TG_TRACK_CAP));
+    return {
+      title: 'If you Reform',
+      rows,
+      note: 'Reform is the only action that spends Influence. It buys the Republic out of a slide.',
+      cond: 'Eligible: Credit ≤ 4 or Resistance ≥ 8',
+    };
+  }
+  if (kind === 'federal-bond') {
+    const cv = STATE.tracks.credit.value;
+    const rows = [{ k: 'Cash', v: tgSigned(-200), dir: 'down' }];
+    /* Credit +1 only in the Doubt band (5-6) or once in Crisis (3-4); Panic / healthy = no bump. */
+    const inDoubt = cv >= 5 && cv <= 6;
+    const inCrisis = cv >= 3 && cv <= 4 && !STATE.flags.creditReliefUsedThisEpisode;
+    if (inDoubt || inCrisis) rows.push(tgTrackRow('Public Credit', cv, +1, TG_TRACK_CAP));
+    else rows.push({ k: 'Public Credit', v: 'no change', dir: 'flat' });
+    rows.push({ k: 'Coupon', v: '+30 TN / circuit', dir: 'up' });
+    return { title: 'If you issue a Federal Bond', rows, note: 'Max 3 active. Credit relief only when the bond market is wavering.', cond: null };
+  }
+  if (kind === 'broker-route') {
+    return { title: 'If you broker this route', rows: [{ k: 'Cash', v: tgSigned(-50), dir: 'down' }, { k: 'Next landing', v: '+50 TN fee', dir: 'up' }], note: 'The next player to land on this route pays you a broker fee.', cond: null };
+  }
+  if (kind === 'charter-workshop') {
+    return { title: 'If you charter this workshop', rows: [{ k: 'Cash', v: tgSigned(-75), dir: 'down' }, { k: 'Next upgrade', v: '½ cost', dir: 'up' }], note: 'Halves the cost of this asset’s next upgrade (floor 25 TN).', cond: null };
+  }
+  if (kind === 'bid') {
+    const amount = p.amount;
+    const rows = [];
+    if (amount > 0) {
+      rows.push({ k: 'If you win', v: tgSigned(-amount) + ' TN', dir: 'down' });
+      const previewRent = tgRentIfOwned(p.spaceNum, 0);
+      if (previewRent > 0) rows.push({ k: 'Rent it earns', v: '≈ ' + previewRent + ' TN', dir: 'up' });
+    } else {
+      rows.push({ k: 'Pass', v: 'no cost', dir: 'flat' });
+    }
+    return { title: amount > 0 ? 'If your bid wins' : 'If you pass', rows, note: amount > 0 ? 'You only pay if no one outbids you.' : 'You drop out; the asset goes to the high bidder.', cond: null };
+  }
+  return null;
+}
+
+/* computeRent with a hypothetical owner (idx) spliced onto a clone, landing
+   roll fixed at 7 for an illustrative figure. Pure: reads STATE, mutates only
+   the throwaway clone, advances no RNG. */
+function tgRentIfOwned(spaceNum, ownerIdx) { return tgRentIfOwnedAtTier(spaceNum, ownerIdx, 0); }
+function tgRentIfOwnedAtTier(spaceNum, ownerIdx, tier) {
+  try {
+    const clone = tgCloneForScore();
+    /* Ensure the owner row carries the asset at the requested tier. */
+    const existing = clone.players[ownerIdx].ownedAssets.find(a => a.spaceNum === spaceNum);
+    if (existing) existing.tier = tier;
+    else clone.players[ownerIdx].ownedAssets.push({ spaceNum, tier });
+    /* computeRent reads lastMoveRoll / lastRoll for institutions; give a stable 7. */
+    clone.players[ownerIdx].lastMoveRoll = 7;
+    clone.lastRoll = { d1: 3, d2: 4, total: 7 };
+    return computeRent(clone, spaceNum, ownerIdx, ownerIdx) || 0;
+  } catch (e) { return 0; }
+}
+
+/* Build the popover DOM for a telegraph descriptor. */
+function tgPopHTML(tg) {
+  let html = '<div class="tg-title">' + tg.title + '</div>';
+  tg.rows.forEach(r => {
+    html += '<div class="tg-row"><span class="tg-k">' + r.k + '</span><span class="tg-v ' + (r.dir || 'flat') + '">' + r.v + '</span></div>';
+  });
+  if (tg.note) html += '<div class="tg-note">' + tg.note + '</div>';
+  if (tg.cond) html += '<div class="tg-cond">' + tg.cond + '</div>';
+  return html;
+}
+
+/* Attach a lazy telegraph popover to a button/element. The descriptor is
+   recomputed on first reveal (hover/focus) so it always reflects live state at
+   look-time, never at render-time. The element becomes a tg-host; an aria-label
+   suffix announces the headline delta for screen readers (focus-telegraph).
+   Presentation-only — the popover never fires an action. */
+function attachTelegraph(elm, kind, params) {
+  if (!elm) return;
+  elm.classList.add('tg-host');
+  let pop = null;
+  const build = () => {
+    let tg = null;
+    try { tg = computeTelegraph(kind, params); } catch (e) { tg = null; }
+    if (!tg) return;
+    if (!pop) {
+      pop = document.createElement('span');
+      pop.className = 'tg-pop';
+      pop.setAttribute('role', 'tooltip');
+      pop.setAttribute('aria-hidden', 'true'); /* announced via aria-label instead */
+      elm.appendChild(pop);
+    }
+    pop.innerHTML = tgPopHTML(tg);
+    /* a11y: fold the deltas into the element's accessible name so focus alone
+       conveys them (screen-reader users get the same telegraph as sighted). */
+    const flat = tg.rows.map(r => r.k + ' ' + r.v.replace(/−/g, 'minus ').replace(/→/g, 'to')).join(', ');
+    const base = elm.getAttribute('data-tg-baselabel') || elm.textContent.trim();
+    elm.setAttribute('data-tg-baselabel', base);
+    elm.setAttribute('aria-label', base + '. ' + tg.title + ': ' + flat + (tg.cond ? '. ' + tg.cond : ''));
+  };
+  elm.addEventListener('mouseenter', build);
+  elm.addEventListener('focus', build);
 }
 
 function renderControls() {
@@ -7297,6 +7742,9 @@ function renderControls() {
           const btn = el('button', a.primary ? 'primary' : '', a.label);
           if (a.disabled) btn.disabled = true;
           btn.onclick = () => a.onClick(inp.value);
+          /* Telegraph the bid: re-read the live input value on each hover/focus
+             so the preview tracks what the player has typed. */
+          if (a.tg) attachTelegraph(btn, a.tg.kind, a.tg.dynamic ? a.tg.dynamic(inp) : a.tg.params);
           wrap.appendChild(btn);
           btns.appendChild(wrap);
           return;
@@ -7304,6 +7752,7 @@ function renderControls() {
         const btn = el('button', a.primary ? 'primary' : '', a.label);
         if (a.disabled) btn.disabled = true;
         btn.onclick = a.onClick;
+        if (a.tg) attachTelegraph(btn, a.tg.kind, a.tg.params);
         btns.appendChild(btn);
       });
       banner.appendChild(btns);
@@ -7384,8 +7833,8 @@ function renderControls() {
     addBanner('Congress · Floor Vote',
       'The <em>' + act.name + '</em> is on the floor.',
       'What it does: ' + (act.summary || act.effect || 'see panel') + '<br /><strong>Vote YES</strong> to pass it. <strong>Vote NO</strong> to block. Pass needs majority.', [
-      { label:'Vote YES', primary:true, onClick: () => humanVote('yes') },
-      { label:'Vote NO', onClick: () => humanVote('no') },
+      { label:'Vote YES', primary:true, onClick: () => humanVote('yes'), tg: { kind:'vote', params:{ act, vote:'yes' } } },
+      { label:'Vote NO', onClick: () => humanVote('no'), tg: { kind:'vote', params:{ act, vote:'no' } } },
     ], isFirstLap ? { firstLapHint: 'Acts of Congress change the whole Republic. Read the effect, then choose. Most Acts only come up once — this is your moment to influence them.' } : undefined);
   }
   else if (phase === 'act-vote') {
@@ -7425,8 +7874,8 @@ function renderControls() {
         'You landed on <em>' + sp.name + '</em>.',
         canBuy ? 'Buy it outright for ' + cost + ' TN, or decline and let it go to forced auction.'
                : 'You cannot afford ' + cost + ' TN — you must decline; it goes to forced auction.', [
-        { label:'Buy ' + cost + ' TN', primary:true, disabled: !canBuy, onClick: () => dispatch({ type:'BUY_ASSET' }) },
-        { label:'Decline → Auction', onClick: () => dispatch({ type:'DECLINE_ASSET' }) },
+        { label:'Buy ' + cost + ' TN', primary:true, disabled: !canBuy, onClick: () => dispatch({ type:'BUY_ASSET' }), tg: { kind:'buy', params:{ spaceNum: num } } },
+        { label:'Decline → Auction', onClick: () => dispatch({ type:'DECLINE_ASSET' }), tg: { kind:'decline', params:{ spaceNum: num } } },
       ], isFirstLap ? { firstLapHint: 'Buying gives you income whenever players land on this space and counts toward your final Influence. Declining sends it to auction — sometimes the right call if your cash is low.' } : undefined);
     }
   }
@@ -7475,8 +7924,15 @@ function renderControls() {
           if (isNaN(amount) || amount < 10 || amount > STATE.players[0].cash) { alert('Enter a bid between 10 and your cash on hand.'); return; }
           if (amount <= STATE.pendingAuction.highBid) { alert('Bid must exceed current high bid of ' + STATE.pendingAuction.highBid); return; }
           dispatch({ type:'AUCTION_BID', playerIndex: 0, amount, reason: 'human bid' });
-        } },
-        { label:'Pass', onClick: () => submitHumanPass() },
+        },
+        /* Dynamic: re-read the typed bid (or default to the minimum legal bid)
+           at each hover/focus so the "if you win" cost tracks the input. */
+        tg: { kind:'bid', dynamic: (inp) => {
+          const typed = parseInt(inp.value, 10);
+          const amount = (!isNaN(typed) && typed > 0) ? typed : (a.highBid + 10);
+          return { amount, spaceNum: a.spaceNum };
+        } } },
+        { label:'Pass', onClick: () => submitHumanPass(), tg: { kind:'bid', params:{ amount: 0, spaceNum: a.spaceNum } } },
       ]);
     } else {
       const bidder = STATE.players[a.bidsRemaining[0]];
@@ -7511,6 +7967,12 @@ function renderControls() {
 
   /* v1.4 fix (A3-004): announce the turn-loop headline to screen readers. */
   announceTurnState(liveAnnouncement);
+
+  /* v1.5 Swift-Start — let the coach observe the freshly rendered rail so an
+     "auto" beat can advance the instant the player rolls / buys / votes, and so
+     the cue ring re-anchors to the rebuilt affordance. Presentation-only;
+     guarded internally to a no-op when the coach isn't active. */
+  if (typeof swiftObserve === 'function') swiftObserve();
 }
 
 /* v1.4 fix (A3-004): write to the polite aria-live region, but only when the
@@ -7793,6 +8255,10 @@ function showOrient(startStep) {
   document.getElementById('orientOverlay').classList.remove('hidden');
   setWelcomeStep(startStep || 1);
 }
+/* Set true only when the 3-step welcome opens as part of a genuine first run
+   (not when a returning player re-opens it from "How to play"). Gates whether
+   closing the welcome chains into the Swift-Start coach. */
+let __firstRunFlow = false;
 function hideOrient() {
   document.body.classList.remove('welcome-active');
   document.body.classList.remove('tour-step-3');
@@ -7800,9 +8266,202 @@ function hideOrient() {
   savePlayerCustom();
   document.getElementById('orientOverlay').classList.add('hidden');
   try { localStorage.setItem(ORIENT_KEY, '1'); } catch (e) {}
+  /* First-run only: hand off to the non-blocking Swift-Start coach, unless the
+     player has already seen it. The coach is separately skippable + replayable. */
+  if (__firstRunFlow) {
+    __firstRunFlow = false;
+    let swiftSeen = false;
+    try { swiftSeen = !!localStorage.getItem(SWIFT_KEY); } catch (e) {}
+    if (!swiftSeen && typeof startSwiftStart === 'function') startSwiftStart();
+  }
 }
 
 document.getElementById('btnHelp').addEventListener('click', () => showOrient(1));
+
+/* =====================================================================
+   v1.5 SWIFT-START COACH ENGINE — the guided "1790 Funding Debate" opening.
+   ---------------------------------------------------------------------
+   A first-run, always-skippable, NON-BLOCKING coach that walks a newcomer
+   to their first satisfying decision (a first asset buy, or the Act I vote)
+   in a few minutes, using PROGRESSIVE DISCLOSURE — one concept per beat:
+   where you are → roll → read a choice (telegraph) → the three tracks →
+   how you win. The game underneath is fully live the entire time; the coach
+   only guides and points. It mirrors ORIENT_KEY for first-run gating and is
+   replayable from the Game ▾ menu. PRESENTATION-ONLY: it never dispatches an
+   action, mutates STATE/RNG/decisionLog, or blocks the action rail. It
+   advances by OBSERVING the player's real moves (swiftObserve, called from
+   renderControls), so the player learns by doing (Gee performance-before-
+   competence; Wingspan Swift-Start). (civic-efficacy-onboarding B1/B2/B4.)
+   ===================================================================== */
+const SWIFT_KEY = 'sovereign.swiftstart.seen';
+let SWIFT_ACTIVE = false;
+let SWIFT_STEP = 0;
+let SWIFT_CUE_EL = null; /* the rail element currently wearing the .coach-cue ring */
+
+/* Each beat: what to teach, the prompt, an optional live-affordance target to
+   ring (a CSS selector resolved at show-time), an optional "advance when" test
+   read against STATE (auto-advance the instant the player does the thing), and
+   optional reference links (Learn More / Ledger) for just-in-time depth. The
+   `manualNext` beats wait for the "Got it" button; `auto` beats advance on the
+   observed game state so the coaching tracks real play, never blocks it. */
+const SWIFT_STEPS = [
+  {
+    eyebrow: 'Swift-Start · The First Congress, 1790',
+    title: 'You hold the Treasury of a new and unproven republic.',
+    body: 'It is 1790, and the first thing on the floor is the fight that defined the nation’s credit: the <strong>Funding Act</strong> — will the United States honor the Revolution’s debts at full value, or walk away from them? <strong>You vote first.</strong> That is your opening decision, and it lands right now.',
+    prompt: 'Let’s walk it one step at a time — your first real choice is already waiting.',
+    links: [{ kind:'learn', key:'fundingAct', label:'The real Funding Act of 1790' }],
+    mode: 'manual',
+  },
+  {
+    eyebrow: 'Swift-Start · Hide nothing',
+    title: 'The Funding Act is on the floor. See what passing it does — then vote.',
+    body: 'This game hides nothing: <strong>hover or tab to “Vote YES”</strong> and a preview shows the exact effect — Public Credit <strong>+2</strong>. That telegraph appears on every choice you’ll ever make. Cast your vote to make your first mark on the Republic.',
+    prompt: 'Hover a vote to read its effect, then cast YES or NO.',
+    target: '.ab-actions button.primary, .ab-actions button',
+    /* Advance the instant the player has cast their Funding Act vote (or the
+       vote phase has otherwise resolved). This is the first satisfying decision. */
+    advanceWhen: () => (STATE.acts && STATE.acts.current && STATE.acts.current.votes && STATE.acts.current.votes[0] != null)
+      || (STATE.acts && STATE.acts.passed && STATE.acts.passed.length > 0)
+      || STATE.phase !== 'act-vote',
+    mode: 'auto',
+  },
+  {
+    eyebrow: 'Swift-Start · Your turn loop',
+    title: 'Now take your turn: roll, land, choose, live with it.',
+    body: 'Every round you roll, move, and decide what to do where you land. The rail above the board always tells you the next move — and every option is telegraphed before you commit.',
+    prompt: 'Roll the dice to move your delegate.',
+    target: '.ab-actions button.primary, .ab-actions button',
+    /* Advance the instant the player takes their first roll: the engine stamps
+       lastMoveRoll on MOVE_TOKEN and the phase leaves awaiting-roll. */
+    advanceWhen: () => (STATE.players[0].lastMoveRoll || 0) > 0 && STATE.phase !== 'awaiting-roll' && STATE.phase !== 'act-vote',
+    mode: 'auto',
+  },
+  {
+    eyebrow: 'Swift-Start · Your first holding',
+    title: 'Land on an unowned property and you can buy it.',
+    body: 'Hover <strong>Buy</strong> to see the cash cost, the rent it will earn when others land there, and the Influence it adds to your final score. Buying builds income and counts toward winning; declining sends it to auction. Make your first purchase when you can.',
+    prompt: 'Buy your first property — or keep rolling until you land on one.',
+    advanceWhen: () => STATE.players[0].ownedAssets.length > 0,
+    /* Manual-with-observe: it auto-advances on a buy, but the player can also
+       click "Skip this tip" so they are never stuck waiting on a particular roll. */
+    mode: 'auto',
+  },
+  {
+    eyebrow: 'Swift-Start · The three tracks',
+    title: 'Credit, Resistance, Capacity — the state of the Republic.',
+    body: 'Watch the three figures at the centre of the board. <strong>Public Credit</strong> is the bond market’s trust, <strong>Public Resistance</strong> the strain in the western counties, <strong>Industrial Capacity</strong> the workshops’ power. Acts and events move them — and they decide whether your holdings pay or collapse.',
+    prompt: 'One last thing worth knowing.',
+    target: '.bc-tracks',
+    mode: 'manual',
+  },
+  {
+    eyebrow: 'Swift-Start · How you win',
+    title: 'Four circuits end it; the heaviest ledger wins it.',
+    body: 'The game ends when someone carries their faction <strong>four times</strong> around the board — but reaching the line first doesn’t guarantee the win. <strong>Influence</strong>, scored at Final Accounting, decides. The Chronicler’s Ledger explains every term and the real history behind it, any time.',
+    prompt: 'That’s everything. The Republic is yours to build.',
+    links: [{ kind:'ledger', label:'Open the Chronicler’s Ledger' }],
+    mode: 'manual',
+  },
+];
+
+function swiftClearCue() {
+  if (SWIFT_CUE_EL) { SWIFT_CUE_EL.classList.remove('coach-cue'); SWIFT_CUE_EL = null; }
+}
+function swiftApplyCue(selector) {
+  swiftClearCue();
+  if (!selector) return;
+  try {
+    const t = document.querySelector(selector);
+    if (t) { t.classList.add('coach-cue'); SWIFT_CUE_EL = t; }
+  } catch (e) {}
+}
+
+function showSwiftStep(i) {
+  const coach = document.getElementById('swiftCoach');
+  if (!coach) return;
+  if (i < 0 || i >= SWIFT_STEPS.length) { endSwiftStart(true); return; }
+  SWIFT_STEP = i;
+  const step = SWIFT_STEPS[i];
+  document.getElementById('scEyebrow').textContent = step.eyebrow;
+  document.getElementById('scTitle').innerHTML = step.title;
+  document.getElementById('scBody').innerHTML = step.body;
+  const promptEl = document.getElementById('scPrompt');
+  promptEl.innerHTML = step.prompt || '';
+  promptEl.style.display = step.prompt ? '' : 'none';
+
+  /* Progress dots */
+  const prog = document.getElementById('scProgress');
+  prog.innerHTML = '';
+  SWIFT_STEPS.forEach((_, k) => {
+    const d = document.createElement('span');
+    d.className = 'dot' + (k < i ? ' done' : '') + (k === i ? ' cur' : '');
+    prog.appendChild(d);
+  });
+
+  /* Reference links (just-in-time depth — Learn More / Ledger). */
+  const links = document.getElementById('scLinks');
+  links.innerHTML = '';
+  (step.links || []).forEach(lk => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'sc-link'; b.textContent = lk.label;
+    if (lk.kind === 'learn') b.onclick = () => openLearnMore(lk.key);
+    else if (lk.kind === 'ledger') b.onclick = () => openLedger();
+    links.appendChild(b);
+  });
+
+  /* The "Got it" / "Start playing" button. On auto beats it’s a soft "skip
+     ahead" so the player is never stuck waiting; on manual beats it advances. */
+  const nextBtn = document.getElementById('scNext');
+  const lastStep = i === SWIFT_STEPS.length - 1;
+  nextBtn.textContent = lastStep ? 'Start playing' : (step.mode === 'auto' ? 'Skip this tip' : 'Got it');
+
+  swiftApplyCue(step.target);
+  coach.classList.add('coach-show');
+}
+
+function swiftNext() {
+  if (SWIFT_STEP >= SWIFT_STEPS.length - 1) { endSwiftStart(true); return; }
+  showSwiftStep(SWIFT_STEP + 1);
+}
+
+/* Called from renderControls after every render. If the current beat is an
+   "auto" beat and its advanceWhen condition is now satisfied by real play,
+   advance to the next beat. Re-applies the cue selector so the ring follows the
+   freshly rebuilt rail DOM. Read-only against STATE. */
+function swiftObserve() {
+  if (!SWIFT_ACTIVE) return;
+  const step = SWIFT_STEPS[SWIFT_STEP];
+  if (!step) return;
+  /* Re-anchor the cue ring (the rail is rebuilt each render). */
+  if (step.target) swiftApplyCue(step.target);
+  if (step.mode === 'auto' && typeof step.advanceWhen === 'function') {
+    let ok = false;
+    try { ok = !!step.advanceWhen(); } catch (e) { ok = false; }
+    if (ok) swiftNext();
+  }
+}
+
+function startSwiftStart() {
+  SWIFT_ACTIVE = true;
+  showSwiftStep(0);
+}
+function endSwiftStart(markSeen) {
+  SWIFT_ACTIVE = false;
+  swiftClearCue();
+  const coach = document.getElementById('swiftCoach');
+  if (coach) coach.classList.remove('coach-show');
+  if (markSeen) { try { localStorage.setItem(SWIFT_KEY, '1'); } catch (e) {} }
+}
+
+/* Coach buttons. "Got it"/"Skip this tip" advances; the skip link ends the
+   whole coach (and marks it seen so a returning player is never re-prompted). */
+document.getElementById('scNext').addEventListener('click', swiftNext);
+document.getElementById('scSkip').addEventListener('click', () => endSwiftStart(true));
+/* ESC dismisses the coach (it never traps). */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && SWIFT_ACTIVE) { endSwiftStart(true); }
+});
 
 /* --- v1.5 Chronicler Tier B — wire the reference surfaces. The Ledger is
    reachable from BOTH the corner book icon and the Game ▾ menu. Learn More
@@ -7816,6 +8475,17 @@ document.getElementById('btnHelp').addEventListener('click', () => showOrient(1)
     /* Close the Game menu before opening the Ledger overlay. */
     const menu = ledgerMenuBtn.closest('.game-menu'); if (menu) menu.removeAttribute('open');
     openLedger();
+  });
+
+  /* Replay the Swift-Start coach from the Game ▾ menu (the "way to replay it
+     later"). Closes the menu + any open welcome overlay, then restarts the
+     non-blocking coach at beat 1 over the live game. */
+  const swiftBtn = document.getElementById('btnSwiftStart');
+  if (swiftBtn) swiftBtn.addEventListener('click', () => {
+    const menu = swiftBtn.closest('.game-menu'); if (menu) menu.removeAttribute('open');
+    const orient = document.getElementById('orientOverlay');
+    if (orient && !orient.classList.contains('hidden')) hideOrient();
+    if (typeof startSwiftStart === 'function') startSwiftStart();
   });
 
   /* Delegated dismissal: scrim click or any [data-ref-dismiss] close button. */
@@ -10919,11 +11589,15 @@ applyPlayerCustom();
 render();
 showResumePill();
 
-/* First-load welcome flow — auto-show three-step welcome when no autosave and not seen */
+/* First-load welcome flow — auto-show three-step welcome when no autosave and
+   not seen. On a genuine first run we mark __firstRunFlow so that when the
+   welcome closes, hideOrient() chains into the non-blocking Swift-Start coach
+   (gated separately by SWIFT_KEY). A returning player who opens "How to play"
+   does NOT set this flag, so they are never pushed into the tutorial. */
 (function maybeShowFirstRunOrient() {
   let seen = false;
   try { seen = !!localStorage.getItem(ORIENT_KEY); } catch (e) {}
-  if (!seen && !hasAutosave()) showOrient(1);
+  if (!seen && !hasAutosave()) { __firstRunFlow = true; showOrient(1); }
 })();
 
 /* Ledger expand/collapse toggle — add an in-head button */
