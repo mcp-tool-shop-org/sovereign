@@ -4063,8 +4063,16 @@ const AUTOSAVE_KEY = 'sovereign.autosave';
    and the v1.2/v1.3 per-player counters, so the stored hash VALUE changed (no
    gameplay change). Bumping the version means v0.24 saves are rejected with a
    clear message by the gate below instead of failing the integrity check
-   confusingly. */
-const SAVE_VERSION = 'v0.25-integrity-candidate';
+   confusingly.
+
+   REPLAY-001 fix: bumped from 'v0.25-integrity-candidate'. The save now carries
+   a `roster` (opponent profiles/names/roles) and force-vote fees are recorded on
+   the CAST_VOTE action instead of being applied out of band. Both are required to
+   replay a LIVE-driven game faithfully (without them, opponent profiles defaulted
+   wrong and out-of-band fees vanished, so the decisionLog diverged and load threw
+   a reducer error). v0.25 saves lack the roster, so they are rejected cleanly by
+   the gate below rather than replayed under the wrong opponent profiles. */
+const SAVE_VERSION = 'v0.26-replay-fidelity-candidate';
 /* HARD_CAP_ROUNDS is a safety net for pathological games; the diagnostic
    showed 100 % of CANONICAL games complete Race N=4 by round 28. The game
    ends by state (first to N circuits), not by clock. */
@@ -4385,13 +4393,11 @@ function castOpponentActVote(pIdx) {
   if (p.profile === 'human') return;
   const profile = PROFILES[p.profile];
   const fee = profile.decideEarlyVoteFee(STATE, pIdx);
-  if (fee.pay) {
-    STATE = adjustCash(STATE, -100, 'Force-vote fee · ' + fee.reason, pIdx);
-    STATE = logRow(STATE, { actor: p.name, event:'FORCE-FEE', detail:'Paid 100 TN to force Act vote · ' + fee.reason, cls:'vote' });
-    render();
-  }
+  /* Replay fidelity (REPLAY-001): carry the force-fee on the CAST_VOTE action so
+     the reducer applies it (and logs it) as part of the recorded action, instead
+     of mutating STATE out of band where the decisionLog can't capture it. */
   const decision = profile.decideVote(STATE, pIdx, STATE.acts.current.actId);
-  dispatch({ type:'CAST_VOTE', playerIndex: pIdx, vote: decision.vote.toLowerCase(), reason: decision.reason });
+  dispatch({ type:'CAST_VOTE', playerIndex: pIdx, vote: decision.vote.toLowerCase(), reason: decision.reason, forceFee: fee.pay ? fee.reason : null });
 }
 
 function runOpponent() {
@@ -4402,15 +4408,12 @@ function runOpponent() {
   const profile = PROFILES[p.profile];
 
   if (STATE.phase === 'act-vote' && STATE.acts.current && STATE.acts.current.votes[pIdx] == null) {
-    /* Check force-fee first */
+    /* Replay fidelity (REPLAY-001): carry the force-fee on the CAST_VOTE action
+       (applied + logged inside the reducer) instead of mutating STATE out of
+       band, so a saved game replays the fee faithfully. */
     const fee = profile.decideEarlyVoteFee(STATE, pIdx);
-    if (fee.pay) {
-      STATE = adjustCash(STATE, -100, 'Force-vote fee · ' + fee.reason, pIdx);
-      STATE = logRow(STATE, { actor: p.name, event:'FORCE-FEE', detail:'Paid 100 TN to force Act vote · ' + fee.reason, cls:'vote' });
-      render();
-    }
     const decision = profile.decideVote(STATE, pIdx, STATE.acts.current.actId);
-    dispatch({ type:'CAST_VOTE', playerIndex: pIdx, vote: decision.vote.toLowerCase(), reason: decision.reason });
+    dispatch({ type:'CAST_VOTE', playerIndex: pIdx, vote: decision.vote.toLowerCase(), reason: decision.reason, forceFee: fee.pay ? fee.reason : null });
     return;
   }
 
@@ -4567,6 +4570,19 @@ function reduce(s, action) {
       const pIdx = action.playerIndex;
       const yes = action.vote === 'yes';
       const p = s.players[pIdx];
+      /* Replay fidelity (REPLAY-001): an opponent's force-vote fee used to be
+         applied OUT OF BAND in castOpponentActVote / runOpponent (adjustCash +
+         logRow before this dispatch). Out-of-band mutations are never recorded
+         in DECISION_LOG, so a saved game could not be replayed faithfully — the
+         -100 TN and its ledger row vanished on load, diverging state and the
+         integrity hash. The fee is now carried on the action (action.forceFee =
+         the reason string) and applied here, INSIDE the reducer, so it is part
+         of the logged action and replays exactly. Applied before the VOTE row to
+         preserve the original ledger ordering (fee row, then vote row). */
+      if (action.forceFee) {
+        s = adjustCash(s, -100, 'Force-vote fee · ' + action.forceFee, pIdx);
+        s = logRow(s, { actor: p.name, event:'FORCE-FEE', detail:'Paid 100 TN to force Act vote · ' + action.forceFee, cls:'vote' });
+      }
       s.acts.current.votes[pIdx] = yes ? 'yes' : 'no';
       const reason = action.reason || (pIdx === 0 ? 'human vote' : 'opponent decision');
       s = logRow(s, { actor: p.name, event:'VOTE', detail: 'Vote ' + (yes ? 'YES' : 'NO') + ' · ' + reason, cls:'vote' });
@@ -7191,7 +7207,15 @@ function snapshotHash(s) {
     /* full flags object via stable stringify (Vision latches, charter/broker/
        funding/panic/doubt flags, manufactures lap, etc.) */
     'fl:' + stableStringify(s.flags || {}),
-    s.ledger.length,
+    /* Replay fidelity (REPLAY-001): count only the DETERMINISTIC ledger rows.
+       CHRONICLER rows are pure narration appended out of band by the toast/render
+       layer (fireChronicler -> STATE.ledger.push), gated by module-level
+       fired-this-game/lap globals and emitted on live render timing. They carry
+       no gameplay state and cannot be reproduced position-for-position by a pure
+       reduce() replay, so including them made a faithful replay fail the integrity
+       check on ledger length alone. Excluding them keeps the hash a check of GAME
+       state (everything logRow() produces inside the reducer), which is its job. */
+    s.ledger.reduce((n, r) => n + (r.event === 'CHRONICLER' ? 0 : 1), 0),
   ].join(' · ');
 }
 
@@ -7415,6 +7439,14 @@ function buildSavePayload() {
   return {
     version: SAVE_VERSION,
     seed: STATE.rngSeed,
+    /* Replay fidelity (REPLAY-001): persist the player roster. The opponent
+       PROFILES are chosen from the human's delegate role via applyPlayerCustom()
+       (which reads localStorage), so they are NOT recoverable from initialState()
+       alone. A save that only stored seed + decisionLog replayed under the wrong
+       opponent profiles, so opponent auction bids / votes / decisions diverged
+       and BUY_ASSET eventually threw (pendingLanding === null). Recording the
+       roster here makes the save self-contained and machine-independent. */
+    roster: STATE.players.map(p => ({ profile: p.profile, name: p.name, role: p.role, glyph: p.glyph })),
     decisionLog: DECISION_LOG.slice(),
     finalState: STATE.status === 'gameOver' ? {
       ledgerLen: STATE.ledger.length,
@@ -7476,6 +7508,13 @@ function loadFromPayload(payload) {
     showIoPill('This save is from the previous candidate and its integrity record is incompatible with the current build. Start a new game.', true);
     return false;
   }
+  /* REPLAY-001: v0.25 saves carry no `roster`, so they would replay under the
+     wrong opponent profiles and diverge. Reject cleanly instead of replaying a
+     game that cannot be verified. */
+  if (payload && payload.version === 'v0.25-integrity-candidate') {
+    showIoPill('This save predates the replay-fidelity fix (it does not record opponent profiles); replays would diverge and cannot be verified. Start a new game.', true);
+    return false;
+  }
   if (!payload || payload.version !== SAVE_VERSION) {
     if (payload && (payload.version === 'phase5' || payload.version === 'v0.3' || payload.version === 'v0.4' || payload.version === 'v0.5' || payload.version === 'v0.6' || payload.version === 'v0.8')) {
       showIoPill('Save file from pre-v0.10 ruleset; cannot replay under current balance. Export to keep as historical artifact.', true);
@@ -7488,6 +7527,26 @@ function loadFromPayload(payload) {
   if (!Array.isArray(payload.decisionLog)) { showIoPill('Load failed · invalid decisionLog', true); return false; }
   /* Reconstruct */
   STATE = initialState(payload.seed);
+  /* Replay fidelity (REPLAY-001): restore the saved roster BEFORE replaying.
+     Opponent profiles drive every opponent auction bid / vote / card decision,
+     and they are chosen from the delegate role (applyPlayerCustom, localStorage),
+     not from initialState(). Without this, replay ran the wrong opponent profiles
+     and diverged — opponents bid in auctions the live game never had them bid in,
+     state drifted, and BUY_ASSET threw on a null pendingLanding. Older saves with
+     no roster fall back to applyPlayerCustom() (this session's delegate), which is
+     the previous behavior. */
+  if (Array.isArray(payload.roster) && payload.roster.length === STATE.players.length) {
+    payload.roster.forEach((r, idx) => {
+      const p = STATE.players[idx];
+      if (!p || !r) return;
+      if (r.profile) p.profile = r.profile;
+      if (r.name) p.name = r.name;
+      if (r.role) p.role = r.role;
+      if (r.glyph) p.glyph = r.glyph;
+    });
+  } else {
+    applyPlayerCustom();
+  }
   DECISION_LOG = [];
   TURN_SNAPSHOTS = [];
   NARRATION_LOG = [];

@@ -21,6 +21,12 @@
  *   GATE 4  No designer chrome in player  — without ?designer=1 the Balance
  *           chrome                         Sweep / designer pills are hidden;
  *                                          with ?designer=1 they are interactable.
+ *   GATE 5  Save/load/replay roundtrip     — a real game exported and reloaded via
+ *           (REPLAY-001)                    loadFromPayload reconstructs WITHOUT a
+ *                                          reducer error and its integrity hash
+ *                                          verifies (opponent profiles, force-vote
+ *                                          fees, and narration rows all replay
+ *                                          faithfully).
  *
  * See playability.harness.mjs for the technology rationale (jsdom + virtual
  * timer shim), the hardcoded determinism seeds, and an honest list of what this
@@ -34,6 +40,7 @@ import {
   driveGame,
   railSnapshot,
   recordCardAuction,
+  saveLoadRoundtrip,
   humanBidPending,
   flushMicrotasks,
   FULL_GAME_SEED,
@@ -187,6 +194,38 @@ await check('GATE 4 · designer chrome hidden without ?designer=1, shown with it
     throw new Error('Balance Sweep button is hidden even with ?designer=1');
   }
   console.log(`        (btnBatch display: player='${displayPlain}', designer='${displayDsgn}')`);
+});
+
+// --- GATE 5: Save / load / replay roundtrip (REPLAY-001) -----------------
+// Reproduce the EXACT bug a dogfood pass surfaced: play a real game, export the
+// save the game would write, then load it. Pre-fix, loadFromPayload replayed the
+// LIVE decisionLog through reduce() and threw "reducer error at action N" on a
+// BUY_ASSET with a null pendingLanding — opponent profiles defaulted wrong
+// (applyPlayerCustom was skipped on load), an out-of-band force-vote fee vanished,
+// and out-of-band Chronicler ledger rows broke the integrity hash. This gate
+// drives a full game, exports, calls the REAL loadFromPayload, and asserts the
+// game reconstructs WITHOUT a reducer error AND the integrity hash verifies.
+await check('GATE 5 · save/load/replay roundtrip reconstructs and integrity verifies', async () => {
+  const g = bootGame({ seed: FULL_GAME_SEED });
+  const r = await driveGame(g, { keepRevStateDebtUnowned: true });
+  if (!r.reachedTerminal) {
+    throw new Error(`game did not reach a terminal state (drove ${r.dispatches} dispatches) — cannot roundtrip a completed save`);
+  }
+  const rt = await saveLoadRoundtrip(g);
+  if (rt.threwReducerError) {
+    throw new Error(`loadFromPayload threw a reducer error during replay: "${rt.pill}" (decisionLog ${rt.decisionLogLen} actions)`);
+  }
+  if (!rt.loaded) {
+    throw new Error(`loadFromPayload returned false: "${rt.pill}"`);
+  }
+  // A completed game carries a finalState hash, so the load MUST verify integrity.
+  if (!rt.hadFinalState) {
+    throw new Error('completed-game save unexpectedly carried no finalState hash');
+  }
+  if (!rt.integrityVerified) {
+    throw new Error(`save loaded but integrity did NOT verify: "${rt.pill}" — replay diverged from the saved final state`);
+  }
+  console.log(`        (replayed ${rt.decisionLogLen} actions, loaded with "${rt.pill}")`);
 });
 
 // ---------------------------------------------------------------------------

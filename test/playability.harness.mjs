@@ -376,6 +376,52 @@ async function driveGame(ctx, opts = {}) {
   return report;
 }
 
+/**
+ * Save / load / replay roundtrip on the LIVE-driven game (GATE 5).
+ *
+ * Drives a full game on the live dispatch path, asks the page to build the exact
+ * save payload it would export (`buildSavePayload()`), then calls the REAL
+ * `loadFromPayload(payload)` and reports what the player would see.
+ *
+ * WHY THIS GATE EXISTS (REPLAY-001)
+ * ---------------------------------
+ * A LIVE-driven decisionLog could not be reloaded: `loadFromPayload` replays the
+ * log through `reduce()`, and three live-only effects were never captured in the
+ * log, so replay diverged and eventually threw "reducer error at action N" on a
+ * BUY_ASSET with a null pendingLanding:
+ *   1. opponent PROFILES are chosen from the delegate role (applyPlayerCustom,
+ *      localStorage), not from initialState() — replay ran the wrong opponents;
+ *   2. an opponent's force-vote fee was applied OUT OF BAND (adjustCash + logRow
+ *      in the opponent driver), so it vanished on replay;
+ *   3. the Chronicler appends narration-only ledger rows out of band on live
+ *      render timing, inflating ledger.length the deterministic replay can't match.
+ * The fix persists a `roster`, records the fee on CAST_VOTE, and excludes
+ * CHRONICLER rows from the integrity hash. This gate locks all three in.
+ *
+ * Returns: { reachedTerminal, hadFinalState, loaded, integrityVerified, pill,
+ *            decisionLogLen, threwReducerError }.
+ */
+async function saveLoadRoundtrip(ctx) {
+  const { S } = ctx;
+  // Build the payload the game would export, then call the real loader.
+  S('window.__rtPayload = buildSavePayload()');
+  const decisionLogLen = S('window.__rtPayload.decisionLog.length');
+  const hadFinalState = S('!!window.__rtPayload.finalState');
+  const loaded = S('loadFromPayload(window.__rtPayload)');
+  const pill = S("(document.querySelector('.io-pill') || {}).textContent || ''");
+  return {
+    reachedTerminal: S("STATE.status === 'gameOver'"),
+    hadFinalState,
+    decisionLogLen,
+    loaded,
+    // The fixed loader claims "integrity verified" only when a finalState hash
+    // was present AND matched; a mid-game save says "no integrity record".
+    integrityVerified: /integrity verified/i.test(pill),
+    threwReducerError: /reducer error at action/i.test(pill),
+    pill,
+  };
+}
+
 /** Capture provenance of a card-triggered auction at the moment it opens. */
 function recordCardAuction(S, meta) {
   return {
@@ -397,6 +443,7 @@ export {
   driveGame,
   railSnapshot,
   recordCardAuction,
+  saveLoadRoundtrip,
   humanBidPending,
   flushMicrotasks,
   FULL_GAME_SEED,
