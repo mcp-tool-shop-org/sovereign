@@ -137,7 +137,16 @@ const flushMicrotasks = () => new Promise((r) => process.nextTick(r));
 function bootGame({ seed = FULL_GAME_SEED, designer = false } = {}) {
   const shim = makeTimerShim();
   const jsdomErrors = [];
-  const url = 'http://localhost/sovereign-solo.html' + (designer ? '?designer=1' : '');
+  // v1.5 juice+sound: the game ships a presentation layer (number tweens, ZzFX
+  // audio, dice/card/opponent choreography) gated behind a SPEED setting. INSTANT
+  // mode bypasses ALL of it — no rAF, no setTimeout sequencing, no dwell — so the
+  // final state is painted synchronously by render(). The harness MUST boot in
+  // INSTANT (via the ?speed=instant URL param the game reads at load) so the gates
+  // stay fast + deterministic and never wait on animation. (Same rationale as the
+  // replay path, which also forces INSTANT.) ?designer=1 is additive.
+  const params = ['speed=instant'];
+  if (designer) params.push('designer=1');
+  const url = 'http://localhost/sovereign-solo.html?' + params.join('&');
   const dom = new JSDOM(HTML, {
     runScripts: 'dangerously',
     pretendToBeVisual: true,

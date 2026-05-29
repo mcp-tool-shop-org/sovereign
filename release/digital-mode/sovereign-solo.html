@@ -2302,6 +2302,164 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
   .action-banner .ab-actions button.primary { font-size:15px; padding:11px 18px; }
   .dice-roll .die { width:54px; height:54px; font-size:36px; }
 }
+
+/* =====================================================================
+   v1.5 — JUICE + SOUND presentation layer (CSS half). Everything here is
+   non-functional sensory feedback toggled by the JS juice module near the
+   end of <script>. It NEVER touches reduce()/state/RNG/decisionLog/hash.
+   Restraint (J4): most events get subtle feedback; ceremony is rationed.
+   Performance (J4 §9): animate transform/opacity only; compositor-friendly.
+   Photosensitivity (J4 §4): no saturated-red strobe — Crisis/Default use a
+   single weight/fade, not flashing.
+   ===================================================================== */
+
+/* --- A. Number pop (Balatro 1.15–1.25× / .15s / OutBack + punch-rotation) --- */
+@keyframes juice-pop {
+  0%   { transform: scale(1) rotate(0deg); }
+  40%  { transform: scale(1.22) rotate(var(--juice-rot, 2.5deg)); }
+  70%  { transform: scale(0.98) rotate(calc(var(--juice-rot, 2.5deg) * -0.4)); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+.juice-pop { animation: juice-pop .26s cubic-bezier(.34,1.56,.64,1) both; }
+/* Loss pop is gentler + downward weighted (gravitas, not punishment — J4 §3). */
+@keyframes juice-pop-loss {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.juice-pop-loss { animation: juice-pop-loss .32s cubic-bezier(.4,0,.2,1) both; }
+
+/* --- A. Gain / loss color wash (restrained; sign+text carry meaning, not hue
+   alone — J4 §6). Gain = green tint rising; loss = amber/oxblood tint, NEVER a
+   saturated-red strobe. Single transition, well under 3 flashes/s. --- */
+@keyframes juice-flash-gain {
+  0%   { background-color: rgba(46,122,107,0); }
+  30%  { background-color: rgba(46,122,107,.22); }
+  100% { background-color: rgba(46,122,107,0); }
+}
+@keyframes juice-flash-loss {
+  0%   { background-color: rgba(140,80,40,0); }
+  35%  { background-color: rgba(140,80,40,.20); }
+  100% { background-color: rgba(140,80,40,0); }
+}
+.juice-flash-gain { animation: juice-flash-gain .55s ease-out both; border-radius:4px; }
+.juice-flash-loss { animation: juice-flash-loss .7s ease-out both; border-radius:4px; }
+
+/* --- A. Floating +N / −N indicator (transform+opacity only). Gains rise &
+   overshoot; losses drift DOWN, slower, heavier (loss aversion λ≈2 — J4 §3).
+   The +/− sign is in the text content so color is never the sole channel. --- */
+.juice-float {
+  position: fixed; z-index: 2147483600; pointer-events: none;
+  font-family: var(--mono, monospace); font-weight: 700; font-size: 14px;
+  letter-spacing: .02em; white-space: nowrap; will-change: transform, opacity;
+  text-shadow: 0 1px 2px rgba(0,0,0,.35);
+}
+.juice-float.gain { color: #2E7A6B; }
+.juice-float.loss { color: #B06A28; }
+@keyframes juice-float-up {
+  0%   { transform: translateY(2px) scale(.92); opacity: 0; }
+  18%  { transform: translateY(-6px) scale(1.06); opacity: 1; }
+  100% { transform: translateY(-30px) scale(1); opacity: 0; }
+}
+@keyframes juice-float-down {
+  0%   { transform: translateY(-2px) scale(.94); opacity: 0; }
+  22%  { transform: translateY(5px) scale(1.02); opacity: 1; }
+  100% { transform: translateY(26px) scale(.98); opacity: 0; }
+}
+.juice-float.gain { animation: juice-float-up .8s cubic-bezier(.2,.7,.3,1) both; }
+.juice-float.loss { animation: juice-float-down 1.0s cubic-bezier(.3,0,.4,1) both; }
+
+/* --- C. Dice choreography. Tumble = faces visibly cycling; settle = ease-out
+   bounce; read = pip pop. The JS swaps classes; CSS supplies the settle bounce. */
+@keyframes juice-dice-settle {
+  0%   { transform: scale(1.18) translateY(-3px); }
+  55%  { transform: scale(0.94) translateY(2px); }
+  78%  { transform: scale(1.05) translateY(-1px); }
+  100% { transform: scale(1) translateY(0); }
+}
+.dice-overlay.juice-tumbling .die { animation: juice-dice-jitter .14s steps(2) infinite; }
+@keyframes juice-dice-jitter {
+  0% { transform: rotate(-5deg) scale(1.02); } 100% { transform: rotate(5deg) scale(1.06); }
+}
+.dice-overlay.juice-settling .die { animation: juice-dice-settle .25s cubic-bezier(.2,.9,.3,1.2) both; }
+.dice-overlay .sum.juice-sum-pop { animation: juice-pop .3s cubic-bezier(.34,1.56,.64,1) both; }
+
+/* --- C. Card choreography. Face-down dwell glow + rotateY flip. The card
+   drawer is re-rendered by render(); these classes ride the freshly built
+   .drawer-card so the reveal reads as deliberate, not a glitch. --- */
+@keyframes juice-card-dwell {
+  0%,100% { box-shadow: 0 0 0 0 rgba(140,107,42,0); }
+  50%     { box-shadow: 0 0 16px 2px rgba(140,107,42,.35); }
+}
+.drawer-card.juice-card-dwell { animation: juice-card-dwell .8s ease-in-out 1; }
+@keyframes juice-card-flip {
+  0%   { transform: perspective(700px) rotateY(-92deg); opacity:.2; }
+  55%  { transform: perspective(700px) rotateY(8deg); opacity:1; }
+  100% { transform: perspective(700px) rotateY(0deg); opacity:1; }
+}
+.drawer-card.juice-card-flip { animation: juice-card-flip .42s cubic-bezier(.4,0,.2,1) both; transform-style: preserve-3d; }
+.drawer-card .effect.juice-reveal,
+.drawer-card .nm.juice-reveal { animation: juice-pop .3s cubic-bezier(.34,1.56,.64,1) both; }
+
+/* --- C. Opponent telegraph beat. A quiet wind-up highlight on the active
+   opponent card before the move resolves (Into-the-Breach dance, J3 §3). --- */
+@keyframes juice-telegraph {
+  0%   { box-shadow: inset 0 0 0 0 rgba(140,107,42,0); }
+  40%  { box-shadow: inset 0 0 0 2px rgba(140,107,42,.6); }
+  100% { box-shadow: inset 0 0 0 0 rgba(140,107,42,0); }
+}
+.opp-card.juice-telegraph { animation: juice-telegraph 1s ease-out 1; }
+/* Loss recoil on a seized/contested asset (Tier 3 — weight, not strobe). */
+@keyframes juice-recoil {
+  0% { transform: translateX(0); } 25% { transform: translateX(-3px); }
+  60% { transform: translateX(2px); } 100% { transform: translateX(0); }
+}
+.juice-recoil { animation: juice-recoil .4s ease-out 1; }
+
+/* --- D. Ceremony tint (Tier 3 only: Credit Crisis / Default / Rebellion /
+   victory). One controlled, slow tint pulse over a vignette element — NOT a
+   flash, NOT saturated red strobing. Obeys WCAG 2.3.1 by frequency (1 pulse). */
+#juiceCeremony {
+  position: fixed; inset: 0; z-index: 2147483500; pointer-events: none;
+  opacity: 0; background: radial-gradient(ellipse at center, transparent 45%, var(--juice-cer-color, rgba(110,31,30,.0)) 100%);
+}
+@keyframes juice-ceremony-pulse {
+  0%   { opacity: 0; }
+  35%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+#juiceCeremony.juice-cer-active { animation: juice-ceremony-pulse 1.1s ease-in-out 1; }
+
+/* --- D. Settings: SPEED + sound, folded into the Game ▾ menu. --- */
+.game-menu .juice-settings { border-top:1px solid var(--rule-hair, rgba(26,22,18,.14)); margin-top:4px; padding-top:6px; }
+.game-menu .juice-settings .js-label {
+  display:block; font-family:var(--ui); font-size:8px; letter-spacing:.18em;
+  text-transform:uppercase; opacity:.6; margin:4px 2px 3px;
+}
+.game-menu .juice-speed { display:flex; gap:3px; }
+.game-menu .juice-speed button {
+  flex:1; font-size:9px; padding:4px 6px; letter-spacing:.06em;
+}
+.game-menu .juice-speed button[aria-pressed="true"] {
+  background:var(--ink); color:var(--parchment);
+}
+.game-menu #btnMute { width:100%; margin-top:4px; font-size:9px; }
+.game-menu #btnMute[aria-pressed="true"] { opacity:.6; }
+
+/* --- D. Reduced-motion: suppress ALL juice animation (state already final via
+   render()); preserve information through the static end-state + toasts +
+   aria-live. Extends the existing prefers-reduced-motion block above. --- */
+@media (prefers-reduced-motion: reduce) {
+  .juice-pop, .juice-pop-loss, .juice-flash-gain, .juice-flash-loss,
+  .juice-float, .dice-overlay.juice-tumbling .die, .dice-overlay.juice-settling .die,
+  .dice-overlay .sum.juice-sum-pop, .drawer-card.juice-card-dwell,
+  .drawer-card.juice-card-flip, .drawer-card .effect.juice-reveal,
+  .drawer-card .nm.juice-reveal, .opp-card.juice-telegraph, .juice-recoil,
+  #juiceCeremony.juice-cer-active {
+    animation: none !important;
+  }
+  .juice-float { display: none !important; }
+}
 </style>
 <template id="__bundler_thumbnail" data-bg-color="#2A2622">
   <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
@@ -2444,6 +2602,9 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
 </div>
 
 <div class="event-toast-stack" id="toastStack"></div>
+<!-- v1.5 juice: Tier-3 ceremony vignette (display-only; controlled tint pulse,
+     never a flash/strobe — see #juiceCeremony in CSS). Floats fill in here too. -->
+<div id="juiceCeremony" aria-hidden="true"></div>
 
 <!-- v1.4 fix (A3-004): screen-reader announcement channel for the turn loop.
      The action rail + toasts are plain DOM with no live semantics, so AT users
@@ -4492,11 +4653,33 @@ function dispatch(action) {
   else if (STATE.pendingCreditCrisis) queueMicrotask(() => dispatch({ type:'TRIGGER_CREDIT_CRISIS' }));
   else if (STATE.phase === 'act-vote' && STATE.acts.current) {
     const nextOpp = findNextUnvotedOpponent();
-    if (nextOpp >= 0) setTimeout(() => castOpponentActVote(nextOpp), 1500);
+    /* v1.5 juice (C): the opponent dwell is SPEED-scaled — the flat 1500ms wall
+       becomes a deliberate ~2.4s beat at Normal (telegraph fires on render, the
+       posture/flavour toasts narrate the move + meaning), collapses to ~60ms
+       under INSTANT/reduced-motion, and ALWAYS stays ≤3000ms so the harness's
+       3000ms clock-advance still fires it. Presentation-only: ONLY the delay
+       changes — the scheduled callback and all state are untouched. */
+    if (nextOpp >= 0) setTimeout(() => castOpponentActVote(nextOpp), __juiceOppDelay(1500));
   }
   else if (STATE.players[STATE.activePlayerIndex].profile !== 'human' && (STATE.phase === 'awaiting-roll' || STATE.phase === 'act-vote')) {
-    setTimeout(() => runOpponent(), 1500);
+    setTimeout(() => runOpponent(), __juiceOppDelay(1500));
   }
+}
+/* Opponent-dwell duration, SPEED-aware. Defined as a hoisted function so it is
+   reachable from dispatch() above even though the juice module (which sets the
+   live SPEED) is appended later; before juice loads it returns the original
+   1500ms. Capped at 2900ms so the playability harness (advance 3000ms/step)
+   always fires the opponent timer. */
+function __juiceOppDelay(base) {
+  try {
+    if (window.__juice) {
+      if (window.__juice.motionOff()) return 60;            // INSTANT / reduced-motion
+      const sp = window.__juice.speed;
+      if (sp === 'cinematic') return 2900;
+      return 2400;                                          // normal
+    }
+  } catch (e) {}
+  return base;
 }
 
 function findNextUnvotedOpponent() {
@@ -7434,7 +7617,16 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && !document.getElementById('lapRecapOverlay')?.classList.contains('hidden')) hideLapRecap();
 });
 document.addEventListener('keydown', (e) => {
-  if (e.key === ' ' && STATE && STATE.phase === 'awaiting-roll' && STATE.activePlayerIndex === 0) { e.preventDefault(); dispatch({ type:'ROLL_DICE' }); }
+  if (e.key === ' ' && STATE && STATE.phase === 'awaiting-roll' && STATE.activePlayerIndex === 0) {
+    e.preventDefault();
+    /* v1.5 juice: route Space through the choreographed roll so the keyboard
+       path gets the same dice tumble/settle the button does. Under INSTANT /
+       reduced-motion rollWithAnimation dispatches immediately (no waits). The
+       juice skip handler (capture-phase keydown) has already fast-forwarded any
+       in-flight chain before this fires, so there is no double-dispatch. */
+    if (typeof rollWithAnimation === 'function') rollWithAnimation();
+    else dispatch({ type:'ROLL_DICE' });
+  }
 });
 
 /* =====================================================================
@@ -9138,6 +9330,776 @@ reduce = function(s, action) {
   try { return __TM_origReduce(s, action); }
   finally { __TM_activeHint = saved; }
 };
+
+/* =====================================================================
+   v1.5 — JUICE + SOUND presentation layer (JS half).
+   ---------------------------------------------------------------------
+   LOAD-BEARING CONTRACT (do not break — the determinism test + GATE 5
+   replay are the tripwires):
+     • Presentation-ONLY. Nothing here calls reduce(), mutates STATE, the
+       RNG, DECISION_LOG, or anything snapshotHash() folds in. Every effect
+       reads ALREADY-FINAL state that render() just wrote, and animates the
+       transition. The reducer resolves immediately, exactly as before.
+     • SPEED has an INSTANT mode. INSTANT bypasses ALL tweens/choreography:
+       no rAF animation, no dwell, no setTimeout sequencing — render() has
+       already painted the final frame, so we simply do nothing extra.
+     • Replay / loadFromPayload FORCE INSTANT (a replay never re-plays tweens).
+       The playability harness boots with ?speed=instant so all gates stay
+       fast + deterministic.
+     • Non-blocking: choreography never blocks input; a click/Space/tap skips
+       the current chain to its final state.
+     • Self-contained + offline: ZzFX is INLINED (vendored micro core, MIT).
+       No external request, no npm dep, no build step.
+
+   This module is intentionally appended LAST so it wraps the already-wrapped
+   render()/startNewGame()/rollWithAnimation() (same pattern as the toast and
+   landing-band wrappers earlier) and is live for the initial render().
+   ===================================================================== */
+(function JUICE() {
+  'use strict';
+
+  // ------------------------------------------------------------------
+  // 0. SPEED / INSTANT core (persisted; ?speed= URL param wins for boot)
+  // ------------------------------------------------------------------
+  // Cinematic ×1.4 / Normal ×1.0 / Fast = INSTANT (×0, no choreography).
+  const SPEED_KEY = 'sovereign.speed';
+  const SPEEDS = { cinematic: 1.4, normal: 1.0, instant: 0 };
+  let SPEED = 'normal';
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const urlSpeed = params.get('speed');
+    if (urlSpeed && SPEEDS[urlSpeed] != null) {
+      SPEED = urlSpeed; // URL param is authoritative for this load (harness uses it)
+    } else {
+      const stored = localStorage.getItem(SPEED_KEY);
+      if (stored && SPEEDS[stored] != null) SPEED = stored;
+    }
+  } catch (e) {}
+  function isInstant() { return SPEED === 'instant'; }
+  function speedMult() { return SPEEDS[SPEED] != null ? SPEEDS[SPEED] : 1; }
+  // Scale a Normal-speed duration by the current speed multiplier.
+  function dur(ms) { return Math.round(ms * speedMult()); }
+
+  // prefers-reduced-motion: treated like INSTANT for all motion (state still
+  // final; toasts + aria-live preserve the information — J4 §5).
+  let REDUCE_MOTION = false;
+  try {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    REDUCE_MOTION = !!mq.matches;
+    if (mq.addEventListener) mq.addEventListener('change', e => { REDUCE_MOTION = e.matches; });
+  } catch (e) {}
+  // True when NO motion should be scheduled at all (cheaper than run-then-hide).
+  function motionOff() { return isInstant() || REDUCE_MOTION; }
+
+  // ------------------------------------------------------------------
+  // 1. ZzFX — vendored micro core (INLINE, no external request)
+  // ------------------------------------------------------------------
+  // ZzFX - Zuper Zmall Zound Zynth - MIT License - Copyright 2019 Frank Force
+  // https://github.com/KilledByAPixel/ZzFX  (ZzFXMicro.min.js, ~1.2KB)
+  const zzfxV = 0.3; // master volume (low default per J4 §7); user-mutable below
+  let zzfxX = null;  // shared AudioContext (created lazily on unlock)
+  function zzfx(...t) { return zzfxP(zzfxG(...t)); }
+  function zzfxP(...t) {
+    if (!zzfxX) return;
+    const e = zzfxX.createBufferSource(), f = zzfxX.createBuffer(t.length, t[0].length, zzfxR);
+    t.map((d, i) => f.getChannelData(i).set(d));
+    e.buffer = f; e.connect(zzfxX.destination); e.start(); return e;
+  }
+  const zzfxR = 44100;
+  function zzfxG(p = 1, k = .05, b = 220, e = 0, r = 0, t = .1, q = 0, D = 1, u = 0, y = 0, v = 0, z = 0, l = 0, E = 0, A = 0, F = 0, c = 0, w = 1, m = 0, B = 0, M = 0) {
+    let R = 2 * Math.PI, G = u *= 500 * R / zzfxR / zzfxR, C = b *= (1 - k + 2 * k * Math.random(k = [])) * R / zzfxR,
+      g = 0, H = 0, a = 0, n = 1, I = 0, J = 0, f = 0, x, h;
+    e = zzfxR * e + 9; m *= zzfxR; r *= zzfxR; t *= zzfxR; c *= zzfxR; y *= 500 * R / zzfxR ** 3;
+    A *= R / zzfxR; v *= R / zzfxR; z *= zzfxR; l = zzfxR * l | 0;
+    for (h = e + m + r + t + c | 0; a < h; k[a++] = f) {
+      ++J % (100 * F | 0) || (f = q ? 1 < q ? 2 < q ? 3 < q ? Math.sin((g % R) ** 3) : Math.max(Math.min(Math.tan(g), 1), -1) : 1 - (2 * g / R % 2 + 2) % 2 : 1 - 4 * Math.abs(Math.round(g / R) - g / R) : Math.sin(g),
+        f = (l ? 1 - B + B * Math.sin(2 * Math.PI * a / l) : 1) * (0 < f ? 1 : -1) * Math.abs(f) ** D *
+          p * zzfxV * (a < e ? a / e : a < e + m ? 1 - (a - e) / m * (1 - n) : a < e + m + r ? n : a < h - c ? (h - a - c) / t * n : 0),
+        f = c ? f / 2 + (c > a ? 0 : (a < h - c ? 1 : (h - a) / c) * k[a - c | 0] / 2) : f);
+      x = (b += g += G) * Math.cos(A * H++); a += 0; g -= G * E; n += M;
+      A && ++a > z && (b += v, C += v, a = 0);
+      !l || ++I % l || (b = C, g = C, n = 1);
+    }
+    return k;
+  }
+
+  // Master mute (persisted). Audio is bound to the existing narration level
+  // (off=silent / minimal=key events / on=all) PLUS this independent mute.
+  const MUTE_KEY = 'sovereign.sound';
+  let MUTED = false;
+  try { MUTED = localStorage.getItem(MUTE_KEY) === '1'; } catch (e) {}
+
+  // Autoplay unlock: browsers create the AudioContext suspended until a user
+  // gesture. Resume it on the first pointer/key (the Start/Begin click is the
+  // natural one). One-time. (MDN best practices / Chrome autoplay policy.)
+  function unlockAudio() {
+    try {
+      if (!zzfxX) zzfxX = new (window.AudioContext || window.webkitAudioContext)();
+      if (zzfxX && zzfxX.state === 'suspended') zzfxX.resume();
+    } catch (e) { /* no Web Audio (e.g. jsdom): playCue becomes a no-op */ }
+  }
+  ['pointerdown', 'keydown', 'touchstart'].forEach(ev =>
+    window.addEventListener(ev, unlockAudio, { once: true, passive: true }));
+
+  // ------------------------------------------------------------------
+  // 2. CUE TABLE (J2) — ZzFX arrays, randomness param forced to 0 for
+  //    determinism-of-feel. Levels: min = also plays in Minimal narration;
+  //    on = only in full On. Tier marks ration ceremony (J4 §2).
+  //    sustained:true = drone/sting → suppressed under reduced-motion (J4).
+  // ------------------------------------------------------------------
+  const CUES = {
+    dice:      { a: [1.1,0,90,,.02,.12,4,1.5,,,,,,8],          level: 'minimal', tier: 1 },
+    buy:       { a: [1.2,0,940,.01,.03,.12,1,1.8,,,200,.05],   level: 'on',      tier: 1 },
+    rentIn:    { a: [.9,0,680,.01,.05,.16,,,40,,,,,,,.05],      level: 'on',      tier: 1 },
+    rentOut:   { a: [.9,0,420,,.04,.18,,1.2,-90],              level: 'on',      tier: 1 },
+    upgrade:   { a: [1,0,520,.02,.08,.22,3,,,9,,,.1],          level: 'on',      tier: 2 },
+    actPass:   { a: [1.4,0,150,,.03,.2,4,2,,,,,,6,,.1],        level: 'minimal', tier: 2 },
+    actFail:   { a: [1.3,0,130,,.04,.25,2,,,,,,,4],            level: 'minimal', tier: 2 },
+    ipGain:    { a: [.8,0,700,.01,.05,.15,,,40,,,,,,,.05],     level: 'on',      tier: 1 },
+    levy:      { a: [1,0,210,,.05,.22,4,.8,,,,,,3],            level: 'minimal', tier: 2 },
+    doubt:     { a: [.9,0,180,,.03,.16,3],                     level: 'minimal', tier: 1 },
+    crisis:    { a: [.8,0,110,.25,.4,.5,2,,,,,4,.3],           level: 'minimal', tier: 3, sustained: true },
+    panic:     { a: [1,0,96,.05,.3,.45,2,,-3,,,6,.4],          level: 'minimal', tier: 3, sustained: true },
+    default_:  { a: [1.5,0,72,,.05,.9,,1.5,,,,,,5,,.2],        level: 'minimal', tier: 3 },
+  };
+
+  // Play a cue by name. Respects: master mute, narration level, reduced-motion
+  // (drops sustained drone/sting only), and a missing AudioContext (jsdom).
+  function playCue(name) {
+    const cue = CUES[name];
+    if (!cue) return;
+    if (MUTED) return;
+    if (typeof NARRATION_LEVEL !== 'undefined') {
+      if (NARRATION_LEVEL === 'off') return;
+      if (NARRATION_LEVEL === 'minimal' && cue.level !== 'minimal') return;
+    }
+    if (REDUCE_MOTION && cue.sustained) return; // keep short confirmations, drop drones
+    if (!zzfxX) return; // no audio context yet (no gesture / headless) → silent
+    try { zzfx(...cue.a); } catch (e) {}
+  }
+  // Victory: a short rising arpeggio (chain of bright two-note blips). Always
+  // plays unless muted (it is the single biggest moment), but still gated by mute.
+  function playVictory() {
+    if (MUTED || !zzfxX) return;
+    if (typeof NARRATION_LEVEL !== 'undefined' && NARRATION_LEVEL === 'off') return;
+    const notes = [520, 660, 784, 1046];
+    // NB: ZzFX arrays use elided slots (valid in an ARRAY literal, NOT in a call
+    // arg list). Build the array then spread, exactly like playCue.
+    notes.forEach((hz, i) => setTimeout(() => {
+      try { zzfx(...[1, 0, hz, .02, .09, .22, 3, , , 9, , , .1]); } catch (e) {}
+    }, i * 110));
+  }
+
+  // ------------------------------------------------------------------
+  // 3. THE SHARED rAF TWEENER (A — "tween every value, never snap")
+  // ------------------------------------------------------------------
+  // One rAF loop drives ALL active number tweens. Each tween rewrites an
+  // element's textContent from a remembered "from" value to the final value
+  // render() already wrote. Compositor-friendly (text only); under motionOff
+  // we never schedule — the final value is already on screen.
+  const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+  const easeOutExpo  = t => t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  const easeInCubic  = t => t * t * t;
+
+  const activeTweens = new Map(); // el -> {from,to,start,durMs,ease,fmt}
+  let rafId = 0;
+  function rafTick(now) {
+    rafId = 0;
+    let live = false;
+    activeTweens.forEach((tw, el) => {
+      const p = tw.durMs <= 0 ? 1 : Math.min(1, (now - tw.start) / tw.durMs);
+      const v = tw.from + (tw.to - tw.from) * tw.ease(p);
+      el.textContent = tw.fmt(v);
+      if (p >= 1) activeTweens.delete(el); else live = true;
+    });
+    if (live) rafId = requestAnimationFrame(rafTick);
+  }
+  function scheduleRaf() {
+    if (!rafId) rafId = requestAnimationFrame(rafTick);
+  }
+  // Animate `el` to `finalText`. The element ALREADY shows finalText (render
+  // wrote it); we read the prior displayed number, then count from it. If
+  // motion is off or there's no change, we leave the final text untouched.
+  function tweenNumber(el, finalText, opts) {
+    if (!el) return;
+    const o = opts || {};
+    const to = parseNum(finalText);
+    if (to == null) { return; } // not a number we can tween; leave as-is
+    // The "from" is the value currently displayed (captured pre-render snapshot).
+    const from = o.from != null ? o.from : parseNum(el.dataset.juicePrev != null ? el.dataset.juicePrev : el.textContent);
+    el.dataset.juicePrev = String(to);
+    if (motionOff() || from == null || from === to) return; // final text stays
+    const delta = to - from;
+    const big = Math.abs(delta) >= (o.bigAt != null ? o.bigAt : 200);
+    const gain = delta > 0;
+    const baseMs = big ? 750 : 360;
+    const durMs = dur(o.durMs != null ? o.durMs : (gain ? baseMs : baseMs * 1.3)); // losses linger (gravitas)
+    const ease = o.ease || (gain ? easeOutExpo : easeInCubic);
+    const fmt = o.fmt || ((v) => formatLike(finalText, v));
+    activeTweens.set(el, { from, to, start: performance.now(), durMs, ease, fmt });
+    scheduleRaf();
+  }
+  // Is `el` actually laid out (non-zero box)? Used to anchor floats to the
+  // visible HUD element (positions strip when sidebar collapsed, treasury panel
+  // when open). In jsdom layout is 0×0, so this returns false → floats are
+  // skipped headlessly anyway (and motionOff short-circuits before this).
+  function isVisible(el) {
+    if (!el) return false;
+    try { const r = el.getBoundingClientRect(); return r.width > 0 || r.height > 0; }
+    catch (e) { return false; }
+  }
+  // Parse a number out of "$1,500" / "Influence est. 12" / "7" / "12 IP".
+  function parseNum(s) {
+    if (s == null) return null;
+    const m = String(s).replace(/,/g, '').match(/-?\d+(\.\d+)?/);
+    return m ? parseFloat(m[0]) : null;
+  }
+  // Re-emit `template` (the final string) with its number replaced by `v`,
+  // preserving prefix/suffix and thousands separators (so "$1,500" stays "$1,500").
+  function formatLike(template, v) {
+    const t = String(template);
+    const m = t.replace(/,/g, '').match(/-?\d+(\.\d+)?/);
+    if (!m) return t;
+    const rounded = Math.round(v);
+    const hadComma = /\d,\d/.test(t);
+    const numStr = hadComma ? rounded.toLocaleString('en-US') : String(rounded);
+    const rawIdx = t.replace(/,/g, '').indexOf(m[0]);
+    const prefix = t.replace(/,/g, '').slice(0, rawIdx);
+    const suffix = t.replace(/,/g, '').slice(rawIdx + m[0].length);
+    return prefix + numStr + suffix;
+  }
+
+  // ------------------------------------------------------------------
+  // 4. POP / FLASH / FLOAT primitives (A). All transform/opacity; replayable
+  //    by class-retrigger (force reflow). All become no-ops under motionOff.
+  // ------------------------------------------------------------------
+  function retrigger(el, cls) {
+    if (!el || motionOff()) return;
+    el.classList.remove(cls);
+    void el.offsetWidth; // force reflow so the animation replays
+    el.classList.add(cls);
+    el.addEventListener('animationend', () => el.classList.remove(cls), { once: true });
+  }
+  function popGain(el)  { if (el) { el.style.setProperty('--juice-rot', (Math.random() * 4 - 2).toFixed(1) + 'deg'); retrigger(el, 'juice-pop'); } }
+  function popLoss(el)  { retrigger(el, 'juice-pop-loss'); }
+  function flashGain(el){ retrigger(el, 'juice-flash-gain'); }
+  function flashLoss(el){ retrigger(el, 'juice-flash-loss'); }
+  function recoil(el)   { retrigger(el, 'juice-recoil'); }
+
+  // Floating +N / −N near an element (the sign carries meaning; never color-only).
+  function floatDelta(el, delta) {
+    if (!el || motionOff() || !delta) return;
+    let r;
+    try { r = el.getBoundingClientRect(); } catch (e) { return; }
+    if (!r || (r.width === 0 && r.height === 0)) return;
+    const gain = delta > 0;
+    const f = document.createElement('div');
+    f.className = 'juice-float ' + (gain ? 'gain' : 'loss');
+    f.textContent = (gain ? '+' : '−') + Math.abs(Math.round(delta)).toLocaleString('en-US');
+    f.style.left = (r.left + r.width / 2) + 'px';
+    f.style.top = (r.top - 4) + 'px';
+    f.style.transform = 'translateX(-50%)';
+    document.body.appendChild(f);
+    f.addEventListener('animationend', () => f.remove(), { once: true });
+    // Safety net if animationend never fires (headless): GC after 1.5s.
+    setTimeout(() => { if (f.parentNode) f.remove(); }, 1500);
+  }
+
+  // ------------------------------------------------------------------
+  // 5. CEREMONY tint (D — Tier 3 only; single controlled pulse, never strobe)
+  // ------------------------------------------------------------------
+  function ceremony(colorRGBA) {
+    const v = document.getElementById('juiceCeremony');
+    if (!v || motionOff()) return;
+    v.style.setProperty('--juice-cer-color', colorRGBA);
+    v.classList.remove('juice-cer-active');
+    void v.offsetWidth;
+    v.classList.add('juice-cer-active');
+    v.addEventListener('animationend', () => v.classList.remove('juice-cer-active'), { once: true });
+  }
+
+  // ------------------------------------------------------------------
+  // 6. NUMBER-DIFF on render (A). render() rebuilds the DOM from final state;
+  //    we snapshot the human-visible numbers BEFORE render writes, then after
+  //    render compare + tween/pop/float the deltas with gain/loss asymmetry.
+  //    Multi-source deltas in one render are staggered 80–120ms (J1).
+  // ------------------------------------------------------------------
+  // Elements we animate. Each: id + how to read the live value off STATE so we
+  // know the authoritative "from" even across full innerHTML rebuilds.
+  let prevNums = null; // { cash, ip, credit, resistance, capacity }
+  function readNums() {
+    try {
+      if (typeof STATE === 'undefined' || !STATE || !STATE.players || !STATE.players[0]) return null;
+      const p = STATE.players[0];
+      return {
+        cash: p.cash,
+        ip: (typeof scorePlayer === 'function') ? scorePlayer(STATE, 0).total : null,
+        credit: STATE.tracks && STATE.tracks.credit ? STATE.tracks.credit.value : null,
+        resistance: STATE.tracks && STATE.tracks.resistance ? STATE.tracks.resistance.value : null,
+        capacity: STATE.tracks && STATE.tracks.capacity ? STATE.tracks.capacity.value : null,
+      };
+    } catch (e) { return null; }
+  }
+  function snapshotBeforeRender() { prevNums = readNums(); }
+
+  function animateAfterRender() {
+    if (motionOff()) { prevNums = readNums(); return; }
+    const now = readNums();
+    if (!now || !prevNums) { prevNums = now; return; }
+
+    let stagger = 0;
+    const STEP = 100; // 80–120ms band (J1)
+
+    // --- Cash (Treasury panel + positions strip "you" row) ---
+    if (now.cash !== prevNums.cash) {
+      const delta = now.cash - prevNums.cash;
+      // The sidebar (Treasury panel) DEFAULTS TO COLLAPSED, so #treasuryCash is
+      // usually hidden; the always-visible HUD cash is the positions-strip "you"
+      // row (.pos-row.p0 .pos-cash). Animate BOTH so it lands whether the sidebar
+      // is open or closed; anchor the float to whichever is visible.
+      const cashEl = document.getElementById('treasuryCash');
+      const stripCash = document.querySelector('#controlsBar .pos-row.p0 .pos-cash');
+      const stripFrom = prevNums.cash;
+      if (cashEl) cashEl.dataset.juicePrev = String(prevNums.cash);
+      setTimeout(() => {
+        if (cashEl) {
+          tweenNumber(cashEl, '$' + now.cash.toLocaleString('en-US'), { from: stripFrom });
+          if (delta > 0) { popGain(cashEl); flashGain(cashEl.parentElement || cashEl); }
+          else { popLoss(cashEl); flashLoss(cashEl.parentElement || cashEl); }
+        }
+        if (stripCash) {
+          // NB: .pos-cash text is "1,500 · <span.pos-ip>N IP</span>" — it CONTAINS
+          // the nested IP span, so we must NOT rewrite its textContent (that would
+          // delete the span). render() already wrote the final value; we only
+          // pop+flash the strip and let the float carry the delta legibly.
+          if (delta > 0) { popGain(stripCash); flashGain(stripCash); }
+          else { popLoss(stripCash); flashLoss(stripCash); }
+        }
+        // Prefer the visible element for the float (positions strip when the
+        // sidebar is collapsed — the default — else the treasury panel).
+        floatDelta(isVisible(stripCash) ? stripCash : (isVisible(cashEl) ? cashEl : stripCash), delta);
+        playCue(delta > 0 ? 'rentIn' : 'rentOut');
+      }, dur(stagger));
+      stagger += STEP;
+    }
+
+    // --- Influence (Treasury "Influence est. N" + positions-strip "you" IP) ---
+    if (now.ip != null && prevNums.ip != null && now.ip !== prevNums.ip) {
+      const delta = now.ip - prevNums.ip;
+      const infEl = document.getElementById('treasuryInf');
+      const stripIp = document.querySelector('#controlsBar .pos-row.p0 .pos-ip');
+      const ipFrom = prevNums.ip;
+      setTimeout(() => {
+        if (infEl) {
+          tweenNumber(infEl, 'Influence est. ' + now.ip, { from: ipFrom, bigAt: 6 });
+          if (delta > 0) popGain(infEl); else popLoss(infEl);
+        }
+        if (stripIp) {
+          // .pos-ip text is "N IP".
+          tweenNumber(stripIp, now.ip + ' IP', { from: ipFrom, bigAt: 6 });
+          if (delta > 0) popGain(stripIp); else popLoss(stripIp);
+        }
+        floatDelta(isVisible(stripIp) ? stripIp : (isVisible(infEl) ? infEl : stripIp), delta);
+        if (delta > 0) playCue('ipGain');
+      }, dur(stagger));
+      stagger += STEP;
+    }
+
+    // --- Tracks (Credit / Resistance / Capacity values) ---
+    const trackEls = document.querySelectorAll('#tracksBody .t-row .val');
+    const trackOrder = ['credit', 'resistance', 'capacity'];
+    trackEls.forEach((el, i) => {
+      const key = trackOrder[i];
+      if (!key) return;
+      if (now[key] != null && prevNums[key] != null && now[key] !== prevNums[key]) {
+        const delta = now[key] - prevNums[key];
+        const fromV = prevNums[key];
+        setTimeout(() => {
+          tweenNumber(el, String(now[key]), { from: fromV, bigAt: 3, durMs: 420 });
+          if (delta > 0) popGain(el); else popLoss(el);
+          floatDelta(el, delta);
+        }, dur(stagger));
+        stagger += STEP;
+      }
+    });
+
+    prevNums = now;
+  }
+
+  // ------------------------------------------------------------------
+  // 7. EVENT → cue + ceremony wiring. The ledger-scan toast system already
+  //    fires a visible toast + aria-live line for every event; we ride the
+  //    SAME new ledger rows so audio is never the sole channel (WCAG 1.4.1).
+  //    We watch the ledger tail the same way scanLedgerForToasts does, but
+  //    purely for sound + Tier-3 ceremony tint. No state writes.
+  // ------------------------------------------------------------------
+  let juiceLedgerLen = 0;
+  function scanLedgerForJuice() {
+    try {
+      if (typeof STATE === 'undefined' || !STATE || !STATE.ledger) return;
+      const ledger = STATE.ledger;
+      if (juiceLedgerLen > ledger.length) juiceLedgerLen = 0; // new game
+      for (let i = juiceLedgerLen; i < ledger.length; i++) {
+        const row = ledger[i];
+        if (!row) continue;
+        const isHuman = row.actor && STATE.players[0] && row.actor === STATE.players[0].name;
+        switch (row.event) {
+          case 'PASS':
+            if (/Act passes/i.test(row.detail || '')) playCue('actPass');
+            break;
+          case 'FAIL':
+            if (/Act fails/i.test(row.detail || '')) playCue('actFail');
+            break;
+          case 'BUY':
+            if (isHuman) playCue('buy');
+            break;
+          case 'OWN':
+            if (isHuman && /^Now owns/i.test(row.detail || '')) playCue('buy');
+            break;
+          case 'UPGRADE':
+            playCue('upgrade');
+            break;
+          case 'DEBT_SERVICE':
+          case 'PANIC':
+            playCue(row.event === 'PANIC' ? 'panic' : 'levy');
+            if (row.event === 'PANIC') ceremony('rgba(140,60,30,.5)');
+            break;
+          case 'PUBLIC_DOUBT':
+            playCue('doubt');
+            break;
+          case 'CREDIT_CRISIS':
+            playCue('crisis');
+            ceremony('rgba(140,60,30,.5)'); // restrained amber-oxblood, single pulse
+            break;
+          case 'DEFAULT':
+            playCue('default_');
+            ceremony('rgba(110,31,30,.6)');
+            break;
+          case 'REBELLION':
+            playCue('default_');
+            ceremony('rgba(110,31,30,.6)');
+            break;
+          case 'GAME OVER': {
+            // Victory fanfare only if the human won; else a single low toll.
+            try {
+              const fs = STATE.finalScores;
+              if (fs && fs.length) {
+                let winIdx = 0;
+                for (let j = 1; j < fs.length; j++) if (fs[j].total > fs[winIdx].total) winIdx = j;
+                if (winIdx === 0) { playVictory(); ceremony('rgba(140,107,42,.45)'); }
+                else playCue('default_');
+              }
+            } catch (e) {}
+            break;
+          }
+        }
+      }
+      juiceLedgerLen = ledger.length;
+    } catch (e) {}
+  }
+
+  // ------------------------------------------------------------------
+  // 8. CHOREOGRAPHY (C) — playBeats sequencer + dice / card / opponent.
+  //    Each beat: { ms, onStart }. SPEED scales ms; INSTANT/reduce-motion run
+  //    every onStart immediately in order with ms=0 (final state, no waits).
+  //    A skip flag fast-forwards the running chain to its end.
+  // ------------------------------------------------------------------
+  let activeChain = null; // { beats, idx, timer, onDone }
+  function playBeats(beats, onDone) {
+    cancelChain(); // only one chain at a time; a new one supersedes
+    if (motionOff()) {
+      // Run every onStart synchronously, no dwell — final state immediately.
+      beats.forEach(b => { try { b.onStart && b.onStart(); } catch (e) {} });
+      if (onDone) try { onDone(); } catch (e) {}
+      return;
+    }
+    activeChain = { beats, idx: 0, timer: null, onDone };
+    stepChain();
+  }
+  function stepChain() {
+    if (!activeChain) return;
+    const ch = activeChain;
+    if (ch.idx >= ch.beats.length) { const d = ch.onDone; activeChain = null; if (d) try { d(); } catch (e) {} return; }
+    const beat = ch.beats[ch.idx++];
+    try { beat.onStart && beat.onStart(); } catch (e) {}
+    ch.timer = setTimeout(stepChain, Math.max(0, dur(beat.ms || 0)));
+  }
+  // Skip = jump to final state: run all remaining onStarts now, fire onDone.
+  function skipChain() {
+    if (!activeChain) return;
+    const ch = activeChain; activeChain = null;
+    if (ch.timer) clearTimeout(ch.timer);
+    for (; ch.idx < ch.beats.length; ch.idx++) {
+      try { ch.beats[ch.idx].onStart && ch.beats[ch.idx].onStart(); } catch (e) {}
+    }
+    if (ch.onDone) try { ch.onDone(); } catch (e) {}
+  }
+  function cancelChain() {
+    if (!activeChain) return;
+    if (activeChain.timer) clearTimeout(activeChain.timer);
+    activeChain = null;
+  }
+
+  // --- Click / Space / tap skips the current choreography chain ---
+  // Non-blocking rule (J3 §FAST-MODE): the human can always fast-forward.
+  function maybeSkip(e) {
+    if (!activeChain) return;
+    if (e && e.type === 'keydown' && e.key !== ' ' && e.key !== 'Enter') return;
+    skipChain();
+  }
+  window.addEventListener('pointerdown', maybeSkip, true);
+  window.addEventListener('keydown', maybeSkip, true);
+
+  // ------------------------------------------------------------------
+  // 8a. DICE choreography (~950ms Normal): tumble → settle → read.
+  //     Replaces the old setInterval flicker in rollWithAnimation while
+  //     keeping its determinism contract (reduce() called once at the end).
+  // ------------------------------------------------------------------
+  const DICE_FACES = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+  function choreographDice() {
+    const overlay = document.getElementById('diceOverlay');
+    const d1 = document.getElementById('die1');
+    const d2 = document.getElementById('die2');
+    const sum = document.getElementById('diceSum');
+    // The reducer MUST run exactly once; capture the rolled faces from STATE
+    // after dispatch and present them. This is identical to the old contract.
+    const doRoll = () => { dispatch({ type: 'ROLL_DICE' }); };
+
+    if (motionOff() || !overlay || !d1 || !d2) { doRoll(); return; }
+
+    overlay.classList.remove('hidden', 'settled', 'juice-settling');
+    overlay.classList.add('juice-tumbling');
+    if (sum) sum.textContent = 'rolling…';
+    let face = 0;
+    const cycle = setInterval(() => {
+      d1.textContent = DICE_FACES[(face + 1) % 6];
+      d2.textContent = DICE_FACES[(face + 3) % 6];
+      face = (face + 1) % 6;
+    }, 70);
+
+    playBeats([
+      { ms: 150, onStart: () => { playCue('dice'); } },                  // cue / pick-up
+      { ms: 560, onStart: () => {} },                                     // tumble (cycle runs)
+      { ms: 240, onStart: () => {                                         // settle
+          clearInterval(cycle);
+          doRoll();
+          const last = (typeof STATE !== 'undefined' && STATE) ? STATE.lastRoll : null;
+          if (last && last.d1 && last.d2) {
+            d1.textContent = DICE_FACES[last.d1 - 1];
+            d2.textContent = DICE_FACES[last.d2 - 1];
+            if (sum) sum.textContent = (last.d1 + last.d2) + ' moves';
+          }
+          overlay.classList.remove('juice-tumbling');
+          overlay.classList.add('settled', 'juice-settling');
+          playCue('dice');
+        } },
+      { ms: 60, onStart: () => { if (sum) retrigger(sum, 'juice-sum-pop'); } }, // read pop
+    ], () => {
+      clearInterval(cycle);
+      // If skipped before the roll fired, guarantee the roll happened.
+      if (typeof STATE !== 'undefined' && STATE && STATE.phase === 'awaiting-roll' && STATE.activePlayerIndex === 0) doRoll();
+      setTimeout(() => overlay.classList.add('hidden'), motionOff() ? 0 : dur(900));
+    });
+  }
+
+  // ------------------------------------------------------------------
+  // 8b. CARD reveal choreography (~1500ms): face-down dwell → flip → reveal.
+  //     Rides the freshly-rendered .drawer-card after a card-resolve render.
+  // ------------------------------------------------------------------
+  function choreographCard() {
+    if (motionOff()) return;
+    const card = document.querySelector('#panelCardDrawer .drawer-card');
+    if (!card) return;
+    // Dwell (anticipation) → flip → reveal text. Effects already resolved in
+    // state by the time the player clicks "Resolve"; this is the reveal only.
+    retrigger(card, 'juice-card-dwell');
+    playBeats([
+      { ms: 400, onStart: () => {} },                       // face-down dwell (the gap)
+      { ms: 420, onStart: () => { retrigger(card, 'juice-card-flip'); playCue('dice'); } },
+      { ms: 200, onStart: () => {
+          card.querySelectorAll('.nm, .effect').forEach(e => retrigger(e, 'juice-reveal'));
+        } },
+    ]);
+  }
+
+  // ------------------------------------------------------------------
+  // 9. WRAP render() — snapshot numbers before, animate + sound + (card)
+  //    choreography after. Same wrapper pattern as the toast/landing hooks.
+  // ------------------------------------------------------------------
+  const __juiceOrigRender = render;
+  let __lastPhaseForCard = null;
+  render = function () {
+    snapshotBeforeRender();
+    __juiceOrigRender();
+    animateAfterRender();
+    scanLedgerForJuice();
+    // Card reveal: when we ENTER a human card-resolve, choreograph the drawer.
+    try {
+      const phase = (typeof STATE !== 'undefined' && STATE) ? STATE.phase : null;
+      if (phase === 'card-resolve' && __lastPhaseForCard !== 'card-resolve'
+          && STATE.pendingCard && STATE.pendingCard.playerIndex === 0) {
+        choreographCard();
+      }
+      __lastPhaseForCard = phase;
+    } catch (e) {}
+  };
+
+  // ------------------------------------------------------------------
+  // 10. REPLACE the human dice roll with the choreographed version.
+  //     rollWithAnimation() was previously wrapped by the landing-band hook;
+  //     we wrap THAT so we keep its LAST_LANDING_OUTCOME reset, then run our
+  //     choreography instead of the old setInterval. Under INSTANT it dispatches
+  //     immediately. We also rebind the Space-to-roll handler to route through here.
+  // ------------------------------------------------------------------
+  const __juiceOrigRoll = (typeof rollWithAnimation === 'function') ? rollWithAnimation : null;
+  rollWithAnimation = function () {
+    // Preserve the landing-band reset side effect that the prior wrapper added
+    // by invoking the original for its bookkeeping ONLY when instant (it would
+    // otherwise run the old setInterval). For animated mode we replicate the
+    // single side effect (clear the landing band) then choreograph.
+    if (motionOff()) {
+      if (__juiceOrigRoll) return __juiceOrigRoll.apply(this, arguments);
+      dispatch({ type: 'ROLL_DICE' }); return;
+    }
+    try { if (typeof LAST_LANDING_OUTCOME !== 'undefined') LAST_LANDING_OUTCOME = null; } catch (e) {}
+    choreographDice();
+  };
+
+  // ------------------------------------------------------------------
+  // 11. OPPONENT-TURN choreography (~3s) REPLACING the flat setTimeout(1500).
+  //     The engine schedules opponents via setTimeout(runOpponent, 1500) /
+  //     setTimeout(castOpponentActVote, 1500) inside dispatch(). We cannot edit
+  //     dispatch() here, but the human reads the opponent's move through the
+  //     ledger-driven toasts (telegraph posture line + move + transaction +
+  //     closing posture). To convert the flat wait into a telegraph→dwell beat
+  //     WITHOUT touching the reducer or the timer, we add a telegraph highlight
+  //     the instant an opponent becomes active, and let the existing posture/
+  //     flavour toasts supply the move + meaning beats. The 1500ms timer already
+  //     provides the dwell; under INSTANT the harness fast-forwards it.
+  //
+  //     Telegraph: when render() shows an opponent as active in awaiting-roll,
+  //     pulse a wind-up highlight on their card (Into-the-Breach §3). One per turn.
+  // ------------------------------------------------------------------
+  let __lastTelegraphedSeat = -1;
+  function maybeTelegraphOpponent() {
+    if (motionOff()) return;
+    try {
+      if (typeof STATE === 'undefined' || !STATE) return;
+      const ai = STATE.activePlayerIndex;
+      if (ai === 0) { __lastTelegraphedSeat = -1; return; }
+      if (ai === __lastTelegraphedSeat) return;
+      if (STATE.phase !== 'awaiting-roll' && STATE.phase !== 'act-vote') return;
+      __lastTelegraphedSeat = ai;
+      // The opponent cards render in seat order 1..N inside #opponentsBody.
+      const cards = document.querySelectorAll('#opponentsBody .opp-card');
+      const card = cards[ai - 1];
+      if (card) retrigger(card, 'juice-telegraph');
+    } catch (e) {}
+  }
+  // Hook telegraph into render (after the main wrap so DOM is fresh).
+  const __juiceTelegraphRender = render;
+  render = function () {
+    __juiceTelegraphRender();
+    maybeTelegraphOpponent();
+  };
+
+  // ------------------------------------------------------------------
+  // 12. FORCE INSTANT for replay / loadFromPayload. A replay must never
+  //     re-play tweens (J3/J4). We wrap loadFromPayload + the replay open so
+  //     SPEED is pinned to instant for the duration of the reconstruct, then
+  //     restored. snapshotHash/integrity are untouched (this is view-only).
+  // ------------------------------------------------------------------
+  function withInstant(fn) {
+    const saved = SPEED;
+    SPEED = 'instant';
+    try { return fn(); } finally { SPEED = saved; }
+  }
+  if (typeof loadFromPayload === 'function') {
+    const __origLoad = loadFromPayload;
+    loadFromPayload = function () {
+      const args = arguments;
+      return withInstant(() => __origLoad.apply(this, args));
+    };
+  }
+  if (typeof openReplay === 'function') {
+    const __origOpenReplay = openReplay;
+    openReplay = function () {
+      const args = arguments;
+      return withInstant(() => __origOpenReplay.apply(this, args));
+    };
+  }
+  if (typeof renderReplay === 'function') {
+    const __origRenderReplay = renderReplay;
+    renderReplay = function () {
+      const args = arguments;
+      return withInstant(() => __origRenderReplay.apply(this, args));
+    };
+  }
+
+  // ------------------------------------------------------------------
+  // 13. SETTINGS UI — SPEED + mute, folded into the existing Game ▾ menu.
+  //     (Designer chrome stays gated; this is player-facing.)
+  // ------------------------------------------------------------------
+  (function wireJuiceSettings() {
+    const menu = document.querySelector('.game-menu');
+    if (!menu) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'juice-settings';
+    wrap.innerHTML =
+      '<span class="js-label">Animation speed</span>' +
+      '<div class="juice-speed" id="juiceSpeed" role="group" aria-label="Animation speed">' +
+        '<button type="button" data-speed="cinematic" title="Slowest, most cinematic">Cinematic</button>' +
+        '<button type="button" data-speed="normal" title="Default pacing">Normal</button>' +
+        '<button type="button" data-speed="instant" title="No animation — instant resolution">Instant</button>' +
+      '</div>' +
+      '<button type="button" id="btnMute" title="Toggle all sound">Sound: on</button>';
+    menu.appendChild(wrap);
+
+    const speedGrp = wrap.querySelector('#juiceSpeed');
+    function syncSpeed() {
+      speedGrp.querySelectorAll('button').forEach(b =>
+        b.setAttribute('aria-pressed', b.dataset.speed === SPEED ? 'true' : 'false'));
+    }
+    syncSpeed();
+    speedGrp.addEventListener('click', e => {
+      const s = e.target && e.target.dataset && e.target.dataset.speed;
+      if (!s || SPEEDS[s] == null) return;
+      SPEED = s;
+      try { localStorage.setItem(SPEED_KEY, s); } catch (err) {}
+      syncSpeed();
+    });
+
+    const muteBtn = wrap.querySelector('#btnMute');
+    function syncMute() {
+      muteBtn.textContent = MUTED ? 'Sound: off' : 'Sound: on';
+      muteBtn.setAttribute('aria-pressed', MUTED ? 'true' : 'false');
+    }
+    syncMute();
+    muteBtn.addEventListener('click', () => {
+      MUTED = !MUTED;
+      try { localStorage.setItem(MUTE_KEY, MUTED ? '1' : '0'); } catch (err) {}
+      unlockAudio(); // so the next cue can play if they just unmuted pre-gesture
+      syncMute();
+    });
+  })();
+
+  // ------------------------------------------------------------------
+  // 14. Reset per-game juice bookkeeping on new game (wrap startNewGame).
+  // ------------------------------------------------------------------
+  const __juiceOrigStart = startNewGame;
+  startNewGame = function (seed) {
+    cancelChain();
+    juiceLedgerLen = 0;
+    prevNums = null;
+    __lastPhaseForCard = null;
+    __lastTelegraphedSeat = -1;
+    activeTweens.clear();
+    return __juiceOrigStart(seed);
+  };
+
+  // Expose a tiny surface for the harness / debugging (read-only intent).
+  window.__juice = { get speed() { return SPEED; }, isInstant, motionOff, playCue, playBeats };
+})();
 
 /* ---- Initial boot: start the game, then offer autosave resume ---- */
 startNewGame(2026);
