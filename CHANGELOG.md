@@ -5,6 +5,44 @@
 
 ---
 
+## v1.5.0 — Make it felt: rival presence · the Credit Spiral · juice + sound · Chronicler Tier B · onboarding — 2026-05-29
+
+**Beta.** A "make it felt" pass on top of the v1.4 strategic stack, plus two live-game hang fixes and a save/load/replay fidelity restoration. Five player-facing layers land here; no scoring math changed. The Credit Spiral wraps — does not replace — the v0.18 failure hierarchy and applies inside `reduce()` so determinism and replay hold. Stat figures below are measured against the **live shipping engine** via the new `test/measure-stats.mjs` over CANONICAL × 100 (seeds 2026–2125, triplet treasury / merchant / manufacturer); they supersede the prior v1.4.0 figures, which were copied forward and had drifted.
+
+### Fixed
+
+- **Card-triggered auctions hard-hung the live game.** A *Speculation Fever* card that triggered an auction — and an insufficient-cash buy — could lock the running game (this was live in shipped v1.4.0). Both paths fixed; verified against the live-DOM playability harness.
+- **Save / load / replay fidelity restored.** A pre-existing break leaked roster / fee / Chronicler state out-of-band, so a reload or replay could diverge from the original game. Save state now round-trips faithfully; `SAVE_VERSION` is now `v0.26-replay-fidelity-candidate`. A determinism test suite and a 5-gate live-DOM playability harness lock this in.
+
+### Added
+
+- **Rival presence.** Visible Influence standings plus per-opponent posture lines that frame each rival's move relative to *your* standing ("Hamilton — 3 Influence ahead — takes the Bank; the Treasury bloc tightens."). A distinct fourth voice from the Chronicler (history), profile flavor (the action), and reactions (the rival's emotion). Presentation-only — computed at render time, never written to the hashed ledger/state.
+- **The Credit Spiral** (the v1.5 keystone). Public Credit failure becomes felt, compounding, and recoverable: a debt-servicing CASH levy at low Credit, telegraphed acceleration toward Default, a forecast of where the slope leads, and the Reform action surfaced as a real lifeline. It carries the civic thesis directly — you feel *why* federal public credit mattered. Wraps the v0.18 Public Doubt → Crisis → Panic → Default hierarchy without changing any threshold; applied inside `reduce()` at `BEGIN_LAP`, so it is replay-safe. Re-validated live: Credit Crisis now fires ~29 / 100 games and is genuinely recoverable (~41 % of crisis games climb back to stable Credit ≥ 7; 0 reach Default under the scripted AI).
+- **Juice + sound.** Number tweening with gain/loss asymmetry, ZzFX procedural audio across 13 cues, action choreography, and a **SPEED** setting (Cinematic / Normal / Fast-instant). Fast-instant skips all animation for fast play and accessibility. Full keyboard / reduced-motion / screen-reader support throughout (informed by a 4-agent, ~40-source research pass).
+- **Chronicler Tier B — the informative layer.** 15 *Learn More* popovers on key mechanics; **the Chronicler's Ledger** encyclopedia (27 verified historical quotes plus Acts, Federal Era events, Credit tiers, and Visions, in one browsable reference overlay); 10 glossary tooltips. Turns the period flavor into an actual history layer the player can explore.
+- **Onboarding.** A Swift-Start guided "1790 Funding Debate" opening that walks a first-time player into the core loop, plus a hide-nothing hover/focus telegraph that shows the cost and consequence of every action affordance before commit.
+- **`test/measure-stats.mjs`** — a live-engine stat measurement tool (jsdom boot → `runBatchGame` → CANONICAL × 100) that reports the win split, game length in both turns and rounds, failure firing, and Vision achievement per profile. Used to source the README/CHANGELOG figures so they track the engine rather than drift.
+
+### Changed
+
+- **Stage A health hardening.** Honest save-integrity reporting; a stronger `snapshotHash`; institution rent now uses the landing roll; an `aria-live` turn-loop; `prefers-reduced-motion` respected across the new juice; a more robust `?designer` gate. CI is now **org-compliant** (`on.push.paths` filter + `workflow_dispatch` + concurrency group; single-OS ubuntu-latest × Node 18/20 matrix, replacing the prior 9-job 3-OS matrix). A determinism test suite and a live-DOM playability harness (5 gates) join the smoke tests. Packaging trimmed (~5 MB; the npm tarball is now 20 files / ~292 kB packed).
+- **Measured balance refreshed to the live engine.** CANONICAL × 100: Treasury **48 %** / Merchant **34 %** / Manufacturer **18 %** (was reported 59 / 20 / 21 at v1.4.0). All three profiles win meaningfully; Treasury remains strongest in line with the historical thesis without running away. Median game length is **~22 rounds / ~66 turns** (median 22 laps; median 65.5, mean 66.34 turns) — the v1.4.0 "~23 rounds / 67 turns" line is corrected: turns hold near ~66, rounds are ~22.
+- **Vision achievement is balanced and all three are reachable** — Federal Credit Architect ~43 %, Commerce Sovereign ~42 %, Industrial Founder ~41 % (CANONICAL × 100), revising the prior 54 / 39 / 29 figures.
+- **Failure firing (measured): Public Doubt 77 / 100, Credit Crisis 29 / 100, Panic 1 / 100, Default 0, Rebellion 0.** Default and Rebellion stay rare under the scripted v0.18 AI — which Reforms itself off the floor — but both are fully reachable by a human who neglects Public Credit. The earlier "failure events remain mostly decorative" framing no longer holds: Crisis is felt and recoverable.
+- **Opponent-behavior caveat corrected.** Scripted opponents *do* use Special Actions, the Reform lifeline, Federal Era / Late-Event choices, Act votes, and HAND-card timing (verified in both the live loop and the batch path). Only the **core buy / auction / upgrade / vote** valuation remains v0.18 — they don't yet explicitly race for the Vision. The prior "AI doesn't adapt to v1.2–v1.4" note was overbroad.
+
+### Hard invariants (preserved)
+
+- Scoring math, card/Act effects, rent math, mulberry32 RNG, deck order, and the v0.18 failure thresholds (Crisis ≤ 4 once-only, Default = 0, Rebellion = 12) are unchanged. The Credit Spiral adds a debt-servicing levy and telegraphy *around* that hierarchy; it does not move the thresholds.
+- Circuit-triggered Final Accounting unchanged; trigger ≠ winner (~⅓ of games the trigger player wins on Influence).
+- The printable board game is untouched, stable at v0.2.
+
+### Beta caveat
+
+- **v1.5.0 ships as a beta pending a fresh-human end-to-end walkthrough** — the playability gate for the public tag. Every layer was structurally audited and re-validated against the live engine (determinism + playability harnesses + `measure-stats.mjs`), and cold-walked at slice level, but a full end-to-end play by a fresh human is the remaining gate. Render-time figures (Chronicler banners/game, per-profile reactions/game) are intentionally not asserted numerically here: they are produced by the UI layer (`pushToast` / `fireReaction`) and are not measurable from the headless batch path, so they are described qualitatively rather than printed as a possibly-stale count.
+
+---
+
 ## v1.4.0 — Strategic Depth + Federal Era + Chronicler — 2026-05-21
 
 **Beta.** First substantive feature release since v1.1.2 (circuit-victory). Adds three vertical slices on top of the circuit-victory base — strategic depth, strategic arc, and the Chronicler historical voice — without changing any reducer mechanics or scoring math. The v1.2, v1.2.1, and v1.3 internal candidates that drove this work were never published to npm; v1.4.0 consolidates all of them plus the Chronicler.
