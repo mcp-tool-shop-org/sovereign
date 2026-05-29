@@ -5,6 +5,12 @@
 
 ---
 
+## v1.5.2 — Dark-mode input legibility — 2026-05-29
+
+**Patch.** Text inputs (the auction bid field, the delegate-name field, ledger search, seed inputs) set a background but never a text `color`, so in dark mode the typed text fell back to the browser default (black) and was invisible against the dark parchment — you could enter a bid but couldn't see it (it read as "can't type a number"). Pinned all text-entry fields to `color` / `-webkit-text-fill-color` / `caret-color: var(--ink)`, which contrasts the parchment input background in both light and dark themes. CSS-only; `sovereign-solo.html` logic is byte-identical to v1.5.1 — no gameplay, engine, or determinism change.
+
+---
+
 ## v1.5.1 — Packaging hotfix: restore the full offline bundle to the npm tarball — 2026-05-29
 
 **Patch.** v1.5.0's `package.json` `files` field was over-trimmed: it correctly dropped the ~5 MB of regenerable `balance-evidence/raw-data/` JSON, but also excluded the design-history, balance-evidence HTML, board-game audits, and the digital-mode freeze-audit that `00-START-HERE.html` (the `--start` / offline-bundle router) links to — so those links 404'd in the npm package. The GitHub Release zip and the Pages site were always complete. v1.5.1 restores the full audience-routed bundle to the tarball, keeping only the regenerable raw-data JSON excluded. No gameplay, engine, or doc changes — `sovereign-solo.html` is byte-identical to v1.5.0.
