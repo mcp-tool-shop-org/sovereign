@@ -5,6 +5,12 @@
 
 ---
 
+## v1.5.3 — Clearer README + refreshed translations — 2026-05-29
+
+**Patch.** Rewrote the README to lead with what the game is and why you'd play it (instead of a status block), and refreshed all seven translations to match. Documentation only — no gameplay change.
+
+---
+
 ## v1.5.2 — Dark-mode input legibility — 2026-05-29
 
 **Patch.** Text typed into the auction bid field (and the delegate-name, search, and seed fields) was invisible in dark mode — dark text on a dark background, so it looked like you couldn't enter a number. Input text is now legible in both light and dark themes. No gameplay change.
