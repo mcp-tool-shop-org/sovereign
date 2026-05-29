@@ -35,7 +35,22 @@
  * Run: `npm run test:playability`
  */
 
-import {
+// The playability gate runs in jsdom; jsdom 29 requires Node >=20
+// (engines: ^20.19 || ^22.13 || >=24). The SHIPPED CLI has no such requirement
+// (package engines: >=18) — jsdom is a dev-only dependency. On Node <20 we skip
+// this gate cleanly so `npm test` stays green there (smoke + determinism still
+// cover the Node-18 runtime); CI runs the full gate on Node 20+. The jsdom import
+// is dynamic so it never loads on Node 18 (a static import would ERR_REQUIRE_ESM
+// before any guard could run).
+const NODE_MAJOR = Number(process.versions.node.split('.')[0]);
+if (NODE_MAJOR < 20) {
+  console.log('Sovereign · playability gates (live dispatch path, jsdom)');
+  console.log(`  SKIP  jsdom playability gate needs Node >=20 (running Node ${process.versions.node}).`);
+  console.log('        Smoke + determinism cover the Node-18 runtime; this gate runs in CI on Node 20+.');
+  process.exit(0);
+}
+
+const {
   bootGame,
   driveGame,
   railSnapshot,
@@ -45,7 +60,7 @@ import {
   flushMicrotasks,
   FULL_GAME_SEED,
   AUCTION_SEED,
-} from './playability.harness.mjs';
+} = await import('./playability.harness.mjs');
 
 let failures = 0;
 const t0 = Date.now();
