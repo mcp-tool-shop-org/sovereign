@@ -28,6 +28,11 @@ button.primary { background:var(--ink); color:var(--parchment); }
 button.primary:hover:not([disabled]) { background:var(--national-finance); }
 button[disabled] { opacity:.4; cursor:not-allowed; }
 input[type="number"] { font-family:var(--mono); font-size:13px; padding:5px 8px; border:1px solid var(--ink); background:var(--parchment); width:90px; }
+/* Dark-mode legibility fix: text inputs do NOT inherit `color`, so the UA default
+   (black) renders invisible on the dark --parchment background in dark mode — you
+   could type a bid but not see it. Pin every text-entry field to --ink, which
+   contrasts --parchment in BOTH themes. */
+input[type="number"], input[type="text"], textarea { color:var(--ink); -webkit-text-fill-color:var(--ink); caret-color:var(--ink); }
 
 .app { display:grid; grid-template-rows:auto 1fr; min-height:100vh; max-width:1600px; margin:0 auto; background:var(--parchment); border-left:1px solid var(--ink); border-right:1px solid var(--ink); }
 .topbar { background:var(--parchment); border-bottom:1px solid var(--ink); padding:12px 22px; display:grid; grid-template-columns:1fr auto; gap:14px; align-items:center; }
