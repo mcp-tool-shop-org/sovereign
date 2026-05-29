@@ -509,6 +509,24 @@ input[type="number"] { font-family:var(--mono); font-size:13px; padding:5px 8px;
   .panel-pane { max-height:none; overflow:visible; }
 }
 
+/* ---- v1.4 fix (A3-005): reduced-motion. Suppress dice flicker, toast slide/
+   fade, button/hover transforms, the sidebar-toggle pulse, and the active-space/
+   active-pawn pulses for users who request reduced motion. State still changes
+   instantly; nothing animates. ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* Render dice at their final faces immediately rather than tumbling. */
+  .dice-overlay .die { animation:none !important; transform:none !important; }
+  /* Stop the infinite attention pulses. */
+  .board-cell.active-space,
+  body.sidebar-collapsed .sidebar-toggle { animation:none !important; }
+}
+
 /* =====================================================================
    v0.18 POLISH v2 — whole-game art direction layer
    Deeper polish across all 16 surfaces. CSS additions only.
@@ -2291,12 +2309,11 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
         <button id="btnNewSeed">New game</button>
         <button id="btnReset">Restart</button>
       </details>
-      <button id="btnSave" title="Save your game (download a file + write to browser storage)" class="hidden-old">Save game</button>
-      <button id="btnLoad" title="Load a saved game from file or browser storage" class="hidden-old">Load game</button>
-      <button id="btnReplay" class="hidden hidden-old" title="Step through this finished game turn by turn">Replay this game</button>
-      <button id="btnBatch" title="Run a scripted batch of 10 / 50 / 100 games" class="hidden-old">Balance Sweep</button>
-      <button id="btnNewSeed" class="hidden-old">New game</button>
-      <button id="btnReset" class="hidden-old">Restart this game</button>
+      <!-- v1.4 fix (A3-001): removed dead `hidden-old` duplicate control block.
+           It duplicated id="btnSave/btnLoad/btnReplay/btnBatch/btnNewSeed/btnReset"
+           (invalid HTML) and made the ?designer=1 gate work only by luck (first
+           matching node + display:none !important). The live controls live in the
+           Game ▾ menu above. -->
       <span class="version-pill" title="Build provenance · circuit-victory candidate · v0.21">v0.21 · circuit-victory · target <span id="circuitTargetPill">4</span></span>
     </div>
   </header>
@@ -2386,6 +2403,13 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
 </div>
 
 <div class="event-toast-stack" id="toastStack"></div>
+
+<!-- v1.4 fix (A3-004): screen-reader announcement channel for the turn loop.
+     The action rail + toasts are plain DOM with no live semantics, so AT users
+     got no announcement on phase change / card resolve / whose turn. This polite
+     region mirrors the action-rail headline (phase + what-just-happened + whose
+     turn) and is updated only when the text changes (see announceTurnState). -->
+<div id="ariaLive" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Toggle right panel"><span id="sidebarToggleLabel">Show panels</span></button>
 
@@ -3329,13 +3353,13 @@ function initialState(seed) {
   const players = [
     { idx:0, name:'You',      profile:'human',                  role:'Treasury Architect',
       cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false, circuitsCompleted:0,
-      hand:[], specialActionUsedRound:0, reformUsedRound:0, reformIPSpent:0, federalBondsHeld:0 },
+      hand:[], specialActionUsedRound:0, reformUsedRound:0, reformIPSpent:0, federalBondsHeld:0, lastMoveRoll:0 },
     { idx:1, name:'Hamilton', profile:'treasury-finance',       role:'Treasury / Finance',
       cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false, circuitsCompleted:0,
-      hand:[], specialActionUsedRound:0, reformUsedRound:0, reformIPSpent:0, federalBondsHeld:0 },
+      hand:[], specialActionUsedRound:0, reformUsedRound:0, reformIPSpent:0, federalBondsHeld:0, lastMoveRoll:0 },
     { idx:2, name:'Morris',   profile:'merchant-infrastructure', role:'Merchant / Infrastructure',
       cash:1500, position:0, ownedAssets:[], influencePoints:0, bankruptLaps:0, bankruptThisLap:false, keptHamilton:false, inCrisis:false, circuitsCompleted:0,
-      hand:[], specialActionUsedRound:0, reformUsedRound:0, reformIPSpent:0, federalBondsHeld:0 },
+      hand:[], specialActionUsedRound:0, reformUsedRound:0, reformIPSpent:0, federalBondsHeld:0, lastMoveRoll:0 },
   ];
   return {
     rngSeed: seed, rng, lap: 1, turnIndex: 0, activePlayerIndex: 0,
@@ -3929,7 +3953,13 @@ let NARRATION_LEVEL = (function() {
 /* Set of toast classes considered "important" for minimal mode. */
 const NARRATION_MINIMAL_CLASSES = new Set(['chronicler','crisis','default','rebellion','pass','fail']);
 const AUTOSAVE_KEY = 'sovereign.autosave';
-const SAVE_VERSION = 'v0.24-chronicler-candidate';
+/* v1.4 fix (ENG-A-003): bumped from 'v0.24-chronicler-candidate'. The
+   snapshotHash now folds in asset tiers, all flags, deck order/discards, hands
+   and the v1.2/v1.3 per-player counters, so the stored hash VALUE changed (no
+   gameplay change). Bumping the version means v0.24 saves are rejected with a
+   clear message by the gate below instead of failing the integrity check
+   confusingly. */
+const SAVE_VERSION = 'v0.25-integrity-candidate';
 /* HARD_CAP_ROUNDS is a safety net for pathological games; the diagnostic
    showed 100 % of CANONICAL games complete Race N=4 by round 28. The game
    ends by state (first to N circuits), not by clock. */
@@ -4093,8 +4123,8 @@ const LATE_REPUBLIC_EVENTS = [
 ];
 
 /* v1.3 Strategic Arc — Profile Visions.
-   Each Vision is a 3-condition strategic objective. Achieving all 3 grants +5 IP
-   at scoring (capped at ≤ 40 % of expected median winning IP ≈ 27). Each Vision
+   Each Vision is a 3-condition strategic objective. Achieving all 3 grants +3 IP
+   at scoring (VISION_BONUS_IP; capped at ≤ 40 % of expected median winning IP ≈ 27). Each Vision
    exists for one profile only; the player's role determines which Vision they
    pursue. checkConditions returns { met:N, total:3, conditions:[...] }. */
 const VISIONS = {
@@ -4510,6 +4540,10 @@ function reduce(s, action) {
       const to = (from + action.amount) % 40;
       const passedStart = (from + action.amount) >= 40;
       p.position = to;
+      /* v1.4 fix (ENG-A-006): record the roll that actually moved THIS player so
+         institution rent scales off the landing player's own roll, not the global
+         s.lastRoll (which may belong to another player or a doubles-exit roll). */
+      p.lastMoveRoll = action.amount;
       s = logRow(s, { actor: p.name, event:'MOVE', detail:'Move ' + action.amount + ' · ' + from + ' → ' + to + ' (' + SPACES[to].name + ')', cls:'move' });
       if (passedStart && to !== 0) s = reduce(s, { type:'PASS_TREASURY_OPENS' });
       else if (to === 0) s = reduce(s, { type:'PASS_TREASURY_OPENS', landed: true });
@@ -4578,7 +4612,7 @@ function reduce(s, action) {
           return finishLanding(s);
         } else {
           /* Pay rent */
-          const rent = computeRent(s, space.num, ownerIdx);
+          const rent = computeRent(s, space.num, ownerIdx, pIdx);
           if (rent > 0) {
             s = adjustCash(s, -rent, 'Rent on ' + space.name + ' to ' + s.players[ownerIdx].name, pIdx);
             s = adjustCash(s, rent, 'Rent from ' + p.name + ' for ' + space.name, ownerIdx);
@@ -4646,7 +4680,9 @@ function reduce(s, action) {
         s.pendingAuction = startAuction(s, sp.num, pIdx, 'insufficient cash');
         s.pendingLanding = null;
         s.phase = 'auction';
-        return s;
+        /* v1.4 fix (ENG-A-001): drive the forced auction; the first bidder is
+           always an opponent here, so returning s without driving soft-locks. */
+        return processNextAuctionBid(s);
       }
       s = adjustCash(s, -asset.cost, 'Buy ' + sp.name, pIdx);
       p.ownedAssets.push({ spaceNum: sp.num, tier: 0 });
@@ -5008,7 +5044,13 @@ function finishLanding(s) {
   /* v0.21 — short-circuit if circuit victory already fired during this move */
   if (s.status === 'gameOver') return s;
   /* Preserve live sub-phases set by cards (auctions, choices). */
-  if (s.phase === 'auction')     return s;
+  /* v1.4 fix (ENG-A-001): a card-opened auction (e.g. Speculation Fever) sets
+     phase='auction' inside its resolve(); RESOLVE_CARD then calls finishLanding.
+     Drive the auction here the same way DECLINE_ASSET does, otherwise opponent
+     bids are never dispatched and the live game soft-locks on "considering bid".
+     processNextAuctionBid pauses (returns s) when the next bidder is human, so
+     this does not double-drive. */
+  if (s.phase === 'auction')     return processNextAuctionBid(s);
   if (s.phase === 'card-choice' && s.pendingCard) return s;
   /* Card-driven movement: resolve landing at new position before ending turn. */
   if (s.pendingResolveLanding) {
@@ -5060,7 +5102,7 @@ function processNextAuctionBid(s) {
 /* =====================================================================
    RENT COMPUTATION
    ===================================================================== */
-function computeRent(s, spaceNum, ownerIdx) {
+function computeRent(s, spaceNum, ownerIdx, landingIdx) {
   const space = SPACES[spaceNum];
   const asset = ASSETS[spaceNum];
   const owner = s.players[ownerIdx];
@@ -5073,14 +5115,20 @@ function computeRent(s, spaceNum, ownerIdx) {
     return pay;
   }
   if (space.kind === 'institution') {
-    const diceAvg = s.lastRoll ? s.lastRoll.total : 7;
+    /* v1.4 fix (ENG-A-006): scale off the LANDING player's own movement roll,
+       not the global s.lastRoll (which can be another player's roll or a
+       doubles-exit roll on a card-teleport landing). lastMoveRoll is stamped in
+       MOVE_TOKEN; fall back to the global last roll, then 7, if absent. */
+    const lander = landingIdx != null ? s.players[landingIdx] : null;
+    const lastRollTotal = (lander && lander.lastMoveRoll) ? lander.lastMoveRoll
+      : (s.lastRoll ? s.lastRoll.total : 7);
     if (space.instKind === 'bank') {
-      return (s.flags.bankCharterPassed ? 10 : 4) * diceAvg;
+      return (s.flags.bankCharterPassed ? 10 : 4) * lastRollTotal;
     }
     if (space.instKind === 'mint') {
       const hasBank = ownsInstitution(s, ownerIdx, 'bank');
       if (!hasBank) return 0;
-      return (s.flags.bankCharterPassed ? 20 : 10) * diceAvg;
+      return (s.flags.bankCharterPassed ? 20 : 10) * lastRollTotal;
     }
     return 0;
   }
@@ -5737,6 +5785,10 @@ function renderControls() {
   const phase = STATE.phase;
   let humanDecisionPending = false;
   const isFirstLap = STATE.lap === 1;
+  /* v1.4 fix (A3-004): captured headline for the aria-live region. addBanner
+     writes the most recent eyebrow + prompt here; announced once at the end of
+     this render pass. */
+  let liveAnnouncement = '';
 
   /* Positions strip — always rendered first so the player can read where everyone is */
   if (phase !== 'game-over') {
@@ -5832,6 +5884,10 @@ function renderControls() {
   /* v0.18 playtest fix — always show an action banner so the user knows what to do next */
   function addBanner(eyebrow, prompt, hint, actions, opts) {
     opts = opts || {};
+    /* v1.4 fix (A3-004): capture the rail headline for the aria-live region.
+       eyebrow = phase label, prompt = what just happened / whose turn. HTML is
+       stripped; the last banner of the pass wins (there is one per state). */
+    liveAnnouncement = [eyebrow, prompt].filter(Boolean).join('. ').replace(/<[^>]+>/g, '');
     const banner = el('div', 'action-banner in-board' + (opts.opponent ? ' opponent-turn' : '') + (opts.crisis ? ' crisis-rail' : '') + (opts.endgame ? ' endgame-rail' : ''));
     const textBox = el('div', 'ab-text');
     let inner = '';
@@ -6058,6 +6114,20 @@ function renderControls() {
   const pill = document.getElementById('activePill');
   pill.textContent = 'Active: ' + ap.name;
   pill.className = 'active-pill' + (STATE.activePlayerIndex === 1 ? ' opp1' : STATE.activePlayerIndex === 2 ? ' opp2' : '');
+
+  /* v1.4 fix (A3-004): announce the turn-loop headline to screen readers. */
+  announceTurnState(liveAnnouncement);
+}
+
+/* v1.4 fix (A3-004): write to the polite aria-live region, but only when the
+   text actually changes, so re-renders within the same state don't re-announce
+   (non-spammy). Clearing first forces AT to re-read identical-but-new states. */
+let __lastAnnouncement = '';
+function announceTurnState(text) {
+  if (!text || text === __lastAnnouncement) return;
+  __lastAnnouncement = text;
+  const region = document.getElementById('ariaLive');
+  if (region) region.textContent = text;
 }
 
 function renderEndgame() {
@@ -6899,12 +6969,52 @@ function captureSnapshot() {
   });
 }
 
+/* Deterministic stable serializer: sorts object keys so the string form of an
+   object never depends on insertion order. Used only by snapshotHash; pure. */
+function stableStringify(v) {
+  if (v === null || typeof v !== 'object') return JSON.stringify(v);
+  if (Array.isArray(v)) return '[' + v.map(stableStringify).join(',') + ']';
+  const keys = Object.keys(v).sort();
+  return '{' + keys.map(k => JSON.stringify(k) + ':' + stableStringify(v[k])).join(',') + '}';
+}
+
+/* v1.4 fix (ENG-A-003): the prior hash only folded in cash/position/asset-COUNT/
+   IP, the three track values, passed-act ids and ledger length, so divergence in
+   asset tiers, flags (Vision latches, funding/charter/broker/panic flags, …),
+   deck order + discards, player hands, and the v1.2/v1.3 per-player counters all
+   passed as "integrity verified". This hashes the full canonical deterministic
+   state. Pure function of state (no entropy). The value changes vs. the old hash,
+   which is why SAVE_VERSION is bumped so legacy saves are handled gracefully. */
 function snapshotHash(s) {
   return [
-    s.turnIndex, s.lap,
-    s.players.map(p => p.cash + ':' + p.position + ':' + p.ownedAssets.length + ':' + p.influencePoints).join('|'),
+    s.turnIndex, s.lap, s.activePlayerIndex, s.phase, s.status,
+    /* per-player: cash, position, ordered owned assets (spaceNum:tier), IP,
+       crisis/bankruptcy/keptHamilton/circuit state, hand, and the v1.2/v1.3
+       counters (special action / reform / federal bonds / last move roll). */
+    s.players.map(p => [
+      p.cash, p.position,
+      p.ownedAssets.map(a => a.spaceNum + ':' + a.tier).join(','),
+      p.influencePoints, p.bankruptLaps, (p.bankruptThisLap ? 1 : 0),
+      (p.keptHamilton ? 1 : 0), (p.inCrisis ? 1 : 0), (p.crisisSkipBanked ? 1 : 0),
+      p.circuitsCompleted,
+      /* hand: serialize each held card by identity (deck:cardId), in order —
+         a naive join would stringify objects to "[object Object]" and collide. */
+      (p.hand || []).map(h => h.deck + ':' + h.cardId).join(','),
+      p.specialActionUsedRound, p.reformUsedRound, p.reformIPSpent,
+      p.federalBondsHeld, (p.lastMoveRoll || 0),
+    ].join(':')).join('|'),
+    /* all three tracks (values only — lastReason is cosmetic) */
     s.tracks.credit.value + ',' + s.tracks.resistance.value + ',' + s.tracks.capacity.value,
-    s.acts.passed.map(a => a.actId).join('-'),
+    /* acts: passed ids + the currently-revealed act id */
+    s.acts.passed.map(a => a.actId).join('-') + '/' + (s.acts.current ? s.acts.current.actId : ''),
+    /* deck order + discards for every deck (replay divergence shows here) */
+    'dk:' + stableStringify(s.decks),
+    'lr:' + (s.lateRepublicDeck || []).join(',') + '/' + (s.lateRepublicDiscard || []).join(',')
+      + '/' + (s.lastLateEventRound || 0) + '/' + (s.pendingLateEvent ? s.pendingLateEvent.id : ''),
+    'va:' + stableStringify(s.visionAchievedRound || {}),
+    /* full flags object via stable stringify (Vision latches, charter/broker/
+       funding/panic/doubt flags, manufactures lap, etc.) */
+    'fl:' + stableStringify(s.flags || {}),
     s.ledger.length,
   ].join(' · ');
 }
@@ -7172,30 +7282,31 @@ function loadFromPayload(payload) {
     showIoPill('This save is from the withdrawn mandate-victory model and cannot be loaded. Start a new game to play the circuit-victory candidate.', true);
     return false;
   }
-  if (!payload || (payload.version !== SAVE_VERSION && payload.version !== 'v0.10' && payload.version !== 'v0.11-candidate' && payload.version !== 'v0.12-candidate' && payload.version !== 'v0.13-candidate' && payload.version !== 'v0.14-candidate' && payload.version !== 'v0.15-candidate' && payload.version !== 'v0.16-candidate' && payload.version !== 'v0.17-candidate')) {
+  /* v1.4 fix (ENG-A-002): the v0.10–v0.17 saves predate the circuit-victory
+     model, Late Republic events and Visions just as much as the v0.18–v0.22
+     saves rejected above, so replaying their decisionLog under the current v1.4
+     reducer diverges. They also predate the finalState/snapshotHash field, so
+     the integrity check below was silently skipped while the toast still claimed
+     "integrity verified". Reject them the same way, with a clear message. */
+  const LEGACY_PRE_CIRCUIT = new Set(['v0.10','v0.11-candidate','v0.12-candidate','v0.13-candidate','v0.14-candidate','v0.15-candidate','v0.16-candidate','v0.17-candidate']);
+  if (payload && LEGACY_PRE_CIRCUIT.has(payload.version)) {
+    showIoPill('This save predates the circuit-victory model (and Late Republic events + Visions); replays would diverge under the current rules and cannot be verified. Start a new game.', true);
+    return false;
+  }
+  /* The prior chronicler candidate stored a weaker snapshotHash (see
+     SAVE_VERSION note); its integrity record is incompatible with the
+     strengthened hash, so reject it cleanly rather than fail the hash check. */
+  if (payload && payload.version === 'v0.24-chronicler-candidate') {
+    showIoPill('This save is from the previous candidate and its integrity record is incompatible with the current build. Start a new game.', true);
+    return false;
+  }
+  if (!payload || payload.version !== SAVE_VERSION) {
     if (payload && (payload.version === 'phase5' || payload.version === 'v0.3' || payload.version === 'v0.4' || payload.version === 'v0.5' || payload.version === 'v0.6' || payload.version === 'v0.8')) {
       showIoPill('Save file from pre-v0.10 ruleset; cannot replay under current balance. Export to keep as historical artifact.', true);
     } else {
       showIoPill('Load failed · version mismatch', true);
     }
     return false;
-  }
-  if (payload.version === 'v0.10') {
-    showIoPill('Loaded v0.10 save under v0.18 candidate — Credit Crisis event added at Credit ≤ 4. Multiple pressure layers active. Behavior differs.');
-  } else if (payload.version === 'v0.11-candidate') {
-    showIoPill('Loaded v0.11 save under v0.18 candidate — Credit Crisis event added at Credit ≤ 4. Bank Run v0.11 preserved. Behavior differs.');
-  } else if (payload.version === 'v0.12-candidate') {
-    showIoPill('Loaded v0.12 save under v0.18 candidate — Credit Crisis event added at Credit ≤ 4. Charter scaling not in this branch. Behavior differs.');
-  } else if (payload.version === 'v0.13-candidate') {
-    showIoPill('Loaded v0.13 save under v0.18 candidate — Credit Crisis event added at Credit ≤ 4. Spec Fever + Anti-Fed pressure layers active. Behavior differs.');
-  } else if (payload.version === 'v0.14-candidate') {
-    showIoPill('Loaded v0.14 save under v0.18 candidate — Credit Restored gate NOT in this branch. Credit Crisis event added at Credit ≤ 4.');
-  } else if (payload.version === 'v0.15-candidate') {
-    showIoPill('Loaded v0.15 save under v0.18 candidate — Recovery gates NOT in this branch. Credit Crisis event added at Credit ≤ 4.');
-  } else if (payload.version === 'v0.16-candidate') {
-    showIoPill('Loaded v0.16 save under v0.18 candidate — Spec Fever conditional v0.17 active. Credit Crisis event added at Credit ≤ 4.');
-  } else if (payload.version === 'v0.17-candidate') {
-    showIoPill('Loaded v0.17 save under v0.18 candidate — Credit Crisis event added: triggers once per game when Credit first reaches ≤ 4 (and > 0). Penalty: +1 Resistance to all. Default at Credit 0 unchanged.');
   }
   if (typeof payload.seed !== 'number') { showIoPill('Load failed · invalid seed', true); return false; }
   if (!Array.isArray(payload.decisionLog)) { showIoPill('Load failed · invalid decisionLog', true); return false; }
@@ -7220,17 +7331,22 @@ function loadFromPayload(payload) {
     return false;
   }
   /* Integrity check vs. saved finalState */
+  let integrityVerified = false;
   if (payload.finalState) {
     const liveHash = snapshotHash(STATE);
     if (liveHash !== payload.finalState.hash) {
       showIoPill('Load failed · integrity divergence at end of replay', true);
       return false;
     }
+    integrityVerified = true;
   }
   renderBoard();
   render();
   hideResumePill();
-  showIoPill('Loaded · integrity verified', false);
+  /* v1.4 fix (ENG-A-002): only claim "integrity verified" when a finalState hash
+     was actually present and matched. Completed-game saves carry finalState;
+     mid-game saves legitimately do not, so we must not overstate verification. */
+  showIoPill(integrityVerified ? 'Loaded · integrity verified' : 'Loaded · no integrity record (mid-game save)', false);
   return true;
 }
 

@@ -9,7 +9,13 @@
   },
   "files": [
     "bin/",
-    "release/",
+    "release/00-START-HERE.html",
+    "release/README.txt",
+    "release/CHANGELOG.md",
+    "release/digital-mode/sovereign-solo.html",
+    "release/digital-mode/README.txt",
+    "release/board-game/sovereign-board-game.html",
+    "release/board-game/README.txt",
     "README.md",
     "README.*.md",
     "CHANGELOG.md",
@@ -18,7 +24,8 @@
   ],
   "scripts": {
     "verify": "bash verify.sh",
-    "test": "node test/smoke.test.mjs",
+    "test": "node test/smoke.test.mjs && node test/determinism.test.mjs",
+    "test:determinism": "node test/determinism.test.mjs",
     "coverage": "c8 --reporter=text --reporter=lcov --include='bin/**' node test/smoke.test.mjs",
     "play": "node bin/sovereign.js"
   },

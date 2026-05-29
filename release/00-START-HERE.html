@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Sovereign · v0.10 · Start Here</title>
+<title>Sovereign · v1.4.0 · Start Here</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   :root {
@@ -172,17 +172,22 @@
     <h1>SOVEREIGN</h1>
     <div class="lockup">The Hamilton System Board Game</div>
     <div class="tagline">Founding Credit · Fund the debt. Build the bank. Industrialize the republic.</div>
-    <span class="freeze">v0.10 Balance Baseline · Frozen 2026-05-19</span>
+    <span class="freeze">v1.4.0 Beta · Circuit Victory + Federal Era + Chronicler</span>
   </section>
 
 
   <p class="lead">
     Sovereign is two artifacts and one design thesis. A printable 34-sheet
-    <strong>board game</strong> about the founding of US public credit, and a
-    self-contained <strong>solo / digital adaptation</strong> that plays the same game
-    locally in a browser against two deterministic scripted opponents. Both
-    are frozen at the v0.10 balance baseline, after a nine-version balance arc
-    driven by simulation evidence rather than guesswork.
+    <strong>board game</strong> about the founding of US public credit, frozen at
+    its v0.2 balance baseline, and a self-contained <strong>solo / digital
+    adaptation</strong> (v1.4.0 beta) that plays the same game locally in a browser
+    against two deterministic scripted opponents. The digital game ends by
+    <strong>circuit victory</strong> — when one player completes their fourth crossing
+    of Treasury Opens — and at Final Accounting the highest-Influence player wins,
+    not necessarily the one who got around the board first. Its v0.18 reducer
+    mechanics are preserved byte-identical from a nine-version balance arc driven by
+    simulation evidence, with strategic depth, a Federal Era arc, and the Chronicler
+    historical voice layered on top.
   </p>
 
 
@@ -193,7 +198,7 @@
     <div class="audience">
       <span class="tag">Player</span>
       <div class="name">Play the game</div>
-      <div class="desc">Open the digital simulator and play a 7-lap solo game against Hamilton (Treasury) and Morris (Merchant). No installer, no internet, no account.</div>
+      <div class="desc">Open the digital simulator. Pick your role, then play a solo circuit-victory game against two of three scripted opponents (Treasury / Finance, Merchant / Infrastructure, Manufacturer / Industry). No installer, no internet, no account.</div>
       <a href="digital-mode/sovereign-solo.html">Open the game →</a>
     </div>
 
@@ -229,20 +234,20 @@
 
   <h2>Headline numbers</h2>
 
-  <p>CANONICAL configuration (1 human + 2 scripted opponents), 100 deterministic games, seeds 2026–2125. Reinforced by a CANONICAL × 400 pass.</p>
+  <p>CANONICAL configuration (1 human + 2 scripted opponents), 100 deterministic games. All three profiles win meaningfully; Treasury stays strongest within band, in line with the historical thesis.</p>
 
   <table>
     <thead>
-      <tr><th>Metric</th><th>Target</th><th>v0.10</th><th>Verdict</th></tr>
+      <tr><th>Metric</th><th>Target</th><th>v1.4.0</th><th>Verdict</th></tr>
     </thead>
     <tbody>
       <tr><td>Treasury / Finance wins</td><td class="v">45–65%</td><td class="n">59 / 100</td><td><span class="pass">PASS</span></td></tr>
-      <tr><td>Merchant / Infrastructure wins</td><td class="v">15–35%</td><td class="n">25 / 100</td><td><span class="pass">PASS</span></td></tr>
-      <tr><td>Manufacturer / Industry wins</td><td class="v">10–25%</td><td class="n">16 / 100</td><td><span class="pass">PASS</span></td></tr>
-      <tr><td>Median winning margin</td><td class="v">≥ 2 IP</td><td class="n">3 IP</td><td><span class="pass">PASS</span></td></tr>
-      <tr><td>Route 4+ frequency</td><td class="v">low</td><td class="n">8 / 100</td><td><span class="pass">PASS</span></td></tr>
+      <tr><td>Merchant / Infrastructure wins</td><td class="v">15–35%</td><td class="n">20 / 100</td><td><span class="pass">PASS</span></td></tr>
+      <tr><td>Manufacturer / Industry wins</td><td class="v">10–25%</td><td class="n">21 / 100</td><td><span class="pass">PASS</span></td></tr>
+      <tr><td>Circuit-end triggered</td><td class="v">100%</td><td class="n">100 / 100</td><td><span class="pass">PASS</span></td></tr>
+      <tr><td>Median game length</td><td class="v">~23 rounds</td><td class="n">23 rounds / 67 turns</td><td><span class="pass">PASS</span></td></tr>
+      <tr><td>Trigger player wins on Influence</td><td class="v">trigger ≠ winner</td><td class="n">38 / 100</td><td><span class="pass">by design</span></td></tr>
       <tr><td>Determinism (byte-identical re-run)</td><td class="v">PASS</td><td class="n">PASS</td><td><span class="pass">PASS</span></td></tr>
-      <tr><td>CANONICAL × 400 reinforcement</td><td class="v">—</td><td class="n">Treasury 244 / 400 = 61.0%</td><td><span class="pass">in band</span></td></tr>
     </tbody>
   </table>
 
@@ -250,15 +255,14 @@
   <h2>Version trace</h2>
 
   <div class="vtrace">
-    <div><span class="v">v0.2</span>Board-game balance baseline (Hamilton thesis intact)</div>
-    <div><span class="v">v0.3</span>NF Credit nerf · Manufactures capital event · Capacity boost</div>
-    <div><span class="v">v0.4</span>Capacity ≥ 10 milestone · industrial set bonuses</div>
-    <div><span class="v">v0.5</span>Capacity +1 on industrial purchase</div>
-    <div><span class="v">v0.6</span>Manufacturer set-completion gate relaxed</div>
-    <div><span class="v">v0.7</span>Acquisition funnel telemetry (diagnostic, no game change)</div>
-    <div><span class="v">v0.8</span>Manufacturer starting Industrial Charter</div>
-    <div><span class="v">v0.9</span>Scoring decomposition telemetry (diagnostic, no game change)</div>
-    <div><span class="v">v0.10</span>Cash scoring 1 IP per 200 TN → 1 IP per 400 TN &nbsp; <span class="frozen">← FROZEN</span></div>
+    <div><span class="v">v0.2</span>Board-game balance baseline (Hamilton thesis intact) &nbsp; <span class="frozen">← BOARD FROZEN</span></div>
+    <div><span class="v">v0.3–v0.9</span>Manufacturer / Capacity balance arc + diagnostic telemetry</div>
+    <div><span class="v">v0.10</span>Cash scoring 1 IP per 200 TN → 1 IP per 400 TN (mechanics baseline)</div>
+    <div><span class="v">v0.18</span>Reducer math locked — preserved byte-identical from here forward</div>
+    <div><span class="v">v1.1.2</span>Circuit victory — game ends on the 4th board crossing, not a lap counter</div>
+    <div><span class="v">v1.2</span>Strategic depth — Special Actions · HAND cards · Reform · Credit tiers</div>
+    <div><span class="v">v1.3</span>Strategic arc — Federal Era Events · 3 Profile Visions</div>
+    <div><span class="v">v1.4.0</span>The Chronicler — verified historical voice &nbsp; <span class="frozen">← CURRENT BETA</span></div>
   </div>
 
   <p>See <a href="CHANGELOG.md" style="color:var(--navy);">CHANGELOG.md</a> for the full narrative — what each balance change attempted, what the evidence showed, and why the next lever was chosen.</p>
@@ -270,7 +274,7 @@
   <div class="files">
     <a href="00-START-HERE.html">00-START-HERE.html</a><span class="desc">This file. Hyperlinked entry point.</span>
     <a href="README.txt">README.txt</a><span class="desc">Plain-text version for terminal / grep users.</span>
-    <a href="CHANGELOG.md">CHANGELOG.md</a><span class="desc">Full v0.2 → v0.10 balance evolution.</span>
+    <a href="CHANGELOG.md">CHANGELOG.md</a><span class="desc">Full v0.2 → v1.4.0 evolution — balance arc, circuit victory, strategic layers, Chronicler.</span>
   </div>
 
   <h3>Board game</h3>
@@ -282,7 +286,7 @@
 
   <h3>Digital mode</h3>
   <div class="files">
-    <a href="digital-mode/sovereign-solo.html">sovereign-solo.html</a><span class="desc">The v0.10 frozen solo simulator. The game.</span>
+    <a href="digital-mode/sovereign-solo.html">sovereign-solo.html</a><span class="desc">The v1.4.0 beta solo game — circuit victory + Federal Era + Chronicler. The game.</span>
     <a href="digital-mode/sovereign-v0.10-freeze-audit.html">sovereign-v0.10-freeze-audit.html</a><span class="desc">38-check freeze audit report.</span>
   </div>
 
@@ -314,17 +318,18 @@
 
   <h2>Known caveats</h2>
   <ul class="caveats">
-    <li><strong>Capacity thresholds remain rare in canonical play.</strong> Avg final Capacity is 3.49; ≥ 6 reached in only 4 / 100 games. The endgame industrial scoring exists as a ceiling, not a regular path.</li>
+    <li><strong>v1.4.0 is a beta.</strong> Each vertical slice — strategic depth, the Federal Era arc, the Chronicler — was structurally audited and validated against simulation diagnostics, and cold-walked at slice level, but the full four-layer stack has not been walked end-to-end by a fresh human player. Treat as opt-in until you've walked it yourself.</li>
+    <li><strong>Trigger ≠ winner.</strong> The player who completes the fourth circuit only wins on Influence in about a third of games (38 / 100). This is intentional — Final Accounting rewards economic depth, not speed around the board.</li>
+    <li><strong>AI opponents do not yet adapt to the v1.2–v1.4 layers.</strong> They run v0.18 decision functions — they don't race for a Vision or spend HAND cards strategically the way a human would. Real human play will diverge from the CANONICAL × 100 measurements.</li>
     <li><strong>Treasury / Finance remains intentionally strongest</strong>, within the target band. This matches the historical thesis: public credit and federal finance were Hamilton's dominant economic lever.</li>
-    <li><strong>Failure events fired 0 / 400 times</strong> in the v0.10 evidence pass. Default / Rebellion / Bankruptcy threats are currently decorative; a future version may revisit fail-state pressure.</li>
-    <li><strong>Simulation-tested only.</strong> Over 1,000 deterministic games across the v0.3 → v0.10 arc. Not yet human-playtested; strategic deviation may shift these rates.</li>
-    <li><strong>Three-profile competitive set.</strong> The Opportunist / Cash profile from the concept document is deferred. The locked v0.10 lineup is Treasury / Merchant / Manufacturer.</li>
+    <li><strong>Failure events remain mostly decorative.</strong> Credit Crisis fires occasionally; Default and Rebellion almost never reach the top tiers even with more time to compound. Future versions may revisit fail-state pressure.</li>
+    <li><strong>Three-profile competitive set.</strong> The Opportunist / Cash profile from the concept document is deferred. The locked lineup is Treasury / Merchant / Manufacturer.</li>
   </ul>
 
 
   <footer>
-    <span>Sovereign · v0.10 Balance Baseline</span>
-    <span>FROZEN · 2026-05-19</span>
+    <span>Sovereign · v1.4.0 Beta · Circuit Victory</span>
+    <span>Board game v0.2 · Frozen</span>
   </footer>
 
 </div>
