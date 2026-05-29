@@ -24,13 +24,15 @@
   ],
   "scripts": {
     "verify": "bash verify.sh",
-    "test": "node test/smoke.test.mjs && node test/determinism.test.mjs",
+    "test": "node test/smoke.test.mjs && node test/determinism.test.mjs && node test/playability.test.mjs",
     "test:determinism": "node test/determinism.test.mjs",
+    "test:playability": "node test/playability.test.mjs",
     "coverage": "c8 --reporter=text --reporter=lcov --include='bin/**' node test/smoke.test.mjs",
     "play": "node bin/sovereign.js"
   },
   "devDependencies": {
-    "c8": "^11.0.0"
+    "c8": "^11.0.0",
+    "jsdom": "^29.1.1"
   },
   "keywords": [
     "board-game",
