@@ -454,6 +454,16 @@ input[type="number"] { font-family:var(--mono); font-size:13px; padding:5px 8px;
 .tracks-panel .crisis-tag.warning { background:var(--highlight); color:#fff; }
 .tracks-panel .crisis-tag.locked { background:var(--ink); color:var(--parchment); }
 
+/* ---- v1.5 Credit Spiral · always-visible forecast gauge (near-miss engineering) ---- */
+.tracks-panel .credit-forecast { margin-top:6px; padding:5px 8px; border-radius:3px; border-left:3px solid var(--rule-soft); }
+.tracks-panel .credit-forecast .fc-line { display:block; font-family:var(--ui); font-size:10px; line-height:1.35; font-weight:600; color:var(--ink); }
+.tracks-panel .credit-forecast .fc-levy { display:block; font-family:var(--mono); font-size:9px; margin-top:2px; opacity:.8; }
+.tracks-panel .credit-forecast.forecast-stable { border-left-color:var(--commercial-infrastructure); background:rgba(74,103,65,.06); }
+.tracks-panel .credit-forecast.forecast-watch  { border-left-color:var(--national-finance); background:rgba(43,74,107,.07); }
+.tracks-panel .credit-forecast.forecast-slide  { border-left-color:var(--highlight); background:rgba(200,57,46,.08); }
+.tracks-panel .credit-forecast.forecast-accel  { border-left-color:var(--revolutionary-debt); background:rgba(110,31,30,.12); }
+.tracks-panel .credit-forecast.forecast-accel .fc-line { font-weight:800; }
+
 /* ---- Orientation panel: dismissible explainer, first-load + recall ---- */
 .orient-overlay { position:fixed; inset:0; z-index:70; background:rgba(26,22,18,0.78); display:flex; align-items:center; justify-content:center; padding:32px 16px; overflow-y:auto; }
 .orient-panel { background:var(--parchment); border:1.5px solid var(--ink); max-width:680px; width:100%; padding:22px 28px 24px; position:relative; }
@@ -3326,6 +3336,21 @@ function adjustTrack(s, key, delta, reason) {
       s.flags.publicDoubtFired = false;
       s.flags.panicFired = false;
     }
+    /* v1.5 (Credit Spiral) — record the DEEPEST tier the current slide episode
+       reaches, measured on EVERY credit transition (not just at lap-start). This
+       captures an intra-lap dip into Crisis/Panic that an opponent's Reform yanks
+       back to Doubt before the next BEGIN_LAP — otherwise the lap-start snapshot
+       would never see crisis and the acceleration gate would starve. Reset to 0
+       on full recovery to Stable (a real escape ends the episode). The acceleration
+       gate (BEGIN_LAP part 3) reads this rank, keeping it honest to "tier ∈
+       {crisis, panic}" (design part 3) while resisting single-round floor rescues. */
+    const SPIRAL_RANK = { stable:0, doubt:1, crisis:2, panic:3, default:4 };
+    if (nextTier === 'stable') {
+      s.flags.creditSlideDeepestRank = 0;
+    } else {
+      const nr = SPIRAL_RANK[nextTier] || 0;
+      if (nr > (s.flags.creditSlideDeepestRank || 0)) s.flags.creditSlideDeepestRank = nr;
+    }
   }
   return s;
 }
@@ -3407,7 +3432,12 @@ function initialState(seed) {
       resistance: { value: 2, lastReason: 'Game start' },
       capacity:   { value: 1, lastReason: 'Game start' },
     },
-    flags: {},
+    /* v1.5 — Credit Spiral slide counter. Counts consecutive rounds the Republic
+       has spent below the Stable band (Credit ≤ 6); resets to 0 the moment Credit
+       returns to ≥ 7. Drives the compounding debt-servicing levy + acceleration
+       at BEGIN_LAP. Lives in flags so snapshotHash folds it in (stableStringify
+       of s.flags) → fully replay-safe. */
+    flags: { creditSlideRounds: 0 },
     pendingCard: null, pendingLanding: null, pendingAuction: null, pendingResolveLanding: false,
     pendingDefault: false, pendingRebellion: false, pendingCreditCrisis: false,
     /* v1.3 — Late Republic deck + Vision tracking */
@@ -4106,6 +4136,101 @@ function creditTier(value) {
   return 'stable';
 }
 
+/* =====================================================================
+   v1.5 — THE CREDIT SPIRAL (felt · compounding · visible · recoverable)
+   ---------------------------------------------------------------------
+   Public Credit is the Republic's lifeblood: it borrows against its own
+   faith, and every season of doubt raises the price of the next. Below the
+   Stable band (Credit ≤ 6) the Treasury must service the public debt — a
+   CASH levy paid from each player's OWN pile (loss aversion + endowment,
+   failure-tension.md B2). The levy COMPOUNDS with each consecutive round the
+   slide continues (Pandemic/Power-Grid escalating-cost loop), and after a
+   telegraphed grace period a deep slide SELF-ACCELERATES toward Default
+   (the snowball, but earned — the forecast gauge warns the player every
+   round so loss is chosen/neglected, never ambushed; fairness B2).
+
+   ALL of this is applied INSIDE reduce() at BEGIN_LAP — a logged, replayable
+   action. The levy goes through adjustCash (already logged + replay-safe).
+   creditSlideRounds lives in s.flags, so snapshotHash folds it in via
+   stableStringify(s.flags). NO live-driver / render-layer writes, NO RNG,
+   NO Date.now — the levy and acceleration are PURE functions of state.
+
+   KNOBS (tuned via test/balance-revalidate.mjs · CANONICAL × 100):
+   - BASE         per-tier starting levy (TN) before compounding
+   - SLIDE_K      compounding rate per consecutive slide round
+   - LEVY_CAP     hard ceiling on a single round's levy (no instant bankruptcy)
+   - ACCEL_AFTER  consecutive crisis/panic-touched slide rounds before the slide
+                  self-accelerates toward Default
+   - DOUBT_ACCEL_AFTER  consecutive doubt rounds before a CHRONIC (long-neglected)
+                  doubt slide begins descending toward Crisis. This is the
+                  "engine compounds, brake doesn't" loop (failure-tension.md
+                  finding 5): a slide sitting in Doubt for many rounds is not a
+                  brief wobble — it is sustained neglect that should deepen on its
+                  own. Both descents are gated by the recovery valve, so a player
+                  actively climbing out is never robbed (B2).
+   ===================================================================== */
+const CREDIT_SPIRAL = {
+  BASE:        { doubt: 10, crisis: 25, panic: 45 },
+  SLIDE_K:     0.5,
+  LEVY_CAP:    120,
+  ACCEL_AFTER: 3,
+  DOUBT_ACCEL_AFTER: 5,
+  RECOVERY_AFTER: 1,     // laps of active defence (Reform/bond) before "confidence returns" grants +1 Credit in Doubt/Crisis (the upward mirror of acceleration; lets a diligent recovery climb to Stable instead of treading water vs card pressure). A neglect lap decays the streak; Panic is beyond its reach.
+  DEEP_SLIDE_BYPASS: 13, // once a crisis-touched slide has run this many consecutive rounds, acceleration fires EVEN through the recovery valve: a chronically-unresolved slide (recovery never gained traction over this many rounds) the bond market finally breaks, pressing toward Panic/Default. Protects quick recoveries (short slides) while giving the deepest neglect real teeth.
+};
+
+/* The per-round debt-servicing levy for a given tier and how many consecutive
+   rounds the slide has run. Pure: levy = BASE[tier] × (1 + SLIDE_K × rounds),
+   floored to a whole TN and capped at LEVY_CAP. Returns 0 for stable/default
+   (default has its own one-shot 50 % wipe). slideRounds is 1-based on the
+   round the levy is charged (set just before this is read). */
+function creditLevyFor(tier, slideRounds) {
+  const base = CREDIT_SPIRAL.BASE[tier];
+  if (!base) return 0; // stable or default → no servicing levy
+  const raw = base * (1 + CREDIT_SPIRAL.SLIDE_K * Math.max(0, slideRounds));
+  return Math.min(CREDIT_SPIRAL.LEVY_CAP, Math.floor(raw));
+}
+
+/* Render-time forecast helper (NOT written to the ledger). Given current state,
+   returns a compact { tier, label, line, danger } describing where the slide is
+   heading, computed purely from the current Credit value + slide rounds. Used by
+   the credit-gauge renderer and the rival-posture line. danger escalates:
+   'stable' | 'watch' | 'slide' | 'accel'. */
+function creditForecast(s) {
+  const v = s.tracks.credit.value;
+  const tier = creditTier(v);
+  const rounds = (s.flags && s.flags.creditSlideRounds) || 0;
+  const TIER_LABEL = { stable:'Stable', doubt:'Public Doubt', crisis:'Credit Crisis', panic:'Panic', default:'Default' };
+  if (tier === 'stable') {
+    return { tier, label: TIER_LABEL.stable, line: 'Public credit sound — the Republic borrows cheaply.', danger: 'stable' };
+  }
+  if (tier === 'default') {
+    return { tier, label: TIER_LABEL.default, line: 'The Republic has defaulted on its debts.', danger: 'accel' };
+  }
+  const accel = rounds >= CREDIT_SPIRAL.ACCEL_AFTER && (tier === 'crisis' || tier === 'panic');
+  // Rounds at the current accelerating rate until Default (Credit reaches 0).
+  // Once accelerating the slide drops Credit by 1 per round; report that runway.
+  if (accel) {
+    const toDefault = Math.max(1, v); // Credit hits 0 in ~v more accelerating rounds
+    return {
+      tier, label: TIER_LABEL[tier],
+      line: 'Default in ~' + toDefault + ' round' + (toDefault === 1 ? '' : 's') + ' — Reform now to arrest the slide.',
+      danger: 'accel',
+    };
+  }
+  // Not yet accelerating: warn how soon acceleration begins, framed by tier.
+  const untilAccel = Math.max(0, CREDIT_SPIRAL.ACCEL_AFTER - rounds);
+  if (tier === 'doubt') {
+    return { tier, label: TIER_LABEL.doubt, line: 'The Republic borrows against its own faith — each season of doubt raises the price of the next. Restore credit to ease the levy.', danger: 'watch' };
+  }
+  // crisis / panic, pre-acceleration
+  return {
+    tier, label: TIER_LABEL[tier],
+    line: 'Public credit falling — the slide accelerates toward Default in ~' + (untilAccel || 1) + ' round' + ((untilAccel || 1) === 1 ? '' : 's') + ' unless arrested.',
+    danger: 'slide',
+  };
+}
+
 /* v1.3 Strategic Arc — Late Republic Events.
    These fire at the START of even-numbered rounds beginning at round 8,
    OR the first even-numbered round after all 7 founding Acts have resolved,
@@ -4467,6 +4592,133 @@ function reduce(s, action) {
     case 'BEGIN_LAP': {
       /* Reset per-lap flags for all players */
       s.players.forEach(p => p.bankruptThisLap = false);
+
+      /* =================================================================
+         v1.5 — THE CREDIT SPIRAL (parts 1–3, applied here INSIDE reduce so
+         it is logged + replayed; see CREDIT_SPIRAL block for the why/knobs).
+         Order: (1) update the slide counter from the lap-start tier, (2) charge
+         the compounding debt-servicing CASH levy, (3) apply telegraphed
+         acceleration. All pure functions of state — no RNG, no Date.now.
+         Skipped at game over and on the very first lap-start so setup is clean
+         (the game opens at Credit 5 = doubt, but we don't levy the opening
+         frame before the player has acted). ================================= */
+      if (s.status !== 'gameOver' && s.lap >= 2) {
+        const lapStartCredit = s.tracks.credit.value; /* true value at the START of this lap, before any spiral adjustment */
+        const lapStartTier = creditTier(lapStartCredit);
+        if (s.flags.creditSlideRounds == null) s.flags.creditSlideRounds = 0;
+        /* (1) Slide tracking — count consecutive rounds in/below Doubt (≤6);
+           reset the instant Credit returns to Stable (≥7). The DEEPEST tier this
+           episode (creditSlideDeepestRank) is maintained in adjustTrack on every
+           credit transition (so an intra-lap dip into Crisis is captured for the
+           forecast/telemetry); here we only reset it on a real recovery. */
+        if (lapStartTier === 'stable') {
+          s.flags.creditSlideRounds = 0;
+          s.flags.creditSlideDeepestRank = 0;
+          s.flags.creditRecoveryStreak = 0;
+          /* Recovery to Stable ends the slide episode → the federal-bond relief
+             cap resets so a future collapse can be helped again (part 4). */
+          s.flags.creditReliefUsedThisEpisode = false;
+        } else if (lapStartTier !== 'default') {
+          s.flags.creditSlideRounds += 1;
+        }
+        const slideRounds = s.flags.creditSlideRounds;
+        /* (2) Debt-servicing levy — only while below Stable and above Default.
+           Compounds with consecutive slide rounds, capped at LEVY_CAP, charged
+           from EACH player's own cash via adjustCash (logged, replay-safe). */
+        if ((lapStartTier === 'doubt' || lapStartTier === 'crisis' || lapStartTier === 'panic') && slideRounds > 0) {
+          const levy = creditLevyFor(lapStartTier, slideRounds);
+          if (levy > 0) {
+            const tierName = CREDIT_TIERS[lapStartTier] ? CREDIT_TIERS[lapStartTier].name : lapStartTier;
+            for (let i = 0; i < s.players.length; i++) {
+              s = adjustCash(s, -levy, 'Debt servicing · ' + tierName + ' · Credit ' + s.tracks.credit.value + ' · round ' + slideRounds + ' of slide', i);
+            }
+            s = logRow(s, { actor:'System', event:'DEBT_SERVICE',
+              detail: 'The Republic services its debt · Credit ' + s.tracks.credit.value + ' · ' + levy + ' TN levy on every player · slide round ' + slideRounds, cls:'event' });
+          }
+        }
+        /* (3) Telegraphed acceleration — the point-of-no-return, done right.
+           A slide that has BEEN to Crisis/Panic this episode (creditSlideDeepestRank
+           ≥ crisis) AND has run ≥ ACCEL_AFTER consecutive rounds self-accelerates:
+           Credit −1 at the lap boundary, which can carry an ignored slide to
+           Default. We gate on the episode's DEEPEST tier (not the instantaneous
+           lap value) because the v0.18 AI's floor-Reform yanks Credit off the
+           crisis floor (4 → 5) every single round, so a pure instantaneous-tier
+           gate (the spec's literal reading) almost never fires (it fired ~5/100)
+           and the keystone snowball is dead on arrival (A2-01: the AI does not
+           adapt to the spiral, and its existing Reform was silently cancelling it). */
+        /* RECOVERY VALVE — descent fires only on genuine NEGLECT. Two signals say
+           "the Republic is being actively defended this episode" and PAUSE the
+           descent for the round:
+             (a) Credit ROSE since the previous lap boundary, OR
+             (b) a recovery ACTION (Reform-to-Credit, or a doubt/crisis-band federal
+                 bond) was spent on the PREVIOUS lap (creditRecoveryActionLap).
+           (b) is the load-bearing one against the v0.18 AI: it Reforms +1 every
+           round but the descent + card pressure claw it back, so Credit merely
+           treads water and an outcome-only valve (a) would never open the escape.
+           Rewarding EFFORT (the action) lets a diligent reformer climb out — the
+           descent steps aside the round after any Reform/bond — so attentive play
+           recovers, while a truly neglected slide (no Reform, no credit-up) keeps
+           compounding to Default. Loss is earned through neglect, never robbed from
+           a player who is fighting (failure-tension.md B2 + finding 8). */
+        const prevLapCredit = (s.flags.creditAtLastLapStart != null) ? s.flags.creditAtLastLapStart : lapStartCredit;
+        const creditRoseSinceLastLap = lapStartCredit > prevLapCredit;
+        const recoveryActedLastLap = (s.flags.creditRecoveryActionLap != null) && (s.flags.creditRecoveryActionLap >= s.lap - 1);
+        const valveOpen = !creditRoseSinceLastLap && !recoveryActedLastLap;
+        /* Recovery streak: a stewardship meter. Active defence (a Reform/bond
+           raised Credit last lap) builds it, and once a climb is underway a visible
+           rise sustains the MOMENTUM so the recovery can reach Stable rather than
+           stalling one tick above the crisis floor. A lap of true backsliding —
+           Credit fell with no defence — resets it, re-arming the descent. The
+           recovery is still EARNED (it takes a real defensive action to start, and
+           it cannot lift a Panic-tier slide — see the gate below + the panic
+           bypass), but it is generous enough that an attentive Treasury climbs out.
+           A human who simply stops defending lets Credit fall, the meter resets,
+           and the slide presses on toward Panic/Default — the felt stake (gate 6). */
+        if (recoveryActedLastLap || creditRoseSinceLastLap) s.flags.creditRecoveryStreak = (s.flags.creditRecoveryStreak || 0) + 1;
+        else s.flags.creditRecoveryStreak = 0;
+        const slideRoundsNow = s.flags.creditSlideRounds;
+        const deepEnough = (s.flags.creditSlideDeepestRank || 0) >= 2; /* episode touched crisis */
+        /* In PANIC (Credit ≤ 2) the bond market has lost faith: acceleration
+           BYPASSES the recovery valve (a single Reform can no longer stave off
+           collapse — this is the spec's "Panic too deep for relief", part 4) and
+           the slide presses toward Default. This is what gives the deepest slides
+           real teeth: a game that lets Credit fall into Panic is in genuine danger
+           of Default, not merely treading water. Crisis and Doubt remain fully
+           recoverable via the valve above. */
+        const inPanicNow = s.tracks.credit.value > 0 && s.tracks.credit.value <= CREDIT_TIERS.panic.max;
+        const deepSlideBypass = slideRoundsNow >= CREDIT_SPIRAL.DEEP_SLIDE_BYPASS; /* a chronically unresolved crisis slide breaks through the valve */
+        if (slideRoundsNow >= CREDIT_SPIRAL.ACCEL_AFTER && deepEnough && (valveOpen || inPanicNow || deepSlideBypass) && s.tracks.credit.value > 0) {
+          /* Default-ward acceleration: a crisis/panic-touched slide snowballs. */
+          s = adjustTrack(s, 'credit', -1, 'Credit spiral accelerates · ' + slideRoundsNow + ' rounds of unaddressed debt');
+        } else if (slideRoundsNow >= CREDIT_SPIRAL.DOUBT_ACCEL_AFTER && lapStartTier === 'doubt' && !deepEnough && valveOpen && s.tracks.credit.value > 0) {
+          /* Chronic-doubt descent: a slide that has sat in Doubt for many rounds
+             without ever reaching Crisis is sustained neglect — the brake (Acts /
+             credit-up cards / a single Reform) is not keeping pace with the rot, so
+             Credit slips toward Crisis. Same recovery valve. Once it reaches Crisis,
+             deepEnough latches and the Default-ward branch takes over. */
+          s = adjustTrack(s, 'credit', -1, 'Public credit erodes · ' + slideRoundsNow + ' rounds of unaddressed doubt');
+        } else if (s.flags.creditRecoveryStreak >= CREDIT_SPIRAL.RECOVERY_AFTER && (lapStartTier === 'doubt' || lapStartTier === 'crisis') && s.tracks.credit.value > 0) {
+          /* CONFIDENCE RETURNS — the upward mirror of acceleration. After
+             RECOVERY_AFTER consecutive laps of active defence (Reform/bonds), the
+             bond market starts to believe again: Credit +1 at the lap boundary, on
+             top of the player's own Reform. This is what lets a diligent recovery
+             actually CLIMB to Stable instead of treading water forever against the
+             card pressure — the "sustained EFFORT escapes" half of the contract,
+             and the near-miss recovery the research rewards (failure-tension.md
+             finding 3). Symmetric to the snowball: neglect compounds DOWN to
+             Default, sustained effort compounds UP to recovery. Telegraphed by the
+             forecast gauge so neither pole is a surprise. */
+          s = adjustTrack(s, 'credit', 1, 'Public confidence returns · ' + s.flags.creditRecoveryStreak + ' rounds of sound stewardship');
+        }
+        /* Remember THIS lap's STARTING Credit (captured before any spiral
+           adjustment) so next lap's valve can tell whether Credit rose BETWEEN
+           lap boundaries — which correctly counts the spiral's own confidence-
+           returns +1 as upward progress, pausing the descent the following lap.
+           (Storing the post-adjustment value would hide the spiral's own movement
+           and let acceleration immediately cancel a recovery.) */
+        s.flags.creditAtLastLapStart = lapStartCredit;
+      }
+
       /* v1.3 — Vision conditions that need an "anytime once-set" latch.
          These flags persist once set so Vision-bonus eligibility is sticky.
          v1.3 tune: dropped the "round 10+" restriction; Credit ≥ 8 / Capacity ≥ 7
@@ -4993,11 +5245,37 @@ function reduce(s, action) {
         /* v1.2.1 — Credit +1 only when Public Credit is at or below the Doubt
            band (≤ 6). Above that, the bond is purely a coupon-income engine.
            This stops the bond pump from preemptively suppressing Doubt /
-           Crisis / Panic in healthy economies. */
+           Crisis / Panic in healthy economies.
+
+           v1.5 (Credit Spiral · part 4) — RELIEF REBALANCE. The bond pump used
+           to erase a deep slide every round it was issued (A2-03), so the spiral
+           never bit. Now the relief is GATED by depth:
+             • Doubt   (5–6): relief applies freely (early-warning rescue).
+             • Crisis  (≤4, >0): relief applies ONCE per slide episode, then the
+               bond is coupon-only until the slide resets (Credit ≥ 7 clears the
+               latch at BEGIN_LAP). A second bond in the same crisis does NOT pump.
+             • Panic   (≤2): relief does NOT apply at all — too deep for a single
+               bond to buy out; only Reform / recovery can climb back.
+           The bond's 200 TN cost + coupon income are unchanged; we only stop it
+           from trivially cancelling a deep, accelerating slide. */
+        const cv = s.tracks.credit.value;
         let creditNote = '';
-        if (s.tracks.credit.value <= 6) {
+        const inPanic  = cv > 0 && cv <= CREDIT_TIERS.panic.max;   // ≤ 2
+        const inCrisis = cv > CREDIT_TIERS.panic.max && cv <= CREDIT_TIERS.crisis.max; // 3–4
+        const inDoubt  = cv > CREDIT_TIERS.crisis.max && cv <= CREDIT_TIERS.doubt.max; // 5–6
+        if (inDoubt) {
           s = adjustTrack(s, 'credit', 1, p.name + ' issues a federal bond');
           creditNote = ' · Credit +1';
+          s.flags.creditRecoveryActionLap = s.lap; /* active recovery effort (part 3 valve) */
+        } else if (inCrisis && !s.flags.creditReliefUsedThisEpisode) {
+          s = adjustTrack(s, 'credit', 1, p.name + ' issues a federal bond · crisis relief');
+          s.flags.creditReliefUsedThisEpisode = true;
+          s.flags.creditRecoveryActionLap = s.lap; /* active recovery effort (part 3 valve) */
+          creditNote = ' · Credit +1 (crisis relief · once per slide)';
+        } else if (inCrisis) {
+          creditNote = ' · Credit unchanged (crisis relief already spent this slide)';
+        } else if (inPanic) {
+          creditNote = ' · Credit unchanged (Panic too deep for bond relief)';
         } else {
           creditNote = ' · Credit unchanged (above Doubt band)';
         }
@@ -5049,6 +5327,7 @@ function reduce(s, action) {
       p.reformUsedRound = s.lap;
       if (choice === 'credit') {
         s = adjustTrack(s, 'credit', 1, p.name + ' reforms public finance');
+        s.flags.creditRecoveryActionLap = s.lap; /* active recovery effort — the spiral's valve (BEGIN_LAP part 3) pauses the descent the round after any Reform/bond raises Credit, so attentive play is rewarded */
         s = logRow(s, { actor: p.name, event:'REFORM', detail: p.name + ' spends 2 Influence to raise Public Credit · Credit ' + s.tracks.credit.value, cls:'event' });
       } else if (choice === 'resistance') {
         s = adjustTrack(s, 'resistance', -2, p.name + ' negotiates with the counties');
@@ -5538,6 +5817,22 @@ function renderTracks() {
     if (t.key === 'credit' && v <= 4 && v > 0) html += '<span class="crisis-tag warning">⚠ Credit Crisis zone</span> ';
     if (t.key === 'credit' && v === 0) html += '<span class="crisis-tag warning">⚠ Default</span> ';
     if (t.key === 'credit' && STATE.flags.creditCrisisFired) html += '<span class="crisis-tag locked">Credit Crisis fired</span> ';
+    /* v1.5 — Credit Spiral FORECAST GAUGE (part 5). Always-visible, render-time
+       only (reads creditForecast(STATE); writes NOTHING to the ledger). Engineers
+       the near-miss (failure-tension.md finding 3) and makes loss earned/telegraphed
+       (finding 8): while sliding it shows where the slide is heading + how many
+       rounds of runway remain, and surfaces Reform as the affordance to arrest it. */
+    if (t.key === 'credit') {
+      const fc = creditForecast(STATE);
+      const slide = STATE.flags.creditSlideRounds || 0;
+      const levyPreview = (fc.tier === 'doubt' || fc.tier === 'crisis' || fc.tier === 'panic') && slide > 0
+        ? creditLevyFor(fc.tier, slide) : 0;
+      const dangerCls = 'forecast-' + (fc.danger || 'stable');
+      html += '<div class="credit-forecast ' + dangerCls + '">'
+        + '<span class="fc-line">' + fc.line + '</span>'
+        + (levyPreview > 0 ? '<span class="fc-levy">Next debt-servicing levy: ' + levyPreview + ' TN / player' + (slide > 1 ? ' · slide round ' + slide : '') + '</span>' : '')
+        + '</div>';
+    }
     if (t.key === 'resistance' && v >= 10) html += '<span class="crisis-tag warning">⚠ Rebellion approaches</span> ';
     t.thresholds.forEach(th => {
       const hit = v >= th.at;
