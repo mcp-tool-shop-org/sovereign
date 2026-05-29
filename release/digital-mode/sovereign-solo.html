@@ -1236,6 +1236,22 @@ html, body { font-size:15px; }
   background:var(--foil); color:var(--ink);
   box-shadow:inset 0 0 0 1px var(--foil);
 }
+/* v1.5 — Influence standings summary. One quiet line directly under the
+   positions strip stating the human's rank and gap to the leader, so the
+   race is legible without opening the sidebar. Render-time only. */
+.standings-summary {
+  font-family:var(--ui); font-size:10.5px; letter-spacing:.06em;
+  text-transform:uppercase; font-weight:700;
+  color:var(--neutral);
+  background:var(--parchment);
+  border:1px solid var(--ink); border-top:0;
+  padding:6px 18px; margin:0 0 6px;
+  display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+}
+.standings-summary .ss-rank { color:var(--ink); font-weight:800; }
+.standings-summary .ss-ip { font-family:var(--mono); color:var(--foil); font-weight:700; letter-spacing:.04em; }
+.standings-summary .ss-gap { color:var(--neutral); font-weight:700; }
+.standings-summary.is-leading .ss-rank { color:var(--foil); }
 /* =====================================================================
    PORTFOLIO STRIP — compact "your holdings" near the action rail
    ===================================================================== */
@@ -2001,6 +2017,21 @@ body:not(.designer-mode) #seedPill { display:none; }
 .event-toast.rebellion { background:var(--revolutionary-debt); color:var(--parchment); border-color:var(--ink); }
 .event-toast.rebellion::before { background:var(--ink); }
 .event-toast.rebellion .toast-eyebrow { color:#F0E6CD; }
+
+/* v1.5 — Rival posture toast. A quiet tactical read of the race, not a
+   billboard: muted ink border, a thin neutral accent bar (no gold — gold is
+   the Chronicler's), and a sentence-scale title rather than a headline so it
+   reads as an aside. */
+.event-toast.posture {
+  border-color:var(--neutral); border-width:1.5px;
+  box-shadow:inset 0 0 0 1px var(--rule-soft), 0 5px 18px -10px rgba(0,0,0,.4);
+}
+.event-toast.posture::before { background:linear-gradient(90deg, var(--neutral) 0%, var(--ink) 50%, var(--neutral) 100%); height:3px; }
+.event-toast.posture .toast-eyebrow { color:var(--neutral); letter-spacing:.22em; }
+.event-toast.posture .toast-title {
+  font-family:var(--display); font-size:15px; line-height:1.3;
+  font-style:italic; font-weight:600; letter-spacing:0; color:var(--ink);
+}
 
 /* v1.4.3 — Compact toolbar */
 .controls .hidden-old { display:none !important; }
@@ -3725,7 +3756,81 @@ function fireReaction(profile, kind, opts) {
   if (!line) return;
   pushToast({ eyebrow: (opts && opts.eyebrow) || 'Reaction', title: line, body: '' });
 }
-function resetReactionMemory() { __REACTION_FIRED = new Set(); __CHRONICLER_FIRED_GAME = new Set(); __CHRONICLER_FIRED_LAP = -1; __CHRONICLER_SUPPRESSES_LAP = -1; }
+function resetReactionMemory() { __REACTION_FIRED = new Set(); __CHRONICLER_FIRED_GAME = new Set(); __CHRONICLER_FIRED_LAP = -1; __CHRONICLER_SUPPRESSES_LAP = -1; __POSTURE_FIRED = new Set(); }
+
+/* =====================================================================
+   v1.5 RIVAL POSTURE — the threat read, framed relative to YOU
+   A distinct fourth voice from the three above:
+     - the Chronicler narrates HISTORY (third person, dated, sourced);
+     - __PROFILE_FLAVOR narrates the ACTION in character ("takes X for Y TN");
+     - REACTIONS are the rival's own EMOTION.
+   A posture line is the strategist's read of what an opponent's move means
+   for the HUMAN's standing in the Influence race — it always names the IP
+   relationship to you and the board consequence ("Hamilton — 3 Influence
+   ahead — takes the Bank; the Treasury bloc tightens."). It is PRESENTATION
+   ONLY: computed at render time from STATE, surfaced via pushToast, and never
+   written to the hashed ledger/state. Anti-spam: at most one posture line per
+   opponent TURN (keyed actor::lap::turnIndex); deferred when a Chronicler
+   banner has already taken the same round's beat. Respects NARRATION_LEVEL via
+   pushToast (suppressed in Off; not in the Minimal allowlist by design — the
+   race read is "On"-mode colour, not a catastrophe banner). */
+let __POSTURE_FIRED = new Set();
+
+/* Phrase the human's standing relative to one opponent seat, from live IPs. */
+function postureGap(oppIdx) {
+  if (!STATE || !STATE.players) return null;
+  const youIP = scorePlayer(STATE, 0).total;
+  const oppIP = scorePlayer(STATE, oppIdx).total;
+  const d = oppIP - youIP;
+  if (d > 0) return d + ' Influence ahead';
+  if (d < 0) return (-d) + ' Influence behind';
+  return 'level with you on Influence';
+}
+
+/* Board-consequence clauses, keyed by action kind. Period-appropriate, terse,
+   and framed as a tightening threat to the human — NOT in-character flavour
+   (that is __PROFILE_FLAVOR's job) and NOT history (the Chronicler's). The
+   second clause leans on the seat's profile bloc so each rival reads distinct. */
+const POSTURE_BLOC = {
+  'treasury-finance': 'the Treasury bloc tightens',
+  'merchant-infrastructure': 'the commercial lanes narrow against you',
+  'manufacturer-industry': 'the works close ranks',
+};
+function postureClause(kind, oppProfile, where) {
+  const bloc = POSTURE_BLOC[oppProfile] || 'the board narrows against you';
+  switch (kind) {
+    case 'buy':       return 'takes ' + where + '; ' + bloc + '.';
+    case 'auctionWin':return 'carries ' + where + ' out of the auction; ' + bloc + '.';
+    case 'upgrade':   return 'improves ' + where + '; the rent you may yet owe climbs.';
+    case 'voteYes':   return 'throws a YES onto the floor; the measure gathers behind them.';
+    case 'voteNo':    return 'spends a NO to stall the floor; the chamber holds against you.';
+    case 'special':   return 'works a privileged move off the board; the ground shifts under your plan.';
+    default:          return bloc + '.';
+  }
+}
+
+/* Fire one rival-posture toast for opponent seat oppIdx on a given action kind.
+   No-op for the human, when narration suppresses it, when this opponent turn
+   already posted a posture line, or when a Chronicler banner has claimed this
+   round's beat (defer — don't stack on the historian). UI-only; never touches
+   STATE.ledger or any hashed field. */
+function firePosture(oppIdx, kind, turnIndex, where) {
+  if (!STATE || !STATE.players) return;
+  const opp = STATE.players[oppIdx];
+  if (!opp || opp.profile === 'human') return;
+  const lap = STATE.lap || 1;
+  /* Defer to the Chronicler: if a banner already fired this round, the beat is
+     taken — one rival line would stack on the historian's voice. */
+  if (typeof __CHRONICLER_FIRED_LAP !== 'undefined' && __CHRONICLER_FIRED_LAP === lap) return;
+  /* Anti-spam: at most one posture line per opponent TURN. */
+  const key = opp.name + '::' + lap + '::' + turnIndex;
+  if (__POSTURE_FIRED.has(key)) return;
+  const gap = postureGap(oppIdx);
+  if (!gap) return;
+  __POSTURE_FIRED.add(key);
+  const sentence = opp.name + ' — ' + gap + ' — ' + postureClause(kind, opp.profile, where);
+  pushToast({ cls:'posture', eyebrow:'The race · ' + opp.name, title: sentence, body:'' });
+}
 
 /* =====================================================================
    v1.4 CHRONICLER — historical witness voice
@@ -5793,6 +5898,9 @@ function renderControls() {
   /* Positions strip — always rendered first so the player can read where everyone is */
   if (phase !== 'game-over') {
     const strip = el('div', 'positions-strip');
+    /* v1.5 — collect each seat's live Influence as we render the rows so the
+       standings summary below can read rank + gap without re-scoring. */
+    const ipByIdx = [];
     STATE.players.forEach((p, idx) => {
       const circuitsDone = p.circuitsCompleted || 0;
       const target = CIRCUIT_VICTORY.target;
@@ -5805,6 +5913,7 @@ function renderControls() {
       const where = SPACES[p.position]?.name || ('space ' + p.position);
       /* Show current Influence inline */
       const ip = scorePlayer(STATE, idx).total;
+      ipByIdx[idx] = ip;
       /* Circuit badge — every player, always visible. Active player highlighted;
          brightens to foil when one circuit from victory. */
       const circuitBadge = '<div class="pos-circuits" title="Board circuits completed">'
@@ -5819,6 +5928,38 @@ function renderControls() {
       strip.appendChild(row);
     });
     bar.appendChild(strip);
+
+    /* v1.5 — Influence standings summary. One quiet line stating the human's
+       rank and gap to the leader so the IP race is felt without opening the
+       sidebar. Pure render-time read of the IPs collected above; no state
+       mutation, no ledger write. */
+    {
+      const youIP = ipByIdx[0] || 0;
+      /* Rank = 1 + number of seats strictly ahead of the human (ties share rank). */
+      const ahead = ipByIdx.filter((v, i) => i !== 0 && (v || 0) > youIP).length;
+      const rank = ahead + 1;
+      const ord = ['', '1st', '2nd', '3rd'][rank] || (rank + 'th');
+      /* Leader = highest IP among ALL seats; identify by index for the name. */
+      let leadIdx = 0;
+      for (let i = 1; i < ipByIdx.length; i++) { if ((ipByIdx[i] || 0) > (ipByIdx[leadIdx] || 0)) leadIdx = i; }
+      const leadIP = ipByIdx[leadIdx] || 0;
+      const leading = rank === 1;
+      const ss = el('div', 'standings-summary' + (leading ? ' is-leading' : ''));
+      let html = 'Standings · You: <span class="ss-ip">' + youIP + ' IP</span> · <span class="ss-rank">' + ord + '</span>';
+      if (leading) {
+        /* Human leads (or is tied for the lead). Surface the chase margin if anyone is close. */
+        let chaseIP = -1;
+        for (let i = 0; i < ipByIdx.length; i++) { if (i !== 0 && (ipByIdx[i] || 0) > chaseIP) chaseIP = ipByIdx[i] || 0; }
+        const margin = youIP - (chaseIP < 0 ? 0 : chaseIP);
+        html += ' · <span class="ss-gap">' + (margin > 0 ? 'leading by ' + margin : 'tied for the lead') + '</span>';
+      } else {
+        const behind = leadIP - youIP;
+        html += ' · <span class="ss-gap">' + behind + ' behind ' + STATE.players[leadIdx].name + '</span>';
+      }
+      ss.innerHTML = html;
+      ss.title = 'Influence standings — the game is won at Final Accounting by Influence Points.';
+      bar.appendChild(ss);
+    }
 
     /* Landing outcome band — explains what just happened to YOU since your last roll */
     if (LAST_LANDING_OUTCOME && LAST_LANDING_OUTCOME.text) {
@@ -6835,6 +6976,41 @@ function scanLedgerForToasts() {
       const f = flavorFor(row.actor);
       pushToast({ cls:'fail', eyebrow: row.actor + ' \u00b7 \u2192 Crisis', title: f ? f.crisis : row.detail, body:'' });
     }
+
+    /* v1.5 \u2014 Rival posture line. A single, branch-independent dispatch on the
+       same new ledger row: when an OPPONENT takes a notable action (buy /
+       auction win / upgrade / vote / special), surface ONE short rival-relative
+       sentence framing the threat to the human. Kept separate from the flavour
+       toast chain above because that chain's earlier reaction branches (BUY/VOTE)
+       short-circuit the per-action flavour branches for opponents; routing
+       posture here guarantees it sees every notable opponent row exactly once.
+       firePosture is UI-only and self-limiting (\u22641 per opponent turn; defers to
+       a Chronicler banner that already claimed the round). */
+    if (isOpponentActor) {
+      const oppIdx = STATE.players.findIndex(pl => pl.name === row.actor && pl.profile !== 'human');
+      if (oppIdx >= 0) {
+        const det = row.detail || '';
+        /* Acquisition surfaces as an OWN row ("Now owns <space>") \u2014 there is no
+           BUY event in the ledger vocabulary. The System/Space-actor OWN rows
+           (setup grant, "landed on own") are already excluded by isOpponentActor. */
+        if (row.event === 'OWN' && /^Now owns\s+/.test(det)) {
+          const m = det.match(/^Now owns\s+(.+?)(\s+\u00b7|$)/);
+          firePosture(oppIdx, 'buy', row.turn, m ? m[1].trim() : 'a holding');
+        } else if (row.event === 'AUCTION WIN' || (row.event === 'AUCTION' && /wins|won/i.test(det))) {
+          const m = det.match(/Won\s+(.+?)\s+for\s+\$/i) || det.match(/wins\s+(.+?)(\s+for|\s+\u00b7|$)/i);
+          firePosture(oppIdx, 'auctionWin', row.turn, m ? m[1].trim() : 'the auction lot');
+        } else if (row.event === 'UPGRADE') {
+          const m = det.match(/^Upgrade\s+(.+?)(\s+to|\s+\(|$)/) || det.match(/^(.+?)\s+now\s+Tier/i);
+          firePosture(oppIdx, 'upgrade', row.turn, m ? m[1].trim() : 'a holding');
+        } else if (row.event === 'VOTE') {
+          const yes = /\bYES\b/.test(det);
+          firePosture(oppIdx, yes ? 'voteYes' : 'voteNo', row.turn, '');
+        } else if (row.event === 'SPECIAL') {
+          firePosture(oppIdx, 'special', row.turn, '');
+        }
+      }
+    }
+
     /* Lap-end recap: trigger when a new lap begins (lap > 1) */
     if (row.event === 'LAP' && /Begin lap (\d+)/.test(row.detail || '')) {
       const m = row.detail.match(/Begin lap (\d+)/);
