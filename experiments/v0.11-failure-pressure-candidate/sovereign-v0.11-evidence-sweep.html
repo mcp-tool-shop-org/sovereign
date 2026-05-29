@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sovereign · v0.11 Failure-Pressure Candidate · Evidence Sweep</title>
+<style>
+  :root{--display:"Baskerville","Big Caslon","Hoefler Text","Garamond","Times New Roman",serif;
+        --body:"Iowan Old Style","Georgia","Cambria","Times New Roman",serif;
+        --ui:-apple-system,"Segoe UI","Helvetica Neue","Arial",system-ui,sans-serif;
+        --mono:"SF Mono","Menlo","Consolas","Courier New",monospace;
+        --parchment:#F0E6CD;--parchment-2:#E6DABC;--ink:#1A1612;--highlight:#C8392E;
+        --rule-soft:rgba(26,22,18,0.22);--national-finance:#1F2D52;
+        --commercial-infrastructure:#2E7A6B;--manufactures:#8C8A2E;
+        --pass:#2E7A6B;--fail:#C8392E;--neutral:rgba(26,22,18,0.55);}
+  *{box-sizing:border-box}
+  body{margin:0;padding:30px;font-family:var(--body);background:#2A2622;color:var(--ink);-webkit-print-color-adjust:exact}
+  .doc{max-width:1100px;margin:0 auto;background:var(--parchment);border:1.5px solid var(--ink);padding:30px 40px;position:relative}
+  .doc::before{content:"";position:absolute;inset:8px;border:0.5px solid var(--rule-soft);pointer-events:none}
+  h1{font-family:var(--display);font-weight:400;font-size:36px;line-height:1;margin:0 0 6px}
+  .eyebrow{font-family:var(--ui);font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--national-finance);margin-bottom:8px}
+  .sub{font-family:var(--display);font-style:italic;font-size:14px;margin-bottom:6px}
+  .meta{font-family:var(--mono);font-size:9.5px;opacity:.7;margin-top:4px;border-top:0.5px dashed var(--rule-soft);padding-top:6px}
+  h2{font-family:var(--ui);font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;margin:22px 0 8px;border-bottom:1px solid var(--ink);padding-bottom:4px;display:flex;justify-content:space-between}
+  h2 .surface-id{font-family:var(--mono);font-size:9px;letter-spacing:.06em;opacity:.6;text-transform:none}
+  h3{font-family:var(--display);font-weight:400;font-size:18px;margin:14px 0 6px}
+  h4{font-family:var(--ui);font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin:14px 0 4px}
+  p{margin:6px 0;line-height:1.5;font-size:13px}
+  table{width:100%;border-collapse:collapse;margin-top:6px}
+  th{background:var(--ink);color:var(--parchment);font-family:var(--ui);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;padding:5px 8px;text-align:left}
+  td{font-family:var(--ui);font-size:11px;padding:4px 8px;border-bottom:0.5px solid var(--rule-soft);vertical-align:top}
+  td.n{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+  td.diff{background:rgba(200,57,46,0.08);color:var(--highlight);font-weight:600}
+  td.same{color:var(--neutral)}
+  .verdict-card{background:var(--parchment-2);border:1.5px solid var(--ink);padding:18px 22px;margin:14px 0}
+  .verdict-card .lbl{font-family:var(--ui);font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--national-finance)}
+  .verdict-card .nm{font-family:var(--display);font-size:26px;line-height:1.1;margin:6px 0 8px}
+  .verdict-card .det{font-size:13px;line-height:1.6}
+  .pass-pill{display:inline-block;font-family:var(--ui);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:2px 7px;border-radius:2px;font-weight:700}
+  .pass-pill.pass{background:var(--pass);color:#fff}
+  .pass-pill.fail{background:var(--fail);color:#fff}
+  .pass-pill.neutral{background:rgba(26,22,18,0.15);color:var(--ink)}
+  .callout{background:var(--parchment-2);border:1px solid var(--ink);padding:10px 14px;margin:8px 0;font-size:12.5px;line-height:1.55}
+  .callout strong{color:var(--highlight)}
+  .bar-cell{font-family:var(--mono);font-size:9.5px;padding:3px 4px;border-bottom:0.5px solid var(--rule-soft);position:relative;text-align:right;min-width:36px}
+  .bar-cell .bar{position:absolute;left:2px;top:50%;transform:translateY(-50%);height:8px;background:var(--manufactures);opacity:.45;border-radius:1px}
+  .bar-cell .bar-num{position:relative;font-variant-numeric:tabular-nums}
+  th.bar-h{font-family:var(--mono);font-size:9px;text-align:center;padding:3px 4px}
+</style>
+</head>
+<body>
+<div class="doc">
+
+<div class="eyebrow">Sovereign · v0.11 failure-pressure candidate · evidence sweep</div>
+<h1>v0.11 Candidate — Bank Run Credit Pressure</h1>
+<div class="sub">Single-lever test: Bank Run card now pushes Public Credit -1 and Industrial Capacity -1 (was Capacity -1 only). Measured across 700 deterministic games.</div>
+<div class="meta">Configurations: CANONICAL-400 (T/M/Mfg, seeds 2026-2425) · CANONICAL-100-A vs CANONICAL-100-B (determinism check) · MFG-MIRROR-100 (3× Manufacturer, seeds 2026-2125). Generated 2026-05-19 20:50:41 UTC. v0.10 sim verified byte-identical for all 400 canonical seeds during the prior diagnosis pass; v0.11 sim verified byte-identical to v0.10 for seed 2026 (where Bank Run does not fire).</div>
+
+<h2>Verdict <span class="surface-id">A</span></h2>
+
+<div class="verdict-card">
+  <div class="lbl">v0.11 candidate verdict</div>
+  <div class="nm">DIAGNOSTIC SUCCESS — keep, not final</div>
+  <div class="det">v0.10 balance preserved; Capacity preserved; Credit channel is two-sided. Default still does not fire because the Funding Act +2 floor caps the credit min at 5. Lever IS active in 16.3 % of games but cannot single-handedly trigger Default. Next lever (when one is run) needs to compound credit-down pressure or attack the Funding Act floor.</div>
+</div>
+
+<h4>Decision criteria evaluation</h4>
+<table>
+  <thead><tr><th>Criterion</th><th>Target</th><th>Observed</th><th>Pass</th></tr></thead>
+  <tbody>
+
+    <tr>
+      <td>Balance band: Treasury 45–65 %</td>
+      <td class="n">45–65 %</td>
+      <td class="n">60.8 %</td>
+      <td><span class="pass-pill pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td>Balance band: Merchant 15–35 %</td>
+      <td class="n">15–35 %</td>
+      <td class="n">22.8 %</td>
+      <td><span class="pass-pill pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td>Balance band: Manufacturer 10–25 %</td>
+      <td class="n">10–25 %</td>
+      <td class="n">16.5 %</td>
+      <td><span class="pass-pill pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td>Credit min drops below 5 in nontrivial cases<br><span style="color:var(--neutral);font-size:10px;font-style:italic">Bank Run never fires when credit < 7 because Funding Act (+2 credit, always passes lap 1) raises credit to 7 before any market shock card can be drawn. Bank Run -1 brings it to 6+, never below 5.</span></td>
+      <td class="n">> 0 games</td>
+      <td class="n">0 games</td>
+      <td><span class="pass-pill fail">NO</span></td>
+    </tr>
+    <tr>
+      <td>Capacity does not collapse</td>
+      <td class="n">≥6 ≈ 13 games (v0.10)</td>
+      <td class="n">13 games (v0.11)</td>
+      <td><span class="pass-pill pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td>Default fires (primary goal)<br><span style="color:var(--neutral);font-size:10px;font-style:italic">Bank Run -1 cannot reach Credit = 0 from the Funding-Act-protected floor of 7. Default requires either a compounding credit-down lever or a Funding Act floor weakening.</span></td>
+      <td class="n">> 0 games</td>
+      <td class="n">0 / 400</td>
+      <td><span class="pass-pill fail">NO</span></td>
+    </tr>
+    <tr>
+      <td>Determinism A vs B byte-identical</td>
+      <td class="n">PASS</td>
+      <td class="n">PASS</td>
+      <td><span class="pass-pill pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td>Seed 2026 byte-identical v0.10 vs v0.11</td>
+      <td class="n">IDENTICAL</td>
+      <td class="n">IDENTICAL</td>
+      <td><span class="pass-pill pass">PASS</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>v0.10 vs v0.11 side-by-side <span class="surface-id">B</span></h2>
+
+<h4>CANONICAL-400 — primary balance band</h4>
+<table>
+  <thead><tr><th>Metric</th><th>v0.10</th><th>v0.11</th></tr></thead>
+  <tbody>
+    <tr><td>Treasury wins</td><td class="n">244 (61%)</td><td class="n diff">243 (60.8%)</td></tr>
+    <tr><td>Merchant wins</td><td class="n">90 (22.5%)</td><td class="n diff">91 (22.8%)</td></tr>
+    <tr><td>Manufacturer wins</td><td class="n">66 (16.5%)</td><td class="n same">66 (16.5%)</td></tr>
+    <tr><td>Median winning margin (IP)</td><td class="n">3</td><td class="n same">3</td></tr>
+    <tr><td>Route 4+ dominance</td><td class="n">16 (4%)</td><td class="n same">16 (4%)</td></tr>
+  </tbody>
+</table>
+
+<h4>CANONICAL-400 — Public Credit track</h4>
+<table>
+  <thead><tr><th>Metric</th><th>v0.10</th><th>v0.11</th></tr></thead>
+  <tbody>
+    <tr><td>Credit min mean</td><td class="n">5.00</td><td class="n same">5.00</td></tr>
+    <tr><td>Credit max mean</td><td class="n">7.93</td><td class="n diff">7.90</td></tr>
+    <tr><td>Credit end mean</td><td class="n">7.93</td><td class="n diff">7.77</td></tr>
+    <tr><td>Credit ever ≤ 5</td><td class="n">400 / 400</td><td class="n same">400 / 400</td></tr>
+    <tr><td>Credit ever ≤ 4</td><td class="n">0 / 400</td><td class="n same">0 / 400</td></tr>
+    <tr><td>Credit ever ≤ 3</td><td class="n">0 / 400</td><td class="n same">0 / 400</td></tr>
+    <tr><td>Credit ever ≤ 2</td><td class="n">0 / 400</td><td class="n same">0 / 400</td></tr>
+    <tr><td>Credit ever ≤ 1</td><td class="n">0 / 400</td><td class="n same">0 / 400</td></tr>
+    <tr><td>Credit ever = 0 (Default)</td><td class="n">0 / 400</td><td class="n same">0 / 400</td></tr>
+  </tbody>
+</table>
+
+<h4>Credit end distribution (CANONICAL-400)</h4>
+<table>
+  <thead><tr><th>Series</th><th class="bar-h">0</th><th class="bar-h">1</th><th class="bar-h">2</th><th class="bar-h">3</th><th class="bar-h">4</th><th class="bar-h">5</th><th class="bar-h">6</th><th class="bar-h">7</th><th class="bar-h">8</th><th class="bar-h">9</th><th class="bar-h">10</th><th class="bar-h">11</th><th class="bar-h">12</th></tr></thead>
+  <tbody>
+    <tr><th>v0.10 end</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">164</span></td><td class="bar-cell"><div class="bar" style="width:84.1%"></div><span class="bar-num">138</span></td><td class="bar-cell"><div class="bar" style="width:39.0%"></div><span class="bar-num">64</span></td><td class="bar-cell"><div class="bar" style="width:17.7%"></div><span class="bar-num">29</span></td><td class="bar-cell"><div class="bar" style="width:2.4%"></div><span class="bar-num">4</span></td><td class="bar-cell"><div class="bar" style="width:0.6%"></div><span class="bar-num">1</span></td></tr>
+    <tr><th>v0.11 end</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:23.0%"></div><span class="bar-num">35</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">152</span></td><td class="bar-cell"><div class="bar" style="width:78.3%"></div><span class="bar-num">119</span></td><td class="bar-cell"><div class="bar" style="width:41.4%"></div><span class="bar-num">63</span></td><td class="bar-cell"><div class="bar" style="width:17.1%"></div><span class="bar-num">26</span></td><td class="bar-cell"><div class="bar" style="width:2.6%"></div><span class="bar-num">4</span></td><td class="bar-cell"><div class="bar" style="width:0.7%"></div><span class="bar-num">1</span></td></tr>
+  </tbody>
+</table>
+<p class="meta">v0.11 shifts the distribution one step down (-0.16 mean), surfacing a new "end = 6" bucket of 35 games that did not exist in v0.10. The track is no longer a one-way ratchet.</p>
+
+<h4>CANONICAL-400 — Industrial Capacity</h4>
+<table>
+  <thead><tr><th>Metric</th><th>v0.10</th><th>v0.11</th></tr></thead>
+  <tbody>
+    <tr><td>Capacity end mean</td><td class="n">3.44</td><td class="n same">3.44</td></tr>
+    <tr><td>Capacity ever ≥ 6</td><td class="n">13 (3.3%)</td><td class="n same">13 (3.3%)</td></tr>
+    <tr><td>Capacity ever ≥ 8</td><td class="n">0 / 400</td><td class="n same">0 / 400</td></tr>
+    <tr><td>Capacity ever ≥ 10</td><td class="n">0 / 400</td><td class="n same">0 / 400</td></tr>
+  </tbody>
+</table>
+<p class="meta">Capacity preserved. The Bank Run -1 capacity events (65 across 400 games) get fully absorbed by other capacity-up sources (Industrial Charter +1, Coinage Act +1, Report on Manufactures +2, Cotton Gin +1, British Trade Embargo +1, Industrial-purchase bumps).</p>
+
+<h4>CANONICAL-400 — Failure events</h4>
+<table>
+  <thead><tr><th>Metric</th><th>v0.10</th><th>v0.11</th></tr></thead>
+  <tbody>
+    <tr><td>Default fires</td><td class="n">0 / 400</td><td class="n same">0 / 400</td></tr>
+    <tr><td>Rebellion fires</td><td class="n">0 / 400</td><td class="n same">0 / 400</td></tr>
+    <tr><td>Bankruptcy events</td><td class="n">1</td><td class="n same">1</td></tr>
+    <tr><td>Resistance max mean</td><td class="n">2.70</td><td class="n same">2.70</td></tr>
+  </tbody>
+</table>
+
+<h2>Bank Run firing analysis <span class="surface-id">C</span></h2>
+
+<p>Bank Run fired in <strong>65 of 400 games (16.3 %)</strong>. Each firing produced two pressure events (one credit -1, one capacity -1), for a total of 130 pressure events across the dataset.</p>
+
+<h4>Credit value AT TIME Bank Run fired (CANONICAL-400)</h4>
+<table>
+  <thead><tr><th>Credit before</th><th>→ Credit after</th><th>Events</th></tr></thead>
+  <tbody>
+
+    <tr><td class="n">7</td><td class="n">6</td><td class="n">47</td></tr>
+    <tr><td class="n">8</td><td class="n">7</td><td class="n">14</td></tr>
+    <tr><td class="n">9</td><td class="n">8</td><td class="n">3</td></tr>
+    <tr><td class="n">10</td><td class="n">9</td><td class="n">1</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+<strong>Structural finding.</strong> Bank Run NEVER fires when Credit is below 7. The Funding Act (+2 credit, always passes lap 1) lifts the track to 7 before any market-shock card can be drawn. Subsequent positive sources (Treaty Renegotiation, Federalist Victory, Coinage Act, Credit Restored) push it higher. By the time Bank Run gets drawn, credit is between 7 and 10 in every observed case. Bank Run -1 brings it back to 6 in 47 of 65 fires, 7 in 14 fires, 8 in 3 fires, 9 in 1 fire. None of these descents cross the starting value of 5 — so Credit min stays at 5 across all 400 games, identical to v0.10. The lever is active; it just cannot single-handedly cross the Default threshold because of the Funding Act floor.
+</div>
+
+<h4>Bank Run firing by lap</h4>
+<table>
+  <thead><tr><th>Lap</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr></thead>
+  <tbody>
+    <tr><th>card resolutions</th><td class="n">23</td><td class="n">3</td><td class="n">8</td><td class="n">5</td><td class="n">8</td><td class="n">7</td><td class="n">11</td></tr>
+  </tbody>
+</table>
+<p class="meta">Heavy skew to lap 1 (23 of 65 fires) is expected: fresh deck, three players land on market-shock spaces by chance, no reshuffle yet. Lap-7 (11 fires) reflects multiple deck reshuffles increasing draw probability across the long late game.</p>
+
+<h2>MFG-MIRROR-100 cross-check <span class="surface-id">D</span></h2>
+
+<p>Configuration: Manufacturer × 3 slots, seeds 2026-2125, charterEnabled. Tests whether industrial concentration breaks v0.11's behavior.</p>
+
+<table>
+  <thead><tr><th>Metric</th><th>v0.10</th><th>v0.11</th></tr></thead>
+  <tbody>
+    <tr><td>Manufacturer wins (vs self)</td><td class="n">100 / 100</td><td class="n same">100 / 100</td></tr>
+    <tr><td>Default fires</td><td class="n">0 / 100</td><td class="n same">0 / 100</td></tr>
+    <tr><td>Rebellion fires</td><td class="n">0 / 100</td><td class="n same">0 / 100</td></tr>
+    <tr><td>Bankruptcy events</td><td class="n">0</td><td class="n same">0</td></tr>
+    <tr><td>Credit end mean</td><td class="n">7.89</td><td class="n diff">7.71</td></tr>
+    <tr><td>Credit ever ≤ 4</td><td class="n">0 / 100</td><td class="n same">0 / 100</td></tr>
+    <tr><td>Capacity end mean</td><td class="n">5.49</td><td class="n same">5.49</td></tr>
+    <tr><td>Capacity ever ≥ 6</td><td class="n">49 / 100</td><td class="n same">49 / 100</td></tr>
+    <tr><td>Bank Run games</td><td class="n">— / 100</td><td class="n diff">18 / 100</td></tr>
+  </tbody>
+</table>
+<p class="meta">Manufacturer-only profile keeps the credit/capacity tracks behaving comparably to the canonical T/M/Mfg triplet. Bank Run firing rate (18 %) is consistent with the canonical-400's 16.3 %. No regressions in this configuration.</p>
+
+<h2>Determinism <span class="surface-id">E</span></h2>
+
+<table>
+  <thead><tr><th>Check</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td>CANONICAL-100-A vs CANONICAL-100-B byte-identical (v0.11)</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>CANONICAL-100-A vs CANONICAL-100-B byte-identical (v0.10 baseline)</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Seed 2026 v0.10 ↔ v0.11 byte-identical (Bank Run does not fire in this seed)</td><td><span class="pass-pill pass">IDENTICAL</span></td></tr>
+  </tbody>
+</table>
+
+<h2>Interpretation <span class="surface-id">F</span></h2>
+
+<p><strong>What this lever proves:</strong> The credit-down channel is real and works. In v0.10 the credit track only ever moved upward; in v0.11 it moves both directions. The empirical evidence is a credit end-mean drop from 7.93 to 7.77 and 35 games landing at credit-end = 6, a bucket that did not exist in v0.10.</p>
+
+<p><strong>What this lever does NOT prove:</strong> That Default can fire with this change alone. The Funding Act (Lap 1, always passes) puts a credit floor at 7 before any Bank Run can fire. Bank Run -1 brings credit to 6 minimum, which is still 6 above the Default threshold of 0. The lever needs to compound with at least one additional credit-down source to reach Default.</p>
+
+<p><strong>Where the next lever should aim:</strong></p>
+<ul style="font-size:13px;line-height:1.6;margin:6px 0 6px 18px">
+  <li><strong>Compounding credit-down source.</strong> If a second credit-down card (e.g. modifying Speculation Fever to also drop credit -1, or a new conditional on Anti-Federalist Pamphlet) is added, two firings in the same game could push credit below 5. Estimate: with two independent ~16 % firing rates, ~2.5 % of games would see both fire — still below 1 % Default rate but a clear stepping stone.</li>
+  <li><strong>Funding Act floor attack.</strong> If Funding Act became conditional ("passes only if Resistance &lt; 4 at start of lap 1" — historically: low political tension lets the bill through) it would fail in some games, leaving credit at 5 instead of 7, dropping the floor by 2. Combined with Bank Run -1, credit min becomes 4. Default still far away, but the floor is no longer immovable.</li>
+  <li><strong>Larger credit-down events on conditional cards.</strong> If Bank Run scales to -2 credit when Charter has passed (i.e. when the systemic damage matches the systemic exposure), the lever stays single-card but doubles in strength.</li>
+</ul>
+
+<p><strong>What this lever DOES change about the design:</strong> Public Credit is now a real risk track. Players holding NF assets must reason about Bank Run as a possible mid-game downside, not just an abstract late-game disaster. The narration entry <code>track-threshold · credit-low</code> (which fires at Credit ≤ 2) is still dormant in v0.11, but the path to it is now mechanically open in a way it was not in v0.10.</p>
+
+<h2>Closeout <span class="surface-id">G</span></h2>
+
+<p>v0.11 candidate is a <strong>diagnostic success</strong>. Balance preserved. Capacity preserved. Determinism PASS. Credit track is no longer a one-way ratchet. Default still does not fire — predicted, not a failure of the lever, but a symptom of the Funding Act +2 floor that any single-card credit-down lever cannot overcome alone.</p>
+
+<p>Recommended disposition: <strong>Keep v0.11 candidate as a foundation</strong>, do not promote to v0.11 baseline yet. Next pass should target the Funding Act floor or add a second compounding credit-down source.</p>
+
+<div class="meta">
+v0.11 evidence sweep — observation only. Raw data:
+<code>experiments/v0.11-failure-pressure-candidate/raw-data/sovereign-v0.11-canonical-400.json</code>
+(and -100-A, -100-B, -mfg-mirror-100). Sim:
+<code>tools/diagnosis/sim-v0.11.mjs</code>.
+Source HTML:
+<code>experiments/v0.11-failure-pressure-candidate/sovereign-solo-v0.11-candidate.html</code>
+(265 KB, produced by Claude Design from v0.10 source, single-card Bank Run patch).
+v0.11 Node sim verified byte-identical to v0.10 for seed 2026.
+No release. No balance change to v0.10 baseline. No threshold change.
+</div>
+
+</div>
+</body>
+</html>

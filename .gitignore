@@ -30,3 +30,12 @@ sovereign-v*-release.zip
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Regenerable simulation raw data — reproducible byte-identical from seeds
+# (determinism thesis). The analysis scripts + reports are tracked; the bulk
+# JSON outputs are not.
+experiments/**/raw-data/
+tools/**/raw-data/
+
+# Dogfood-swarm working artifacts (manifest, findings, receipts) — local only
+swarms/

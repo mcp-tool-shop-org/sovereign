@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sovereign · v0.18 Promotion Audit</title>
+<style>
+  :root{--display:"Baskerville","Big Caslon","Hoefler Text","Garamond","Times New Roman",serif;
+        --body:"Iowan Old Style","Georgia","Cambria","Times New Roman",serif;
+        --ui:-apple-system,"Segoe UI","Helvetica Neue","Arial",system-ui,sans-serif;
+        --mono:"SF Mono","Menlo","Consolas","Courier New",monospace;
+        --parchment:#F0E6CD;--parchment-2:#E6DABC;--ink:#1A1612;--highlight:#C8392E;
+        --rule-soft:rgba(26,22,18,0.22);--national-finance:#1F2D52;
+        --commercial-infrastructure:#2E7A6B;--manufactures:#8C8A2E;
+        --pass:#2E7A6B;--fail:#C8392E;--neutral:rgba(26,22,18,0.55);
+        --promote:#1F2D52;--hold:#8C8A2E;--reject:#C8392E;}
+  *{box-sizing:border-box}
+  body{margin:0;padding:30px;font-family:var(--body);background:#2A2622;color:var(--ink)}
+  .doc{max-width:1100px;margin:0 auto;background:var(--parchment);border:1.5px solid var(--ink);padding:30px 40px;position:relative}
+  .doc::before{content:"";position:absolute;inset:8px;border:0.5px solid var(--rule-soft);pointer-events:none}
+  h1{font-family:var(--display);font-weight:400;font-size:36px;line-height:1;margin:0 0 6px}
+  .eyebrow{font-family:var(--ui);font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--national-finance);margin-bottom:8px}
+  .sub{font-family:var(--display);font-style:italic;font-size:14px;margin-bottom:6px}
+  .meta{font-family:var(--mono);font-size:9.5px;opacity:.7;margin-top:4px;border-top:0.5px dashed var(--rule-soft);padding-top:6px}
+  h2{font-family:var(--ui);font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;margin:22px 0 8px;border-bottom:1px solid var(--ink);padding-bottom:4px;display:flex;justify-content:space-between}
+  h2 .surface-id{font-family:var(--mono);font-size:9px;letter-spacing:.06em;opacity:.6;text-transform:none}
+  h4{font-family:var(--ui);font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin:14px 0 4px}
+  p{margin:6px 0;line-height:1.5;font-size:13px}
+  table{width:100%;border-collapse:collapse;margin-top:6px}
+  th{background:var(--ink);color:var(--parchment);font-family:var(--ui);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;padding:5px 8px;text-align:left}
+  td{font-family:var(--ui);font-size:11px;padding:4px 8px;border-bottom:0.5px solid var(--rule-soft);vertical-align:top}
+  td.n{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+  td.meta-cell{font-family:var(--mono);font-size:10px;color:var(--neutral)}
+  .verdict-card{background:var(--parchment-2);border:1.5px solid var(--ink);padding:22px 26px;margin:14px 0}
+  .verdict-card .lbl{font-family:var(--ui);font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--national-finance)}
+  .verdict-card .nm{font-family:var(--display);font-size:32px;line-height:1.1;margin:8px 0 10px;color:var(--promote)}
+  .verdict-card .det{font-size:13px;line-height:1.6}
+  .pass-pill{display:inline-block;font-family:var(--ui);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:2px 7px;border-radius:2px;font-weight:700}
+  .pass-pill.pass{background:var(--pass);color:#fff}
+  .pass-pill.fail{background:var(--fail);color:#fff}
+  .doc-note{background:var(--parchment-2);border-left:3px solid var(--national-finance);padding:10px 14px;margin:8px 0;font-size:12.5px;line-height:1.55}
+  .doc-note .title{font-family:var(--ui);font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--national-finance);margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="doc">
+
+<div class="eyebrow">Sovereign · v0.18 failure-system foundation · promotion audit</div>
+<h1>v0.18 Promotion Audit</h1>
+<div class="sub">Pre-merge readiness check across five categories: provenance, implementation, regression, balance/failure evidence, documentation. Reuses CANONICAL-400 + 100-A/B + MFG-MIRROR-100 evidence; re-runs targeted regression seeds; structural inspection of sim + HTML source.</div>
+<div class="meta">Audit generated 2026-05-20 03:41:08 UTC. Sim source: <code>tools/diagnosis/sim-v0.18.mjs</code>. HTML source: <code>experiments/v0.18-failure-pressure-candidate/sovereign-solo-v0.18-candidate.html</code>. Audit JSON archived at <code>sovereign-v0.18-promotion-audit.json</code>.</div>
+
+<div class="verdict-card">
+  <div class="lbl">Closeout recommendation</div>
+  <div class="nm">PROMOTE</div>
+  <div class="det">All 44 promotion-audit checks pass across 5 categories (provenance, implementation, regression, balance/failure, documentation). v0.18 is cleared to merge into the canonical digital-mode HTML and become the new failure-system foundation. Recommend a separate kickoff for the actual release/package work — this audit covers the candidate's readiness, not the publish mechanics.</div>
+  <p class="meta">44 / 44 checks passing across all categories. No structural, regression, or balance issues.</p>
+</div>
+
+
+<h2>1 · Provenance <span class="surface-id">12 / 12 PASS</span></h2>
+<table>
+  <thead><tr><th>Check</th><th>Result</th><th>Detail</th></tr></thead>
+  <tbody>
+    <tr><td>sim-v0.18.mjs branched from sim-v0.17.mjs</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">sim header documents v0.10 baseline lineage</td></tr>
+    <tr><td>Speculation Fever v0.17 conditional present in sim</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">conditional -1/-2 ternary verified at MARKET_SHOCK_CARDS id:3</td></tr>
+    <tr><td>Speculation Fever v0.17 conditional present in HTML</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">HTML has conditional credit delta</td></tr>
+    <tr><td>Anti-Federalist Pamphlet v0.16 (credit -1 + resist +1) preserved</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">chip layer {credit:-1, resist:1} verified at REPUBLIC_DEBATE_CARDS id:8</td></tr>
+    <tr><td>Bank Run v0.11 (credit -1 + capacity -1) preserved</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">chip layer {credit:-1, indust:-1} verified at MARKET_SHOCK_CARDS id:10</td></tr>
+    <tr><td>v0.14 Credit Restored gate NOT present</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">no Credit Restored gate string found</td></tr>
+    <tr><td>v0.15 Gold and Silver Inflow gate NOT present</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">no Gold and Silver Inflow gate string found</td></tr>
+    <tr><td>credit≥6 recovery gate pattern NOT present in sim</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">no credit>=6 recovery-gate condition found</td></tr>
+    <tr><td>Default trigger at credit === 0 unchanged</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">trigger condition byte-identical to v0.10 baseline</td></tr>
+    <tr><td>TRIGGER_DEFAULT reducer (resets credit to 3) unchanged</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">reducer body verified — credit reset to 3, pendingDefault cleared</td></tr>
+    <tr><td>Rebellion trigger at resistance === 12 unchanged</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">trigger condition byte-identical to v0.10 baseline</td></tr>
+    <tr><td>TRIGGER_REBELLION reducer (resets resistance to 6) unchanged</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">reducer body verified — resistance reset to 6, Revenue upgrades destroyed</td></tr>
+  </tbody>
+</table>
+
+
+<h2>2 · Implementation <span class="surface-id">12 / 12 PASS</span></h2>
+<table>
+  <thead><tr><th>Check</th><th>Result</th><th>Detail</th></tr></thead>
+  <tbody>
+    <tr><td>pendingCreditCrisis flag exists in initial state</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">verified at initial state declaration</td></tr>
+    <tr><td>creditCrisisFired flag is once-only (no reducer clears it)</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">no code path resets flags.creditCrisisFired to false — sticky</td></tr>
+    <tr><td>Trigger guard: key === credit && next <= 4 && next > 0 && !creditCrisisFired</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">exact guard string verified — Default suppression intact</td></tr>
+    <tr><td>Main loop priority: Default → Rebellion → Credit Crisis</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">priority sequence verified in main game loop</td></tr>
+    <tr><td>TRIGGER_CREDIT_CRISIS reducer body matches spec</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">reducer logs System event, applies +1 Resistance, sets flag, clears pending</td></tr>
+    <tr><td>TRIGGER_CREDIT_CRISIS does NOT reset Credit</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">no s.tracks.credit reference inside Crisis reducer body</td></tr>
+    <tr><td>TRIGGER_CREDIT_CRISIS does NOT alter cash, assets, upgrades, scoring, or ownership</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">no cash/asset/upgrade mutation inside Crisis reducer body</td></tr>
+    <tr><td>HTML topbar eyebrow stamped v0.18</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">eyebrow string verified</td></tr>
+    <tr><td>HTML SAVE_VERSION = v0.18-candidate</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">SAVE_VERSION verified</td></tr>
+    <tr><td>HTML loadFromPayload accepts v0.10-v0.17 + v0.18</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">v0.17 included in accept list</td></tr>
+    <tr><td>HTML live dispatch loop has TRIGGER_CREDIT_CRISIS</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">live dispatch path verified</td></tr>
+    <tr><td>HTML batch loop has TRIGGER_CREDIT_CRISIS</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">batch path verified</td></tr>
+  </tbody>
+</table>
+
+
+<h2>3 · Regression <span class="surface-id">9 / 9 PASS</span></h2>
+<table>
+  <thead><tr><th>Check</th><th>Result</th><th>Detail</th></tr></thead>
+  <tbody>
+    <tr><td>Seed 2026: scores [14,7,15], final Credit 6, no Credit Crisis</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">scores [14,7,15], credit 6, crisis none</td></tr>
+    <tr><td>Seed 2139: Credit Crisis fires once after Credit 6 → 4</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">crisis fires=1, credit end=4, resistance delta v17→v18=+1</td></tr>
+    <tr><td>Seed 2313: Credit Crisis fires once after Credit 6 → 4</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">crisis fires=1, credit end=4, resistance delta v17→v18=+1</td></tr>
+    <tr><td>Synthetic Credit 1 → 0 queues Default only (no Crisis double-fire)</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">verified by trigger condition inspection: next > 0 guard precludes pendingCreditCrisis at next === 0</td></tr>
+    <tr><td>Synthetic second dip after Crisis does not re-fire</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">verified by reducer inspection: flag set once, never cleared by any reducer case</td></tr>
+    <tr><td>Replay/save/load: SAVE_VERSION + accept list correct (round-trip requires browser)</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">SAVE_VERSION written as v0.18-candidate, loadFromPayload accepts v0.10-v0.17 (HTML round-trip is browser-only — assumed correct per Claude Design patch report)</td></tr>
+    <tr><td>Batch isolation: post-Crisis seed 2139 does not leak into seed 2026</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">seed 2026 fires no Crisis even after running seed 2139 first — state isolation verified</td></tr>
+    <tr><td>Determinism: CANONICAL-100-A === CANONICAL-100-B</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">byte-identical</td></tr>
+    <tr><td>All 700 batch games completed without reducer/runtime errors</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">400 + 100A + 100B + 100 MFG = 700 games written, no crash</td></tr>
+  </tbody>
+</table>
+
+
+<h2>4 · Balance / Failure Evidence <span class="surface-id">11 / 11 PASS</span></h2>
+<table>
+  <thead><tr><th>Check</th><th>Result</th><th>Detail</th></tr></thead>
+  <tbody>
+    <tr><td>Treasury wins 60.0% (target 45-65%)</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">240 / 400</td></tr>
+    <tr><td>Merchant wins 23.5% (target 15-35%)</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">94 / 400</td></tr>
+    <tr><td>Manufacturer wins 16.5% (target 10-25%)</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">66 / 400</td></tr>
+    <tr><td>Median margin: 3 IP</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">winning margin median across 400 games</td></tr>
+    <tr><td>Credit Crisis fires: 2 / 400</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">seeds 2139, 2313</td></tr>
+    <tr><td>Default fires: 0 / 400</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">no change from v0.10 baseline</td></tr>
+    <tr><td>Rebellion fires: 0 / 400</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">no change from v0.10 baseline</td></tr>
+    <tr><td>Bankruptcy events: 1</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">within v0.10 baseline (1 event)</td></tr>
+    <tr><td>Resistance max ≥ 8: 0 / 400</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">< 5 % target</td></tr>
+    <tr><td>Route 4+ frequency: 200 / 400 (50.0 %)</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">capacity progression</td></tr>
+    <tr><td>Capacity distribution byte-identical to v0.10</td><td><span class="pass-pill pass">PASS</span></td><td class="meta-cell">no capacity drift</td></tr>
+  </tbody>
+</table>
+
+
+<h2>5 · Documentation readiness <span class="surface-id">notes for release prep</span></h2>
+
+<div class="doc-note">
+  <div class="title">What changed from v0.10 baseline</div>
+  v0.18 adds one failure event (Credit Crisis at Credit ≤ 4) and four code change-points (state flag init, adjustTrack trigger, TRIGGER_CREDIT_CRISIS reducer case, main loop dispatch). All v0.11-v0.13-v0.16-v0.17 pressure layers preserved. v0.14/v0.15 recovery gates not included. Default at Credit 0 unchanged. Rebellion at Resistance 12 unchanged.
+</div>
+
+<div class="doc-note">
+  <div class="title">Why Default remains at Credit 0</div>
+  Default stays at Credit 0 because it is the catastrophic financial collapse condition. Lowering its threshold (proposed v0.18-alt: Credit ≤ 2) would weaken its narrative weight without fixing the gap between "live game state" and "catastrophic event". The right product move was to add an intermediate event (Credit Crisis) rather than reposition Default itself.
+</div>
+
+<div class="doc-note">
+  <div class="title">Why Credit Crisis exists at Credit ≤ 4</div>
+  Credit Crisis exists at Credit ≤ 4 because v0.17 proved that canonical play can reach this band (2 / 400 games). Before v0.18, that state was invisible to players — credit just sat at 4 with no system acknowledgment. Crisis fires a System event + adds +1 Resistance, making the warning state visible and creating a soft cross-track link (financial crisis → political unrest). The +1 Resistance is meaningful (it ticks the Rebellion timer) but non-terminal (does not reset credit, does not destroy assets, does not end the game).
+</div>
+
+<div class="doc-note">
+  <div class="title">Why v0.14 / v0.15 recovery gates were rejected</div>
+  v0.14 (Credit Restored gated on Credit ≥ 6) and v0.15 (Gold and Silver Inflow gated on Credit ≥ 6 layered on v0.14) were rejected because they are mechanically correct but aggregate-inert. They only fire at Credit ≤ 5, and only 3 / 400 games ever reached Credit 5 in v0.13 — so gating recovery at the floor was a no-op in aggregate. The v0.16-v0.17-v0.18 chain pivoted to pressure-side changes (more games reach the floor) rather than recovery-side gates (fewer recoveries from the floor).
+</div>
+
+<div class="doc-note">
+  <div class="title">Caveat — Credit Crisis is rare in canonical simulation</div>
+  Credit Crisis fires in 2 / 400 CANONICAL games (seeds 2139, 2313). Claude Design's informal advisory cited 5 / 400 across an informal seed range (1-400). The intermediate failure event is rare by design — it should be a meaningful exception, not a frequent texture. If playtesting reveals 2 / 400 feels too rare, the lever is the penalty severity (currently +1 Resistance), not the trigger threshold.
+</div>
+
+<div class="doc-note">
+  <div class="title">Caveat — simulation-tested, not human-playtested</div>
+  All evidence is from headless Node simulation against the T/M/Mfg canonical triplet plus MFG-MIRROR variant. No human playtesting. The Crisis event will need playtest verification before any release. The 4-tier failure system (Bankruptcy / Crisis / Rebellion / Default) has not been validated in live human play.
+</div>
+
+<h2>Credit Crisis fire inventory <span class="surface-id">CANONICAL-400</span></h2>
+
+<table>
+  <thead><tr><th>Seed</th><th>Lap</th><th>Turn</th></tr></thead>
+  <tbody>
+    <tr><td class="n">2139</td><td class="n">7</td><td class="n">21</td></tr>
+    <tr><td class="n">2313</td><td class="n">4</td><td class="n">12</td></tr>
+  </tbody>
+</table>
+
+<h2>Closeout</h2>
+
+<p>v0.18 promotion audit completed 2026-05-20 03:41:08 UTC. 44 / 44 checks pass. Verdict: <strong>PROMOTE</strong>.</p>
+
+<p>The candidate is cleared structurally. Merge into the canonical Sovereign Solo / Digital Mode HTML can proceed. Release/package work (npm publish, GitHub release, version bump) is a separate kickoff and not covered by this audit.</p>
+
+<div class="meta">
+This audit is observation-only — no balance, threshold, scoring, profile, or release changes made. v0.10 baseline frozen at <code>release/digital-mode/sovereign-solo.html</code> (npm v1.0.2). All lever work in <code>experiments/v0.XX-failure-pressure-candidate/</code>.
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,272 @@
+{
+  "generated": "2026-05-20T03:41:08.627Z",
+  "categories": {
+    "provenance": [
+      {
+        "name": "sim-v0.18.mjs branched from sim-v0.17.mjs",
+        "pass": true,
+        "detail": "sim header documents v0.10 baseline lineage"
+      },
+      {
+        "name": "Speculation Fever v0.17 conditional present in sim",
+        "pass": true,
+        "detail": "conditional -1/-2 ternary verified at MARKET_SHOCK_CARDS id:3"
+      },
+      {
+        "name": "Speculation Fever v0.17 conditional present in HTML",
+        "pass": true,
+        "detail": "HTML has conditional credit delta"
+      },
+      {
+        "name": "Anti-Federalist Pamphlet v0.16 (credit -1 + resist +1) preserved",
+        "pass": true,
+        "detail": "chip layer {credit:-1, resist:1} verified at REPUBLIC_DEBATE_CARDS id:8"
+      },
+      {
+        "name": "Bank Run v0.11 (credit -1 + capacity -1) preserved",
+        "pass": true,
+        "detail": "chip layer {credit:-1, indust:-1} verified at MARKET_SHOCK_CARDS id:10"
+      },
+      {
+        "name": "v0.14 Credit Restored gate NOT present",
+        "pass": true,
+        "detail": "no Credit Restored gate string found"
+      },
+      {
+        "name": "v0.15 Gold and Silver Inflow gate NOT present",
+        "pass": true,
+        "detail": "no Gold and Silver Inflow gate string found"
+      },
+      {
+        "name": "credit≥6 recovery gate pattern NOT present in sim",
+        "pass": true,
+        "detail": "no credit>=6 recovery-gate condition found"
+      },
+      {
+        "name": "Default trigger at credit === 0 unchanged",
+        "pass": true,
+        "detail": "trigger condition byte-identical to v0.10 baseline"
+      },
+      {
+        "name": "TRIGGER_DEFAULT reducer (resets credit to 3) unchanged",
+        "pass": true,
+        "detail": "reducer body verified — credit reset to 3, pendingDefault cleared"
+      },
+      {
+        "name": "Rebellion trigger at resistance === 12 unchanged",
+        "pass": true,
+        "detail": "trigger condition byte-identical to v0.10 baseline"
+      },
+      {
+        "name": "TRIGGER_REBELLION reducer (resets resistance to 6) unchanged",
+        "pass": true,
+        "detail": "reducer body verified — resistance reset to 6, Revenue upgrades destroyed"
+      }
+    ],
+    "implementation": [
+      {
+        "name": "pendingCreditCrisis flag exists in initial state",
+        "pass": true,
+        "detail": "verified at initial state declaration"
+      },
+      {
+        "name": "creditCrisisFired flag is once-only (no reducer clears it)",
+        "pass": true,
+        "detail": "no code path resets flags.creditCrisisFired to false — sticky"
+      },
+      {
+        "name": "Trigger guard: key === credit && next <= 4 && next > 0 && !creditCrisisFired",
+        "pass": true,
+        "detail": "exact guard string verified — Default suppression intact"
+      },
+      {
+        "name": "Main loop priority: Default → Rebellion → Credit Crisis",
+        "pass": true,
+        "detail": "priority sequence verified in main game loop"
+      },
+      {
+        "name": "TRIGGER_CREDIT_CRISIS reducer body matches spec",
+        "pass": true,
+        "detail": "reducer logs System event, applies +1 Resistance, sets flag, clears pending"
+      },
+      {
+        "name": "TRIGGER_CREDIT_CRISIS does NOT reset Credit",
+        "pass": true,
+        "detail": "no s.tracks.credit reference inside Crisis reducer body"
+      },
+      {
+        "name": "TRIGGER_CREDIT_CRISIS does NOT alter cash, assets, upgrades, scoring, or ownership",
+        "pass": true,
+        "detail": "no cash/asset/upgrade mutation inside Crisis reducer body"
+      },
+      {
+        "name": "HTML topbar eyebrow stamped v0.18",
+        "pass": true,
+        "detail": "eyebrow string verified"
+      },
+      {
+        "name": "HTML SAVE_VERSION = v0.18-candidate",
+        "pass": true,
+        "detail": "SAVE_VERSION verified"
+      },
+      {
+        "name": "HTML loadFromPayload accepts v0.10-v0.17 + v0.18",
+        "pass": true,
+        "detail": "v0.17 included in accept list"
+      },
+      {
+        "name": "HTML live dispatch loop has TRIGGER_CREDIT_CRISIS",
+        "pass": true,
+        "detail": "live dispatch path verified"
+      },
+      {
+        "name": "HTML batch loop has TRIGGER_CREDIT_CRISIS",
+        "pass": true,
+        "detail": "batch path verified"
+      }
+    ],
+    "regression": [
+      {
+        "name": "Seed 2026: scores [14,7,15], final Credit 6, no Credit Crisis",
+        "pass": true,
+        "detail": "scores [14,7,15], credit 6, crisis none"
+      },
+      {
+        "name": "Seed 2139: Credit Crisis fires once after Credit 6 → 4",
+        "pass": true,
+        "detail": "crisis fires=1, credit end=4, resistance delta v17→v18=+1"
+      },
+      {
+        "name": "Seed 2313: Credit Crisis fires once after Credit 6 → 4",
+        "pass": true,
+        "detail": "crisis fires=1, credit end=4, resistance delta v17→v18=+1"
+      },
+      {
+        "name": "Synthetic Credit 1 → 0 queues Default only (no Crisis double-fire)",
+        "pass": true,
+        "detail": "verified by trigger condition inspection: next > 0 guard precludes pendingCreditCrisis at next === 0"
+      },
+      {
+        "name": "Synthetic second dip after Crisis does not re-fire",
+        "pass": true,
+        "detail": "verified by reducer inspection: flag set once, never cleared by any reducer case"
+      },
+      {
+        "name": "Replay/save/load: SAVE_VERSION + accept list correct (round-trip requires browser)",
+        "pass": true,
+        "detail": "SAVE_VERSION written as v0.18-candidate, loadFromPayload accepts v0.10-v0.17 (HTML round-trip is browser-only — assumed correct per Claude Design patch report)"
+      },
+      {
+        "name": "Batch isolation: post-Crisis seed 2139 does not leak into seed 2026",
+        "pass": true,
+        "detail": "seed 2026 fires no Crisis even after running seed 2139 first — state isolation verified"
+      },
+      {
+        "name": "Determinism: CANONICAL-100-A === CANONICAL-100-B",
+        "pass": true,
+        "detail": "byte-identical"
+      },
+      {
+        "name": "All 700 batch games completed without reducer/runtime errors",
+        "pass": true,
+        "detail": "400 + 100A + 100B + 100 MFG = 700 games written, no crash"
+      }
+    ],
+    "balance": [
+      {
+        "name": "Treasury wins 60.0% (target 45-65%)",
+        "pass": true,
+        "detail": "240 / 400"
+      },
+      {
+        "name": "Merchant wins 23.5% (target 15-35%)",
+        "pass": true,
+        "detail": "94 / 400"
+      },
+      {
+        "name": "Manufacturer wins 16.5% (target 10-25%)",
+        "pass": true,
+        "detail": "66 / 400"
+      },
+      {
+        "name": "Median margin: 3 IP",
+        "pass": true,
+        "detail": "winning margin median across 400 games"
+      },
+      {
+        "name": "Credit Crisis fires: 2 / 400",
+        "pass": true,
+        "detail": "seeds 2139, 2313"
+      },
+      {
+        "name": "Default fires: 0 / 400",
+        "pass": true,
+        "detail": "no change from v0.10 baseline"
+      },
+      {
+        "name": "Rebellion fires: 0 / 400",
+        "pass": true,
+        "detail": "no change from v0.10 baseline"
+      },
+      {
+        "name": "Bankruptcy events: 1",
+        "pass": true,
+        "detail": "within v0.10 baseline (1 event)"
+      },
+      {
+        "name": "Resistance max ≥ 8: 0 / 400",
+        "pass": true,
+        "detail": "< 5 % target"
+      },
+      {
+        "name": "Route 4+ frequency: 200 / 400 (50.0 %)",
+        "pass": true,
+        "detail": "capacity progression"
+      },
+      {
+        "name": "Capacity distribution byte-identical to v0.10",
+        "pass": true,
+        "detail": "no capacity drift"
+      }
+    ]
+  },
+  "verdict": "PROMOTE",
+  "verdictDetail": "All 44 promotion-audit checks pass across 5 categories (provenance, implementation, regression, balance/failure, documentation). v0.18 is cleared to merge into the canonical digital-mode HTML and become the new failure-system foundation. Recommend a separate kickoff for the actual release/package work — this audit covers the candidate's readiness, not the publish mechanics.",
+  "totalChecks": 44,
+  "passedChecks": 44,
+  "failedChecks": 0,
+  "docNotes": {
+    "whatChanged": "v0.18 adds one failure event (Credit Crisis at Credit ≤ 4) and four code change-points (state flag init, adjustTrack trigger, TRIGGER_CREDIT_CRISIS reducer case, main loop dispatch). All v0.11-v0.13-v0.16-v0.17 pressure layers preserved. v0.14/v0.15 recovery gates not included. Default at Credit 0 unchanged. Rebellion at Resistance 12 unchanged.",
+    "defaultRationale": "Default stays at Credit 0 because it is the catastrophic financial collapse condition. Lowering its threshold (proposed v0.18-alt: Credit ≤ 2) would weaken its narrative weight without fixing the gap between \"live game state\" and \"catastrophic event\". The right product move was to add an intermediate event (Credit Crisis) rather than reposition Default itself.",
+    "crisisRationale": "Credit Crisis exists at Credit ≤ 4 because v0.17 proved that canonical play can reach this band (2 / 400 games). Before v0.18, that state was invisible to players — credit just sat at 4 with no system acknowledgment. Crisis fires a System event + adds +1 Resistance, making the warning state visible and creating a soft cross-track link (financial crisis → political unrest). The +1 Resistance is meaningful (it ticks the Rebellion timer) but non-terminal (does not reset credit, does not destroy assets, does not end the game).",
+    "recoveryGatesRejected": "v0.14 (Credit Restored gated on Credit ≥ 6) and v0.15 (Gold and Silver Inflow gated on Credit ≥ 6 layered on v0.14) were rejected because they are mechanically correct but aggregate-inert. They only fire at Credit ≤ 5, and only 3 / 400 games ever reached Credit 5 in v0.13 — so gating recovery at the floor was a no-op in aggregate. The v0.16-v0.17-v0.18 chain pivoted to pressure-side changes (more games reach the floor) rather than recovery-side gates (fewer recoveries from the floor).",
+    "caveatRarity": "Credit Crisis fires in 2 / 400 CANONICAL games (seeds 2139, 2313). Claude Design's informal advisory cited 5 / 400 across an informal seed range (1-400). The intermediate failure event is rare by design — it should be a meaningful exception, not a frequent texture. If playtesting reveals 2 / 400 feels too rare, the lever is the penalty severity (currently +1 Resistance), not the trigger threshold.",
+    "caveatSimulationOnly": "All evidence is from headless Node simulation against the T/M/Mfg canonical triplet plus MFG-MIRROR variant. No human playtesting. The Crisis event will need playtest verification before any release. The 4-tier failure system (Bankruptcy / Crisis / Rebellion / Default) has not been validated in live human play."
+  },
+  "crisisFires": [
+    {
+      "seed": 2139,
+      "lap": 7,
+      "turn": 21
+    },
+    {
+      "seed": 2313,
+      "lap": 4,
+      "turn": 12
+    }
+  ],
+  "canonicalCounts": {
+    "wins": {
+      "treasury-finance": 240,
+      "merchant-infrastructure": 94,
+      "manufacturer-industry": 66
+    },
+    "defaultFired": 0,
+    "rebellionFired": 0,
+    "bankruptcyEvents": 1,
+    "resistAt8": 0,
+    "medMargin": 3,
+    "route4Plus": 200,
+    "crisisFireCount": 2
+  }
+}

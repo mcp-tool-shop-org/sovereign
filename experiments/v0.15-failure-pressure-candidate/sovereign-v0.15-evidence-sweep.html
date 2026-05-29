@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sovereign · v0.15 Failure-Pressure Candidate · Evidence Sweep</title>
+<style>
+  :root{--display:"Baskerville","Big Caslon","Hoefler Text","Garamond","Times New Roman",serif;
+        --body:"Iowan Old Style","Georgia","Cambria","Times New Roman",serif;
+        --ui:-apple-system,"Segoe UI","Helvetica Neue","Arial",system-ui,sans-serif;
+        --mono:"SF Mono","Menlo","Consolas","Courier New",monospace;
+        --parchment:#F0E6CD;--parchment-2:#E6DABC;--ink:#1A1612;--highlight:#C8392E;
+        --rule-soft:rgba(26,22,18,0.22);--national-finance:#1F2D52;
+        --commercial-infrastructure:#2E7A6B;--manufactures:#8C8A2E;
+        --pass:#2E7A6B;--fail:#C8392E;--neutral:rgba(26,22,18,0.55);}
+  *{box-sizing:border-box}
+  body{margin:0;padding:30px;font-family:var(--body);background:#2A2622;color:var(--ink)}
+  .doc{max-width:1100px;margin:0 auto;background:var(--parchment);border:1.5px solid var(--ink);padding:30px 40px;position:relative}
+  .doc::before{content:"";position:absolute;inset:8px;border:0.5px solid var(--rule-soft);pointer-events:none}
+  h1{font-family:var(--display);font-weight:400;font-size:36px;line-height:1;margin:0 0 6px}
+  .eyebrow{font-family:var(--ui);font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--national-finance);margin-bottom:8px}
+  .sub{font-family:var(--display);font-style:italic;font-size:14px;margin-bottom:6px}
+  .meta{font-family:var(--mono);font-size:9.5px;opacity:.7;margin-top:4px;border-top:0.5px dashed var(--rule-soft);padding-top:6px}
+  h2{font-family:var(--ui);font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;margin:22px 0 8px;border-bottom:1px solid var(--ink);padding-bottom:4px;display:flex;justify-content:space-between}
+  h2 .surface-id{font-family:var(--mono);font-size:9px;letter-spacing:.06em;opacity:.6;text-transform:none}
+  h4{font-family:var(--ui);font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin:14px 0 4px}
+  p{margin:6px 0;line-height:1.5;font-size:13px}
+  table{width:100%;border-collapse:collapse;margin-top:6px}
+  th{background:var(--ink);color:var(--parchment);font-family:var(--ui);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;padding:5px 8px;text-align:left}
+  td{font-family:var(--ui);font-size:11px;padding:4px 8px;border-bottom:0.5px solid var(--rule-soft);vertical-align:top}
+  td.n{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+  td.diff{background:rgba(46,122,107,0.12);color:var(--commercial-infrastructure);font-weight:600}
+  td.regress{background:rgba(200,57,46,0.08);color:var(--highlight);font-weight:600}
+  td.same{color:var(--neutral)}
+  .verdict-card{background:var(--parchment-2);border:1.5px solid var(--ink);padding:18px 22px;margin:14px 0}
+  .verdict-card .lbl{font-family:var(--ui);font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--national-finance)}
+  .verdict-card .nm{font-family:var(--display);font-size:24px;line-height:1.1;margin:6px 0 8px}
+  .verdict-card .det{font-size:13px;line-height:1.6}
+  .pass-pill{display:inline-block;font-family:var(--ui);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:2px 7px;border-radius:2px;font-weight:700}
+  .pass-pill.pass{background:var(--pass);color:#fff}
+  .pass-pill.fail{background:var(--fail);color:#fff}
+  .callout{background:var(--parchment-2);border:1px solid var(--ink);padding:10px 14px;margin:8px 0;font-size:12.5px;line-height:1.55}
+  .callout strong{color:var(--highlight)}
+  .bar-cell{font-family:var(--mono);font-size:9.5px;padding:3px 4px;border-bottom:0.5px solid var(--rule-soft);position:relative;text-align:right;min-width:36px}
+  .bar-cell .bar{position:absolute;left:2px;top:50%;transform:translateY(-50%);height:8px;background:var(--manufactures);opacity:.45;border-radius:1px}
+  .bar-cell .bar-num{position:relative;font-variant-numeric:tabular-nums}
+  th.bar-h{font-family:var(--mono);font-size:9px;text-align:center;padding:3px 4px}
+</style>
+</head>
+<body>
+<div class="doc">
+
+<div class="eyebrow">Sovereign · v0.15 failure-pressure candidate · evidence sweep</div>
+<h1>v0.15 Candidate — Layered Recovery Gate</h1>
+<div class="sub">Two-lever test: Gold and Silver Inflow now gated on Public Credit ≥ 6, layered on top of v0.14's Credit Restored gate. Mint payment unchanged. Bank Run v0.11 + Speculation Fever v0.13 pressure layers preserved.</div>
+<div class="meta">Configurations: CANONICAL-400 (T/M/Mfg, seeds 2026-2425) · CANONICAL-100-A vs CANONICAL-100-B (determinism check) · MFG-MIRROR-100. Generated 2026-05-19 22:57:23 UTC. v0.15 Node sim cross-validated: seed 2026 byte-identical to v0.14; seed 16 ungated case (credit 7 → 8) matches v0.14 ledger; seed 1368 four-lever cascade reproduces (Funding 5→7, Spec Fever 7→6, Bank Run 6→5, Gold and Silver Inflow GATED at credit 5 — game ends at credit 5 vs v0.14's 6).</div>
+
+<h2>Verdict <span class="surface-id">A</span></h2>
+
+<div class="verdict-card">
+  <div class="lbl">v0.15 candidate verdict</div>
+  <div class="nm">MECHANICALLY CORRECT BUT AGGREGATE-INERT (LAYERING DOES NOT COMPOUND)</div>
+  <div class="det">The v0.15 gate fires as designed (seed 1368 cascade reproduces: Funding 5→7, Spec Fever 7→6, Bank Run 6→5, Gold and Silver Inflow GATED — game ends at credit 5 vs v0.14's 6). And there are now TWO gated recovery cards (Credit Restored from v0.14, Gold and Silver Inflow from v0.15). But the aggregate barely moves: recovery rate is 32.5 % (v0.14: 32.5 %, v0.13: 32.5 %), Credit-reach-5 stays at 3 / 400 (unchanged from v0.13 and v0.14). The reason: BOTH gates only fire at credit ≤ 5, and only 3 games out of 400 ever reach credit 5 — gating at the floor while almost no games reach the floor is a no-op in aggregate. Per your decision branch: "If recovery drops but Credit-5 frequency does not move, next target is Federalist Victory or Foreign Loan Secured." A subtle variation fires here: recovery DIDN'T drop, and Credit-5 frequency didn't move, so the recovery network's redundancy at the credit 6→7 transition is the actual bottleneck — gating the credit ≤ 5 → ≥ 6 transition doesn't reach it.</div>
+</div>
+
+<h4>Decision criteria</h4>
+<table>
+  <thead><tr><th>Criterion</th><th>Target</th><th>Observed</th><th>Pass</th></tr></thead>
+  <tbody>
+
+    <tr><td>Balance: Treasury 45–65 %</td><td class="n">45–65 %</td><td class="n">60.3 %</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Balance: Merchant 15–35 %</td><td class="n">15–35 %</td><td class="n">23.3 %</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Balance: Manufacturer 10–25 %</td><td class="n">10–25 %</td><td class="n">16.5 %</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Recovery rate ideal target (< 25 %)</td><td class="n">< 25 %</td><td class="n">32.5 %</td><td><span class="pass-pill fail">NO</span></td></tr>
+    <tr><td>Recovery rate stretch target (< 20 %)</td><td class="n">< 20 %</td><td class="n">32.5 %</td><td><span class="pass-pill fail">NO</span></td></tr>
+    <tr><td>Credit reaches 5 MORE OFTEN than v0.13/v0.14</td><td class="n">> 3 games</td><td class="n">3 / 400 (v0.13: 3, v0.14: 3)</td><td><span class="pass-pill fail">NO</span></td></tr>
+    <tr><td>Credit drops below 5 (strong diagnostic)</td><td class="n">> 0</td><td class="n">0 / 400</td><td><span class="pass-pill fail">NO</span></td></tr>
+    <tr><td>Capacity does not collapse</td><td class="n">Distribution preserved</td><td class="n">IDENTICAL to v0.10</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Resistance stays controlled</td><td class="n">< 5 % at ≥ 8</td><td class="n">0 / 400</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Determinism A vs B</td><td class="n">PASS</td><td class="n">PASS</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Seed 2026 byte-identical v0.14 ↔ v0.15</td><td class="n">IDENTICAL</td><td class="n">IDENTICAL</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Seed 1368 cascade diverges v0.14 → v0.15</td><td class="n">DIVERGE</td><td class="n">v0.14 credit=6, v0.15 credit=5</td><td><span class="pass-pill pass">PASS</span></td></tr>
+  </tbody>
+</table>
+
+<h2>The layering hypothesis and what actually happened <span class="surface-id">B</span></h2>
+
+<div class="callout">
+<strong>The layering hypothesis from v0.14:</strong> "Single-gate recovery suppression doesn't compound aggregate because the recovery network has 6 redundant cards. Layer two gates — one on Credit Restored (v0.14) plus one on Gold and Silver Inflow (v0.15) — and watch whether the aggregate recovery rate finally drops below 20 %."
+</div>
+
+<div class="callout">
+<strong>The new mechanical proof case — seed 1368:</strong> Lap 1 Funding Act lifts credit 5→7. Lap 6 turn 16 Speculation Fever drops 7→6. Lap 6 turn 18 Bank Run drops 6→5. Lap 7 turn 20 Gold and Silver Inflow draws — under v0.14 it would have written 5→6; under v0.15 the gate fires, no Credit gain, panic persists. Mint payments still resolve (Mint owner collects 50 TN). Game ends at credit 5 vs v0.14's 6. <strong>The seed 1368 cascade is a clean four-lever proof: Funding-Spec Fever-Bank Run-GSI all firing across the same game on the right turns. Mechanically beautiful.</strong>
+</div>
+
+<div class="callout">
+<strong>What aggregate metrics show:</strong> Recovery rate stays at <strong>32.5 %</strong> — identical to v0.14's 32.5 % and within 1.5 pp of v0.13's 32.5 %. Credit-reach-5 frequency stays at <strong>3 / 400</strong> — unchanged from v0.13 and v0.14. Layering two gates didn't compound. The reason: <strong>both gates only fire when credit dips to ≤ 5, and only 3 games out of 400 ever reach credit 5</strong>. Gating at the rare floor leaves the credit-6 → credit-7 transition unaffected, which is where 80 % of all dips happen and where every recovery card still acts unconditionally.
+</div>
+
+<h4>Gated firings — inferred via difference in ungated counts</h4>
+<table>
+  <thead><tr><th>Card</th><th>v0.13 ungated</th><th>v0.14 ungated</th><th>v0.15 ungated</th><th>Approx total gated (v0.13 → v0.15)</th></tr></thead>
+  <tbody>
+    <tr><td>Credit Restored</td><td class="n">45</td><td class="n">45</td><td class="n">45</td><td class="n">0</td></tr>
+    <tr><td>Gold and Silver Inflow</td><td class="n">(v0.13: unconditional)</td><td class="n">44</td><td class="n">44</td><td class="n">0</td></tr>
+    <tr><td><strong>Combined gated recovery events</strong></td><td class="n">—</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr>
+  </tbody>
+</table>
+<p class="meta">Gated count inferred from the difference in ungated firings across versions. Direct gated-count instrumentation would require ledger-walking — not added for this lever. Both v0.14 and v0.15 gates only modify behavior on draws where credit is at ≤ 5 at resolve time, which is a small fraction of total card draws.</p>
+
+<h2>v0.10 → v0.15 win bands and primary metrics <span class="surface-id">C</span></h2>
+
+<table>
+  <thead><tr><th>Metric</th><th>v0.10</th><th>v0.11</th><th>v0.12</th><th>v0.13</th><th>v0.14</th><th>v0.15</th></tr></thead>
+  <tbody>
+    <tr><td>Treasury wins</td><td class="n">244</td><td class="n">243</td><td class="n">243</td><td class="n">241</td><td class="n">241</td><td class="n">241</td></tr>
+    <tr><td>Merchant wins</td><td class="n">90</td><td class="n">91</td><td class="n">91</td><td class="n">93</td><td class="n">93</td><td class="n">93</td></tr>
+    <tr><td>Manufacturer wins</td><td class="n">66</td><td class="n">66</td><td class="n">66</td><td class="n">66</td><td class="n">66</td><td class="n">66</td></tr>
+    <tr><td>Default fires</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr>
+    <tr><td>Rebellion fires</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr>
+    <tr><td>Bankruptcy events</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n">1</td></tr>
+    <tr><td>Post-Funding Credit reaches 5</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">3</td><td class="n">3</td><td class="n">3</td></tr>
+    <tr><td>Post-Funding Credit below 5</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr>
+    <tr><td>Bank Run fires</td><td class="n">0</td><td class="n">65</td><td class="n">65</td><td class="n">65</td><td class="n">65</td><td class="n">65</td></tr>
+    <tr><td>Spec Fever (as credit -1 source)</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">50</td><td class="n">50</td><td class="n">50</td></tr>
+    <tr><td>Spec Fever + Bank Run same game</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">7</td><td class="n">7</td><td class="n">7</td></tr>
+    <tr><td>Median margin (IP)</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n">3</td></tr>
+  </tbody>
+</table>
+
+<h2>Recovery analysis — v0.13 → v0.14 → v0.15 progression <span class="surface-id">D</span></h2>
+
+<table>
+  <thead><tr><th>Metric</th><th>v0.13</th><th>v0.14</th><th>v0.15</th><th>v0.14 → v0.15 Δ</th></tr></thead>
+  <tbody>
+    <tr><td>Games where credit dipped to 6</td><td class="n">83</td><td class="n">83</td><td class="n">83</td><td class="n">+0</td></tr>
+    <tr><td>Recovered from 6 to 7+</td><td class="n">27</td><td class="n">27</td><td class="n">27</td><td class="n">+0</td></tr>
+    <tr><td>Did NOT recover</td><td class="n">56</td><td class="n">56</td><td class="n">56</td><td class="n">+0</td></tr>
+    <tr><td><strong>Recovery rate</strong></td><td class="n">32.5 %</td><td class="n">32.5 %</td><td class="n">32.5 %</td><td class="n ">±0.0 pp (ideal target: drop to < 25 %; stretch: < 20 %)</td></tr>
+    <tr><td>Dipped to ≤ 5</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n">+0</td></tr>
+    <tr><td>Recovered from ≤ 5</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">+0</td></tr>
+  </tbody>
+</table>
+
+<h4>Top recovery sources — v0.13 vs v0.14 vs v0.15</h4>
+<table>
+  <thead><tr><th>Source</th><th>Type</th><th>v0.13</th><th>v0.14</th><th>v0.15</th><th>v0.14 → v0.15 Δ</th></tr></thead>
+  <tbody>
+
+    <tr><td>Credit Restored</td><td>Republic Debate</td><td class="n">6</td><td class="n">6</td><td class="n">6</td><td class="n ">+0</td></tr>
+    <tr><td>Gold and Silver Inflow</td><td>Market Shock</td><td class="n">6</td><td class="n">6</td><td class="n">6</td><td class="n ">+0</td></tr>
+    <tr><td>Federalist Victory</td><td>Republic Debate</td><td class="n">6</td><td class="n">6</td><td class="n">6</td><td class="n ">+0</td></tr>
+    <tr><td>Foreign Loan Secured</td><td>Market Shock</td><td class="n">5</td><td class="n">5</td><td class="n">5</td><td class="n ">+0</td></tr>
+    <tr><td>Treaty Renegotiation</td><td>Market Shock</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n ">+0</td></tr>
+    <tr><td>You Are Hamilton</td><td>Republic Debate</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n ">+0</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+<strong>Read:</strong> Two cards are now gated (Credit Restored from v0.14, Gold and Silver Inflow from v0.15). Their first-recovery contributions barely moved from v0.14 → v0.15 because both gates only intercept credit-5 → credit-6 transitions, while most recoveries happen at credit-6 → credit-7 where both cards still act unconditionally. The remaining recovery sources (Federalist Victory, Foreign Loan Secured, Treaty Renegotiation, You Are Hamilton) are entirely unconditional and absorb whatever load the gated cards no longer carry. <strong>The recovery network is dense at credit 6; thin at credit 5; near-impossible to puncture at credit 5.</strong>
+</div>
+
+<h2>Post-Funding Credit min — version progression <span class="surface-id">E</span></h2>
+
+<table>
+  <thead><tr><th>Version</th><th class="bar-h">0</th><th class="bar-h">1</th><th class="bar-h">2</th><th class="bar-h">3</th><th class="bar-h">4</th><th class="bar-h">5</th><th class="bar-h">6</th><th class="bar-h">7</th><th class="bar-h">8</th><th class="bar-h">9</th><th class="bar-h">10</th><th class="bar-h">11</th><th class="bar-h">12</th></tr></thead>
+  <tbody>
+    <tr><th>v0.10</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">400</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+    <tr><th>v0.11</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:13.3%"></div><span class="bar-num">47</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">353</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+    <tr><th>v0.12</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:13.6%"></div><span class="bar-num">48</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">352</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+    <tr><th>v0.13</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.9%"></div><span class="bar-num">3</span></td><td class="bar-cell"><div class="bar" style="width:25.2%"></div><span class="bar-num">80</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">317</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+    <tr><th>v0.14</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.9%"></div><span class="bar-num">3</span></td><td class="bar-cell"><div class="bar" style="width:25.2%"></div><span class="bar-num">80</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">317</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+    <tr><th>v0.15</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.9%"></div><span class="bar-num">3</span></td><td class="bar-cell"><div class="bar" style="width:25.2%"></div><span class="bar-num">80</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">317</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+  </tbody>
+</table>
+<p class="meta">Distribution byte-identical across v0.13 / v0.14 / v0.15. Both gates intercept recovery from credit ≤ 5 but never add downward pressure — they cannot lower the post-Funding minimum.</p>
+
+<h2>Capacity (sanity) and Resistance (side-effect watch) <span class="surface-id">F</span></h2>
+
+<h4>Capacity end — v0.10 vs v0.15</h4>
+<table>
+  <thead><tr><th>Version</th><th class="bar-h">0</th><th class="bar-h">1</th><th class="bar-h">2</th><th class="bar-h">3</th><th class="bar-h">4</th><th class="bar-h">5</th><th class="bar-h">6</th><th class="bar-h">7</th><th class="bar-h">8</th><th class="bar-h">9</th><th class="bar-h">10</th><th class="bar-h">11</th><th class="bar-h">12</th></tr></thead>
+  <tbody>
+    <tr><th>v0.10</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:31.6%"></div><span class="bar-num">42</span></td><td class="bar-cell"><div class="bar" style="width:18.8%"></div><span class="bar-num">25</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">133</span></td><td class="bar-cell"><div class="bar" style="width:94.7%"></div><span class="bar-num">126</span></td><td class="bar-cell"><div class="bar" style="width:46.6%"></div><span class="bar-num">62</span></td><td class="bar-cell"><div class="bar" style="width:8.3%"></div><span class="bar-num">11</span></td><td class="bar-cell"><div class="bar" style="width:0.8%"></div><span class="bar-num">1</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+    <tr><th>v0.15</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:31.6%"></div><span class="bar-num">42</span></td><td class="bar-cell"><div class="bar" style="width:18.8%"></div><span class="bar-num">25</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">133</span></td><td class="bar-cell"><div class="bar" style="width:94.7%"></div><span class="bar-num">126</span></td><td class="bar-cell"><div class="bar" style="width:46.6%"></div><span class="bar-num">62</span></td><td class="bar-cell"><div class="bar" style="width:8.3%"></div><span class="bar-num">11</span></td><td class="bar-cell"><div class="bar" style="width:0.8%"></div><span class="bar-num">1</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+  </tbody>
+</table>
+<p class="meta">Byte-identical. v0.15 doesn't touch capacity.</p>
+
+<h4>Resistance max — v0.10 vs v0.15</h4>
+<table>
+  <thead><tr><th>Version</th><th class="bar-h">0</th><th class="bar-h">1</th><th class="bar-h">2</th><th class="bar-h">3</th><th class="bar-h">4</th><th class="bar-h">5</th><th class="bar-h">6</th><th class="bar-h">7</th><th class="bar-h">8</th><th class="bar-h">9</th><th class="bar-h">10</th><th class="bar-h">11</th><th class="bar-h">12</th></tr></thead>
+  <tbody>
+    <tr><th>v0.10</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">191</span></td><td class="bar-cell"><div class="bar" style="width:77.5%"></div><span class="bar-num">148</span></td><td class="bar-cell"><div class="bar" style="width:26.7%"></div><span class="bar-num">51</span></td><td class="bar-cell"><div class="bar" style="width:4.7%"></div><span class="bar-num">9</span></td><td class="bar-cell"><div class="bar" style="width:0.5%"></div><span class="bar-num">1</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+    <tr><th>v0.15</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">191</span></td><td class="bar-cell"><div class="bar" style="width:77.5%"></div><span class="bar-num">148</span></td><td class="bar-cell"><div class="bar" style="width:26.7%"></div><span class="bar-num">51</span></td><td class="bar-cell"><div class="bar" style="width:4.7%"></div><span class="bar-num">9</span></td><td class="bar-cell"><div class="bar" style="width:0.5%"></div><span class="bar-num">1</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+  </tbody>
+</table>
+<p class="meta">Resistance ≥ 8: 0 / 400 (0.0 %). Identical to v0.14. No side-effect.</p>
+
+<h2>MFG-MIRROR-100 cross-check <span class="surface-id">G</span></h2>
+
+<table>
+  <thead><tr><th>Metric</th><th>v0.15 (MFG-MIRROR)</th></tr></thead>
+  <tbody>
+    <tr><td>Manufacturer wins</td><td class="n">100 / 100</td></tr>
+    <tr><td>Default fires</td><td class="n">0 / 100</td></tr>
+    <tr><td>Rebellion fires</td><td class="n">0 / 100</td></tr>
+    <tr><td>Bankruptcy events</td><td class="n">0</td></tr>
+    <tr><td>Post-Funding Credit ≤ 5</td><td class="n">0 / 100</td></tr>
+    <tr><td>Spec Fever fires</td><td class="n">13 / 100</td></tr>
+    <tr><td>Bank Run fires</td><td class="n">18 / 100</td></tr>
+  </tbody>
+</table>
+
+<h2>Interpretation <span class="surface-id">H</span></h2>
+
+<p><strong>What this layered lever proves:</strong> Two structural findings reinforce v0.14's recovery-network insight. <strong>First, layering doesn't compound at the credit-5 floor.</strong> Two gated recovery cards (Credit Restored + Gold and Silver Inflow) and the aggregate recovery rate doesn't move beyond v0.14. <strong>Second, the bottleneck isn't the number of recoveries — it's the floor.</strong> Both gates only fire at credit ≤ 5, and only 3 games out of 400 ever reach credit 5. The gates intercept 0 games (where credit 5 → 6 was happening via gated cards specifically; in canonical play the dip-to-5 cases didn't trigger Credit Restored or GSI as the recovery card anyway). The seed 1368 cascade demonstrates the gate <em>can</em> fire — it just rarely does in canonical play.</p>
+
+<p><strong>What this layered lever doesn't move:</strong> Aggregate recovery rate (32.5 % ≈ v0.14's 32.5 % ≈ v0.13's 32.5 %). Credit-reach-5 frequency (3 / 400 unchanged). Default fires (0 / 400 unchanged). The pressure layers (Spec Fever, Bank Run) still don't compound enough to push credit below 5 in canonical T/M/Mfg play.</p>
+
+<p><strong>The diagnosis is sharper now:</strong> The credit-6 → credit-7 transition is where recoveries actually happen, and at that transition all 6 recovery cards (gated and ungated) still fire as +1 boosts. Gating at the credit ≤ 5 floor is intercepting the wrong layer. To move the aggregate, the next lever must either (a) increase pressure so more games dip below 5 (more credit-down sources, or a stronger Spec Fever / Bank Run), or (b) gate the recovery cards at the credit-6 → credit-7 transition (which would be a much more invasive balance change).</p>
+
+<p><strong>Per your decision tree:</strong> "If recovery drops but Credit-5 frequency does not move, next target is Federalist Victory or Foreign Loan Secured." Strictly speaking neither moved here — recovery didn't drop AND credit-5 frequency didn't move. The implied corollary is that gating any unconditional +1 credit card at the credit ≤ 5 floor will be aggregate-inert. The lever shape itself is reaching the wrong layer.</p>
+
+<h4>Suggested next moves (if authorized — kept conservative)</h4>
+<ul style="font-size:13px;line-height:1.6;margin:6px 0 6px 18px">
+  <li><strong>v0.16 candidate — add a THIRD credit-down source:</strong> The Funding Act floor (credit 5 after Funding) is the structural bottleneck. Two pressure-source cards (Bank Run, Spec Fever) can only push credit down twice in a single game. A third credit-down source — Whiskey Rebellion gaining a credit penalty, or a new Market Shock card — could break the floor in more games. Tests whether more dip-events make the gates aggregate-relevant.</li>
+  <li><strong>v0.16 alt — make pressure layers stronger:</strong> Bank Run -2 credit when Bank Charter passed (v0.12's idea, but expand to fire on ALL Bank Run draws regardless of Charter). Or Speculation Fever -2 credit when capacity ≥ 5. Stronger single hits → more games reach credit 5.</li>
+  <li><strong>v0.16 alt — broaden the gate condition:</strong> Gate Credit Restored / GSI at credit ≤ 6 (instead of ≤ 5). Would intercept the credit-6 → credit-7 transition for those two cards. Would move recovery rate dramatically but risks balance regression — the more recoveries are gated, the more capacity-bond economy depends on Federalist Victory / Foreign Loan Secured exclusively.</li>
+</ul>
+
+<p style="font-size:12px;color:var(--neutral);font-style:italic;margin-top:8px">None of these are authorized yet. They are observations from the v0.15 evidence.</p>
+
+<h2>Closeout <span class="surface-id">I</span></h2>
+
+<p>v0.15 candidate is <strong>MECHANICALLY CORRECT BUT AGGREGATE-INERT (LAYERING DOES NOT COMPOUND)</strong>. The seed 1368 cascade is the cleanest proof case yet: four levers firing across one game on the right turns, ending at credit 5 with no recovery. But it is one game out of 400; the aggregate barely moved.</p>
+
+<p>Recommended disposition: <strong>Keep v0.15 candidate as a foundation; do not promote</strong>. Both v0.14 and v0.15 are useful primitives — narrow, targeted, balance-preserving — but layered gates do not compound aggregate effect, because they both fire at the same credit ≤ 5 floor that few games reach. The next useful lever needs to change the pressure side (push more games below 5), not the gate side (more cards withholding recovery from a floor few games reach).</p>
+
+<div class="meta">
+v0.15 evidence sweep — observation only.
+Raw data: <code>experiments/v0.15-failure-pressure-candidate/raw-data/sovereign-v0.15-canonical-400.json</code> (+ 100-A, 100-B, mfg-mirror-100).
+Sim: <code>tools/diagnosis/sim-v0.15.mjs</code>.
+Source HTML: <code>experiments/v0.15-failure-pressure-candidate/sovereign-solo-v0.15-candidate.html</code> (268 KB, produced by Claude Design from v0.14 source, six change-points + version-stamp points + one ancillary splash bump).
+v0.15 Node sim cross-validated: seed 2026 reproduces v0.14 (scores [14,7,15] / credit 6); seed 16 ungated case (credit 7 → 8) matches v0.14; seed 1368 four-lever cascade reproduces with credit ending at 5 vs v0.14's 6.
+No release. No balance change to v0.10 baseline. No threshold change.
+</div>
+
+</div>
+</body>
+</html>

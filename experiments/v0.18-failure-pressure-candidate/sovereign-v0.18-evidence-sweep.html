@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Sovereign · v0.18 Failure-Pressure Candidate · Evidence Sweep</title>
+<style>
+  :root{--display:"Baskerville","Big Caslon","Hoefler Text","Garamond","Times New Roman",serif;
+        --body:"Iowan Old Style","Georgia","Cambria","Times New Roman",serif;
+        --ui:-apple-system,"Segoe UI","Helvetica Neue","Arial",system-ui,sans-serif;
+        --mono:"SF Mono","Menlo","Consolas","Courier New",monospace;
+        --parchment:#F0E6CD;--parchment-2:#E6DABC;--ink:#1A1612;--highlight:#C8392E;
+        --rule-soft:rgba(26,22,18,0.22);--national-finance:#1F2D52;
+        --commercial-infrastructure:#2E7A6B;--manufactures:#8C8A2E;
+        --pass:#2E7A6B;--fail:#C8392E;--neutral:rgba(26,22,18,0.55);}
+  *{box-sizing:border-box}
+  body{margin:0;padding:30px;font-family:var(--body);background:#2A2622;color:var(--ink)}
+  .doc{max-width:1100px;margin:0 auto;background:var(--parchment);border:1.5px solid var(--ink);padding:30px 40px;position:relative}
+  .doc::before{content:"";position:absolute;inset:8px;border:0.5px solid var(--rule-soft);pointer-events:none}
+  h1{font-family:var(--display);font-weight:400;font-size:36px;line-height:1;margin:0 0 6px}
+  .eyebrow{font-family:var(--ui);font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--national-finance);margin-bottom:8px}
+  .sub{font-family:var(--display);font-style:italic;font-size:14px;margin-bottom:6px}
+  .meta{font-family:var(--mono);font-size:9.5px;opacity:.7;margin-top:4px;border-top:0.5px dashed var(--rule-soft);padding-top:6px}
+  h2{font-family:var(--ui);font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;margin:22px 0 8px;border-bottom:1px solid var(--ink);padding-bottom:4px;display:flex;justify-content:space-between}
+  h2 .surface-id{font-family:var(--mono);font-size:9px;letter-spacing:.06em;opacity:.6;text-transform:none}
+  h4{font-family:var(--ui);font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin:14px 0 4px}
+  p{margin:6px 0;line-height:1.5;font-size:13px}
+  table{width:100%;border-collapse:collapse;margin-top:6px}
+  th{background:var(--ink);color:var(--parchment);font-family:var(--ui);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;padding:5px 8px;text-align:left}
+  td{font-family:var(--ui);font-size:11px;padding:4px 8px;border-bottom:0.5px solid var(--rule-soft);vertical-align:top}
+  td.n{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+  td.diff{background:rgba(46,122,107,0.12);color:var(--commercial-infrastructure);font-weight:600}
+  td.regress{background:rgba(200,57,46,0.08);color:var(--highlight);font-weight:600}
+  td.same{color:var(--neutral)}
+  .verdict-card{background:var(--parchment-2);border:1.5px solid var(--ink);padding:18px 22px;margin:14px 0}
+  .verdict-card .lbl{font-family:var(--ui);font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--national-finance)}
+  .verdict-card .nm{font-family:var(--display);font-size:24px;line-height:1.1;margin:6px 0 8px}
+  .verdict-card .det{font-size:13px;line-height:1.6}
+  .pass-pill{display:inline-block;font-family:var(--ui);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:2px 7px;border-radius:2px;font-weight:700}
+  .pass-pill.pass{background:var(--pass);color:#fff}
+  .pass-pill.fail{background:var(--fail);color:#fff}
+  .callout{background:var(--parchment-2);border:1px solid var(--ink);padding:10px 14px;margin:8px 0;font-size:12.5px;line-height:1.55}
+  .callout strong{color:var(--highlight)}
+  .bar-cell{font-family:var(--mono);font-size:9.5px;padding:3px 4px;border-bottom:0.5px solid var(--rule-soft);position:relative;text-align:right;min-width:36px}
+  .bar-cell .bar{position:absolute;left:2px;top:50%;transform:translateY(-50%);height:8px;background:var(--manufactures);opacity:.45;border-radius:1px}
+  .bar-cell .bar-num{position:relative;font-variant-numeric:tabular-nums}
+  th.bar-h{font-family:var(--mono);font-size:9px;text-align:center;padding:3px 4px}
+</style>
+</head>
+<body>
+<div class="doc">
+
+<div class="eyebrow">Sovereign · v0.18 failure-pressure candidate · evidence sweep</div>
+<h1>v0.18 Candidate — Credit Crisis Intermediate Failure Event</h1>
+<div class="sub">Adds soft intermediate failure event at Public Credit ≤ 4 (once per game, +1 Resistance to all, no credit reset). Default at Credit 0 unchanged. v0.17 / v0.16 / v0.11 pressure layers preserved. NO recovery gates.</div>
+<div class="meta">Configurations: CANONICAL-400 (T/M/Mfg, seeds 2026-2425) · CANONICAL-100-A vs CANONICAL-100-B (determinism) · MFG-MIRROR-100. Generated 2026-05-20 03:29:47 UTC. v0.18 Node sim cross-validated against Claude Design: seed 2026 byte-identical to v0.17 (no Crisis); seeds 2139 + 2313 fire Crisis once each with +1 Resistance vs v0.17; Default suppression at credit 1→0 verified by trigger-condition inspection (next > 0 guard); once-only flag verified by reducer inspection.</div>
+
+<h2>Verdict <span class="surface-id">A</span></h2>
+
+<div class="verdict-card">
+  <div class="lbl">v0.18 candidate verdict</div>
+  <div class="nm">STRONGEST FAILURE-SYSTEM CANDIDATE — CREDIT CRISIS CLEAN</div>
+  <div class="det">Credit Crisis fires 2 / 400 (seeds 2139, 2313), matching v0.17's below-5 count exactly. Balance bands intact; Resistance no runaway (max ≥ 8 stays at 0 / 400); Default fires unchanged. The intermediate failure event materializes the previously-invisible credit-≤-4 band as a visible System event. Default at Credit 0 stays untouched as the catastrophic endpoint. The pressure-system has a working three-tier failure hierarchy: Credit Crisis (warning at ≤ 4), Rebellion (catastrophe at ≥ 12 resistance), Default (collapse at 0 credit).</div>
+</div>
+
+<h4>Decision criteria</h4>
+<table>
+  <thead><tr><th>Criterion</th><th>Target</th><th>Observed</th><th>Pass</th></tr></thead>
+  <tbody>
+
+    <tr><td>Balance: Treasury 45–65 %</td><td class="n">45–65 %</td><td class="n">60 %</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Balance: Merchant 15–35 %</td><td class="n">15–35 %</td><td class="n">23.5 %</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Balance: Manufacturer 10–25 %</td><td class="n">10–25 %</td><td class="n">16.5 %</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Credit Crisis fires (target: 2-5 per CANONICAL range)</td><td class="n">2-5 / 400</td><td class="n">2 / 400</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Credit Crisis fire count matches Post-Funding-below-5</td><td class="n">identical</td><td class="n">Crisis 2 vs below-5 2</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Default fires unchanged from v0.17</td><td class="n">same</td><td class="n">v17 0, v18 0</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Rebellion remains rare (no Crisis-driven runaway)</td><td class="n">0 / 400</td><td class="n">0 / 400</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Resistance ≥ 8 stays rare (< 5 %)</td><td class="n">< 5 %</td><td class="n">0 / 400 (0.0 %)</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Capacity distribution preserved</td><td class="n">identical</td><td class="n">IDENTICAL to v0.10</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Determinism A vs B</td><td class="n">PASS</td><td class="n">PASS</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Seed 2026 stable (no Crisis, byte-identical scores)</td><td class="n">PASS</td><td class="n">STABLE</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Seed 2139 Crisis fires +1 Resistance vs v0.17</td><td class="n">+1</td><td class="n">Δresist = +1</td><td><span class="pass-pill pass">PASS</span></td></tr>
+    <tr><td>Seed 2313 Crisis fires +1 Resistance vs v0.17</td><td class="n">+1</td><td class="n">Δresist = +1</td><td><span class="pass-pill pass">PASS</span></td></tr>
+  </tbody>
+</table>
+
+<h2>Credit Crisis — fires inventory <span class="surface-id">B</span></h2>
+
+<div class="callout">
+<strong>Total Credit Crisis fires in CANONICAL-400: 2.</strong> The fire count matches the Post-Funding-below-5 count exactly (2) — every canonical game that crosses into the warning band fires the event exactly once, and no game fires it twice (sticky flag verified). Claude Design's advisory cited 5 / 400 using a different seed range (seeds 1-400 informal). The CANONICAL range (seeds 2026-2425) holds the more conservative count.
+</div>
+
+<h4>Credit Crisis fire inventory (CANONICAL-400)</h4>
+<table>
+  <thead><tr><th>Seed</th><th>Lap</th><th>Turn</th><th>Source card</th></tr></thead>
+  <tbody>
+    <tr><td class="n">2139</td><td class="n">7</td><td class="n">21</td><td>Speculation Fever</td></tr>
+    <tr><td class="n">2313</td><td class="n">4</td><td class="n">12</td><td>Speculation Fever</td></tr>
+  </tbody>
+</table>
+<p class="meta">All 2 CANONICAL Credit Crisis fires came from Speculation Fever's -2 escalation (v0.17 lever). Anti-Federalist Pamphlet doesn't drop credit from 5 → 4 in CANONICAL play because the Pamphlet only lands when credit ≥ 6. Bank Run -1 from credit 5 would also fire Crisis, but Bank Run never lands at credit 5 in CANONICAL (Bank Run timing is tied to Bank Charter and other early-game state).</p>
+
+<h4>MFG-MIRROR-100 Crisis fires</h4>
+<table>
+  <thead><tr><th>Crisis fires</th><th>Seeds</th></tr></thead>
+  <tbody>
+    <tr><td class="n">0 / 100</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<h2>Three-tier failure hierarchy now visible <span class="surface-id">C</span></h2>
+
+<div class="callout">
+<strong>Default's role is now well-defined.</strong> Before v0.18, the failure system had two tiers: Default (Credit 0, catastrophic) and Rebellion (Resistance 12, catastrophic). Both threshold events are far from typical canonical play. v0.18 adds a third tier between "live game state" and "catastrophe":
+<ul style="font-size:12.5px;line-height:1.5;margin:6px 0 0 18px">
+  <li><strong>Credit Crisis</strong> (Credit ≤ 4, soft) — warning state, +1 Resistance, no reset</li>
+  <li><strong>Rebellion</strong> (Resistance 12, catastrophic) — destroys Revenue upgrades, resets to 6</li>
+  <li><strong>Default</strong> (Credit 0, catastrophic) — 50 % cash loss per player + 1 upgrade lost, resets to 3</li>
+</ul>
+This is the cleanest product shape so far: a visible <em>warning</em> for the failure system without forcing Default itself to carry every level of distress.
+</div>
+
+<h2>v0.17 ↔ v0.18 head-to-head <span class="surface-id">D</span></h2>
+
+<table>
+  <thead><tr><th>Metric</th><th>v0.17</th><th>v0.18</th><th>Δ</th></tr></thead>
+  <tbody>
+    <tr><td>Treasury wins</td><td class="n">240</td><td class="n">240</td><td class="n">0</td></tr>
+    <tr><td>Merchant wins</td><td class="n">94</td><td class="n">94</td><td class="n">0</td></tr>
+    <tr><td>Manufacturer wins</td><td class="n">66</td><td class="n">66</td><td class="n">0</td></tr>
+    <tr><td>Default fires</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr>
+    <tr><td>Rebellion fires</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr>
+    <tr><td><strong>Credit Crisis fires (NEW)</strong></td><td class="n">— (not in v0.17)</td><td class="n diff"><strong>2</strong></td><td class="n diff">+2</td></tr>
+    <tr><td>Post-Funding Credit reaches 5</td><td class="n">4</td><td class="n">4</td><td class="n">0</td></tr>
+    <tr><td>Post-Funding Credit below 5</td><td class="n">2</td><td class="n">2</td><td class="n">0</td></tr>
+    <tr><td>Bank Run fires</td><td class="n">65</td><td class="n">65</td><td class="n">0</td></tr>
+    <tr><td>Speculation Fever -1 fires</td><td class="n">48</td><td class="n">48</td><td class="n">0</td></tr>
+    <tr><td>Speculation Fever -2 fires</td><td class="n">2</td><td class="n">2</td><td class="n">0</td></tr>
+    <tr><td>Anti-Fed Pamphlet fires</td><td class="n">51</td><td class="n">51</td><td class="n">0</td></tr>
+    <tr><td>Median margin (IP)</td><td class="n">3</td><td class="n">3</td><td class="n">0</td></tr>
+  </tbody>
+</table>
+<p class="meta">All pressure-layer counts are identical to v0.17. The only diff is the new Credit Crisis event, which fires in exactly the same 2 canonical games where v0.17 pushed credit below 5.</p>
+
+<h2>Resistance distribution — does +1 Crisis cause spillover? <span class="surface-id">E</span></h2>
+
+<table>
+  <thead><tr><th>Resistance max</th><th class="bar-h">0</th><th class="bar-h">1</th><th class="bar-h">2</th><th class="bar-h">3</th><th class="bar-h">4</th><th class="bar-h">5</th><th class="bar-h">6</th><th class="bar-h">7</th><th class="bar-h">8</th><th class="bar-h">9</th><th class="bar-h">10</th><th class="bar-h">11</th><th class="bar-h">12</th></tr></thead>
+  <tbody>
+    <tr><th>v0.10</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">191</span></td><td class="bar-cell"><div class="bar" style="width:77.5%"></div><span class="bar-num">148</span></td><td class="bar-cell"><div class="bar" style="width:26.7%"></div><span class="bar-num">51</span></td><td class="bar-cell"><div class="bar" style="width:4.7%"></div><span class="bar-num">9</span></td><td class="bar-cell"><div class="bar" style="width:0.5%"></div><span class="bar-num">1</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+    <tr><th>v0.17</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">191</span></td><td class="bar-cell"><div class="bar" style="width:77.5%"></div><span class="bar-num">148</span></td><td class="bar-cell"><div class="bar" style="width:26.7%"></div><span class="bar-num">51</span></td><td class="bar-cell"><div class="bar" style="width:4.7%"></div><span class="bar-num">9</span></td><td class="bar-cell"><div class="bar" style="width:0.5%"></div><span class="bar-num">1</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+    <tr><th>v0.18</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">191</span></td><td class="bar-cell"><div class="bar" style="width:77.0%"></div><span class="bar-num">147</span></td><td class="bar-cell"><div class="bar" style="width:26.7%"></div><span class="bar-num">51</span></td><td class="bar-cell"><div class="bar" style="width:5.2%"></div><span class="bar-num">10</span></td><td class="bar-cell"><div class="bar" style="width:0.5%"></div><span class="bar-num">1</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+  </tbody>
+</table>
+<p class="meta">v0.17 → v0.18 diff: the only change is the 2 games where Credit Crisis fires get +1 max resistance. In CANONICAL, this is visible as a 1-game shift in the distribution (one game moves from resist 3 → resist 5, for instance). Resistance ≥ 8 stays at 0 / 400; Rebellion stays at 0 / 400. No runaway.</p>
+
+<h2>v0.10 → v0.18 win bands and primary metrics <span class="surface-id">F</span></h2>
+
+<table>
+  <thead><tr><th>Metric</th><th>v0.10</th><th>v0.13</th><th>v0.16</th><th>v0.17</th><th>v0.18</th></tr></thead>
+  <tbody>
+    <tr><td>Treasury wins</td><td class="n">244</td><td class="n">241</td><td class="n">240</td><td class="n">240</td><td class="n">240</td></tr>
+    <tr><td>Merchant wins</td><td class="n">90</td><td class="n">93</td><td class="n">94</td><td class="n">94</td><td class="n">94</td></tr>
+    <tr><td>Manufacturer wins</td><td class="n">66</td><td class="n">66</td><td class="n">66</td><td class="n">66</td><td class="n">66</td></tr>
+    <tr><td>Default fires</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr>
+    <tr><td>Rebellion fires</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr>
+    <tr><td><strong>Credit Crisis fires (NEW v0.18)</strong></td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n diff"><strong>2</strong></td></tr>
+    <tr><td>Post-Funding Credit reaches 5</td><td class="n">0</td><td class="n">3</td><td class="n">6</td><td class="n">4</td><td class="n">4</td></tr>
+    <tr><td>Post-Funding Credit below 5</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">2</td><td class="n">2</td></tr>
+    <tr><td>Bankruptcy events</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n">1</td></tr>
+    <tr><td>Median margin (IP)</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n">3</td></tr>
+  </tbody>
+</table>
+
+<h2>Capacity (sanity) <span class="surface-id">G</span></h2>
+
+<table>
+  <thead><tr><th>Version</th><th class="bar-h">0</th><th class="bar-h">1</th><th class="bar-h">2</th><th class="bar-h">3</th><th class="bar-h">4</th><th class="bar-h">5</th><th class="bar-h">6</th><th class="bar-h">7</th><th class="bar-h">8</th><th class="bar-h">9</th><th class="bar-h">10</th><th class="bar-h">11</th><th class="bar-h">12</th></tr></thead>
+  <tbody>
+    <tr><th>v0.10</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:31.6%"></div><span class="bar-num">42</span></td><td class="bar-cell"><div class="bar" style="width:18.8%"></div><span class="bar-num">25</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">133</span></td><td class="bar-cell"><div class="bar" style="width:94.7%"></div><span class="bar-num">126</span></td><td class="bar-cell"><div class="bar" style="width:46.6%"></div><span class="bar-num">62</span></td><td class="bar-cell"><div class="bar" style="width:8.3%"></div><span class="bar-num">11</span></td><td class="bar-cell"><div class="bar" style="width:0.8%"></div><span class="bar-num">1</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+    <tr><th>v0.18</th><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:31.6%"></div><span class="bar-num">42</span></td><td class="bar-cell"><div class="bar" style="width:18.8%"></div><span class="bar-num">25</span></td><td class="bar-cell"><div class="bar" style="width:100.0%"></div><span class="bar-num">133</span></td><td class="bar-cell"><div class="bar" style="width:94.7%"></div><span class="bar-num">126</span></td><td class="bar-cell"><div class="bar" style="width:46.6%"></div><span class="bar-num">62</span></td><td class="bar-cell"><div class="bar" style="width:8.3%"></div><span class="bar-num">11</span></td><td class="bar-cell"><div class="bar" style="width:0.8%"></div><span class="bar-num">1</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td><td class="bar-cell"><div class="bar" style="width:0.0%"></div><span class="bar-num">0</span></td></tr>
+  </tbody>
+</table>
+<p class="meta">Byte-identical. v0.18 doesn't touch capacity at all.</p>
+
+<h2>MFG-MIRROR-100 cross-check <span class="surface-id">H</span></h2>
+
+<table>
+  <thead><tr><th>Metric</th><th>v0.18 (MFG-MIRROR)</th></tr></thead>
+  <tbody>
+    <tr><td>Manufacturer wins</td><td class="n">100 / 100</td></tr>
+    <tr><td>Default fires</td><td class="n">0 / 100</td></tr>
+    <tr><td>Rebellion fires</td><td class="n">0 / 100</td></tr>
+    <tr><td>Credit Crisis fires</td><td class="n">0 / 100</td></tr>
+    <tr><td>Bankruptcy events</td><td class="n">0</td></tr>
+    <tr><td>Post-Funding Credit ≤ 5</td><td class="n">2 / 100</td></tr>
+    <tr><td>Post-Funding Credit below 5</td><td class="n">0 / 100</td></tr>
+    <tr><td>Resistance max ≥ 8</td><td class="n">0 / 100</td></tr>
+  </tbody>
+</table>
+
+<h2>Default suppression — structural proof <span class="surface-id">I</span></h2>
+
+<div class="callout">
+<strong>Default and Credit Crisis cannot fire on the same credit transition.</strong> The trigger condition includes a <code>next > 0</code> guard:
+<pre style="font-family:var(--mono);font-size:11px;background:rgba(26,22,18,0.05);padding:8px;margin:6px 0">if (key === 'credit' && next <= 4 && next > 0 && !s.flags.creditCrisisFired) {
+  s.pendingCreditCrisis = true;
+}</pre>
+At <code>next === 0</code>: pendingDefault is set (by the existing line), pendingCreditCrisis is NOT set. The main-loop priority then dispatches TRIGGER_DEFAULT first. TRIGGER_DEFAULT directly assigns <code>s.tracks.credit.value = 3</code>, bypassing adjustTrack — so the creditCrisisFired flag stays unset. If a subsequent card-driven dip puts credit back in the 1-4 warning band, Crisis fires normally.
+</div>
+
+<h2>Interpretation — answering the design question <span class="surface-id">J</span></h2>
+
+<p><strong>The question v0.18 was designed to answer:</strong> Can the failure system have a visible intermediate warning state without weakening Default's catastrophic endpoint?</p>
+
+<p><strong>Yes.</strong> v0.18 produces:</p>
+
+<ul style="font-size:13px;line-height:1.6;margin:6px 0 6px 18px">
+  <li><strong>2 canonical games</strong> with a visible CREDIT_CRISIS System event in the ledger, at the precise moments credit drops below 5</li>
+  <li><strong>+1 shared Resistance</strong> as the penalty — cross-track interaction with the Rebellion timer, but small enough that no game reaches the Rebellion threshold</li>
+  <li><strong>Default at Credit 0 unchanged</strong> in every metric — same fires (0 / 400), same trigger condition, same reducer behavior</li>
+  <li><strong>Balance bands held byte-perfectly</strong> (60.0 / 23.5 / 16.5, identical to v0.17)</li>
+</ul>
+
+<p><strong>The product framing this earns:</strong> Default at Credit 0 is now correctly understood as a <em>catastrophic collapse condition</em>, not a balance target. The game's failure system now has a working three-tier hierarchy. The conceptual question "should Default be lowered to Credit ≤ 2 or ≤ 4?" can be retired — Credit Crisis fills that role with the right severity, and Default stays as the dramatic endpoint.</p>
+
+<h4>Suggested v0.19 directions (if authorized — observation only)</h4>
+<ul style="font-size:13px;line-height:1.6;margin:6px 0 6px 18px">
+  <li><strong>v0.19 — broader Crisis trigger:</strong> Crisis currently triggers only on a card-driven dip into ≤ 4. Should it also trigger if credit STARTS ≤ 4 in a save-loaded game? Defensive — probably not worth it.</li>
+  <li><strong>v0.19 — Crisis-aware card behavior:</strong> Some cards could check <code>s.flags.creditCrisisFired</code> and behave differently. Example: Anti-Fed Pamphlet payment scaled higher post-Crisis (revenue collection harder during financial crisis). This is balance-shaping territory; not a failure-pressure question.</li>
+  <li><strong>v0.19 — second Crisis penalty option:</strong> If +1 Resistance proves too anemic in playtesting, swap to "all players pay 25 TN" (single, mild). Don't compound — too easy to overshoot non-terminal.</li>
+  <li><strong>v0.19 alt — chain Crisis to a card draw:</strong> "After Credit Crisis fires, the next Republic Debate draws Anti-Federalist Pamphlet (forced)." Mechanically links the warning state to additional pressure. Risk: removes Republic Debate variety.</li>
+</ul>
+
+<p style="font-size:12px;color:var(--neutral);font-style:italic;margin-top:8px">None of these are authorized. Each would need its own explicit kickoff. The product reading is that v0.18 may be a stopping point: the failure-pressure system now has the right shape, and further iteration should be playtest-driven not sim-driven.</p>
+
+<h2>Closeout <span class="surface-id">K</span></h2>
+
+<p>v0.18 candidate is <strong>STRONGEST FAILURE-SYSTEM CANDIDATE — CREDIT CRISIS CLEAN</strong>. The intermediate failure event materializes the credit ≤ 4 warning band as a visible System event, while Default at Credit 0 stays unchanged as the catastrophic endpoint. Balance bands held perfectly; Resistance no runaway; Default fires unchanged; Determinism PASS.</p>
+
+<p>Recommended disposition: <strong>Promote v0.18 as the new failure-system foundation.</strong> The pressure-side branch (v0.11 + v0.16 + v0.17) is the foundation; the failure-event layer (v0.18 Credit Crisis) is the visible expression. The chain from v0.11 → v0.18 has earned its place: the system now produces visible failure events at multiple severity tiers, holds balance, and preserves Default's dramatic role.</p>
+
+<div class="meta">
+v0.18 evidence sweep — observation only.
+Raw data: <code>experiments/v0.18-failure-pressure-candidate/raw-data/sovereign-v0.18-canonical-400.json</code> (+ 100-A, 100-B, mfg-mirror-100).
+Sim: <code>tools/diagnosis/sim-v0.18.mjs</code> (branched from sim-v0.17.mjs, four change-points: adjustTrack trigger, initial state flag, TRIGGER_CREDIT_CRISIS reducer case, main loop dispatch).
+Source HTML: <code>experiments/v0.18-failure-pressure-candidate/sovereign-solo-v0.18-candidate.html</code> (produced by Claude Design from v0.17 source, 10 change-points).
+v0.18 Node sim cross-validated: seed 2026 byte-identical to v0.17 (no Crisis); seeds 2139 + 2313 fire Crisis once each with +1 Resistance vs v0.17; Default suppression at credit 1→0 verified by trigger-condition inspection; once-only sticky flag verified by reducer inspection.
+Advisory vs canonical: Claude Design's 5/400 figure used seeds 1-400 (informal); CANONICAL-400 = seeds 2026-2425 shows 2/400.
+No release. No balance change to v0.10 baseline. No threshold change. Default at Credit 0 unchanged.
+</div>
+
+</div>
+</body>
+</html>
