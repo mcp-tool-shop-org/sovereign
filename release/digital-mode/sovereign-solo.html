@@ -1545,6 +1545,169 @@ html, body { font-size:15px; }
 .late-event-banner .le-actions button[disabled] { opacity:.4; cursor:not-allowed; box-shadow:none; }
 
 /* =====================================================================
+   v1.5 CHRONICLER TIER B — reference surfaces (presentation-only)
+   "Learn more" affordance · Learn More side-panel · Chronicler's Ledger
+   · corner book icon · glossary term + tooltip. Parchment/ink/foil
+   language matched to the existing chrome; reference, not narration —
+   always reachable regardless of narration level.
+   ===================================================================== */
+
+/* --- "Learn more" affordance (on the event caption + act context) --- */
+.learn-more-link {
+  display:inline; margin-left:6px; padding:0;
+  background:none; border:none; box-shadow:none;
+  font-family:var(--display); font-style:italic; font-size:12px;
+  letter-spacing:0; text-transform:none; color:var(--foil);
+  border-bottom:1px dotted var(--foil); cursor:pointer; line-height:1;
+}
+.learn-more-link::before { content:"\203A\00A0"; font-style:normal; }
+.learn-more-link:hover, .learn-more-link:focus-visible { background:none; color:var(--ink); border-bottom-color:var(--ink); }
+.learn-more-link:focus-visible { outline:2px solid var(--foil); outline-offset:3px; }
+
+/* --- Shared reference overlay: Learn More popover + Chronicler's Ledger.
+   Non-blocking: the overlay is a side-panel that does NOT pause the game
+   loop (opponent turns continue behind it). It is dismissible at a glance
+   and restores the player to the same point on close. --- */
+.ref-overlay { position:fixed; inset:0; z-index:74; display:flex; }
+.ref-overlay.hidden { display:none; }
+.ref-overlay .ref-scrim { position:absolute; inset:0; background:rgba(26,22,18,0.42); }
+/* Learn More docks to the right as a side panel (Pentiment / CK pattern). */
+.ref-overlay.ref-side { justify-content:flex-end; }
+.ref-overlay.ref-side .ref-panel {
+  position:relative; height:100%; width:min(440px, 92vw);
+  border-left:2px solid var(--ink);
+  animation:refSlideIn 200ms ease-out;
+}
+@keyframes refSlideIn { from { transform:translateX(24px); opacity:.4; } to { transform:translateX(0); opacity:1; } }
+/* The Ledger is a centred reading panel (Civilopedia pattern). */
+.ref-overlay.ref-center { align-items:center; justify-content:center; padding:24px; }
+.ref-overlay.ref-center .ref-panel {
+  position:relative; max-width:760px; width:100%; max-height:88vh;
+  border:2px solid var(--ink);
+  box-shadow:inset 0 0 0 1px var(--foil-soft), 0 16px 48px -12px rgba(0,0,0,.6);
+  animation:refFadeIn 200ms ease-out;
+}
+@keyframes refFadeIn { from { opacity:0; } to { opacity:1; } }
+.ref-panel {
+  background:linear-gradient(180deg, var(--parchment) 0%, var(--parchment-2) 100%);
+  display:flex; flex-direction:column; overflow:hidden;
+}
+.ref-panel::before {
+  content:""; position:absolute; left:0; right:0; top:0; height:4px;
+  background:linear-gradient(90deg, var(--foil) 0%, var(--foil-soft) 50%, var(--foil) 100%);
+}
+.ref-head {
+  flex:0 0 auto; padding:18px 22px 12px; border-bottom:1px solid var(--ink);
+  display:flex; justify-content:space-between; align-items:flex-start; gap:12px;
+}
+.ref-head .ref-eyebrow {
+  font-family:var(--ui); font-size:10px; letter-spacing:.28em; text-transform:uppercase;
+  font-weight:800; color:var(--foil);
+}
+.ref-head .ref-title { font-family:var(--display); font-size:23px; line-height:1.1; margin-top:3px; font-weight:600; }
+.ref-head .ref-year { font-family:var(--mono); font-size:11px; letter-spacing:.1em; opacity:.78; margin-top:4px; }
+.ref-close {
+  flex:0 0 auto; font-family:var(--ui); font-size:18px; line-height:1; font-weight:700;
+  padding:4px 9px; background:var(--parchment); color:var(--ink); border:1px solid var(--ink);
+  cursor:pointer;
+}
+.ref-close:hover { background:var(--ink); color:var(--parchment); }
+.ref-close:focus-visible { outline:2px solid var(--foil); outline-offset:2px; }
+.ref-body {
+  flex:1 1 auto; overflow-y:auto; padding:16px 22px 22px;
+  font-family:var(--body); font-size:14.5px; line-height:1.62; color:var(--ink);
+}
+.ref-body p { margin:0 0 11px; text-wrap:pretty; }
+.ref-body .ref-why {
+  margin:14px 0 0; padding:12px 14px; background:var(--parchment-2);
+  border-left:3px solid var(--foil); font-family:var(--display); font-size:14px; line-height:1.55;
+}
+.ref-body .ref-why .ref-why-lbl {
+  display:block; font-family:var(--ui); font-size:9px; letter-spacing:.24em; text-transform:uppercase;
+  font-weight:800; color:var(--foil); margin-bottom:5px;
+}
+.ref-body .ref-source {
+  margin-top:16px; padding-top:10px; border-top:0.5px dashed var(--rule-soft);
+  font-family:var(--mono); font-size:10.5px; line-height:1.5; opacity:.82;
+}
+.ref-body .ref-source .ref-source-lbl { font-family:var(--ui); letter-spacing:.18em; text-transform:uppercase; font-weight:700; margin-right:6px; }
+
+/* --- Chronicler's Ledger: category tabs + search + entry list --- */
+.ledger-tabs {
+  flex:0 0 auto; display:flex; flex-wrap:wrap; gap:5px; padding:10px 22px 0;
+}
+.ledger-tabs button {
+  font-family:var(--ui); font-size:9.5px; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; padding:5px 11px; background:var(--parchment); color:var(--ink);
+  border:1px solid var(--ink); cursor:pointer;
+}
+.ledger-tabs button[aria-selected="true"] { background:var(--ink); color:var(--parchment); }
+.ledger-tabs button:focus-visible { outline:2px solid var(--foil); outline-offset:2px; }
+.ledger-search-row { flex:0 0 auto; padding:10px 22px 0; }
+.ledger-search-row input {
+  width:100%; font-family:var(--body); font-size:13px; padding:7px 10px;
+  border:1px solid var(--ink); background:var(--parchment); color:var(--ink);
+}
+.ledger-search-row input:focus-visible { outline:2px solid var(--foil); outline-offset:1px; }
+.ledger-entries { flex:1 1 auto; overflow-y:auto; padding:8px 22px 22px; }
+.ledger-entry {
+  border-bottom:0.5px solid var(--rule-soft); padding:12px 0;
+}
+.ledger-entry:last-child { border-bottom:none; }
+.ledger-entry .le-cat {
+  font-family:var(--ui); font-size:8.5px; letter-spacing:.22em; text-transform:uppercase;
+  font-weight:800; color:var(--foil);
+}
+.ledger-entry .le-hd { font-family:var(--display); font-size:17px; line-height:1.18; margin-top:2px; font-weight:600; }
+.ledger-entry .le-meta { font-family:var(--mono); font-size:10px; letter-spacing:.06em; opacity:.75; margin-top:2px; }
+.ledger-entry .le-quote {
+  font-family:var(--display); font-style:italic; font-size:14px; line-height:1.55;
+  margin-top:6px; padding-left:11px; border-left:2px solid var(--foil); color:var(--ink);
+}
+.ledger-entry .le-quote .le-attr {
+  display:block; font-style:normal; font-family:var(--mono); font-size:10px; letter-spacing:.02em;
+  opacity:.8; margin-top:4px;
+}
+.ledger-entry .le-prose { font-family:var(--body); font-size:13.5px; line-height:1.55; margin-top:6px; }
+.ledger-entry .le-prose p { margin:0 0 8px; }
+.ledger-entry .le-src { font-family:var(--mono); font-size:10px; line-height:1.45; opacity:.78; margin-top:6px; }
+.ledger-entry a { color:var(--foil); }
+.ledger-empty { font-family:var(--display); font-style:italic; opacity:.7; padding:24px 0; text-align:center; }
+
+/* --- Corner book icon (always-reachable Ledger handle) --- */
+.controls .btn-ledger { font-family:var(--display); font-size:13px; letter-spacing:0; text-transform:none; padding:5px 10px; }
+.controls .btn-ledger .bk { font-style:normal; margin-right:4px; }
+
+/* --- Glossary term + tooltip (dotted underline, hover/tap/keyboard) --- */
+.gloss-term {
+  border-bottom:1px dotted var(--foil); cursor:help; position:relative;
+  background:none; border-left:none; border-right:none; border-top:none;
+  font:inherit; color:inherit; padding:0; letter-spacing:inherit; text-transform:none;
+}
+.gloss-term:hover, .gloss-term:focus-visible { color:var(--foil); }
+.gloss-term:focus-visible { outline:2px solid var(--foil); outline-offset:2px; }
+.gloss-pop {
+  position:absolute; left:0; bottom:calc(100% + 8px); z-index:90;
+  width:min(300px, 78vw); padding:10px 13px;
+  background:var(--ink); color:var(--parchment);
+  border:1px solid var(--foil); box-shadow:0 8px 24px -8px rgba(0,0,0,.6);
+  font-family:var(--body); font-size:12.5px; line-height:1.5; letter-spacing:0; text-transform:none;
+  text-align:left; white-space:normal;
+  opacity:0; visibility:hidden; transition:opacity 120ms ease;
+}
+.gloss-term:hover .gloss-pop, .gloss-term:focus-within .gloss-pop, .gloss-term.gloss-open .gloss-pop { opacity:1; visibility:visible; }
+.gloss-pop .gp-title { font-family:var(--display); font-weight:700; font-size:14px; color:var(--foil-soft); margin-bottom:4px; }
+.gloss-pop .gp-src { display:block; margin-top:6px; font-family:var(--mono); font-size:9.5px; opacity:.72; }
+.gloss-pop::after {
+  content:""; position:absolute; left:14px; top:100%;
+  border:6px solid transparent; border-top-color:var(--ink);
+}
+
+@media (max-width:720px) {
+  .ref-overlay.ref-side .ref-panel { width:100vw; border-left:none; }
+}
+
+/* =====================================================================
    PORTFOLIO STRIP (legacy block continues)
    ===================================================================== */
 
@@ -2074,6 +2237,7 @@ body:not(.designer-mode) #seedPill { display:none; }
 .controls .game-menu[open] > button:nth-of-type(4) { top:126px; }
 .controls .game-menu[open] > button:nth-of-type(5) { top:158px; }
 .controls .game-menu[open] > button:nth-of-type(6) { top:190px; }
+.controls .game-menu[open] > button:nth-of-type(7) { top:222px; }
 .controls .game-menu[open] > button:hover { background:var(--ink); color:var(--parchment); }
 
 .controls .narr-cycle {
@@ -2455,10 +2619,12 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
   .dice-overlay .sum.juice-sum-pop, .drawer-card.juice-card-dwell,
   .drawer-card.juice-card-flip, .drawer-card .effect.juice-reveal,
   .drawer-card .nm.juice-reveal, .opp-card.juice-telegraph, .juice-recoil,
-  #juiceCeremony.juice-cer-active {
+  #juiceCeremony.juice-cer-active,
+  .ref-overlay.ref-side .ref-panel, .ref-overlay.ref-center .ref-panel {
     animation: none !important;
   }
   .juice-float { display: none !important; }
+  .gloss-pop { transition: none !important; }
 }
 </style>
 <template id="__bundler_thumbnail" data-bg-color="#2A2622">
@@ -2497,10 +2663,12 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
       <span class="phase-pill" id="phasePill">phase: setup</span>
       <span class="active-pill" id="activePill">Active: You</span>
       <button id="btnHelp" title="Orientation panel for new players">How to play</button>
+      <button id="btnLedger" class="btn-ledger" title="Open the Chronicler's Ledger — history, quotes, and sources" aria-label="Open the Chronicler's Ledger"><span class="bk" aria-hidden="true">▤</span>Ledger</button>
       <button id="btnDarkMode" class="dark-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">☾</button>
       <button id="btnNarrCycle" class="narr-cycle" title="Cycle narration: On → Minimal → Off">Narr: On</button>
       <details class="game-menu">
         <summary title="Game options">Game ▾</summary>
+        <button id="btnLedgerMenu" title="Open the Chronicler's Ledger">Chronicler’s Ledger</button>
         <button id="btnSave" title="Save your game">Save</button>
         <button id="btnLoad" title="Load a saved game">Load</button>
         <button id="btnReplay" class="hidden" title="Replay this game">Replay</button>
@@ -2602,6 +2770,20 @@ body.sidebar-collapsed .sidebar-toggle:hover { animation:none; }
 </div>
 
 <div class="event-toast-stack" id="toastStack"></div>
+
+<!-- v1.5 Chronicler Tier B — reference surfaces (presentation-only).
+     Learn More docks right as a non-blocking side panel; the Ledger opens
+     centred. Both are dismissible and restore focus on close. Populated by
+     openLearnMore() / openLedger(). -->
+<div class="ref-overlay ref-side hidden" id="learnMoreOverlay" role="dialog" aria-modal="false" aria-labelledby="learnMoreTitle">
+  <div class="ref-scrim" data-ref-dismiss="learnMore"></div>
+  <div class="ref-panel" id="learnMorePanel"></div>
+</div>
+<div class="ref-overlay ref-center hidden" id="ledgerOverlay" role="dialog" aria-modal="true" aria-labelledby="ledgerTitle">
+  <div class="ref-scrim" data-ref-dismiss="ledger"></div>
+  <div class="ref-panel" id="ledgerPanel"></div>
+</div>
+
 <!-- v1.5 juice: Tier-3 ceremony vignette (display-only; controlled tint pulse,
      never a flash/strobe — see #juiceCeremony in CSS). Floats fill in here too. -->
 <div id="juiceCeremony" aria-hidden="true"></div>
@@ -4171,6 +4353,264 @@ const FED_ERA_EVENT_CAPTIONS = {
   8: 'By February 1798 Robert Morris sat in the Prune Street debtors\u2019 apartment in Philadelphia; the financier of the Revolution had outrun his last note, and the Federal Era closed its accounts upon him.',
 };
 
+/* =====================================================================
+   v1.5 CHRONICLER TIER B \u2014 opt-in historical / pedagogical depth.
+   THREE reference surfaces, all PRESENTATION-ONLY (read state for
+   context, never mutate state / RNG / decisionLog / snapshotHash):
+     1. LEARN_MORE  \u2014 ~150-200 word real-history expansions on each
+        Federal Era event + each Act, drawn from Source-Pack Sec 2/3.
+     2. CHRONICLER'S LEDGER \u2014 a Civilopedia-style encyclopedia that
+        reuses LEARN_MORE + QUOTE_BANK (Sec 1) + CREDIT_ANALOGS (Sec 4)
+        + VISION_FRAMINGS (Sec 5) + the in-game CHRONICLER banners.
+     3. GLOSSARY    \u2014 hover/tap definitions for the economic vocabulary.
+   Every attributed quote is verbatim from Section 1 of the v1.4
+   Historical Source Pack; every date / vote / figure carries its cited
+   academic or primary source. The "How Sovereign models it" line is
+   unattributed Chronicler narration (period diction, present tense, no
+   second person) per Source-Pack Section 7.
+   ===================================================================== */
+
+/* QUOTE_BANK \u2014 Section 1 of the Source Pack, verbatim. 30 verified
+   quotes; every attributed quote the Chronicler surfaces lives here.
+   Each carries author, source title, year, and the founders.archives.gov
+   / Wikisource / Library of Congress URL the pack verified it against. */
+const QUOTE_BANK = [
+  { id:'H1', who:'Alexander Hamilton', text:'A national debt, if it is not excessive, will be to us a national blessing; it will be powerfull cement of our union.', source:'Letter to Robert Morris', year:'1781', url:'https://founders.archives.gov/documents/Hamilton/01-02-02-1167', topics:['Public Credit','Funding','Republic'] },
+  { id:'H2', who:'Alexander Hamilton', text:'It has been frequently remarked, that it seems to have been reserved to the people of this country, by their conduct and example, to decide the important question, whether societies of men are really capable or not, of establishing good government from reflection and choice, or whether they are forever destined to depend, for their political constitutions, on accident and force.', source:'Federalist No. 1', year:'1787', url:'https://en.wikisource.org/wiki/The_Federalist_Papers/No._1', topics:['Republic','Capacity'] },
+  { id:'H3', who:'Alexander Hamilton', text:'Money is, with propriety, considered as the vital principle of the body politic; as that which sustains its life and motion, and enables it to perform its most essential functions.', source:'Federalist No. 30', year:'1787', url:'https://en.wikisource.org/wiki/The_Federalist_Papers/No._30', topics:['Public Credit','Tariff','Excise'] },
+  { id:'H4', who:'Alexander Hamilton', text:'The great and radical vice in the construction of the existing Confederation is in the principle of LEGISLATION for STATES or GOVERNMENTS, in their CORPORATE or COLLECTIVE CAPACITIES, as contradistinguished from the INDIVIDUALS of which they consist.', source:'Federalist No. 15', year:'1787', url:'https://en.wikisource.org/wiki/The_Federalist_Papers/No._15', topics:['Republic','Capacity'] },
+  { id:'H5', who:'Alexander Hamilton', text:'Imposts, excises, and, in general, all duties upon articles of consumption, may be compared to a fluid, which will, in time, find its level with the means of paying them.', source:'Federalist No. 21', year:'1787', url:'https://en.wikisource.org/wiki/The_Federalist_Papers/No._21', topics:['Tariff','Excise','Public Credit'] },
+  { id:'H6', who:'Alexander Hamilton', text:'The prosperity of commerce is now perceived and acknowledged, by all enlightened statesmen, to be the most useful, as well as the most productive source of national wealth.', source:'Federalist No. 12', year:'1787', url:'https://en.wikisource.org/wiki/The_Federalist_Papers/No._12', topics:['Tariff','Manufactures','Public Credit'] },
+  { id:'H7', who:'Alexander Hamilton', text:'While the observance of that good faith which is the basis of public credit is recommended by the strongest inducements of political expediency, it is enforced by considerations of still greater authority. There are arguments for it, which rest on the immutable principles of moral obligation.', source:'First Report on Public Credit', year:'1790', url:'https://founders.archives.gov/documents/Hamilton/01-06-02-0076-0002-0001', topics:['Public Credit','Funding','Assumption'] },
+  { id:'H8', who:'Alexander Hamilton', text:'It was the price of liberty. The faith of America has been repeatedly pledged for it, and with solemnities, that give peculiar force to the obligation.', source:'First Report on Public Credit', year:'1790', url:'https://founders.archives.gov/documents/Hamilton/01-06-02-0076-0002-0001', topics:['Public Credit','Assumption','Funding'] },
+  { id:'H9', who:'Alexander Hamilton', text:'By contributing to enlarge the mass of industrious and commercial enterprise, banks become nurseries of national wealth: a consequence, as satisfactorily verified by experience, as it is clearly deducible in theory.', source:'Report on a National Bank', year:'1790', url:'https://founders.archives.gov/documents/Hamilton/01-07-02-0229-0003', topics:['Bank','Public Credit','Capacity'] },
+  { id:'H10', who:'Alexander Hamilton', text:'To cherish and stimulate the activity of the human mind, by multiplying the objects of enterprise, is not among the least considerable of the expedients, by which the wealth of a nation may be promoted.', source:'Report on the Subject of Manufactures', year:'1791', url:'https://founders.archives.gov/documents/Hamilton/01-10-02-0001-0007', topics:['Manufactures','Capacity','Tariff'] },
+  { id:'H11', who:'Alexander Hamilton', text:'The spirit of enterprise, useful and prolific as it is, must necessarily be contracted or expanded in proportion to the simplicity or variety of the occupations and productions, which are to be found in a Society.', source:'Report on the Subject of Manufactures', year:'1791', url:'https://founders.archives.gov/documents/Hamilton/01-10-02-0001-0007', topics:['Manufactures','Capacity'] },
+  { id:'H12', who:'Alexander Hamilton', text:'Energy in the Executive is a leading character in the definition of good government.', source:'Federalist No. 70', year:'1788', url:'https://en.wikisource.org/wiki/The_Federalist_Papers/No._70', topics:['Republic','Capacity'] },
+  { id:'M1', who:'James Madison', text:'The regulation of these various and interfering interests forms the principal task of modern legislation, and involves the spirit of party and faction in the necessary and ordinary operations of the government.', source:'Federalist No. 10', year:'1787', url:'https://founders.archives.gov/documents/Madison/01-10-02-0178', topics:['Faction','Republic'] },
+  { id:'M2', who:'James Madison', text:'The latent causes of faction are thus sown in the nature of man; and we see them everywhere brought into different degrees of activity, according to the different circumstances of civil society.', source:'Federalist No. 10', year:'1787', url:'https://founders.archives.gov/documents/Madison/01-10-02-0178', topics:['Faction','Republic'] },
+  { id:'M3', who:'James Madison', text:'If Congress can apply money indefinitely to the general welfare, and are the sole and supreme judges of the general welfare, they may take the care of religion into their own hands; they may assume the provision for the poor; they may undertake the regulation of all roads other than post-roads.', source:'Speech on the Cod Fishery Bill', year:'1792', url:'https://founders.archives.gov/documents/Madison/01-14-02-0195', topics:['Bank','Public Credit','Manufactures'] },
+  { id:'M4', who:'James Madison', text:'Reviewing the Constitution with an eye to these positions, it was not possible to discover in it the power to incorporate a Bank.', source:'Speech Opposing the National Bank', year:'1791', url:'https://founders.archives.gov/documents/Madison/01-13-02-0282', topics:['Bank','Resistance'] },
+  { id:'M5', who:'James Madison', text:'The accumulation of all powers, legislative, executive, and judiciary, in the same hands, whether of one, a few, or many, and whether hereditary, self-appointed, or elective, may justly be pronounced the very definition of tyranny.', source:'Federalist No. 47', year:'1788', url:'https://founders.archives.gov/documents/Madison/01-10-02-0211', topics:['Republic','Resistance'] },
+  { id:'J1', who:'Thomas Jefferson', text:'I consider the foundation of the Constitution as laid on this ground: That “all powers not delegated to the United States, by the Constitution, nor prohibited by it to the States, are reserved to the States or to the people.” To take a single step beyond the boundaries thus specially drawn around the powers of Congress, is to take possession of a boundless field of power, no longer susceptible of any definition.', source:'Opinion on the Constitutionality of a National Bank', year:'1791', url:'https://founders.archives.gov/documents/Jefferson/01-19-02-0051', topics:['Bank','Resistance','Republic'] },
+  { id:'J2', who:'Thomas Jefferson', text:'I own it to be my opinion, that good will arise from the destruction of our credit. I see nothing else which can restrain our disposition to luxury, and to the change of those manners which alone can preserve republican government.', source:'Letter to George Washington', year:'1792', url:'https://founders.archives.gov/documents/Jefferson/01-24-02-0330', topics:['Public Credit','Funding','Resistance'] },
+  { id:'J3', who:'Thomas Jefferson', text:'The treasury, possessed of the future fortunes of our country, have not been able to resist the seductions of self-interest.', source:'Letter to George Washington', year:'1792', url:'https://founders.archives.gov/documents/Jefferson/01-23-02-0470', topics:['Funding','Public Credit','Faction'] },
+  { id:'J4', who:'Thomas Jefferson', text:'Those who labour in the earth are the chosen people of God, if ever he had a chosen people, whose breasts he has made his peculiar deposit for substantial and genuine virtue.', source:'Notes on the State of Virginia, Query XIX', year:'1785', url:'https://founders.archives.gov/documents/Jefferson/01-08-02-0333-0020', topics:['Manufactures','Republic','Resistance'] },
+  { id:'A1', who:'John Adams', text:'All the perplexities, confusion and distress in America arise, not from defects in their Constitution or Confederation, not from want of honor or virtue, so much as from the downright ignorance of the nature of coin, credit and circulation.', source:'Letter to Thomas Jefferson', year:'1787', url:'https://founders.archives.gov/documents/Adams/06-19-02-0163', topics:['Coinage','Public Credit','Funding'] },
+  { id:'A2', who:'John Adams', text:'The rich, the well-born, and the able, acquire an influence among the people that will soon be too much for simple honesty and plain sense, in a house of representatives.', source:'A Defence of the Constitutions, Vol. I, Letter IV', year:'1787', url:'https://founders.archives.gov/documents/Adams/06-18-02-0193', topics:['Faction','Republic'] },
+  { id:'G1', who:'Albert Gallatin', text:'No other single operation within the power of Government can equally affect the prosperity of the Union as the opening of internal communications.', source:'Report on Roads and Canals', year:'1808', url:'https://en.wikisource.org/wiki/Report_on_Roads_and_Canals', topics:['Manufactures','Public Credit'] },
+  { id:'Mc1', who:'Senator William Maclay', text:'It was a most unfortunate moment for me, but it cost me half an hour\u2019s labour to compose myself. The Secretary\u2019s people scarce disguise their design, which is to create a mass of debts which will justify them in seizing all the sources of Government.', source:'Journal of William Maclay', year:'1790', url:'https://memory.loc.gov/ammem/amlaw/lwmj.html', topics:['Funding','Assumption','Resistance'] },
+  { id:'Mc2', who:'Senator William Maclay', text:'Mr. Hamilton is all-powerful, and fails in nothing he attempts.', source:'Journal of William Maclay', year:'1791', url:'https://memory.loc.gov/ammem/amlaw/lwmj.html', topics:['Bank','Public Credit'] },
+  { id:'F1', who:'Philip Freneau', text:'A monarchy is a government of force; a republic is a government of laws.', source:'National Gazette', year:'1792', url:'https://founders.archives.gov/documents/Jefferson/01-24-02-0735', topics:['Republic','Resistance','Faction'] },
+];
+
+/* LEARN_MORE \u2014 ~150-200 word real-history expansions. Keyed by surface:
+   events 'E1'..'E8' (Source-Pack Sec 2) and acts 'fundingAct' etc.
+   (Sec 3). Each entry: { kind, eyebrow, title, year, body[], why, source }.
+   body[] are paragraphs of documented fact; `why` is the unattributed
+   Chronicler line on how Sovereign models it. `source` is the cited
+   academic / primary source from the pack. */
+const LEARN_MORE = {
+  /* --- The eight Federal Era events (Section 2) --- */
+  E1: { kind:'event', eyebrow:'Federal Era Event \u00b7 Learn more', title:'Creditors Demand Payment', year:'July 1791',
+    body:[
+      'Hamilton\u2019s Bank Bill became law on February 25, 1791, and on the Fourth of July the Bank of the United States opened its subscription books in Philadelphia. The initial scrip offering was oversubscribed in roughly one hour; demand ran to double the supply, and the small bondholders who had walked to the books found themselves shut out at the door.',
+      'The frenzy that followed entered the language as \u201cscrippomania.\u201d Within months it fed directly into the Panic of 1792, when the secondary market in Bank scrip collapsed under the weight of borrowed money.',
+    ],
+    why:'In Sovereign, the wealthiest founder may settle creditor unrest with specie, or let Public Credit slip. The historical lesson is that a credit market rewards those already holding paper and punishes those who arrive late \u2014 the same pressure the player feels at the table.',
+    source:'Cowen, \u201cThe First Bank of the United States and the Securities Market Crash of 1792,\u201d Journal of Economic History 60:4 (2000); Sylla, Wright & Cowen, Business History Review 83:1 (2009).' },
+  E2: { kind:'event', eyebrow:'Federal Era Event \u00b7 Learn more', title:'Public Works Petition', year:'1790s\u20131808',
+    body:[
+      'Through the Federal Era, memorials from the back-country reached Philadelphia each session \u2014 for a road, a bridge, a post. The Postal Service Act of 1792 expanded the post roads, but the broader question of federally funded internal improvements languished in committee.',
+      'Albert Gallatin gathered the argument into his 1808 Report on Roads and Canals, which proposed a national system of roads and canals financed by the Treasury. Most of it went unbuilt for a generation; the constitutional objection \u2014 that the general government had no enumerated power to dig canals \u2014 outlasted the appropriation.',
+    ],
+    why:'Sovereign lets a founder spend Influence to answer the petition and quiet Resistance, or let civic strain rise. The history is that public works were always a fight between a felt local need and a contested federal power \u2014 the petition piled up faster than the money.',
+    source:'Larson, Internal Improvement (UNC Press, 2001); John, Spreading the News (Harvard, 1995); Gallatin, Report on Roads and Canals, 1808.' },
+  E3: { kind:'event', eyebrow:'Federal Era Event \u00b7 Learn more', title:'Route Monopoly Inquiry', year:'February 1792',
+    body:[
+      'The Postal Service Act, signed February 20, 1792, placed the Post Office on a permanent footing and vested the power to designate post roads in Congress rather than the Postmaster General. Private carriers who had run the mail by handshake along the Boston\u2013New York\u2013Philadelphia corridor found their routes opened to congressional inquiry.',
+      'The Act also forbade postal officials from interfering with the circulation of newspapers, binding the young Republic\u2019s information network to federal charter rather than private right.',
+    ],
+    why:'In Sovereign the leading route holder may pay to defuse the inquiry, or see the broker office closed. The model follows the history: a private monopoly over a public road did not survive the moment Congress claimed the route as its own.',
+    source:'John, Spreading the News (Harvard, 1995), ch. 1\u20132; Kielbowicz, News in the Mail (Greenwood, 1989).' },
+  E4: { kind:'event', eyebrow:'Federal Era Event \u00b7 Learn more', title:'Workshop Shortage', year:'December 1791',
+    body:[
+      'Hamilton laid his Report on the Subject of Manufactures before Congress on December 5, 1791, cataloguing the new nation\u2019s want of skilled hands. That same year the Society for Establishing Useful Manufactures was chartered at Paterson, New Jersey, with L\u2019Enfant designing the raceways at the Great Falls of the Passaic.',
+      'The mills stood half-finished while agents sought workmen from Britain \u2014 whose Acts of 1719 and 1750 forbade the emigration of artisans. The Society recruited covertly; the passage, its agents reported, would cost more than the men.',
+    ],
+    why:'Sovereign lets a manufacturer pay to relieve the shortage and gain Capacity, or let it fall. The history is that industry could be willed by report and capital, but skilled labour had to be smuggled across an ocean against another nation\u2019s law.',
+    source:'Nelson, Liberty and Property (Johns Hopkins, 1987); Davis, Essays in the Earlier History of American Corporations, Vol. I (Harvard, 1917).' },
+  E5: { kind:'event', eyebrow:'Federal Era Event \u00b7 Learn more', title:'Speculation Inquiry', year:'March 1792',
+    body:[
+      'William Duer, a former Assistant Secretary of the Treasury, cornered Bank scrip on borrowed money and defaulted on March 9, 1792. Securities prices collapsed; the panic ran from Wall Street to State Street within the fortnight, and Duer was carried to the New Gaol.',
+      'Hamilton answered with the first central-bank-style intervention in the Republic\u2019s history: he authorised the Sinking Fund commissioners to buy public debt on government account and lent specie to the Bank of New York. By April 16, 1792, the market had steadied.',
+    ],
+    why:'In Sovereign the National Finance leader may pay to quell the speculation, or let Public Credit slip. The model honours the real event \u2014 that a Treasury could arrest a panic, but only by spending its own credit to do it.',
+    source:'Sylla, Wright & Cowen, \u201cAlexander Hamilton, Central Banker,\u201d Business History Review 83:1 (2009); Chernow, Alexander Hamilton (Penguin, 2004), ch. 19.' },
+  E6: { kind:'event', eyebrow:'Federal Era Event \u00b7 Learn more', title:'Bondholder Demand', year:'1790s',
+    body:[
+      'The Funding Act of August 4, 1790 refinanced the federal Revolutionary debt at par and set quarterly interest payments in specie. The new stocks \u2014 the six-percents, the deferred sixes, and the three-percent stock \u2014 established a calendar of coupons falling due each spring and each autumn.',
+      'Through the decade the Treasury counted its specie against the warrants while merchants in Philadelphia and Boston marked the payment days in their ledgers. The recurrent cash strain was the price of the funded debt working as designed.',
+    ],
+    why:'Sovereign pays bond owners on this event and presses Public Credit down under the coupon weight. The history is that a debt redeemed on schedule is what makes a Republic\u2019s word worth holding \u2014 and that the schedule never stops coming due.',
+    source:'Edling, A Hercules in the Cradle (Chicago, 2014), ch. 3; Perkins, American Public Finance and Financial Services, 1700\u20131815 (Ohio State, 1994).' },
+  E7: { kind:'event', eyebrow:'Federal Era Event \u00b7 Learn more', title:'Local Resistance Organizes', year:'1791\u20131794',
+    body:[
+      'Hamilton\u2019s excise on distilled spirits, signed March 3, 1791, fell hardest on the small western distillers, who paid a per-gallon rate in specie while large eastern houses paid a flat annual fee. Through the summer of 1794 the Mingo Creek committees met in the western counties of Pennsylvania, reading and signing their resolutions.',
+      'After the confrontation at Bower Hill and the death of James McFarlane, Washington proclaimed the insurrection and federalised some thirteen thousand militia \u2014 the largest federal force until the War of 1812. No battle was given; the rebellion dispersed.',
+    ],
+    why:'In Sovereign, organised resistance levies every player and resets when the Republic answers. The model reflects the real test: the federal authority to tax inland production stood proven only when the government showed it could march to collect.',
+    source:'Slaughter, The Whiskey Rebellion: Frontier Epilogue to the American Revolution (Oxford, 1986); Hogeland, The Whiskey Rebellion (Scribner, 2006).' },
+  E8: { kind:'event', eyebrow:'Federal Era Event \u00b7 Learn more', title:'Final Republic Reckoning', year:'February 1798',
+    body:[
+      'Robert Morris \u2014 Superintendent of Finance, signer of the Declaration, and once the richest man in America \u2014 was committed to the Prune Street debtors\u2019 apartment in Philadelphia on February 16, 1798, owing nearly three million dollars in land-speculation debts.',
+      'He remained there until August 1801. The first federal bankruptcy statute, the Bankruptcy Act of 1800, arrived too late to spare him the cell and was itself repealed in 1803. The financier of the Revolution had outrun his last note.',
+    ],
+    why:'Sovereign closes the Federal Era\u2019s accounts on this event. The history is the era\u2019s hardest lesson: that the man who pledged his own credit for an army could be undone by the same instruments he mastered, when the notes at last came round.',
+    source:'Rappleye, Robert Morris: Financier of the American Revolution (Simon & Schuster, 2010); Mann, Republic of Debtors (Harvard, 2002).' },
+
+  /* --- The seven Acts (Section 3) --- */
+  fundingAct: { kind:'act', eyebrow:'Act of Congress \u00b7 Learn more', title:'Funding Act', year:'August 4, 1790',
+    body:[
+      'Hamilton\u2019s First Report on Public Credit (January 9, 1790) proposed to refinance roughly fifty-four million dollars of federal Revolutionary debt at par through new six-percent, deferred-six, and three-percent stocks, and to establish a Sinking Fund.',
+      'Madison urged discrimination between the original holders \u2014 the soldiers and suppliers of the Revolution \u2014 and the speculators who had bought their paper at a fraction of face. His motion fell 36 to 13 on February 22, 1790. The Funding Act itself carried the House 32 to 29 on July 26, 1790. By 1791 the Treasury\u2019s six-percents traded above par in Amsterdam.',
+    ],
+    why:'In Sovereign the Funding Act lifts Revolutionary-Debt income and raises Public Credit. The history is that the Republic\u2019s decision to honour its debt at par \u2014 to whomever held it \u2014 is what first gave its word a price abroad.',
+    source:'Elkins & McKitrick, The Age of Federalism (Oxford, 1993), ch. 3\u20134; Chernow, Alexander Hamilton (2004), ch. 17.' },
+  assumptionAct: { kind:'act', eyebrow:'Act of Congress \u00b7 Learn more', title:'Assumption Act', year:'August 4, 1790',
+    body:[
+      'The assumption provisions of the Funding Act federalised roughly twenty-one and a half million dollars of state Revolutionary debts, converting state creditors into federal creditors and removing the states as competing fiscal sovereigns.',
+      'Assumption was twice defeated in the spring of 1790 before the Compromise of 1790 \u2014 Jefferson\u2019s \u201cdinner table bargain\u201d at Maiden Lane, around June 20 \u2014 carried it 34 to 28 on July 26. Madison stood aside; in exchange, the permanent capital was sited on the Potomac. Jefferson would later call his concurrence the greatest political error of his life.',
+    ],
+    why:'Sovereign raises State-Debt income and Public Credit when Assumption passes, and adds Resistance. The model carries the real tension: states that had paid their own debts resented bailing out those that had not, and the bargain that broke the deadlock set the First Party System in motion.',
+    source:'Elkins & McKitrick (1993), ch. 4; Cooke, \u201cThe Compromise of 1790,\u201d William and Mary Quarterly 27 (1970).' },
+  bankCharter: { kind:'act', eyebrow:'Act of Congress \u00b7 Learn more', title:'Bank Charter', year:'February 25, 1791',
+    body:[
+      'The Act to Incorporate the Subscribers to the Bank of the United States chartered the First Bank for twenty years with ten million dollars in capital, one-fifth subscribed by the federal government. It could issue banknotes, hold federal deposits, and act as the Treasury\u2019s fiscal agent.',
+      'Madison opposed it from the House floor on Tenth Amendment grounds; Jefferson and Attorney General Randolph counselled a veto. Hamilton answered in some seventeen thousand words on implied powers. The House passed it 39 to 20 on February 8 \u2014 North for, South against \u2014 and Washington signed on February 25. The doctrine that the means may be inferred from the ends was later constitutionalised in McCulloch v. Maryland (1819).',
+    ],
+    why:'In Sovereign the Bank Charter multiplies the Bank\u2019s yield. The history is that the Bank was the constitutional hinge of the whole system \u2014 the moment the Republic decided its government could do what its charter implied, not only what it named.',
+    source:'Elkins & McKitrick (1993), ch. 6; McDonald, Alexander Hamilton (1979), ch. 9; Chernow (2004), ch. 19.' },
+  tariffSchedule: { kind:'act', eyebrow:'Act of Congress \u00b7 Learn more', title:'Tariff Schedule', year:'July 4, 1789',
+    body:[
+      'The Tariff Act of 1789 \u2014 the second statute the new Congress enacted \u2014 set five percent ad valorem on most imports, with enumerated rates to fifty percent on selected goods, and tonnage duties favouring American-built and American-owned shipping at six cents the ton against fifty cents for foreign.',
+      'Madison sponsored the schedule and sought to discriminate against British bottoms; the Senate struck the discrimination and the House concurred to clear the bill by Independence Day, passing it 31 to 19. The customhouse went on to supply roughly ninety percent of federal revenue through the 1790s.',
+    ],
+    why:'Sovereign raises Revenue-System income and adds Resistance when the Tariff passes. The model reflects that the customhouse was the Republic\u2019s first reliable purse \u2014 and that the choice between revenue and protection has shaped tariff politics ever since.',
+    source:'Irwin, Clashing over Commerce: A History of US Trade Policy (2017), ch. 3; Elkins & McKitrick (1993), ch. 2.' },
+  coinageAct: { kind:'act', eyebrow:'Act of Congress \u00b7 Learn more', title:'Coinage Act', year:'April 2, 1792',
+    body:[
+      'The Coinage Act established the United States Mint at Philadelphia \u2014 the first federal building erected under the Constitution \u2014 and defined the dollar as 371.25 grains of pure silver, pegged to the Spanish milled dollar, with a bimetallic ratio of fifteen to one. It provided for gold eagles, silver dollars and their fractions, and copper cents on a decimal subdivision.',
+      'The House had wanted Washington\u2019s portrait on the coin; the Senate substituted an emblematic Liberty, and the House concurred. David Rittenhouse served as first Director. The fifteen-to-one ratio undervalued silver, and silver dollars drifted out of circulation under Gresham\u2019s Law.',
+    ],
+    why:'In Sovereign the Coinage Act enriches the Mint owner and lifts Credit and Capacity. The history is that a Republic able to strike coin in its own name had taken a quiet but decisive step out from under the Spanish dollar and into a currency of its own.',
+    source:'Taxay, The U.S. Mint and Coinage (1966), ch. 1\u20133; McDonald (1979), ch. 9.' },
+  manufactures: { kind:'act', eyebrow:'Act of Congress \u00b7 Learn more', title:'Report on Manufactures', year:'December 5, 1791',
+    body:[
+      'Hamilton\u2019s Report on the Subject of Manufactures, drafted in part by Tench Coxe, was the longest of his state papers. Against the agricultural preference of Smith and the Physiocrats, it recommended moderate protective tariffs, targeted bounties, premiums for invention, raw-materials exemptions, and internal improvements.',
+      'The tariff portion was largely adopted in the Tariff of 1792; the bounty system was rejected as a constitutionally suspect reach of the General Welfare Clause. The Report became doctrine without ever becoming a single statute, shaping American developmental economics through Clay\u2019s \u201cAmerican System\u201d and beyond.',
+    ],
+    why:'Sovereign halves manufacturing upgrade costs and lifts Capacity when the Report carries. The model honours its real character: a vision of an industrial Republic powerful enough to outlast the objection that the government had no power to subsidise it.',
+    source:'Elkins & McKitrick (1993), ch. 7; McDonald (1979), ch. 10; Chernow (2004), ch. 20.' },
+  exciseEnforcement: { kind:'act', eyebrow:'Act of Congress \u00b7 Learn more', title:'Excise Enforcement', year:'March 3, 1791',
+    body:[
+      'The Excise Act of March 3, 1791 was the first federal tax on a domestically produced good. It favoured large eastern distillers, who paid a flat annual capacity fee, over small frontier producers, who paid a per-gallon rate in specie. The revenue funded interest on the assumed state debts.',
+      'The House had passed it 35 to 21 on January 27, 1791. The frontier answered in 1794: the Mingo Creek committees, David Bradford, and the fallen James McFarlane. Washington proclaimed and marched near thirteen thousand militia west of the mountains. Some hundred and fifty were arrested; two convicted of treason were pardoned. Jefferson repealed the duty in 1802.',
+    ],
+    why:'In Sovereign, Excise Enforcement doubles the Whiskey Excise yield and sharply raises Resistance. The model carries the era\u2019s hardest proof: that the power to tax inland production was real only when the Republic showed it could enforce the duty by force.',
+    source:'Slaughter (1986); Elkins & McKitrick (1993), ch. 9; Chernow (2004), ch. 27.' },
+};
+
+/* CREDIT_ANALOGS \u2014 Section 4. The four Credit tiers and the documented
+   episode each one models. body[] are paragraphs of fact; `why` is the
+   Chronicler line. */
+const CREDIT_ANALOGS = [
+  { id:'publicDoubt', tier:'Public Doubt', threshold:'Credit \u2264 6', year:'1789\u2013July 1790',
+    body:[
+      'Before the Funding Act, some twenty-five million dollars in state war debts traded at deep discount. Original holders sold to speculators for fractions of face value; \u201cnot worth a Continental\u201d had entered the language. The certificates jumped to $52.50 at the Act\u2019s passage and to $66.83 by October 1790 \u2014 a measure of how low they had been trading before.',
+    ],
+    why:'The first tremor. Continental scrip changes hands at a fraction of face, and the coffee houses trade rumor as if it were specie; the Republic\u2019s word is on the auction block, and the auctioneers know it.',
+    source:'Funding Act of 1790; First Report on the Public Credit \u2014 EH.net; Wikipedia (academic-cited).' },
+  { id:'creditCrisis', tier:'Credit Crisis', threshold:'Credit \u2264 4', year:'March 1792',
+    body:[
+      'William Duer ceased payments on March 9, 1792; securities fell more than twenty percent in weeks. Hamilton worked with William Seton of the Bank of New York, authorising the purchase of $150,000 in public debt at a seven-percent penalty rate and later committing up to $500,000 in Treasury backing. By April 16 the market had returned to normal.',
+    ],
+    why:'Hamilton writes the first lender-of-last-resort instruction ever drafted in this Republic: buy on government account, at penalty rate, against any good collateral. The credit holds \u2014 barely.',
+    source:'Panic of 1792 \u2014 Sylla, Wright & Cowen, Business History Review 83:1 (2009); Federal Reserve Bank of NY, \u201cCrisis Chronicles\u201d (2014).' },
+  { id:'panic', tier:'Panic', threshold:'Credit \u2264 2', year:'February 1798',
+    body:[
+      'Robert Morris \u2014 Superintendent of Finance, signer of the Declaration, the richest man in America in 1775 \u2014 was committed to the Prune Street debtors\u2019 apartment in February 1798, owing nearly three million he could not pay. The collapse of his North American Land Company pulled credit out of every speculative venture from New York to Kentucky; the bond and loan markets froze.',
+    ],
+    why:'No broker on Chestnut Street will write a bond against any collateral; the Bank\u2019s directors have shut the discount window. There is no loan to be had at any rate. The Republic learns what a frozen credit market costs.',
+    source:'Robert Morris (financier) \u2014 Rappleye (2010); Mann, Republic of Debtors (2002).' },
+  { id:'default', tier:'Default', threshold:'Credit = 0', year:'(feared, never realized)',
+    body:[
+      'No sovereign default occurred in the Federal Era. The fear, however, was real and load-bearing. Daniel Shays led some fifteen hundred armed men against the federal arsenal at Springfield on January 25, 1787; four insurgents were killed by Massachusetts militia artillery, and the government under the Articles could not finance troops to suppress the rising. Hamilton and Madison cited the rebellion as proof the Articles had to be replaced.',
+    ],
+    why:'What never happened \u2014 and what the architects feared above all. Hamilton built the funded debt, the Bank, and the excise as a wall against the day the Republic\u2019s word would be worth nothing, and every holder of a federal Six would learn that paper is only as good as the power behind it.',
+    source:'Shays\u2019s Rebellion \u2014 Mount Vernon Digital Encyclopedia; Bill of Rights Institute.' },
+];
+
+/* VISION_FRAMINGS \u2014 Section 5. The three profile Visions and the
+   historical career each one closes upon. */
+const VISION_FRAMINGS = [
+  { id:'federalCreditArchitect', title:'Federal Credit Architect', subtitle:'Treasury / Finance',
+    body:[
+      'By 1791\u20131795 Hamilton\u2019s full credit system was in operation: the Funding Act of August 1790, the Bank chartered in February 1791, the Report on Manufactures of December 1791, and the excise of March 1791. By 1795 federal six-percents traded near par in Amsterdam and London.',
+    ],
+    why:'This is the Republic Hamilton drafted on paper in January of 1790 and built in stone by 1795: a funded debt that strangers trust, a Bank with a twenty-year charter, an excise that fills the Treasury, and a Mint that strikes coin in the Republic\u2019s own name. The architect of public credit signs their ledger and closes the book on doubt.',
+    source:'First Bank of the United States; Funding Act of 1790 \u2014 EH.net; Federal Reserve History.' },
+  { id:'commerceSovereign', title:'Commerce Sovereign', subtitle:'Merchant / Infrastructure',
+    body:[
+      'Willing & Morris, among the largest trading firms of the colonies, ran routes to Britain, Portugal, Spain, the West Indies, the Levant, China, and Africa, and were among the first colonial insurers of cargo. Robert Morris was the richest man in America by 1775; his partner Thomas Willing became the first president of the Bank of the United States in 1791.',
+    ],
+    why:'From the Philadelphia wharves where Willing and Morris first opened a Levant route to the New York counting-houses now insuring China cargoes \u2014 this is the merchant Republic the 1790s built: manifest in one hand and bill of exchange in the other. The commerce sovereign closes their ledger in profit.',
+    source:'Robert Morris (financier) \u2014 Mount Vernon Digital Encyclopedia; UPenn Archives.' },
+  { id:'industrialFounder', title:'Industrial Founder', subtitle:'Manufacturer / Industry',
+    body:[
+      'The Society for Establishing Useful Manufactures was founded in 1791 at Paterson on the Great Falls of the Passaic \u2014 Coxe\u2019s charter, L\u2019Enfant\u2019s raceways, more than half a million dollars in subscribed capital. Samuel Slater\u2019s water-powered mill at Pawtucket, cited by Hamilton in the Report on Manufactures, had begun spinning in December 1790. The Society stumbled after Duer embezzled its funds in the 1792 panic, but by 1815 thirteen water-powered cotton mills operated at the Falls.',
+    ],
+    why:'Hamilton named Slater\u2019s mill as proof the Republic could spin its own thread, and the Society at the Great Falls was the model. This is the founder who turned capacity into industry \u2014 who proved Hamilton right where Duer could not.',
+    source:'Society for Establishing Useful Manufactures; Slater Mill \u2014 Library of Congress; Hamilton Partnership for Paterson.' },
+];
+
+/* GLOSSARY \u2014 economic vocabulary that appears in event/Act/narration
+   text. Definitions are grounded in the documented facts of the Source
+   Pack (Sec 2\u20136); each carries the in-game context the term arises in.
+   `terms` lists the surface spellings glossify() should match. */
+const GLOSSARY = {
+  specie: { terms:['specie'], title:'Specie',
+    def:'Hard money \u2014 gold and silver coin, as opposed to paper notes or scrip. The Funding Act of 1790 required the Treasury to pay its quarterly bond interest in specie, which is what made the coupon schedule a recurring strain on the Republic\u2019s hard-money reserves.',
+    source:'Funding Act of 1790 \u2014 Edling, A Hercules in the Cradle (Chicago, 2014).' },
+  scrip: { terms:['scrip'], title:'Scrip',
+    def:'A transferable certificate of subscription \u2014 here, the right to buy shares in the Bank of the United States. When the Bank opened its books on July 4, 1791, its scrip was oversubscribed within an hour, and the speculative \u201cscrippomania\u201d that followed fed the Panic of 1792.',
+    source:'First Bank of the United States \u2014 Cowen, Journal of Economic History 60:4 (2000).' },
+  'sinking fund': { terms:['sinking fund','Sinking Fund'], title:'Sinking fund',
+    def:'A fund set aside to retire public debt over time. The Funding Act of 1790 established one under Treasury authority; in the Panic of 1792, Hamilton used its commissioners to buy debt on government account \u2014 the first lender-of-last-resort operation in the Republic\u2019s history.',
+    source:'Funding Act of 1790; Panic of 1792 \u2014 Sylla, Wright & Cowen, Business History Review 83:1 (2009).' },
+  assumption: { terms:['assumption','Assumption'], title:'Assumption',
+    def:'The federal government\u2019s taking on of the states\u2019 Revolutionary war debts. The Assumption provisions of 1790 converted state creditors into federal creditors and removed the states as rival fiscal powers \u2014 carried only by the Compromise of 1790.',
+    source:'Compromise of 1790 \u2014 Cooke, William and Mary Quarterly 27 (1970).' },
+  funding: { terms:['funding'], title:'Funding',
+    def:'Refinancing existing debt into new, interest-bearing securities on a fixed schedule. The Funding Act of 1790 funded the federal Revolutionary debt at par through six-percent, deferred-six, and three-percent stocks, establishing the credit of the Treasury.',
+    source:'Funding Act of 1790 \u2014 Elkins & McKitrick, The Age of Federalism (1993).' },
+  tariff: { terms:['tariff','Tariff'], title:'Tariff',
+    def:'A duty on imported goods. The Tariff of 1789 set five percent ad valorem on most imports, with higher enumerated rates and tonnage duties favouring American shipping; it supplied roughly ninety percent of federal revenue through the 1790s.',
+    source:'Tariff of 1789 \u2014 Irwin, Clashing over Commerce (2017).' },
+  excise: { terms:['excise','Excise'], title:'Excise',
+    def:'A tax on a domestically produced or consumed good. The excise of 1791 on distilled spirits was the first federal internal tax; it fell hardest on small frontier distillers and provoked the Whiskey Rebellion of 1794.',
+    source:'Excise Act of 1791; Whiskey Rebellion \u2014 Slaughter (1986).' },
+  'public credit': { terms:['public credit','Public Credit'], title:'Public credit',
+    def:'The trust that lets a government borrow \u2014 the market\u2019s confidence that the Republic will honour its debts. Hamilton\u2019s First Report on Public Credit (1790) argued that good faith with creditors rested on \u201cthe immutable principles of moral obligation.\u201d',
+    source:'First Report on Public Credit, 1790 \u2014 founders.archives.gov.' },
+  par: { terms:['par','at par'], title:'Par',
+    def:'The full face value of a security. The Funding Act redeemed the federal debt at par \u2014 to whomever held the paper \u2014 rather than discounting it or distinguishing original holders from speculators, the very point of Madison\u2019s defeated discrimination motion.',
+    source:'Funding Act of 1790 \u2014 Chernow, Alexander Hamilton (2004).' },
+  'deferred sixes': { terms:['deferred sixes','deferred six'], title:'The deferred sixes',
+    def:'One of the three new stocks created by the Funding Act of 1790: six-percent bonds on which interest payments were deferred for a period of years, alongside the immediate six-percents and the three-percent stock. Together they set the calendar of Federal-Era public finance.',
+    source:'Funding Act of 1790 \u2014 Perkins, American Public Finance, 1700\u20131815 (1994).' },
+};
+
 let __CHRONICLER_FIRED_GAME = new Set();
 let __CHRONICLER_FIRED_LAP = -1;        /* round in which the last chron banner fired */
 let __CHRONICLER_SUPPRESSES_LAP = -1;   /* round in which chron banner suppresses profile reactions */
@@ -4187,6 +4627,20 @@ const CHRONICLER_SUPPRESSES = {
   default_: { ledgerKinds: ['DEFAULT'], reactionKinds: [] },
   finalAccounting: { ledgerKinds: ['MANDATE'], reactionKinds: ['fourthCircuit'] },
   visionAchieved: { ledgerKinds: ['VISION'], reactionKinds: [] },
+};
+
+/* v1.5 Tier B — map a Chronicler banner key → the LEARN_MORE Act history it
+   expands. Act pass AND fail banners point at the same Act entry (the history
+   is the same; only the in-game outcome differs). Used by fireChronicler to
+   add a "Learn more" affordance to Act-pass / Act-fail Chronicler toasts. */
+const CHRONICLER_LEARN_MORE = {
+  fundingPass:'fundingAct', fundingFail:'fundingAct',
+  assumptionPass:'assumptionAct', assumptionFail:'assumptionAct',
+  bankCharterPass:'bankCharter', bankCharterFail:'bankCharter',
+  tariffPass:'tariffSchedule', tariffFail:'tariffSchedule',
+  coinagePass:'coinageAct', coinageFail:'coinageAct',
+  manufacturesPass:'manufactures', manufacturesFail:'manufactures',
+  excisePass:'exciseEnforcement', exciseFail:'exciseEnforcement',
 };
 
 function fireChronicler(key, opts) {
@@ -4209,7 +4663,10 @@ function fireChronicler(key, opts) {
   const bodyHtml = entry.body + (entry.quote
     ? '<div class="chron-quote">&ldquo;' + entry.quote.text + '&rdquo; <span class="chron-attr">— ' + entry.quote.who + ', <em>' + entry.quote.source + '</em></span></div>'
     : '');
-  pushToast({ cls:'chronicler', eyebrow:'The Chronicler', title: entry.title, body: bodyHtml });
+  /* v1.5 Tier B — Act-pass / Act-fail Chronicler banners carry a "Learn more"
+     affordance into the matching Act history (Section 3). Presentation only. */
+  const learnKey = (typeof CHRONICLER_LEARN_MORE !== 'undefined') ? CHRONICLER_LEARN_MORE[key] : null;
+  pushToast({ cls:'chronicler', eyebrow:'The Chronicler', title: entry.title, body: bodyHtml, learnKey: (learnKey && LEARN_MORE[learnKey]) ? learnKey : null });
   /* Also stamp the ledger for the replay record */
   if (STATE && STATE.ledger) {
     STATE.ledger.push({ actor:'Chronicler', event:'CHRONICLER', detail: entry.title, cls:'event', lap, turn: STATE.turnIndex });
@@ -4227,6 +4684,299 @@ function chroniclerSuppresses(kind) {
     __CHRONICLER_SUPPRESSES_LAP = STATE.lap;
   }
   return __CHRONICLER_SUPPRESS_KINDS.has(kind);
+}
+
+/* =====================================================================
+   v1.5 CHRONICLER TIER B — reference surfaces (PRESENTATION-ONLY).
+   Learn More popovers · the Chronicler's Ledger · glossary tooltips.
+   This module reads STATE only for incidental context (it never writes
+   STATE, RNG, DECISION_LOG, TURN_SNAPSHOTS, or the snapshotHash), so
+   determinism and the GATE 5 replay roundtrip are untouched. Every
+   surface is opt-in and dismissible at a glance; none gates play.
+   ===================================================================== */
+
+/* HTML-escape — these strings are authored (not user input), but the
+   discipline keeps the surfaces injection-safe and the source links inert. */
+function refEsc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* --- Shared non-blocking overlay open/close with focus management.
+   `which` is 'learnMore' (right side panel) or 'ledger' (centred). The
+   overlay does NOT pause the game loop: opponent turns continue behind
+   it, and closing returns the player to exactly the same point. --- */
+let __REF_LAST_FOCUS = { learnMore:null, ledger:null };
+function refOverlayEl(which) { return document.getElementById(which === 'ledger' ? 'ledgerOverlay' : 'learnMoreOverlay'); }
+function refPanelEl(which) { return document.getElementById(which === 'ledger' ? 'ledgerPanel' : 'learnMorePanel'); }
+
+function openRefOverlay(which) {
+  const ov = refOverlayEl(which);
+  if (!ov) return;
+  __REF_LAST_FOCUS[which] = document.activeElement;
+  ov.classList.remove('hidden');
+  /* Move focus into the panel's close button for keyboard users. */
+  const closeBtn = ov.querySelector('.ref-close');
+  if (closeBtn) { try { closeBtn.focus(); } catch (e) {} }
+}
+function closeRefOverlay(which) {
+  const ov = refOverlayEl(which);
+  if (!ov || ov.classList.contains('hidden')) return;
+  ov.classList.add('hidden');
+  /* Restore focus to the element that opened the overlay. */
+  const prev = __REF_LAST_FOCUS[which];
+  if (prev && typeof prev.focus === 'function' && document.contains(prev)) {
+    try { prev.focus(); } catch (e) {}
+  }
+  __REF_LAST_FOCUS[which] = null;
+}
+function refOverlayOpen(which) { const ov = refOverlayEl(which); return ov && !ov.classList.contains('hidden'); }
+
+/* Trap Tab focus within an open ref panel (a11y for keyboard users). */
+function refTrapFocus(which, e) {
+  const ov = refOverlayEl(which);
+  if (!ov || ov.classList.contains('hidden')) return;
+  const focusables = ov.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+  if (!focusables.length) return;
+  const list = Array.prototype.filter.call(focusables, n => n.offsetParent !== null || n === document.activeElement);
+  if (!list.length) return;
+  const first = list[0], last = list[list.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+}
+
+/* --- LEARN MORE popover. `kind` is 'event'|'act', `key` indexes
+   LEARN_MORE. Renders ~150-200 words of sourced real history + the
+   Chronicler's "how Sovereign models it" line + the cited source. --- */
+function buildLearnMoreHTML(entry) {
+  const paras = (entry.body || []).map(p => '<p>' + glossify(refEsc(p)) + '</p>').join('');
+  const why = entry.why
+    ? '<div class="ref-why"><span class="ref-why-lbl">How Sovereign models it</span>' + glossify(refEsc(entry.why)) + '</div>'
+    : '';
+  const src = entry.source
+    ? '<div class="ref-source"><span class="ref-source-lbl">Source</span>' + refEsc(entry.source) + '</div>'
+    : '';
+  return '' +
+    '<div class="ref-head">' +
+      '<div>' +
+        '<div class="ref-eyebrow">' + refEsc(entry.eyebrow || 'Learn more') + '</div>' +
+        '<div class="ref-title" id="learnMoreTitle">' + refEsc(entry.title) + '</div>' +
+        (entry.year ? '<div class="ref-year">' + refEsc(entry.year) + '</div>' : '') +
+      '</div>' +
+      '<button class="ref-close" type="button" aria-label="Close" data-ref-dismiss="learnMore">&times;</button>' +
+    '</div>' +
+    '<div class="ref-body">' + paras + why + src + '</div>';
+}
+function openLearnMore(key) {
+  const entry = LEARN_MORE[key];
+  if (!entry) return;
+  const panel = refPanelEl('learnMore');
+  if (!panel) return;
+  panel.innerHTML = buildLearnMoreHTML(entry);
+  openRefOverlay('learnMore');
+}
+
+/* Map a Federal Era event id (1-8) → LEARN_MORE key. */
+function learnMoreKeyForEvent(eventId) { return 'E' + eventId; }
+/* Map an Act name → LEARN_MORE key (Section 3). */
+const ACT_NAME_TO_LEARN_KEY = {
+  'Funding Act':'fundingAct', 'Assumption Act':'assumptionAct', 'Bank Charter':'bankCharter',
+  'Tariff Schedule':'tariffSchedule', 'Coinage Act':'coinageAct',
+  'Report on Manufactures':'manufactures', 'Excise Enforcement':'exciseEnforcement',
+};
+
+/* --- THE CHRONICLER'S LEDGER. A Civilopedia-style encyclopedia built
+   from the same registries the in-game banners draw on. Category-tabbed
+   + searchable + keyboard-navigable. Opt-in; never blocks play. --- */
+const LEDGER_CATEGORIES = [
+  { id:'quotes',   label:'Voices' },
+  { id:'acts',     label:'Acts of Congress' },
+  { id:'events',   label:'Federal Era' },
+  { id:'credit',   label:'Public Credit' },
+  { id:'visions',  label:'Visions' },
+];
+let __LEDGER_CAT = 'quotes';
+let __LEDGER_QUERY = '';
+
+/* Flatten each category into searchable entry records {hd, meta, html, text}. */
+function ledgerEntriesFor(cat) {
+  const out = [];
+  if (cat === 'quotes') {
+    QUOTE_BANK.forEach(q => {
+      out.push({
+        hd: q.who,
+        meta: q.source + ' · ' + q.year,
+        html:
+          '<div class="le-cat">Voice</div>' +
+          '<div class="le-hd">' + refEsc(q.who) + '</div>' +
+          '<div class="le-quote">&ldquo;' + refEsc(q.text) + '&rdquo;' +
+            '<span class="le-attr">&mdash; ' + refEsc(q.source) + ', ' + refEsc(q.year) +
+            ' &middot; <a href="' + refEsc(q.url) + '" target="_blank" rel="noopener noreferrer">source</a></span>' +
+          '</div>',
+        text: (q.who + ' ' + q.text + ' ' + q.source + ' ' + (q.topics || []).join(' ')).toLowerCase(),
+      });
+    });
+  } else if (cat === 'acts' || cat === 'events') {
+    const wantKind = cat === 'acts' ? 'act' : 'event';
+    Object.keys(LEARN_MORE).forEach(k => {
+      const e = LEARN_MORE[k];
+      if (e.kind !== wantKind) return;
+      const proseParas = (e.body || []).map(p => '<p>' + glossify(refEsc(p)) + '</p>').join('');
+      out.push({
+        hd: e.title,
+        meta: e.year || '',
+        html:
+          '<div class="le-cat">' + (wantKind === 'act' ? 'Act of Congress' : 'Federal Era') + '</div>' +
+          '<div class="le-hd">' + refEsc(e.title) + '</div>' +
+          (e.year ? '<div class="le-meta">' + refEsc(e.year) + '</div>' : '') +
+          '<div class="le-prose">' + proseParas +
+            (e.why ? '<p><em>' + glossify(refEsc(e.why)) + '</em></p>' : '') + '</div>' +
+          (e.source ? '<div class="le-src">Source: ' + refEsc(e.source) + '</div>' : ''),
+        text: (e.title + ' ' + (e.body || []).join(' ') + ' ' + (e.why || '') + ' ' + (e.source || '')).toLowerCase(),
+      });
+    });
+  } else if (cat === 'credit') {
+    CREDIT_ANALOGS.forEach(c => {
+      const proseParas = (c.body || []).map(p => '<p>' + glossify(refEsc(p)) + '</p>').join('');
+      out.push({
+        hd: c.tier,
+        meta: c.threshold + ' · ' + c.year,
+        html:
+          '<div class="le-cat">Public Credit</div>' +
+          '<div class="le-hd">' + refEsc(c.tier) + '</div>' +
+          '<div class="le-meta">' + refEsc(c.threshold) + ' &middot; ' + refEsc(c.year) + '</div>' +
+          '<div class="le-prose">' + proseParas +
+            (c.why ? '<p><em>' + glossify(refEsc(c.why)) + '</em></p>' : '') + '</div>' +
+          (c.source ? '<div class="le-src">Source: ' + refEsc(c.source) + '</div>' : ''),
+        text: (c.tier + ' ' + (c.body || []).join(' ') + ' ' + (c.why || '')).toLowerCase(),
+      });
+    });
+  } else if (cat === 'visions') {
+    VISION_FRAMINGS.forEach(v => {
+      const proseParas = (v.body || []).map(p => '<p>' + glossify(refEsc(p)) + '</p>').join('');
+      out.push({
+        hd: v.title,
+        meta: v.subtitle || '',
+        html:
+          '<div class="le-cat">Vision</div>' +
+          '<div class="le-hd">' + refEsc(v.title) + '</div>' +
+          '<div class="le-meta">' + refEsc(v.subtitle || '') + '</div>' +
+          '<div class="le-prose">' + proseParas +
+            (v.why ? '<p><em>' + glossify(refEsc(v.why)) + '</em></p>' : '') + '</div>' +
+          (v.source ? '<div class="le-src">Source: ' + refEsc(v.source) + '</div>' : ''),
+        text: (v.title + ' ' + (v.subtitle || '') + ' ' + (v.body || []).join(' ') + ' ' + (v.why || '')).toLowerCase(),
+      });
+    });
+  }
+  return out;
+}
+
+function renderLedgerEntries() {
+  const box = document.getElementById('ledgerEntries');
+  if (!box) return;
+  const q = __LEDGER_QUERY.trim().toLowerCase();
+  let entries = ledgerEntriesFor(__LEDGER_CAT);
+  if (q) entries = entries.filter(e => e.text.indexOf(q) >= 0);
+  if (!entries.length) {
+    box.innerHTML = '<div class="ledger-empty">No entries match &ldquo;' + refEsc(__LEDGER_QUERY) + '&rdquo;.</div>';
+    return;
+  }
+  box.innerHTML = entries.map(e => '<div class="ledger-entry">' + e.html + '</div>').join('');
+}
+
+function buildLedgerShell() {
+  const tabs = LEDGER_CATEGORIES.map(c =>
+    '<button type="button" role="tab" data-cat="' + c.id + '" aria-selected="' + (c.id === __LEDGER_CAT) + '">' + refEsc(c.label) + '</button>'
+  ).join('');
+  return '' +
+    '<div class="ref-head">' +
+      '<div>' +
+        '<div class="ref-eyebrow">The Chronicler&rsquo;s Ledger</div>' +
+        '<div class="ref-title" id="ledgerTitle">A Federal-Era Encyclopedia</div>' +
+        '<div class="ref-year">Verified voices, Acts, and histories of the early Republic</div>' +
+      '</div>' +
+      '<button class="ref-close" type="button" aria-label="Close the Ledger" data-ref-dismiss="ledger">&times;</button>' +
+    '</div>' +
+    '<div class="ledger-tabs" role="tablist" aria-label="Ledger categories">' + tabs + '</div>' +
+    '<div class="ledger-search-row">' +
+      '<input type="search" id="ledgerSearch" placeholder="Search the Ledger…" aria-label="Search the Ledger" autocomplete="off" />' +
+    '</div>' +
+    '<div class="ledger-entries" id="ledgerEntries"></div>';
+}
+
+function openLedger() {
+  const panel = refPanelEl('ledger');
+  if (!panel) return;
+  panel.innerHTML = buildLedgerShell();
+  /* Wire tabs */
+  panel.querySelectorAll('.ledger-tabs button').forEach(b => {
+    b.addEventListener('click', () => {
+      __LEDGER_CAT = b.getAttribute('data-cat');
+      panel.querySelectorAll('.ledger-tabs button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+      renderLedgerEntries();
+    });
+  });
+  /* Wire search */
+  const search = panel.querySelector('#ledgerSearch');
+  if (search) {
+    search.value = __LEDGER_QUERY;
+    search.addEventListener('input', () => { __LEDGER_QUERY = search.value; renderLedgerEntries(); });
+  }
+  renderLedgerEntries();
+  openRefOverlay('ledger');
+}
+
+/* --- GLOSSARY tooltips. glossify(html) wraps the FIRST occurrence of
+   each known term in a keyboard-accessible dotted-underline span with a
+   tooltip. Operates on already-escaped HTML and only matches outside of
+   existing tags, so it never breaks markup or double-wraps. --- */
+let __GLOSS_FLAT = null;
+function glossFlat() {
+  if (__GLOSS_FLAT) return __GLOSS_FLAT;
+  const arr = [];
+  Object.keys(GLOSSARY).forEach(key => {
+    const g = GLOSSARY[key];
+    (g.terms || [key]).forEach(t => arr.push({ term:t, key }));
+  });
+  /* Longest terms first so "public credit" wins over "credit". */
+  arr.sort((a, b) => b.term.length - a.term.length);
+  __GLOSS_FLAT = arr;
+  return arr;
+}
+function glossPopHTML(key) {
+  const g = GLOSSARY[key];
+  if (!g) return '';
+  return '<span class="gloss-pop" role="tooltip">' +
+    '<span class="gp-title">' + refEsc(g.title) + '</span>' +
+    refEsc(g.def) +
+    (g.source ? '<span class="gp-src">' + refEsc(g.source) + '</span>' : '') +
+    '</span>';
+}
+function glossify(html) {
+  if (!html || typeof html !== 'string') return html || '';
+  let out = html;
+  const used = new Set();
+  glossFlat().forEach(({ term, key }) => {
+    if (used.has(key)) return;
+    /* Match the term as a whole word, but NOT inside an HTML tag or an
+       attribute, and NOT if already inside a gloss-term span. We split on
+       tags and only substitute within text segments. */
+    const re = new RegExp('\\b(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\b');
+    const parts = out.split(/(<[^>]+>)/);
+    let done = false;
+    for (let i = 0; i < parts.length && !done; i++) {
+      if (parts[i].charAt(0) === '<') continue;        /* skip tags */
+      if (re.test(parts[i])) {
+        parts[i] = parts[i].replace(re,
+          '<span class="gloss-term" tabindex="0" role="button" aria-label="' + refEsc(GLOSSARY[key].title) + ': definition">$1' + glossPopHTML(key) + '</span>');
+        done = true;
+        used.add(key);
+      }
+    }
+    if (done) out = parts.join('');
+  });
+  return out;
 }
 
 /* =====================================================================
@@ -6575,10 +7325,19 @@ function renderControls() {
     if (humanIsEligible) humanDecisionPending = true;
     const banner = el('div', 'late-event-banner');
     const text = el('div');
+    /* v1.5 Tier B — glossify the event prose for term tooltips, and append a
+       non-blocking "Learn more" affordance to the historical caption. */
+    const learnKey = learnMoreKeyForEvent(ev.id);
+    const hasLearnMore = !!LEARN_MORE[learnKey];
+    const learnLink = hasLearnMore
+      ? '<button type="button" class="learn-more-link" data-learn-key="' + learnKey + '">Learn more</button>'
+      : '';
     text.innerHTML = '<div class="le-eyebrow">Federal Era · Round ' + STATE.lap + '</div>' +
                     '<div class="le-title">' + ev.name + '</div>' +
-                    '<div class="le-text">' + ev.text + '</div>' +
-                    '<div class="le-caption" data-event-id="' + ev.id + '"><em>' + (FED_ERA_EVENT_CAPTIONS[ev.id] || '') + '</em></div>';
+                    '<div class="le-text">' + glossify(ev.text) + '</div>' +
+                    '<div class="le-caption" data-event-id="' + ev.id + '"><em>' + glossify(FED_ERA_EVENT_CAPTIONS[ev.id] || '') + '</em>' + learnLink + '</div>';
+    const lm = text.querySelector('.learn-more-link');
+    if (lm) lm.addEventListener('click', () => openLearnMore(lm.getAttribute('data-learn-key')));
     banner.appendChild(text);
     const actions = el('div', 'le-actions');
     if (humanIsEligible) {
@@ -7044,6 +7803,52 @@ function hideOrient() {
 }
 
 document.getElementById('btnHelp').addEventListener('click', () => showOrient(1));
+
+/* --- v1.5 Chronicler Tier B — wire the reference surfaces. The Ledger is
+   reachable from BOTH the corner book icon and the Game ▾ menu. Learn More
+   opens from the per-event "Learn more" affordance (wired at render time).
+   All presentation-only; none of this touches game state. --- */
+(function wireChroniclerTierB() {
+  const ledgerBtn = document.getElementById('btnLedger');
+  if (ledgerBtn) ledgerBtn.addEventListener('click', openLedger);
+  const ledgerMenuBtn = document.getElementById('btnLedgerMenu');
+  if (ledgerMenuBtn) ledgerMenuBtn.addEventListener('click', () => {
+    /* Close the Game menu before opening the Ledger overlay. */
+    const menu = ledgerMenuBtn.closest('.game-menu'); if (menu) menu.removeAttribute('open');
+    openLedger();
+  });
+
+  /* Delegated dismissal: scrim click or any [data-ref-dismiss] close button. */
+  document.addEventListener('click', (e) => {
+    const t = e.target;
+    if (t && t.getAttribute && t.getAttribute('data-ref-dismiss')) {
+      closeRefOverlay(t.getAttribute('data-ref-dismiss'));
+    }
+    /* Tap-toggle a glossary tooltip on touch / click (hover handles mouse). */
+    const gt = t && t.closest ? t.closest('.gloss-term') : null;
+    document.querySelectorAll('.gloss-term.gloss-open').forEach(n => { if (n !== gt) n.classList.remove('gloss-open'); });
+    if (gt) { e.preventDefault(); gt.classList.toggle('gloss-open'); }
+  });
+
+  /* ESC closes whichever ref overlay is open; Tab is trapped inside it.
+     Enter / Space on a focused glossary term toggles its tooltip. */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (refOverlayOpen('learnMore')) { e.stopPropagation(); closeRefOverlay('learnMore'); return; }
+      if (refOverlayOpen('ledger')) { e.stopPropagation(); closeRefOverlay('ledger'); return; }
+      const openGloss = document.querySelector('.gloss-term.gloss-open');
+      if (openGloss) { openGloss.classList.remove('gloss-open'); return; }
+    }
+    if (e.key === 'Tab') {
+      if (refOverlayOpen('learnMore')) { refTrapFocus('learnMore', e); return; }
+      if (refOverlayOpen('ledger')) { refTrapFocus('ledger', e); return; }
+    }
+    if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.classList && e.target.classList.contains('gloss-term')) {
+      e.preventDefault(); e.target.classList.toggle('gloss-open');
+    }
+  }, true);
+})();
+
 document.getElementById('welcomeAdvance').addEventListener('click', () => {
   if (WELCOME_STEP === 1) { setWelcomeStep(2); }
   else if (WELCOME_STEP === 2) { savePlayerCustom(); setWelcomeStep(3); }
@@ -7278,7 +8083,7 @@ function flavorFor(playerName) {
   if (!p) return null;
   return __PROFILE_FLAVOR[p.profile] || null;
 }
-function pushToast({ cls, eyebrow, title, body }) {
+function pushToast({ cls, eyebrow, title, body, learnKey }) {
   /* v1.4.1 — narration verbosity gate. ALL toasts including Chronicler
      respect the user's Off / Minimal / On setting. Chronicler is in the
      "minimal" allowlist so it surfaces in Minimal and On modes. */
@@ -7292,15 +8097,22 @@ function pushToast({ cls, eyebrow, title, body }) {
   const t = document.createElement('div');
   t.className = 'event-toast' + (isChron ? ' persistent' : '') + (cls ? ' ' + cls : '');
   const dismissBtn = isChron ? '<button class="toast-dismiss" type="button" aria-label="Dismiss">×</button>' : '';
+  /* v1.5 Tier B — opt-in "Learn more" affordance on Chronicler banners that
+     map to an Act history. Reference, always available; presentation only. */
+  const learnLink = (learnKey && typeof LEARN_MORE !== 'undefined' && LEARN_MORE[learnKey])
+    ? '<button type="button" class="learn-more-link" data-learn-key="' + learnKey + '">Learn more</button>'
+    : '';
   t.innerHTML = dismissBtn +
                 '<div class="toast-eyebrow">' + eyebrow + '</div>' +
                 '<div class="toast-title">' + title + '</div>' +
-                (body ? '<div class="toast-body">' + body + '</div>' : '');
+                (body ? '<div class="toast-body">' + body + learnLink + '</div>' : '');
   if (isChron) {
     t.querySelector('.toast-dismiss').addEventListener('click', () => t.remove());
   } else {
     setTimeout(() => t.remove(), 3800);
   }
+  const lm = t.querySelector('.learn-more-link');
+  if (lm) lm.addEventListener('click', () => openLearnMore(lm.getAttribute('data-learn-key')));
   stack.appendChild(t);
 }
 function scanLedgerForToasts() {
