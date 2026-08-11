@@ -13,7 +13,7 @@
     "@tailwindcss/vite": "^4.2.0",
     "astro": "^6.3.5",
     "tailwindcss": "^4.2.0",
-    "@astrojs/starlight": "^0.39.2"
+    "@astrojs/starlight": "^0.41.7"
   },
   "overrides": {
     "vite": "^7.3.2"
