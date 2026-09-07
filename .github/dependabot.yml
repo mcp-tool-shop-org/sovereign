@@ -3,8 +3,8 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
+      interval: "monthly"
+    open-pull-requests-limit: 3
     commit-message:
       prefix: "ci"
     labels:
@@ -14,8 +14,8 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
+      interval: "monthly"
+    open-pull-requests-limit: 3
     commit-message:
       prefix: "deps"
     labels:
@@ -25,8 +25,8 @@ updates:
   - package-ecosystem: "npm"
     directory: "/site"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
+      interval: "monthly"
+    open-pull-requests-limit: 3
     commit-message:
       prefix: "deps(site)"
     labels:
