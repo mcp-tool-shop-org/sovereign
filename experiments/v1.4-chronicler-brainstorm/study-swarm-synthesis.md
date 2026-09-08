@@ -3,7 +3,7 @@
 **Date:** 2026-05-21
 **Status:** Research complete; design proposal awaiting user review
 **Base build:** v1.3 candidate (`SAVE_VERSION = 'v0.23-strategic-arc'`, currently committed at HEAD on `main`)
-**Protocol fired:** research-grounded-advisor (study-swarm) per `C:/Users/mikey/.claude/projects/F--AI/memory/research-grounded-advisor-protocol.md`
+**Protocol fired:** research-grounded-advisor (study-swarm) per `~/.claude/projects/F--AI/memory/research-grounded-advisor-protocol.md`
 
 ---
 

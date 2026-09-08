@@ -3,7 +3,7 @@
 **Date:** 2026-05-21
 **Status:** APPROVED for v1.2 candidate (Tier A vertical slice)
 **Base build:** v1.1.2 circuit-victory candidate
-**Protocol fired:** research-grounded-advisor (study-swarm) per `C:/Users/mikey/.claude/projects/F--AI/memory/research-grounded-advisor-protocol.md`
+**Protocol fired:** research-grounded-advisor (study-swarm) per `~/.claude/projects/F--AI/memory/research-grounded-advisor-protocol.md`
 
 ---
 
