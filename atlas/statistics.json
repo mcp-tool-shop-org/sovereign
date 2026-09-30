@@ -122,7 +122,9 @@
         "collapsed": false,
         "confidence": "low",
         "importsAndCoChanges": [],
-        "importsOnly": []
+        "importsOnly": [
+          "test"
+        ]
       },
       "cohesion": null,
       "cohesionDropped": false,
@@ -142,8 +144,8 @@
         "path": ".github/dependabot.yml"
       },
       {
-        "commits": 5,
-        "lines": 100,
+        "commits": 9,
+        "lines": 354,
         "path": ".github/workflows/ci.yml"
       },
       {
@@ -232,9 +234,39 @@
         "path": "SHIP_GATE.md"
       },
       {
+        "commits": 1,
+        "lines": 85,
+        "path": "atlas/README.md"
+      },
+      {
+        "commits": 1,
+        "lines": 34,
+        "path": "atlas/boundaries.yaml"
+      },
+      {
+        "commits": 1,
+        "lines": 258,
+        "path": "atlas/page.json"
+      },
+      {
+        "commits": 1,
+        "lines": 1235,
+        "path": "atlas/statistics.json"
+      },
+      {
+        "commits": 1,
+        "lines": 1750,
+        "path": "atlas/structure.json"
+      },
+      {
         "commits": 2,
         "lines": 173,
         "path": "bin/sovereign.js"
+      },
+      {
+        "commits": 2,
+        "lines": 36,
+        "path": "codecov.yml"
       },
       {
         "commits": 1,
@@ -437,8 +469,8 @@
         "path": "package-lock.json"
       },
       {
-        "commits": 17,
-        "lines": 112,
+        "commits": 19,
+        "lines": 116,
         "path": "package.json"
       },
       {
@@ -995,11 +1027,11 @@
   },
   "confidence": {
     "level": "low",
-    "reason": "fewer than 20 source files reach 10 revisions in the window"
+    "reason": "fewer than 25 source files reach 10 revisions in the window"
   },
-  "generatedAt": "2026-09-25T09:32:10.148Z",
+  "generatedAt": "2026-09-30T20:13:08.379Z",
   "generatedFrom": {
-    "commit": "87de092d1ed79e3e48d145f6a36d767d9786fe61"
+    "commit": "107b2aab0f65a8ee04e0a8796c8d7e916b2227a6"
   },
   "pairs": [
     {
@@ -1012,9 +1044,9 @@
     {
       "a": "CHANGELOG.md",
       "b": "package.json",
-      "either": 19,
+      "either": 20,
       "shared": 11,
-      "strength": 0.578947
+      "strength": 0.55
     },
     {
       "a": "CHANGELOG.md",
@@ -1180,20 +1212,20 @@
     {
       "a": "package-lock.json",
       "b": "package.json",
-      "either": 17,
+      "either": 18,
       "shared": 11,
-      "strength": 0.647059
+      "strength": 0.611111
     },
     {
       "a": "package.json",
       "b": "release/CHANGELOG.md",
-      "either": 19,
+      "either": 20,
       "shared": 11,
-      "strength": 0.578947
+      "strength": 0.55
     }
   ],
   "parameters": {
-    "appliedChangesetLimit": 39.75,
+    "appliedChangesetLimit": 41.25,
     "changeset": 50,
     "changesetFraction": 0.25,
     "cohesionDrop": 0.2,
@@ -1202,16 +1234,16 @@
     "floor": "fallen",
     "floorHeld": false,
     "floorTrigger": "revision-depth",
-    "headDate": "2026-09-17T17:56:05-07:00",
-    "inScopeFiles": 159,
+    "headDate": "2026-09-29T16:46:59-07:00",
+    "inScopeFiles": 165,
     "pinnedStart": null,
-    "priorFloor": null,
-    "qualifyingCommits": 56,
+    "priorFloor": "fallen",
+    "qualifyingCommits": 59,
     "qualifyingMinimum": 30,
     "revisions": 5,
     "shared": 10,
     "sharedFloorUsed": 3,
-    "since": "2026-03-22T00:56:05.000Z",
+    "since": "2026-04-02T23:46:59.000Z",
     "sourceExtensions": [
       ".js",
       ".mjs",

@@ -8,12 +8,22 @@
   ],
   "breaks": [
     {
-      "doors": 4,
+      "doors": 3,
       "importedBy": [],
       "importedByTests": [],
       "kind": "part",
       "name": "bin",
       "partLabel": "bin"
+    },
+    {
+      "doors": 2,
+      "importedBy": [],
+      "importedByTests": [
+        "test"
+      ],
+      "kind": "part",
+      "name": "tools",
+      "partLabel": "tools"
     },
     {
       "doors": 2,
@@ -25,16 +35,64 @@
     }
   ],
   "changes": {
-    "first": true
+    "fileCounts": {
+      "added": 1,
+      "changed": 2,
+      "moved": 0,
+      "parts": 2,
+      "removed": 0
+    },
+    "items": [
+      {
+        "kind": "import-added",
+        "sentence": "test now imports tools.",
+        "subjects": [
+          "test",
+          "tools"
+        ]
+      },
+      {
+        "kind": "door",
+        "sentence": "CI's pull request trigger now also names `codecov.yml`.",
+        "subjects": [
+          ".github/workflows/ci.yml"
+        ]
+      },
+      {
+        "kind": "door",
+        "sentence": "CI's push trigger now also names `codecov.yml`.",
+        "subjects": [
+          ".github/workflows/ci.yml"
+        ]
+      },
+      {
+        "kind": "door",
+        "sentence": "Release no longer runs bin/sovereign.js.",
+        "subjects": [
+          ".github/workflows/release.yml",
+          "bin/sovereign.js"
+        ]
+      },
+      {
+        "kind": "counts",
+        "sentence": "1 file added and 2 changed content, across 2 parts.",
+        "subjects": []
+      }
+    ],
+    "since": {
+      "commit": "87de092d1ed79e3e48d145f6a36d767d9786fe61",
+      "generatedAt": "2026-09-25T09:32:10.148Z"
+    },
+    "unchanged": false
   },
   "changesTogether": [],
   "changesTogetherNote": [
     "Window: 180 days; a pair counts from 3 shared commits, since 0 source files reach 10 revisions; the floor rises to 10 when 25 do."
   ],
   "changesTogetherWithTests": 0,
-  "commit": "87de092d1ed79e3e48d145f6a36d767d9786fe61",
+  "commit": "107b2aab0f65a8ee04e0a8796c8d7e916b2227a6",
   "defaultBranch": "main",
-  "derived": "8 parts, mostly JavaScript (52 files) and TypeScript (2). Work enters through 5 doors; CI and Release each reach 2 parts, and CI is followed because a pull request goes through it. It publishes to npm. People run sovereign. People import @mcptoolshop/sovereign.",
+  "derived": "8 parts, mostly JavaScript (52 files), HTML (39), CSS (2), TypeScript (2), Astro (1) and shell (1). Work enters through 5 doors; the busiest is CI, which reaches 3 parts. It publishes to npm. It deploys a site to GitHub Pages. People run sovereign. People import @mcptoolshop/sovereign.",
   "doors": [
     {
       "checks": [],
@@ -55,6 +113,11 @@
           "boundary": "test",
           "depth": 0,
           "files": 4
+        },
+        {
+          "boundary": "tools",
+          "depth": 1,
+          "files": 1
         }
       ],
       "runs": [
@@ -65,11 +128,13 @@
       ],
       "runsCount": 4,
       "runsMore": 1,
-      "sends": [],
+      "sends": [
+        "uploads coverage to Codecov"
+      ],
       "stages": [],
       "triggers": [
-        "on a pull request to main touching 7 paths",
-        "on a push to main touching 7 paths",
+        "on a pull request to main touching 8 paths",
+        "on a push to main touching 8 paths",
         "or by hand"
       ]
     },
@@ -84,24 +149,23 @@
       "pushes": false,
       "reach": [
         {
-          "boundary": "bin",
-          "depth": 0,
-          "files": 1
-        },
-        {
           "boundary": "test",
           "depth": 0,
           "files": 4
+        },
+        {
+          "boundary": "tools",
+          "depth": 1,
+          "files": 1
         }
       ],
       "runs": [
-        "bin/sovereign.js",
         "test/determinism.test.mjs",
         "test/playability.test.mjs",
         "test/smoke.test.mjs"
       ],
-      "runsCount": 4,
-      "runsMore": 1,
+      "runsCount": 3,
+      "runsMore": 0,
       "sends": [
         "publishes to npm",
         "creates a GitHub release"
@@ -124,7 +188,7 @@
         {
           "boundary": "site",
           "depth": 0,
-          "files": 3
+          "files": 5
         }
       ],
       "runs": [
@@ -199,16 +263,22 @@
   "duplicates": [],
   "duplicatesLead": null,
   "duplicatesNote": [],
-  "edges": [],
+  "edges": [
+    {
+      "from": "test",
+      "fromTests": true,
+      "to": "tools"
+    }
+  ],
+  "engine": "1.24.0",
   "generated": [],
-  "generatedAt": "2026-09-25T09:32:10.148Z",
+  "generatedAt": "2026-09-30T20:13:08.379Z",
   "limits": [
-    "1 import could not be resolved: `test/determinism.test.mjs` imports a path built at run time.",
     "10 writes and 9 reads use paths built at run time and are not named here.",
     "1 write goes to places this repository does not track, so it is not listed as generated.",
     "1 read goes to a path its caller passes, not to this repository.",
     "1 command is built at run time and not followed.",
-    "Statistics confidence is low: fewer than 20 source files reach 10 revisions in the window."
+    "Statistics confidence is low: fewer than 25 source files reach 10 revisions in the window."
   ],
   "mainDoor": ".github/workflows/ci.yml",
   "partLabels": {
@@ -238,21 +308,16 @@
   "testFiles": 6,
   "testedBy": {
     "bin": 1,
-    "tools": 0
+    "tools": 1
   },
   "unnamedWrites": 10,
   "unread": [],
   "unreadFiles": 0,
   "unreadNote": [],
-  "untested": [
-    {
-      "part": "tools",
-      "partLabel": "tools",
-      "testedBy": 0
-    }
-  ],
+  "untested": [],
   "untestedNote": [
-    "bin is touched by tests only through a spawn: a test runs its files as a child process."
+    "bin is touched by tests only through a spawn: a test runs its files as a child process.",
+    "verify.sh runs in no workflow."
   ],
   "written": 0
 }

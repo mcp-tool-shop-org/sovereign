@@ -1,19 +1,23 @@
 # sovereign: how it works
 
-Mapped at 2026-09-25 from commit 87de092.
+Mapped at 2026-09-30 from commit 107b2aa by Atlas 1.24.0.
 
 ## What this is
 
-8 parts, mostly JavaScript (52 files) and TypeScript (2). Work enters through 5 doors; CI and Release each reach 2 parts, and CI is followed because a pull request goes through it. It publishes to npm. People run sovereign. People import @mcptoolshop/sovereign.
+8 parts, mostly JavaScript (52 files), HTML (39), CSS (2), TypeScript (2), Astro (1) and shell (1). Work enters through 5 doors; the busiest is CI, which reaches 3 parts. It publishes to npm. It deploys a site to GitHub Pages. People run sovereign. People import @mcptoolshop/sovereign.
 
-## What changed since the last map
+## What changed since 2026-09-25 (87de092)
 
-This is the first map.
+- test now imports tools.
+- CI's pull request trigger now also names `codecov.yml`.
+- CI's push trigger now also names `codecov.yml`.
+- Release no longer runs bin/sovereign.js.
+- 1 file added and 2 changed content, across 2 parts.
 
 ## What comes in
 
-1. **CI.** On a pull request to main touching 7 paths; on a push to main touching 7 paths; or by hand. Runs bin/sovereign.js, test/determinism.test.mjs, test/playability.test.mjs and 1 more.
-2. **Release.** When a tag matching `v*` is pushed. Runs bin/sovereign.js, test/determinism.test.mjs, test/playability.test.mjs and 1 more.
+1. **CI.** On a pull request to main touching 8 paths; on a push to main touching 8 paths; or by hand. Runs bin/sovereign.js, test/determinism.test.mjs, test/playability.test.mjs and 1 more.
+2. **Release.** When a tag matching `v*` is pushed. Runs test/determinism.test.mjs, test/playability.test.mjs and test/smoke.test.mjs.
 3. **Deploy GitHub Pages.** On a push to main; or by hand. Runs site/astro.config.mjs and site/src/.
 4. **@mcptoolshop/sovereign** (the package people import). Loads bin/sovereign.js.
 5. **sovereign** (a command people run). Runs bin/sovereign.js.
@@ -21,6 +25,8 @@ This is the first map.
 ## What happens through CI
 
 1. The workflow runs bin/sovereign.js in bin and test/determinism.test.mjs, test/playability.test.mjs and test/smoke.test.mjs in test.
+2. That reaches tools (1 file).
+3. It uploads coverage to Codecov.
 
 ## Who reads the results
 
@@ -28,7 +34,7 @@ CI writes nothing this map can see.
 
 ## The other doors
 
-**Release** runs bin/sovereign.js, test/determinism.test.mjs, test/playability.test.mjs and 1 more, publishes to npm, and creates a GitHub release.
+**Release** runs test/determinism.test.mjs, test/playability.test.mjs and test/smoke.test.mjs, reaches tools, publishes to npm, and creates a GitHub release.
 
 **Deploy GitHub Pages** runs site/astro.config.mjs and site/src/, writes to site/dist, which is not tracked, and deploys the site.
 
@@ -38,7 +44,8 @@ CI writes nothing this map can see.
 
 ## What breaks what
 
-- **bin** is imported by no other part and sits on the path of 4 doors.
+- **bin** is imported by no other part and sits on the path of 3 doors.
+- **tools** is imported only from tests, by 1 part (test), and sits on the path of 2 doors.
 - **test** is imported by no other part and sits on the path of 2 doors.
 
 ## What tends to change together
@@ -49,9 +56,11 @@ Window: 180 days; a pair counts from 3 shared commits, since 0 source files reac
 
 ## What no test touches
 
-- **tools** is imported by no test.
+Every code part is touched by at least one test.
 
 bin is touched by tests only through a spawn: a test runs its files as a child process.
+
+verify.sh runs in no workflow.
 
 ## Written but never read
 
@@ -75,11 +84,10 @@ Start at bin/sovereign.js to follow one run of sovereign end to end. This path f
 
 ## What this map cannot see
 
-- 1 import could not be resolved: `test/determinism.test.mjs` imports a path built at run time.
 - 10 writes and 9 reads use paths built at run time and are not named here.
 - 1 write goes to places this repository does not track, so it is not listed as generated.
 - 1 read goes to a path its caller passes, not to this repository.
 - 1 command is built at run time and not followed.
-- Statistics confidence is low: fewer than 20 source files reach 10 revisions in the window.
+- Statistics confidence is low: fewer than 25 source files reach 10 revisions in the window.
 
 Regenerate with `npx --yes @dogfood-lab/atlas map`.
