@@ -13,7 +13,7 @@
           "path": ".github/dependabot.yml"
         },
         {
-          "hash": "9bf111cea4ca9def71a4288abf689ffd10f92e2d889569979c2fd0333469e8a7",
+          "hash": "c1c472d36e549b102044e1d2ce1e9e6c0f6f2ab55b6b92211bfd8641c27134b2",
           "path": ".github/workflows/ci.yml"
         },
         {
@@ -48,6 +48,18 @@
         {
           "entry": "fail",
           "entryRule": 1,
+          "failurePaths": [
+            {
+              "in": "readVersion",
+              "kind": "catch",
+              "line": 62
+            },
+            {
+              "in": "openInBrowser",
+              "kind": "catch",
+              "line": 114
+            }
+          ],
           "hash": "e4d2df3e91d20c65b41da58b19af15f96249afbf038b19057060ec2a1e0bd6ab",
           "path": "bin/sovereign.js",
           "sequences": []
@@ -70,6 +82,9 @@
       ],
       "outsideReads": 1,
       "role": "code",
+      "testRunners": [
+        "node --test"
+      ],
       "testedBy": 1,
       "testedThroughSpawn": true,
       "unresolvedSites": 0
@@ -457,11 +472,15 @@
           "path": "SHIP_GATE.md"
         },
         {
+          "hash": "59ca3f6a5be96b80fee73bebf2b778211208d17cd3fb82e2134608dff0729c76",
+          "path": "codecov.yml"
+        },
+        {
           "hash": "256512930404982b3248742f625624eb394af19b1334c0b974ba9c7b16c3e6c5",
           "path": "package-lock.json"
         },
         {
-          "hash": "f561507f4d4b3d27f5ab89f98f0c7a0dec46d63707266d6b49161c890bde46c8",
+          "hash": "db7170bb8096fd0f4cde5b99bf423542a3a6353582f090b0565dddea0539deb6",
           "path": "package.json"
         },
         {
@@ -476,7 +495,8 @@
       "name": "root",
       "origin": "authored",
       "role": "config",
-      "testedBy": 0,
+      "testedBy": 1,
+      "testedByScript": true,
       "unresolvedSites": 0
     },
     {
@@ -538,6 +558,14 @@
         },
         {
           "hash": "391533713539035d3c92282579d43de0f137067867fdb502d7eaea3c74601d2a",
+          "importOrder": [
+            "site/src/styles/global.css",
+            "site/src/site-config.ts"
+          ],
+          "importsFiles": [
+            "site/src/site-config.ts",
+            "site/src/styles/global.css"
+          ],
           "path": "site/src/pages/index.astro"
         },
         {
@@ -584,6 +612,9 @@
           "entry": "check",
           "entryRule": 1,
           "hash": "310a1161fd367259d61f862a21dee1b85e64a1f919d279e06ee40febc92d5f92",
+          "importsFiles": [
+            "tools/diagnosis/sim.mjs"
+          ],
           "path": "test/determinism.test.mjs",
           "sequences": []
         },
@@ -619,7 +650,10 @@
           "entryRule": 1,
           "hash": "d041b6a724ade22d13c2be30e51f97f3fc53541977268e95ce852a9a32c46b49",
           "path": "test/smoke.test.mjs",
-          "sequences": []
+          "sequences": [],
+          "spawns": [
+            "bin/sovereign.js"
+          ]
         }
       ],
       "globs": [
@@ -629,15 +663,11 @@
       "name": "test",
       "origin": "authored",
       "role": "test",
-      "testedBy": 0,
-      "unresolvedNamed": [
-        {
-          "path": "test/determinism.test.mjs",
-          "specifier": null,
-          "why": "dynamic"
-        }
+      "testRunners": [
+        "node --test"
       ],
-      "unresolvedSites": 1
+      "testedBy": 0,
+      "unresolvedSites": 0
     },
     {
       "dynamicReads": 9,
@@ -819,6 +849,13 @@
             "runDiagnosisBatch",
             "runDiagnosisGame",
             "setTotalRounds"
+          ],
+          "failurePaths": [
+            {
+              "in": "setTotalRounds",
+              "kind": "throw",
+              "line": 33
+            }
           ],
           "hash": "1e158d533a6620a78d62c5d0afe4c14e658d1d179ec5dc2665ef931f2fdf56be",
           "path": "tools/diagnosis/sim-pacing-diag.mjs"
@@ -1015,7 +1052,10 @@
       "name": "tools",
       "origin": "authored",
       "role": "code",
-      "testedBy": 0,
+      "testRunners": [
+        "node --test"
+      ],
+      "testedBy": 1,
       "unresolvedSites": 0
     }
   ],
@@ -1024,43 +1064,157 @@
       "checksCount": 0,
       "commands": [
         {
+          "dir": "",
           "job": "test",
-          "step": "Atlas check",
-          "text": "npx --yes @dogfood-lab/atlas@1.21.0 check"
+          "programs": [
+            "npx"
+          ],
+          "step": "Atlas check"
         },
         {
+          "dir": "",
           "job": "test",
-          "step": "Install dependencies",
-          "text": "npm ci || npm install"
+          "programs": [
+            "npm"
+          ],
+          "step": "Install dependencies"
         },
         {
+          "dir": "",
           "job": "test",
-          "step": "Smoke tests",
-          "text": "npm test"
+          "programs": [
+            "npm"
+          ],
+          "step": "Smoke tests"
         },
         {
+          "dir": "",
           "job": "test",
-          "step": "npm pack dry-run",
-          "text": "npm pack --dry-run"
+          "programs": [
+            "npx"
+          ],
+          "step": "Coverage report for Codecov"
         },
         {
+          "dir": "",
           "job": "test",
-          "step": "Verify CLI flags",
-          "text": "node bin/sovereign.js --version\nnode bin/sovereign.js --path > /dev/null\nnode bin/sovereign.js --help > /dev/null\n"
+          "programs": [
+            "npm"
+          ],
+          "step": "npm pack dry-run"
         },
         {
+          "dir": "",
           "job": "test",
-          "step": "Coverage (Node 20 only)",
-          "text": "npm run coverage"
+          "programs": [
+            "node"
+          ],
+          "step": "Verify CLI flags"
         }
       ],
       "elsewhere": [],
       "file": ".github/workflows/ci.yml",
+      "findings": [
+        {
+          "job": "test",
+          "legs": 2,
+          "lines": [
+            {
+              "file": ".github/workflows/ci.yml",
+              "line": 65
+            },
+            {
+              "file": ".github/workflows/ci.yml",
+              "line": 87
+            },
+            {
+              "file": "package-lock.json",
+              "line": 358
+            }
+          ],
+          "package": "c8",
+          "pinnedBy": {
+            "step": "Setup Node",
+            "version": "${{ matrix.node }}"
+          },
+          "pins": [
+            "18"
+          ],
+          "requires": "^20.19.0 || ^22.12.0 || >=23",
+          "rule": "D1",
+          "step": "Coverage report for Codecov",
+          "tool": "c8 report",
+          "version": "12.0.0"
+        }
+      ],
+      "jobs": [
+        {
+          "basis": "declared",
+          "name": "test",
+          "runsOn": [
+            {
+              "labels": [
+                "ubuntu-latest"
+              ],
+              "platform": {
+                "cpu": "x64",
+                "libc": "glibc",
+                "os": "linux"
+              }
+            }
+          ],
+          "setup": [
+            {
+              "ranges": [
+                {
+                  "from": "22",
+                  "range": ">=22.0.0 <23.0.0-0"
+                }
+              ],
+              "step": "Setup Node 22 for Atlas",
+              "uses": "actions/setup-node",
+              "version": "22"
+            },
+            {
+              "ranges": [
+                {
+                  "from": "18",
+                  "range": ">=18.0.0 <19.0.0-0"
+                },
+                {
+                  "from": "20",
+                  "range": ">=20.0.0 <21.0.0-0"
+                }
+              ],
+              "step": "Setup Node",
+              "uses": "actions/setup-node",
+              "version": "${{ matrix.node }}"
+            }
+          ]
+        },
+        {
+          "basis": "declared",
+          "name": "codecov",
+          "runsOn": [
+            {
+              "labels": [
+                "ubuntu-latest"
+              ],
+              "platform": {
+                "cpu": "x64",
+                "libc": "glibc",
+                "os": "linux"
+              }
+            }
+          ]
+        }
+      ],
       "landings": [],
       "mentions": [],
       "name": "CI",
       "permissions": [
-        "contents:read"
+        "contents:read",
+        "id-token:write"
       ],
       "pushes": false,
       "reach": [
@@ -1073,6 +1227,15 @@
           "boundary": "test",
           "depth": 0,
           "files": 4
+        },
+        {
+          "boundary": "tools",
+          "depth": 1,
+          "enters": {
+            "file": "tools/diagnosis/sim.mjs",
+            "from": "test/determinism.test.mjs"
+          },
+          "files": 1
         }
       ],
       "readers": [],
@@ -1111,6 +1274,19 @@
         "releases": false
       },
       "stages": [],
+      "tests": [
+        {
+          "coverage": true,
+          "files": 3,
+          "job": "test",
+          "junit": true,
+          "runner": "node --test",
+          "step": "Smoke tests",
+          "through": [
+            "npm test"
+          ]
+        }
+      ],
       "triggers": [
         {
           "branches": [
@@ -1121,6 +1297,7 @@
             ".github/workflows/**",
             "atlas/**",
             "bin/**",
+            "codecov.yml",
             "package-lock.json",
             "package.json",
             "release/**",
@@ -1136,6 +1313,7 @@
             ".github/workflows/**",
             "atlas/**",
             "bin/**",
+            "codecov.yml",
             "package-lock.json",
             "package.json",
             "release/**",
@@ -1148,8 +1326,10 @@
       ],
       "uses": [
         "actions/checkout",
+        "actions/download-artifact",
         "actions/setup-node",
-        "actions/upload-artifact"
+        "actions/upload-artifact",
+        "codecov/codecov-action"
       ],
       "usesWorkflowToken": false
     },
@@ -1157,23 +1337,83 @@
       "checksCount": 0,
       "commands": [
         {
+          "dir": "site",
           "job": "build",
-          "step": "Install site deps",
-          "text": "npm ci || npm install"
+          "programs": [
+            "npm"
+          ],
+          "step": "Install site deps"
         },
         {
+          "dir": "site",
           "job": "build",
-          "step": "Build site",
-          "text": "npm run build"
+          "programs": [
+            "npm"
+          ],
+          "step": "Build site"
         },
         {
+          "dir": "",
           "job": "build",
-          "step": "Copy release bundle into dist",
-          "text": "mkdir -p site/dist/release\ncp -r release/* site/dist/release/\n"
+          "programs": [
+            "cp",
+            "mkdir"
+          ],
+          "step": "Copy release bundle into dist"
         }
       ],
       "elsewhere": [],
       "file": ".github/workflows/pages.yml",
+      "jobs": [
+        {
+          "basis": "declared",
+          "name": "build",
+          "runsOn": [
+            {
+              "labels": [
+                "ubuntu-latest"
+              ],
+              "platform": {
+                "cpu": "x64",
+                "libc": "glibc",
+                "os": "linux"
+              }
+            }
+          ],
+          "setup": [
+            {
+              "ranges": [
+                {
+                  "from": "22",
+                  "range": ">=22.0.0 <23.0.0-0"
+                }
+              ],
+              "step": "Setup Node",
+              "uses": "actions/setup-node",
+              "version": "22"
+            }
+          ]
+        },
+        {
+          "basis": "declared",
+          "environment": {
+            "name": "github-pages"
+          },
+          "name": "deploy",
+          "runsOn": [
+            {
+              "labels": [
+                "ubuntu-latest"
+              ],
+              "platform": {
+                "cpu": "x64",
+                "libc": "glibc",
+                "os": "linux"
+              }
+            }
+          ]
+        }
+      ],
       "landings": [],
       "mentions": [],
       "name": "Deploy GitHub Pages",
@@ -1187,7 +1427,7 @@
         {
           "boundary": "site",
           "depth": 0,
-          "files": 3
+          "files": 5
         }
       ],
       "readers": [],
@@ -1248,48 +1488,111 @@
       "checksCount": 0,
       "commands": [
         {
+          "dir": "",
           "job": "release",
-          "step": "Install npm >=11.5 in sandbox for OIDC trusted-publishing auth",
-          "text": "# The in-place 'npm install -g npm@latest' on Node 22's bundled npm\n# 10.9 races on its own arborist rebuild and breaks irrecoverably\n# (MODULE_NOT_FOUND: promise-retry). Workaround: install npm@latest\n# as a regular dependency into a sandbox directory and prepend its\n# bin to PATH. The system npm is left untouched; we just shadow it.\nSANDBOX=\"$HOME/.npm-cli-sandbox\"\nmkdir -p \"$SANDBOX\"\npushd \"$SANDBOX\" >/dev/null\necho '{\"name\":\"npm-cli-sandbox\",\"version\":\"0.0.0\",\"private\":true}' > package.json\nnpm install --no-save --no-audit --no-fund --silent npm@latest\npopd >/dev/null\necho \"$SANDBOX/node_modules/.bin\" >> \"$GITHUB_PATH\"\n# Smoke-test the sandboxed npm\n\"$SANDBOX/node_modules/.bin/npm\" --version\n"
+          "programs": [
+            "echo",
+            "mkdir",
+            "npm",
+            "popd",
+            "pushd"
+          ],
+          "step": "Install npm >=11.5 in sandbox for OIDC trusted-publishing auth"
         },
         {
+          "dir": "",
           "job": "release",
-          "step": "Verify tag matches package.json version",
-          "text": "PKG_VERSION=$(node -p \"require('./package.json').version\")\nTAG_VERSION=\"${GITHUB_REF_NAME#v}\"\necho \"Tag: ${GITHUB_REF_NAME} → ${TAG_VERSION}\"\necho \"Package: ${PKG_VERSION}\"\nif [ \"${PKG_VERSION}\" != \"${TAG_VERSION}\" ]; then\n  echo \"::error::Tag ${TAG_VERSION} does not match package.json version ${PKG_VERSION}\"\n  exit 1\nfi\n"
+          "programs": [
+            "echo",
+            "node"
+          ],
+          "step": "Verify tag matches package.json version"
         },
         {
+          "dir": "",
           "job": "release",
-          "step": "Install dependencies",
-          "text": "npm ci || npm install"
+          "programs": [
+            "npm"
+          ],
+          "step": "Install dependencies"
         },
         {
+          "dir": "",
           "job": "release",
-          "step": "Smoke tests",
-          "text": "npm test"
+          "programs": [
+            "npm"
+          ],
+          "step": "Smoke tests"
         },
         {
+          "dir": "",
           "job": "release",
-          "step": "npm pack dry-run (verify shape)",
-          "text": "npm pack --dry-run"
+          "programs": [
+            "npm"
+          ],
+          "step": "npm pack dry-run (verify shape)"
         },
         {
+          "dir": "",
           "job": "release",
-          "step": "Build release zip",
-          "text": "ZIP_NAME=\"sovereign-${GITHUB_REF_NAME}-release.zip\"\ncd release\nzip -r \"../${ZIP_NAME}\" .\ncd ..\nls -la \"${ZIP_NAME}\"\necho \"ZIP_NAME=${ZIP_NAME}\" >> \"$GITHUB_ENV\"\n"
+          "programs": [
+            "cd",
+            "echo",
+            "ls",
+            "zip"
+          ],
+          "step": "Build release zip"
         },
         {
+          "dir": "",
           "job": "release",
-          "step": "Publish to npm with provenance (OIDC trusted publisher)",
-          "text": "npm publish --provenance --access public"
+          "programs": [
+            "npm"
+          ],
+          "step": "Publish to npm with provenance (OIDC trusted publisher)"
         },
         {
+          "dir": "",
           "job": "release",
-          "step": "Create GitHub Release",
-          "text": "gh release create \"${GITHUB_REF_NAME}\" \\\n  --title \"Sovereign ${GITHUB_REF_NAME}\" \\\n  --notes-file CHANGELOG.md \\\n  --verify-tag \\\n  \"${ZIP_NAME}\"\n"
+          "programs": [
+            "gh"
+          ],
+          "step": "Create GitHub Release"
         }
       ],
       "elsewhere": [],
       "file": ".github/workflows/release.yml",
+      "jobs": [
+        {
+          "basis": "declared",
+          "name": "release",
+          "runsOn": [
+            {
+              "labels": [
+                "ubuntu-latest"
+              ],
+              "platform": {
+                "cpu": "x64",
+                "libc": "glibc",
+                "os": "linux"
+              }
+            }
+          ],
+          "setup": [
+            {
+              "ranges": [
+                {
+                  "from": "22",
+                  "range": ">=22.0.0 <23.0.0-0"
+                }
+              ],
+              "step": "Setup Node",
+              "uses": "actions/setup-node",
+              "version": "22"
+            }
+          ]
+        }
+      ],
       "landings": [],
       "mentions": [
         {
@@ -1309,24 +1612,22 @@
       "pushes": false,
       "reach": [
         {
-          "boundary": "bin",
-          "depth": 0,
-          "files": 1
-        },
-        {
           "boundary": "test",
           "depth": 0,
           "files": 4
+        },
+        {
+          "boundary": "tools",
+          "depth": 1,
+          "enters": {
+            "file": "tools/diagnosis/sim.mjs",
+            "from": "test/determinism.test.mjs"
+          },
+          "files": 1
         }
       ],
       "readers": [],
       "runs": [
-        {
-          "job": "release",
-          "path": "bin/sovereign.js",
-          "runKind": "executes",
-          "via": "test/smoke.test.mjs"
-        },
         {
           "job": "release",
           "path": "test/determinism.test.mjs",
@@ -1343,7 +1644,7 @@
           "runKind": "executes"
         }
       ],
-      "runsCount": 4,
+      "runsCount": 3,
       "secrets": [
         "GITHUB_TOKEN"
       ],
@@ -1367,6 +1668,17 @@
         "releases": true
       },
       "stages": [],
+      "tests": [
+        {
+          "files": 3,
+          "job": "release",
+          "runner": "node --test",
+          "step": "Smoke tests",
+          "through": [
+            "npm test"
+          ]
+        }
+      ],
       "triggers": [
         {
           "event": "push",
@@ -1467,16 +1779,25 @@
       "usesWorkflowToken": false
     }
   ],
-  "edges": [],
+  "edges": [
+    {
+      "from": "test",
+      "fromTests": true,
+      "kind": "file",
+      "to": "tools"
+    }
+  ],
+  "engine": "1.24.0",
   "generatedFrom": {
-    "commit": "87de092d1ed79e3e48d145f6a36d767d9786fe61",
-    "tracked": 159
+    "commit": "107b2aab0f65a8ee04e0a8796c8d7e916b2227a6",
+    "tracked": 160
   },
   "landings": [
     {
       "readers": [
         {
-          "by": ".github/workflows/release.yml"
+          "by": ".github/workflows/release.yml",
+          "confidence": "config"
         },
         {
           "by": "release/00-START-HERE.html",
@@ -1560,7 +1881,8 @@
     {
       "readers": [
         {
-          "by": ".github/workflows/release.yml"
+          "by": ".github/workflows/release.yml",
+          "confidence": "config"
         },
         {
           "by": "bin/sovereign.js",
@@ -1631,11 +1953,6 @@
           "confidence": "ast"
         },
         {
-          "by": "site/src/site-config.ts",
-          "call": "literal",
-          "confidence": "ast"
-        },
-        {
           "by": "test/balance-revalidate.mjs",
           "call": "readFileSync",
           "confidence": "ast",
@@ -1681,7 +1998,8 @@
       "tracked": false,
       "writers": [
         {
-          "by": ".github/workflows/pages.yml"
+          "by": ".github/workflows/pages.yml",
+          "confidence": "config"
         }
       ]
     },
@@ -1727,18 +2045,6 @@
         }
       ],
       "target": "test/smoke.test.mjs",
-      "writers": []
-    },
-    {
-      "readers": [
-        {
-          "by": "test/determinism.test.mjs",
-          "call": "literal",
-          "confidence": "ast",
-          "fromTests": true
-        }
-      ],
-      "target": "tools/diagnosis/sim.mjs",
       "writers": []
     }
   ],
