@@ -144,8 +144,8 @@
         "path": ".github/dependabot.yml"
       },
       {
-        "commits": 11,
-        "lines": 358,
+        "commits": 13,
+        "lines": 362,
         "path": ".github/workflows/ci.yml"
       },
       {
@@ -234,8 +234,8 @@
         "path": "SHIP_GATE.md"
       },
       {
-        "commits": 3,
-        "lines": 145,
+        "commits": 5,
+        "lines": 165,
         "path": "atlas/README.md"
       },
       {
@@ -244,18 +244,18 @@
         "path": "atlas/boundaries.yaml"
       },
       {
-        "commits": 3,
-        "lines": 504,
+        "commits": 5,
+        "lines": 600,
         "path": "atlas/page.json"
       },
       {
-        "commits": 3,
-        "lines": 1379,
+        "commits": 5,
+        "lines": 1439,
         "path": "atlas/statistics.json"
       },
       {
-        "commits": 3,
-        "lines": 2702,
+        "commits": 5,
+        "lines": 2792,
         "path": "atlas/structure.json"
       },
       {
@@ -679,8 +679,8 @@
         "path": "site/astro.config.mjs"
       },
       {
-        "commits": 4,
-        "lines": 14428,
+        "commits": 6,
+        "lines": 14440,
         "path": "site/package-lock.json"
       },
       {
@@ -1029,9 +1029,9 @@
     "level": "low",
     "reason": "fewer than 25 source files reach 10 revisions in the window"
   },
-  "generatedAt": "2026-09-30T22:04:18.575Z",
+  "generatedAt": "2026-11-11T22:42:19.460Z",
   "generatedFrom": {
-    "commit": "d5f96a1de906ab7c234ca25c06c2fc562a56cd16"
+    "commit": "718b01451c2e604815c4deb1be62f010ca2270f9"
   },
   "pairs": [
     {
@@ -1234,16 +1234,16 @@
     "floor": "fallen",
     "floorHeld": false,
     "floorTrigger": "revision-depth",
-    "headDate": "2026-09-30T13:53:03-07:00",
+    "headDate": "2026-10-01T13:53:49-07:00",
     "inScopeFiles": 165,
     "pinnedStart": null,
     "priorFloor": "fallen",
-    "qualifyingCommits": 60,
+    "qualifyingCommits": 62,
     "qualifyingMinimum": 30,
     "revisions": 5,
     "shared": 10,
     "sharedFloorUsed": 3,
-    "since": "2026-04-03T20:53:03.000Z",
+    "since": "2026-04-04T20:53:49.000Z",
     "sourceExtensions": [
       ".js",
       ".mjs",
